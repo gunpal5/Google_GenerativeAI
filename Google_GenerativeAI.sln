@@ -1,0 +1,53 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34202.233
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{AC161F1D-EC76-48D2-86A3-B52584618D49}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenerativeAI", "src\GenerativeAI\GenerativeAI.csproj", "{3B56ADE1-2A08-4774-A7C9-7CDB5EE5735B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{FCCDE15A-B121-4D6C-BD56-D1B043A26F18}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenerativeAI.Tests", "tests\GenerativeAI.Tests\GenerativeAI.Tests.csproj", "{734EA3CA-DB49-4FD3-ABB5-E185231B1818}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenerativeAI.Generators", "src\GenerativeAI.Generators\GenerativeAI.Generators.csproj", "{6B247114-6727-4CE5-8C9F-0C361776589E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenerativeAI.IntegrationTests", "tests\GenerativeAI.IntegrationTests\GenerativeAI.IntegrationTests.csproj", "{3C094E6B-A3FB-43BA-920B-0E27DB3F1B3F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3B56ADE1-2A08-4774-A7C9-7CDB5EE5735B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B56ADE1-2A08-4774-A7C9-7CDB5EE5735B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B56ADE1-2A08-4774-A7C9-7CDB5EE5735B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B56ADE1-2A08-4774-A7C9-7CDB5EE5735B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{734EA3CA-DB49-4FD3-ABB5-E185231B1818}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{734EA3CA-DB49-4FD3-ABB5-E185231B1818}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{734EA3CA-DB49-4FD3-ABB5-E185231B1818}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{734EA3CA-DB49-4FD3-ABB5-E185231B1818}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B247114-6727-4CE5-8C9F-0C361776589E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B247114-6727-4CE5-8C9F-0C361776589E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B247114-6727-4CE5-8C9F-0C361776589E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B247114-6727-4CE5-8C9F-0C361776589E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C094E6B-A3FB-43BA-920B-0E27DB3F1B3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C094E6B-A3FB-43BA-920B-0E27DB3F1B3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C094E6B-A3FB-43BA-920B-0E27DB3F1B3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C094E6B-A3FB-43BA-920B-0E27DB3F1B3F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3B56ADE1-2A08-4774-A7C9-7CDB5EE5735B} = {AC161F1D-EC76-48D2-86A3-B52584618D49}
+		{734EA3CA-DB49-4FD3-ABB5-E185231B1818} = {FCCDE15A-B121-4D6C-BD56-D1B043A26F18}
+		{6B247114-6727-4CE5-8C9F-0C361776589E} = {AC161F1D-EC76-48D2-86A3-B52584618D49}
+		{3C094E6B-A3FB-43BA-920B-0E27DB3F1B3F} = {FCCDE15A-B121-4D6C-BD56-D1B043A26F18}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FFF3E8BB-BACD-4376-8E33-55D6E8A30BE0}
+	EndGlobalSection
+EndGlobal

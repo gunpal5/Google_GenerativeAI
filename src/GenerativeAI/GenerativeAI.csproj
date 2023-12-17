@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net4.6.2;netstandard2.0;net6.0;net7.0;net8.0</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	  <LangVersion>10.0</LangVersion>
+	  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	  <PackageId>Google_$(AssemblyName)</PackageId>
+	  <Title>Unofficial Google GenerativeAI (Gemini) SDK</Title>
+	  <Authors>Gunpal Jain</Authors>
+	  <Company />
+	  <Description>Unofficial C# SDK for Google Generative AI</Description>
+	  <PackageProjectUrl>https://github.com/gunpal5/Google_GenerativeAI</PackageProjectUrl>
+	  <PackageReadmeFile>README.md</PackageReadmeFile>
+	  <RepositoryUrl>https://github.com/gunpal5/Google_GenerativeAI</RepositoryUrl>
+	  <PackageTags>Gemini,Google,GenerativeAI</PackageTags>
+	  <Version>0.1.0</Version>
+	  <AssemblyVersion>0.1.0</AssemblyVersion>
+	  <FileVersion>0.1.0</FileVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <PackageReference Include="System.Text.Json" Version="8.0.0" />
+  </ItemGroup>
+
+</Project>
