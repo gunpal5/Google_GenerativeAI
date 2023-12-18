@@ -42,10 +42,11 @@ namespace GenerativeAI.Methods
 
             var response = await Model.GenerateContentAsync(request,cancellationToken);
 
-            if (response.Candidates is { Length: > 0 })
+            if (response.Candidates is { Length: > 0 } && response.Candidates[0].Content!=null)
             {
                 this.History.Add(content);
                 var responseContent = response.Candidates[0].Content;
+               
                 responseContent.Role = Roles.Model;
 
                 this.History.Add(responseContent);
