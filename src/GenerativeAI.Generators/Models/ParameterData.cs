@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace H.Generators;
+namespace GenerativeAI.Generators.Models;
 
 public readonly record struct ParameterData(
     string Name,

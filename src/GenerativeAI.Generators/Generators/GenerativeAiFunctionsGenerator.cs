@@ -1,11 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
-using H.Generators.Extensions;
+using GenerativeAI.Generators.Models;
+using H.Generators;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace H.Generators;
+namespace GenerativeAI.Generators.Generators;
 
 [Generator]
 public class GenerativeAiFunctionsGenerator : IIncrementalGenerator

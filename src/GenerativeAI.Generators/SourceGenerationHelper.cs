@@ -1,7 +1,8 @@
 ﻿using System.Linq;
+using GenerativeAI.Generators.Models;
 using H.Generators.Extensions;
 
-namespace H.Generators;
+namespace GenerativeAI.Generators;
 
 internal static class SourceGenerationHelper
 {
@@ -59,7 +60,7 @@ internal static class SourceGenerationHelper
 
     public static string GenerateClientImplementation(InterfaceData @interface)
     {
-        var extensionsClassName = @interface.Name.Substring(startIndex: 1) + "Extensions";
+        var extensionsClassName = @interface.Name.Substring(startIndex: 1) + "GoogleExtensions";
         
         return @$"
 using System.Collections.Generic;
@@ -111,7 +112,7 @@ namespace {@interface.Namespace}
         }}
 ").Inject()}
 
-        public static global::System.Collections.Generic.ICollection<global::GenerativeAI.Tools.ChatCompletionFunction> AsFunctions(this {@interface.Name} functions)
+        public static global::System.Collections.Generic.ICollection<global::GenerativeAI.Tools.ChatCompletionFunction> AsGoogleFunctions(this {@interface.Name} functions)
         {{
 {@interface.Methods.Select((method, i) => $@"
             var function{i} = functions.{method.Name}AsDictionary();").Inject()}
@@ -132,7 +133,7 @@ namespace {@interface.Namespace}
             }};
         }}
 
-        public static global::System.Collections.Generic.IReadOnlyDictionary<string, global::System.Func<string, global::System.Threading.CancellationToken, global::System.Threading.Tasks.Task<string>>> AsCalls(this {@interface.Name} service)
+        public static global::System.Collections.Generic.IReadOnlyDictionary<string, global::System.Func<string, global::System.Threading.CancellationToken, global::System.Threading.Tasks.Task<string>>> AsGoogleCalls(this {@interface.Name} service)
         {{
             return new global::System.Collections.Generic.Dictionary<string, global::System.Func<string, global::System.Threading.CancellationToken, global::System.Threading.Tasks.Task<string>>>
             {{
@@ -265,7 +266,7 @@ namespace {@interface.Namespace}
             string argumentsAsJson,
             global::System.Threading.CancellationToken cancellationToken = default)
         {{
-            var calls = service.AsCalls();
+            var calls = service.AsGoogleCalls();
             var func = calls[functionName];
 
             return await func(argumentsAsJson, cancellationToken);

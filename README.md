@@ -97,7 +97,10 @@ public class WeatherService : IWeatherFunctions
  
  var apiKey = Environment.GetEnvironmentVariable("Gemini_API_Key", EnvironmentVariableTarget.User);
 
- var model = new GenerativeModel(apiKey, functions:service.AsFunctions(),calls:service.AsCalls());
+ var model = new GenerativeModel(apiKey);
+
+ // Add Global Functions
+ model.AddGlobalFunctions(service.AsGoogleFunctions(), service.AsGoogleCalls())
 
  var result = await model.GenerateContentAsync("What is the weather in San Francisco today?");
  

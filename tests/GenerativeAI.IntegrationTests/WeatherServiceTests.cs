@@ -1,5 +1,4 @@
 using GenerativeAI.Models;
-using TryAgiOpenAITests;
 using Xunit.Abstractions;
 
 namespace GenerativeAI.IntegrationTests
@@ -15,15 +14,31 @@ namespace GenerativeAI.IntegrationTests
         public async Task ShouldInvokeWetherService()
         {
             WeatherService service = new WeatherService();
-            var functions = service.AsFunctions();
-            var calls = service.AsCalls();
+            var functions = service.AsGoogleFunctions();
+            var calls = service.AsGoogleCalls();
             
             var apiKey = Environment.GetEnvironmentVariable("Gemini_API_Key", EnvironmentVariableTarget.User);
 
             var model = new GenerativeModel(apiKey, functions:functions,calls:calls);
 
-            var result = await model.GenerateContentAsync("What is the weather in san fransisco today?");
+            var result = await model.GenerateContentAsync("What is the weather in san francisco today?");
             
+            Console.WriteLine(result);
+        }
+
+        [Fact]
+        public async Task ShouldInvokeWetherService2()
+        {
+            WeatherService service = new WeatherService();
+            var functions = service.AsGoogleFunctions();
+            var calls = service.AsGoogleCalls();
+
+            var apiKey = Environment.GetEnvironmentVariable("Gemini_API_Key", EnvironmentVariableTarget.User);
+
+            var model = new GenerativeModel(apiKey);
+            model.AddGlobalFunctions(functions,calls);
+            var result = await model.GenerateContentAsync("What is the weather in san francisco today?");
+
             Console.WriteLine(result);
         }
     }

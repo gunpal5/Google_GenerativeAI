@@ -2,9 +2,9 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace H.Generators;
+namespace GenerativeAI.Generators.Generators;
 
-public static class CommonSteps
+public static class GoogleCommonSteps
 {
     public static IncrementalValuesProvider<GeneratorAttributeSyntaxContext>
         ForAttributeWithMetadataName(
