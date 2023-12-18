@@ -228,7 +228,7 @@ public class GenerativeAiFunctionsGenerator : IIncrementalGenerator
     private static FileWithName GetClientSourceCode(InterfaceData @interface)
     {
         return new FileWithName(
-            Name: $"{@interface.Name}.Functions.generated.cs",
+            Name: $"{@interface.Name}.Gemini.Functions.generated.cs",
             Text: SourceGenerationHelper.GenerateClientImplementation(@interface));
     }
 
