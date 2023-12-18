@@ -50,9 +50,14 @@ namespace GenerativeAI.Models
                 return result;
             }
             else
+            {
+                var content = await response.Content.ReadAsStringAsync();
+
                 throw new Exception($"Error while requesting {url.ToString("__API_Key__")}: " +
-                                    await response.Content.ReadAsStreamAsync());
+                                    content);
+            }
         }
+               
 
         protected virtual async Task<CountTokensResponse> CountTokens(string apiKey, string model,
             CountTokensRequest request)
