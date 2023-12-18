@@ -6,7 +6,7 @@
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)/key.snk</AssemblyOriginatorKeyFile>
 	</PropertyGroup>
-
+	
 	<ItemGroup Label="CLSCompliant">
 		<AssemblyAttribute Include="System.CLSCompliantAttribute">
 			<_Parameter1>false</_Parameter1>
@@ -14,7 +14,7 @@
 	</ItemGroup>
 
 	<PropertyGroup Label="Nuget">
-		<Version>0.1</Version>
+		<Version>0.1.1</Version>
 		<GeneratePackageOnBuild Condition=" '$(Configuration)' == 'Release' ">true</GeneratePackageOnBuild>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<Authors>Gunpal Jain and contributors</Authors>

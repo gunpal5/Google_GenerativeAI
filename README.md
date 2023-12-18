@@ -1,6 +1,6 @@
 # Google GenerativeAI (Gemini)
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
-
+[![Nuget package](Nuget)](https://www.nuget.org/packages/Google_GenerativeAI)
 <!-- code_chunk_output -->
 
 - [Google GenerativeAI (Gemini)](#google-generativeai-gemini)

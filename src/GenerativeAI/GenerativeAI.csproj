@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFrameworks>net4.6.2;netstandard2.0;net6.0;net7.0;net8.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -15,12 +14,12 @@
 	  <PackageReadmeFile>README.md</PackageReadmeFile>
 	  <RepositoryUrl>https://github.com/gunpal5/Google_GenerativeAI</RepositoryUrl>
 	  <PackageTags>Gemini,Google,GenerativeAI</PackageTags>
-	  <Version>0.1.0</Version>
-	  <AssemblyVersion>0.1.0</AssemblyVersion>
-	  <FileVersion>0.1.0</FileVersion>
+	  <Version>0.1.5</Version>
+	  <AssemblyVersion>0.1.5</AssemblyVersion>
+	  <FileVersion>0.1.5</FileVersion>
 	  <SignAssembly>True</SignAssembly>
   </PropertyGroup>
-
+	
   <ItemGroup>
     <None Include="..\..\README.md">
       <Pack>True</Pack>
@@ -32,6 +31,11 @@
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <PackageReference Include="System.Text.Json" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GenerativeAI.Generators\GenerativeAI.Generators.csproj" ReferenceOutputAssembly="false" PackAsAnalyzer="true" />
+    <None Include="..\GenerativeAI.Generators\bin\$(Configuration)\netstandard2.0\H.Generators.Extensions.dll" Pack="true" PackagePath="analyzers/dotnet" Visible="false" />
   </ItemGroup>
 
 </Project>

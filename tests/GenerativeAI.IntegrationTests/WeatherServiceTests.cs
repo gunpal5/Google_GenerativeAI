@@ -1,4 +1,5 @@
 using GenerativeAI.Models;
+using TryAgiOpenAITests;
 using Xunit.Abstractions;
 
 namespace GenerativeAI.IntegrationTests
