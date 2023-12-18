@@ -20,11 +20,11 @@ namespace GenerativeAI.Tests.Model
             var model = new GenerativeModel(apiKey);
 
             var chat = model.StartChat(new StartChatParams());
-            var result = await chat.SendMessage("Write a poem");
+            var result = await chat.SendMessageAsync("Write a poem");
             Console.WriteLine("Initial Poem\r\n");
             Console.WriteLine(result.Text());
 
-            var result2 = await chat.SendMessage("Make it longer");
+            var result2 = await chat.SendMessageAsync("Make it longer");
             Console.WriteLine("\r\nLong Poem\r\n");
             Console.WriteLine(result2.Text());
         }

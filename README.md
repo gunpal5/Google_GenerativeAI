@@ -7,6 +7,7 @@
     - [Usage](#usage)
     - [Quick Start](#quick-start)
     - [Function Calling](#function-calling)
+    - [Credits](#credits)
 
 <!-- /code_chunk_output -->
 
@@ -25,6 +26,20 @@ Currently only System.Text.Json is supported.
 ### Quick Start
 
 1) [Obtain an API](https://makersuite.google.com/app/apikey) key to use with the Google AI SDKs.
+
+2) Install Google_GenerativeAI Nuget Package
+
+```
+Install-Package Google_GenerativeAI
+```
+
+or
+
+```
+dotnet add package Google_GenerativeAI
+```
+
+Write some codes:
 
 ```csharp
  var apiKey = 'Your API Key';
@@ -89,3 +104,5 @@ public class WeatherService : IWeatherFunctions
  Console.WriteLine(result);
 ```
 
+### Credits
+Thanks to [HavenDV](https://github.com/HavenDV) for [OpenAI SDK](https://github.com/tryAGI/OpenAI)

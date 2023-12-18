@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.7.34202.233
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{AC161F1D-EC76-48D2-86A3-B52584618D49}"
+	ProjectSection(SolutionItems) = preProject
+		src\Directory.Build.props = src\Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenerativeAI", "src\GenerativeAI\GenerativeAI.csproj", "{3B56ADE1-2A08-4774-A7C9-7CDB5EE5735B}"
 EndProject
@@ -13,7 +16,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenerativeAI.Tests", "tests
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenerativeAI.Generators", "src\GenerativeAI.Generators\GenerativeAI.Generators.csproj", "{6B247114-6727-4CE5-8C9F-0C361776589E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenerativeAI.IntegrationTests", "tests\GenerativeAI.IntegrationTests\GenerativeAI.IntegrationTests.csproj", "{3C094E6B-A3FB-43BA-920B-0E27DB3F1B3F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenerativeAI.IntegrationTests", "tests\GenerativeAI.IntegrationTests\GenerativeAI.IntegrationTests.csproj", "{3C094E6B-A3FB-43BA-920B-0E27DB3F1B3F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
