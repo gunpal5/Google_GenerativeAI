@@ -4,6 +4,11 @@ namespace GenerativeAI.Requests
 {
     public class ResponseHelper
     {
+        /// <summary>
+        /// Format Error Message
+        /// </summary>
+        /// <param name="response"></param>
+        /// <returns></returns>
         public static string FormatBlockErrorMessage(GenerateContentResponse response)
         {
             var message = "";

@@ -34,7 +34,7 @@ namespace GenerativeAI.Types
     public class Part
     {
         public string? Text { get; set; }
-        public string? InlineData { get; set; }
+        public GenerativeContentBlob? InlineData { get; set; }
 
         public ChatFunctionCall? FunctionCall { get; set; }
         public ChatFunctionResponse? FunctionResponse { get; set; }

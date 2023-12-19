@@ -7,6 +7,7 @@
     - [Usage](#usage)
     - [Quick Start](#quick-start)
     - [Chat Mode](#chat-mode)
+    - [Vision](#vision)
     - [Function Calling](#function-calling)
     - [Credits](#credits)
 
@@ -67,6 +68,33 @@ Write some codes:
  Console.WriteLine("Long Poem\r\n");
  Console.WriteLine(result2.Text());
  
+```
+### Vision
+
+```csharp
+var imageBytes = await File.ReadAllBytesAsync("image.png");
+
+var imagePart = new Part()
+{
+    InlineData = new GenerativeContentBlob()
+    {
+        MimeType = "image/png",
+        Data = Convert.ToBase64String(imageBytes)
+    }
+};
+
+var textPart = new Part()
+{
+    Text = "What is in the image?"
+};
+
+var parts = new[] { textPart, imagePart };
+
+var apiKey = Environment.GetEnvironmentVariable("Gemini_API_Key", EnvironmentVariableTarget.User);
+var visionModel = new GeminiProVision(apiKey);
+var result = await visionModel.GenerateContentAsync(parts);
+
+Console.WriteLine(result.Text());
 ```
 
 ### Function Calling

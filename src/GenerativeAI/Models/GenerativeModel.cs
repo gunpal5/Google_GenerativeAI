@@ -10,6 +10,9 @@ using GenerativeAI.Exceptions;
 
 namespace GenerativeAI.Models
 {
+    /// <summary>
+    /// Google Gemini Pro
+    /// </summary>
     public class GenerativeModel : ModelBase
     {
         #region Properties
@@ -108,7 +111,11 @@ namespace GenerativeAI.Models
         #endregion
 
         #region public Methods
-
+        /// <summary>
+        /// Add Global Extension Functions
+        /// </summary>
+        /// <param name="functions">Extension Functions</param>
+        /// <param name="calls">Function Call Map</param>
         public void AddGlobalFunctions(ICollection<ChatCompletionFunction>? functions,
             IReadOnlyDictionary<string, Func<string, CancellationToken, Task<string>>>? calls)
         {
@@ -124,10 +131,18 @@ namespace GenerativeAI.Models
                 this.Calls.Add(call.Key, call.Value);
             }
         }
+        /// <summary>
+        /// Generate Content
+        /// </summary>
+        /// <param name="request">Generate Content Request</param>
+        /// <param name="cancellationToken">Cancellation Token</param>
+        /// <returns></returns>
         public async Task<EnhancedGenerateContentResponse> GenerateContentAsync(GenerateContentRequest request, CancellationToken cancellationToken = default)
         {
-            request.GenerationConfig = this.Config;
-            request.SafetySettings = this.SafetySettings;
+            if(request.GenerationConfig == null)
+                request.GenerationConfig = this.Config;
+            if(request.SafetySettings == null)
+                request.SafetySettings = this.SafetySettings;
             if (FunctionEnabled && this.Functions != null)
             {
                 request.Tools = new List<GenerativeAITool>(new[]{new GenerativeAITool()
@@ -135,10 +150,32 @@ namespace GenerativeAI.Models
                     FunctionDeclaration = this.Functions
                 }});
             }
-            var res = await GenerateContent(this.ApiKey, this.Model, request);
-            return await CallFunction(request, res, cancellationToken);
+            var res = await GenerateContent(this.ApiKey, this.Model, request).ConfigureAwait(false);
+            return await CallFunction(request, res, cancellationToken).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Generate Content with Parts
+        /// </summary>
+        /// <param name="parts">Request Content Parts</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<EnhancedGenerateContentResponse> GenerateContentAsync(IEnumerable<Part> parts, CancellationToken cancellationToken = default)
+        {
+            var request = new GenerateContentRequest()
+            {
+                Contents = new[] { new Content(parts.ToArray(), Roles.User) }
+            };
+            
+            return await GenerateContentAsync(request, cancellationToken).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Generate Content with Text Message
+        /// </summary>
+        /// <param name="message">Text Message to Send to Model</param>
+        /// <param name="cancellationToken">Cancellation Token</param>
+        /// <returns></returns>
         public async Task<string?> GenerateContentAsync(string message, CancellationToken cancellationToken = default)
         {
             var content = RequestExtensions.FormatGenerateContentInput(message);
@@ -159,7 +196,7 @@ namespace GenerativeAI.Models
 
             var res = await GenerateContent(this.ApiKey, this.Model, req);
 
-            res = await CallFunction(req, res, cancellationToken);
+            res = await CallFunction(req, res, cancellationToken).ConfigureAwait(false);
             return res.Text();
         }
 
@@ -223,22 +260,38 @@ namespace GenerativeAI.Models
             return res;
         }
 
+        /// <summary>
+        /// Start a Chat Session
+        /// </summary>
+        /// <param name="startSessionParams">Session Params with Chat History</param>
+        /// <returns>ChatSession Object</returns>
         public ChatSession StartChat(StartChatParams startSessionParams)
         {
             return new ChatSession(this, startSessionParams);
         }
+        /// <summary>
+        /// Count Content Tokens
+        /// </summary>
+        /// <param name="request">CountTokenRequest with Contents array</param>
+        /// <returns>Number of token in content</returns>
 
         public async Task<CountTokensResponse> CountTokens(CountTokensRequest request)
         {
-            return await CountTokens(this.ApiKey, this.Model, request);
+            return await CountTokens(this.ApiKey, this.Model, request).ConfigureAwait(false);
         }
         #endregion
 
+        /// <summary>
+        /// Disable Global Functions
+        /// </summary>
         public void DisableFunctions()
         {
             FunctionEnabled = false;
         }
 
+        /// <summary>
+        /// Enable Global Functions
+        /// </summary>
         public void EnableFunctions()
         {
             FunctionEnabled = true;
