@@ -1,6 +1,7 @@
 # Google GenerativeAI (Gemini)
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
-[![Nuget package]](https://www.nuget.org/packages/Google_GenerativeAI)
+[![Nuget package](https://img.shields.io/nuget/vpre/Google_GenerativeAI)](https://www.nuget.org/packages/Google_GenerativeAI)
+[![License: MIT](https://img.shields.io/github/license/gunpal5/Google_GenerativeAI)](https://github.com/tryAGI/OpenAI/blob/main/LICENSE.txt)
 <!-- code_chunk_output -->
 
 - [Google GenerativeAI (Gemini)](#google-generativeai-gemini)
