@@ -26,7 +26,7 @@
 
         public string ToString(string apiKey)
         {
-            var url = $"{BaseUrl}/{Version}/models/{this.Model}:{this.Task}?key={ApiKey}";
+            var url = $"{BaseUrl}/{Version}/models/{this.Model}:{this.Task}?key={apiKey}";
             if (this.Stream)
             {
                 url += "&alt=sse";
