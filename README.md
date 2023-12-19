@@ -47,6 +47,7 @@ Write some codes:
  var apiKey = 'Your API Key';
 
  var model = new GenerativeModel(apiKey);
+ //or var model = new GeminiProModel(apiKey)
 
  var res = await model.GenerateContentAsync("How are you doing?");
 
@@ -57,16 +58,17 @@ Write some codes:
  var apiKey = Environment.GetEnvironmentVariable("Gemini_API_Key", EnvironmentVariableTarget.User);
 
  var model = new GenerativeModel(apiKey);
+ //or var model = new GeminiProModel(apiKey)
 
  var chat = model.StartChat(new StartChatParams());
 
  var result = await chat.SendMessageAsync("Write a poem");
  Console.WriteLine("Initial Poem\r\n");
- Console.WriteLine(result.Text());
+ Console.WriteLine(result);
 
  var result2 = await chat.SendMessageAsync("Make it longer");
  Console.WriteLine("Long Poem\r\n");
- Console.WriteLine(result2.Text());
+ Console.WriteLine(result2);
  
 ```
 ### Vision

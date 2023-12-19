@@ -11,7 +11,7 @@ using GenerativeAI.Exceptions;
 namespace GenerativeAI.Models
 {
     /// <summary>
-    /// Google Gemini Pro
+    /// Generative AI Model
     /// </summary>
     public class GenerativeModel : ModelBase
     {
