@@ -21,7 +21,7 @@ namespace GenerativeAI.Tests.Model
         [Fact]
         public async Task ShouldIdentifyObjectInImage()
         {
-            var imageBytes = await File.ReadAllBytesAsync("image2.jpg");
+            var imageBytes = await File.ReadAllBytesAsync("image.png");
             
             var imagePart = new Part()
             {

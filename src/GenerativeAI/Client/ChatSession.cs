@@ -1,4 +1,5 @@
-﻿using GenerativeAI.Helpers;
+﻿using GenerativeAI.Exceptions;
+using GenerativeAI.Helpers;
 using GenerativeAI.Models;
 using GenerativeAI.Requests;
 using GenerativeAI.Types;
@@ -26,8 +27,14 @@ namespace GenerativeAI.Methods
         #endregion
 
         #region public methods
-
-        public async Task<EnhancedGenerateContentResponse> SendMessageAsync(string message, CancellationToken cancellationToken = default)
+        /// <summary>
+        /// Send Message to Model
+        /// </summary>
+        /// <param name="message">Message to send</param>
+        /// <param name="cancellationToken">Cancellation Token</param>
+        /// <returns>Content Response</returns>
+        /// <exception cref="GenerativeAIException">throws Generative AI Exception</exception>
+        public async Task<string> SendMessageAsync(string message, CancellationToken cancellationToken = default)
         {
             var content = RequestExtensions.FormatGenerateContentInput(message);
 
@@ -40,7 +47,7 @@ namespace GenerativeAI.Methods
                 Contents = contents.ToArray()
             };
 
-            var response = await Model.GenerateContentAsync(request,cancellationToken);
+            var response = await Model.GenerateContentAsync(request, cancellationToken).ConfigureAwait(false);
 
             if (response.Candidates is { Length: > 0 } && response.Candidates[0].Content!=null)
             {
@@ -56,27 +63,47 @@ namespace GenerativeAI.Methods
                 var  blockErrorMessage = ResponseHelper.FormatBlockErrorMessage(response);
                 if (!string.IsNullOrEmpty(blockErrorMessage))
                 {
-                    throw new Exception(blockErrorMessage);
+                    throw new GenerativeAIException(blockErrorMessage,blockErrorMessage);
                 }
             }
            
-            return response;
+            return response.Text();
         }
-
-        public async Task<EnhancedGenerateContentResponse> SendMessage(GenerateContentRequest request)
+        /// <summary>
+        /// Send Message with Content Parts.
+        /// </summary>
+        /// <param name="parts">Parts</param>
+        /// <param name="cancellationToken">Cancellation Token</param>
+        /// <returns cref="EnhancedGenerateContentResponse">Content Response</returns>
+        public async Task<EnhancedGenerateContentResponse> SendMessageAsync(IEnumerable<Part> parts,
+            CancellationToken cancellationToken = default)
+        {
+            var request = new GenerateContentRequest()
+                { Contents = new[] { RequestExtensions.FormatGenerateContentInput(parts) } };
+            return await SendMessageAsync(request, cancellationToken).ConfigureAwait(false);
+        }
+        /// <summary>
+        /// Send Message with Generate Request
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns cref="EnhancedGenerateContentResponse">Content Response</returns>
+        /// <exception cref="Exception"></exception>
+        public async Task<EnhancedGenerateContentResponse> SendMessageAsync(GenerateContentRequest request, CancellationToken cancellationToken = default)
         {
             var contents = new List<Content>();
             contents.AddRange(this.History);
             if (request.Contents != null)
             {
                 contents.AddRange(request.Contents);
-                
             }
             var request2 = new GenerateContentRequest()
             {
-                Contents = contents.ToArray()
+                Contents = contents.ToArray(),
+                GenerationConfig = request.GenerationConfig,
+                SafetySettings = request.SafetySettings
             };
-            var response = await Model.GenerateContentAsync(request2);
+            var response = await Model.GenerateContentAsync(request2,cancellationToken).ConfigureAwait(false);
 
             if (response.Candidates is { Length: > 0 })
             {
@@ -95,7 +122,7 @@ namespace GenerativeAI.Methods
                 var blockErrorMessage = ResponseHelper.FormatBlockErrorMessage(response);
                 if (!string.IsNullOrEmpty(blockErrorMessage))
                 {
-                    throw new Exception(blockErrorMessage);
+                    throw new GenerativeAIException(blockErrorMessage,blockErrorMessage);
                 }
             }
 

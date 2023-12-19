@@ -22,11 +22,43 @@ namespace GenerativeAI.Tests.Model
             var chat = model.StartChat(new StartChatParams());
             var result = await chat.SendMessageAsync("Write a poem");
             Console.WriteLine("Initial Poem\r\n");
-            Console.WriteLine(result.Text());
+            Console.WriteLine(result);
 
             var result2 = await chat.SendMessageAsync("Make it longer");
             Console.WriteLine("\r\nLong Poem\r\n");
-            Console.WriteLine(result2.Text());
+            Console.WriteLine(result2);
+        }
+
+        [Fact]
+        public async Task ShouldWorkWithGeminiProVision()
+        {
+            var imageBytes = await File.ReadAllBytesAsync("image.png");
+
+            var imagePart = new Part()
+            {
+                InlineData = new GenerativeContentBlob()
+                {
+                    MimeType = "image/png",
+                    Data = Convert.ToBase64String(imageBytes)
+                }
+            };
+            var textPart = new Part()
+            {
+                Text = "What is in the image?"
+            };
+            var parts = new[] { textPart, imagePart };
+            //var content = new Content(new[] { textPart, imagePart }, Roles.User);
+
+            var apiKey = Environment.GetEnvironmentVariable("Gemini_API_Key", EnvironmentVariableTarget.User);
+
+            var visionModel = new GeminiProVision(apiKey);
+
+
+            var chat = visionModel.StartChat(new StartChatParams());
+
+            var result = await chat.SendMessageAsync(parts);
+
+            Console.WriteLine(result.Text());
         }
     }
 }

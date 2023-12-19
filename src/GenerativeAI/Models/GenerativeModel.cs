@@ -164,7 +164,7 @@ namespace GenerativeAI.Models
         {
             var request = new GenerateContentRequest()
             {
-                Contents = new[] { new Content(parts.ToArray(), Roles.User) }
+                Contents = new[] { RequestExtensions.FormatGenerateContentInput(parts) }
             };
             
             return await GenerateContentAsync(request, cancellationToken).ConfigureAwait(false);
