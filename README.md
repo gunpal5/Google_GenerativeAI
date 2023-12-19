@@ -109,6 +109,7 @@ public enum Unit
 {
     Celsius,
     Fahrenheit,
+    Imperial
 }
 
 public class Weather
