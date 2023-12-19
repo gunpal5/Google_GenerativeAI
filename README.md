@@ -1,11 +1,12 @@
 # Google GenerativeAI (Gemini)
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
-[![Nuget package](Nuget)](https://www.nuget.org/packages/Google_GenerativeAI)
+[![Nuget package]](https://www.nuget.org/packages/Google_GenerativeAI)
 <!-- code_chunk_output -->
 
 - [Google GenerativeAI (Gemini)](#google-generativeai-gemini)
     - [Usage](#usage)
     - [Quick Start](#quick-start)
+    - [Chat Mode](#chat-mode)
     - [Function Calling](#function-calling)
     - [Credits](#credits)
 
@@ -48,6 +49,24 @@ Write some codes:
 
  var res = await model.GenerateContentAsync("How are you doing?");
 
+```
+### Chat Mode
+
+```csharp
+ var apiKey = Environment.GetEnvironmentVariable("Gemini_API_Key", EnvironmentVariableTarget.User);
+
+ var model = new GenerativeModel(apiKey);
+
+ var chat = model.StartChat(new StartChatParams());
+
+ var result = await chat.SendMessageAsync("Write a poem");
+ Console.WriteLine("Initial Poem\r\n");
+ Console.WriteLine(result.Text());
+
+ var result2 = await chat.SendMessageAsync("Make it longer");
+ Console.WriteLine("Long Poem\r\n");
+ Console.WriteLine(result2.Text());
+ 
 ```
 
 ### Function Calling
@@ -102,7 +121,7 @@ public class WeatherService : IWeatherFunctions
  // Add Global Functions
  model.AddGlobalFunctions(service.AsGoogleFunctions(), service.AsGoogleCalls())
 
- var result = await model.GenerateContentAsync("What is the weather in San Francisco today?");
+ var result = await model.GenerateContentAsync("How is the weather in San Francisco today?");
  
  Console.WriteLine(result);
 ```

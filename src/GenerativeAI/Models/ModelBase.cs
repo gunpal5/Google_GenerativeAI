@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using GenerativeAI.Exceptions;
 
 namespace GenerativeAI.Models
 {
@@ -43,7 +44,7 @@ namespace GenerativeAI.Models
                     var blockErrorMessage = ResponseHelper.FormatBlockErrorMessage(result);
                     if (!string.IsNullOrEmpty(blockErrorMessage))
                     {
-                        throw new Exception(blockErrorMessage);
+                        throw new GenerativeAIException($"Error while requesting {url.ToString("__API_Key__")}:\r\n\r\n{blockErrorMessage}",blockErrorMessage);
                     }
                 }
 
@@ -53,8 +54,7 @@ namespace GenerativeAI.Models
             {
                 var content = await response.Content.ReadAsStringAsync();
 
-                throw new Exception($"Error while requesting {url.ToString("__API_Key__")}: " +
-                                    content);
+                throw new GenerativeAIException($"Error while requesting {url.ToString("__API_Key__")}:\r\n\r\n{content}",content);
             }
         }
                
@@ -77,8 +77,10 @@ namespace GenerativeAI.Models
                 return result;
             }
             else
-                throw new Exception($"Error while requesting {url.ToString("__API_Key__")}: " +
-                                    await response.Content.ReadAsStreamAsync());
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                throw new GenerativeAIException($"Error while requesting {url.ToString("__API_Key__")}: \r\n\r\n{content}",content);
+            }
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using GenerativeAI.Tools;
 using System.Threading;
+using GenerativeAI.Exceptions;
 
 namespace GenerativeAI.Models
 {
@@ -180,7 +181,7 @@ namespace GenerativeAI.Models
                 else
                 {
                     if (!AutoHandleBadFunctionCalls)
-                        throw new Exception($"AI Model called an invalid function. function_name: {name}");
+                        throw new GenerativeAIException($"AI Model called an invalid function. function_name: {name}",$"Invalid function_name: {name}");
                     res.Candidates[0].Content.Parts[0].FunctionCall.Name = "InvalidName";
                     name = "InvalidName";
                     jsonResult = "{\"error\":\"Invalid Function name or function doesn't exist. Please provide proper function name.\"}";
