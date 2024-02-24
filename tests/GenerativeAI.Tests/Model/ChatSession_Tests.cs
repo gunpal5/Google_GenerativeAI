@@ -7,10 +7,7 @@ namespace GenerativeAI.Tests.Model
     public class ChatSession_Tests
     {
         ITestOutputHelper Console;
-        public ChatSession_Tests(ITestOutputHelper helper)
-        {
-            this.Console = helper;
-        }
+        public ChatSession_Tests(ITestOutputHelper helper) => this.Console = helper;
 
         [Fact]
         public async Task ChatSession_Run()
@@ -28,6 +25,30 @@ namespace GenerativeAI.Tests.Model
             Console.WriteLine("\r\nLong Poem\r\n");
             Console.WriteLine(result2);
         }
+
+
+        [Fact]
+        public async Task ShouldChatWithStreaming()
+        {
+            var apiKey = Environment.GetEnvironmentVariable("Gemini_API_Key", EnvironmentVariableTarget.User);
+
+            var model = new GenerativeModel(apiKey);
+
+            var handler = new Action<string>((a) =>
+            {
+                Console.WriteLine(a);
+            });
+
+            var chat = model.StartChat(new StartChatParams());
+            var result = await chat.StreamContentAsync("Write a poem",handler);
+            Console.WriteLine("Initial Poem\r\n");
+            Console.WriteLine(result);
+
+            var result2 = await chat.StreamContentAsync("Make it longer", handler);
+            Console.WriteLine("\r\nLong Poem\r\n");
+            Console.WriteLine(result2);
+        }
+
 
         [Fact]
         public async Task ShouldWorkWithGeminiProVision()

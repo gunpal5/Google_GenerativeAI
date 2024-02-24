@@ -10,10 +10,8 @@ namespace GenerativeAI.Tests.Model
     public class GeminiPro_Tests
     {
         private ITestOutputHelper Console;
-        public GeminiPro_Tests(ITestOutputHelper helper)
-        {
-            this.Console = helper;
-        }
+        public GeminiPro_Tests(ITestOutputHelper helper) => this.Console = helper;
+
         [Fact]
         public async Task ShouldGenerateResult()
         {
@@ -23,11 +21,55 @@ namespace GenerativeAI.Tests.Model
 
             var res = await model.GenerateContentAsync("How are you doing?");
 
-            
-
             res.ShouldNotBeNullOrEmpty();
 
             Console.WriteLine(res);
+        }
+
+        [Fact]
+        public async Task ShouldGenerateStreamResponse()
+        {
+            var apiKey = Environment.GetEnvironmentVariable("Gemini_API_Key", EnvironmentVariableTarget.User);
+
+            var model = new GenerativeModel(apiKey);
+
+            var action = new Action<string>(s =>
+            {
+                Console.WriteLine(s);
+            });
+
+            await model.StreamContentAsync("How are you doing?",action);
+
+        }
+
+        [Fact]
+        public async Task ShouldGenerateStreamResponseWithParts()
+        {
+            var apiKey = Environment.GetEnvironmentVariable("Gemini_API_Key", EnvironmentVariableTarget.User);
+
+            var model = new GenerativeModel(apiKey);
+
+            var action = new Action<string>(s =>
+            {
+                Console.WriteLine(s);
+            });
+
+            await model.StreamContentAsync(new []{new Part(){Text = "How are you doing?" } }, action);
+        }
+
+        [Fact]
+        public async Task ShouldGenerateStreamResponseWithRequest()
+        {
+            var apiKey = Environment.GetEnvironmentVariable("Gemini_API_Key", EnvironmentVariableTarget.User);
+
+            var model = new GenerativeModel(apiKey);
+
+            var action = new Action<string>(s =>
+            {
+                Console.WriteLine(s);
+            });
+
+            await model.StreamContentAsync(new GenerateContentRequest(){Contents = new []{RequestExtensions.FormatGenerateContentInput("How are you doing?")}}, action);
         }
 
         [Fact]
@@ -47,7 +89,7 @@ namespace GenerativeAI.Tests.Model
                 }
             });
 
-            var res2 = await model.GenerateContentAsync(new GenerateContentRequest()
+            await model.GenerateContentAsync(new GenerateContentRequest()
             {
                 Contents = new[] { RequestExtensions.FormatGenerateContentInput("Tell me about terrorism") },
                 SafetySettings = new[]

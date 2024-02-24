@@ -34,6 +34,7 @@ namespace GenerativeAI.Types
     public class StartChatParams : BaseParams
     {
         public InputContent[]? History { get; set; }
+        public bool IsVision { get; set; }
     }
 
     /// <summary>

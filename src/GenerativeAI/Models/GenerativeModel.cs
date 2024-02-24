@@ -2,6 +2,7 @@
 using GenerativeAI.Methods;
 using GenerativeAI.Types;
 using System.Net.Http;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using GenerativeAI.Tools;
@@ -139,10 +140,8 @@ namespace GenerativeAI.Models
         /// <returns></returns>
         public async Task<EnhancedGenerateContentResponse> GenerateContentAsync(GenerateContentRequest request, CancellationToken cancellationToken = default)
         {
-            if(request.GenerationConfig == null)
-                request.GenerationConfig = this.Config;
-            if(request.SafetySettings == null)
-                request.SafetySettings = this.SafetySettings;
+            request.GenerationConfig ??= this.Config;
+            request.SafetySettings ??= this.SafetySettings;
             if (FunctionEnabled && this.Functions != null)
             {
                 request.Tools = new List<GenerativeAITool>(new[]{new GenerativeAITool()
@@ -198,6 +197,76 @@ namespace GenerativeAI.Models
 
             res = await CallFunction(req, res, cancellationToken).ConfigureAwait(false);
             return res.Text();
+        }
+
+
+        /// <summary>
+        /// Stream Content
+        /// </summary>
+        /// <param name="request">Generate Content Request</param>
+        /// <param name="handler">Stream Handler</param>
+        /// <param name="cancellationToken">Cancellation Token</param>
+        /// <returns>Full Content Response</returns>
+        public async Task<string> StreamContentAsync(GenerateContentRequest request, Action<string> handler, CancellationToken cancellationToken = default)
+        {
+            request.GenerationConfig ??= this.Config;
+            request.SafetySettings ??= this.SafetySettings;
+            //if (FunctionEnabled && this.Functions != null)
+            //{
+            //    request.Tools = new List<GenerativeAITool>(new[]{new GenerativeAITool()
+            //    {
+            //        FunctionDeclaration = this.Functions
+            //    }});
+            //}
+            var sb = new StringBuilder();
+            await foreach (var f in StreamContentAsync(this.ApiKey, this.Model, request, cancellationToken))
+            {
+                sb.Append(f);
+                handler(f);
+            }
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Stream Content with Parts
+        /// </summary>
+        /// <param name="parts">Request Content Parts</param>
+        /// <param name="handler">Stream Handler</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<string> StreamContentAsync(IEnumerable<Part> parts, Action<string> handler, CancellationToken cancellationToken = default)
+        {
+            var request = new GenerateContentRequest()
+            {
+                Contents = new[] { RequestExtensions.FormatGenerateContentInput(parts) }
+            };
+            return await StreamContentAsync(request, handler, cancellationToken);
+        }
+
+        /// <summary>
+        /// Stream Content with Text Message
+        /// </summary>
+        /// <param name="message">Text Message to Send to Model</param>
+        /// <param name="handler">Stream Handler</param>
+        /// <param name="cancellationToken">Cancellation Token</param>
+        /// <returns></returns>
+        public async Task<string> StreamContentAsync(string message, Action<string> handler, CancellationToken cancellationToken = default)
+        {
+            var content = RequestExtensions.FormatGenerateContentInput(message);
+            var req = new GenerateContentRequest()
+            {
+                Contents = new[] { content },
+                GenerationConfig = this.Config,
+                SafetySettings = this.SafetySettings
+            };
+            var sb = new StringBuilder();
+
+            await foreach (var f in StreamContentAsync(this.ApiKey, this.Model, req, cancellationToken))
+            {
+                sb.Append(f);
+                handler(f);
+            }
+            return sb.ToString();
         }
 
         private async Task<EnhancedGenerateContentResponse> CallFunction(GenerateContentRequest req, EnhancedGenerateContentResponse res, CancellationToken cancellationToken = default)
@@ -265,7 +334,7 @@ namespace GenerativeAI.Models
         /// </summary>
         /// <param name="startSessionParams">Session Params with Chat History</param>
         /// <returns>ChatSession Object</returns>
-        public ChatSession StartChat(StartChatParams startSessionParams)
+        public virtual ChatSession StartChat(StartChatParams startSessionParams)
         {
             return new ChatSession(this, startSessionParams);
         }
