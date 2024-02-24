@@ -2,6 +2,7 @@
 using GenerativeAI.Models;
 using GenerativeAI.Types;
 using Shouldly;
+using System.Reflection;
 using Xunit.Abstractions;
 
 namespace GenerativeAI.Tests.Model
@@ -22,11 +23,43 @@ namespace GenerativeAI.Tests.Model
 
             var res = await model.GenerateContentAsync("How are you doing?");
 
+            
+
             res.ShouldNotBeNullOrEmpty();
 
             Console.WriteLine(res);
         }
 
+        [Fact]
+        public async Task ShouldCreateRequestWithSafetySettings()
+        {
+            var apiKey = Environment.GetEnvironmentVariable("Gemini_API_Key", EnvironmentVariableTarget.User);
+
+            var model = new GenerativeModel(apiKey, new ModelParams()
+            {
+                SafetySettings = new[]
+                {
+                    new SafetySetting()
+                    {
+                        Category = HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+                        Threshold = HarmBlockThreshold.BLOCK_ONLY_HIGH
+                    }
+                }
+            });
+
+            var res2 = await model.GenerateContentAsync(new GenerateContentRequest()
+            {
+                Contents = new[] { RequestExtensions.FormatGenerateContentInput("Tell me about terrorism") },
+                SafetySettings = new[]
+                {
+                    new SafetySetting()
+                    {
+                        Category = HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+                        Threshold = HarmBlockThreshold.BLOCK_ONLY_HIGH
+                    }
+                }
+            });
+        }
         [Fact]
         public async Task ShouldCountTokens()
         {
