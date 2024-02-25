@@ -13,10 +13,10 @@
 	  <PackageProjectUrl>https://github.com/gunpal5/Google_GenerativeAI</PackageProjectUrl>
 	  <PackageReadmeFile>README.md</PackageReadmeFile>
 	  <RepositoryUrl>https://github.com/gunpal5/Google_GenerativeAI</RepositoryUrl>
-	  <PackageTags>Gemini,Google,GenerativeAI</PackageTags>
-	  <Version>0.1.14</Version>
-	  <AssemblyVersion>0.1.14</AssemblyVersion>
-	  <FileVersion>0.1.14</FileVersion>
+	  <PackageTags>Gemini,Google,GenerativeAI,GoogleGemini.Net,Google,Gemini,Gemini.Net,GoogleGemini</PackageTags>
+	  <Version>0.1.15</Version>
+	  <AssemblyVersion>0.1.15</AssemblyVersion>
+	  <FileVersion>0.1.15</FileVersion>
 	  <SignAssembly>True</SignAssembly>
 	  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
