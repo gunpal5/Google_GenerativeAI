@@ -9,7 +9,7 @@
 	  <Title>Unofficial Google GenerativeAI (Gemini) SDK</Title>
 	  <Authors>Gunpal Jain</Authors>
 	  <Company />
-	  <Description>Unofficial C# SDK for Google Generative AI aka Google Gemini</Description>
+	  <Description>Unofficial C# Google Generative AI SDK (Google Gemini) with function calls support</Description>
 	  <PackageProjectUrl>https://github.com/gunpal5/Google_GenerativeAI</PackageProjectUrl>
 	  <PackageReadmeFile>README.md</PackageReadmeFile>
 	  <RepositoryUrl>https://github.com/gunpal5/Google_GenerativeAI</RepositoryUrl>
