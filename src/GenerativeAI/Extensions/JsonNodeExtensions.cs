@@ -27,6 +27,7 @@ namespace GenerativeAI.Extensions
                     }
                 }
             };
+            return content;
         }
     }
 }
