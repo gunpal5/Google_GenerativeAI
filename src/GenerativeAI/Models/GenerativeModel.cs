@@ -8,6 +8,7 @@ using System.Text.Json.Nodes;
 using GenerativeAI.Tools;
 using System.Threading;
 using GenerativeAI.Exceptions;
+using GenerativeAI.Extensions;
 
 namespace GenerativeAI.Models
 {
@@ -296,18 +297,7 @@ namespace GenerativeAI.Models
                 {
                     var responseContent = JsonSerializer.Deserialize<JsonNode>(jsonResult, SerializerOptions);
 
-                    var content = new Content() { Role = Roles.Function };
-                    content.Parts = new[]
-                    {
-                            new Part()
-                            {
-                                FunctionResponse = new ChatFunctionResponse()
-                                {
-                                    Name = name,
-                                    Response = new FunctionResponse() { Name = name, Content = responseContent }
-                                }
-                            }
-                        };
+                    var content = responseContent.ToFunctionCallContent(name);
 
                     var contents = new List<Content>();
                     if (req.Contents != null)

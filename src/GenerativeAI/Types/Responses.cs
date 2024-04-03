@@ -52,7 +52,7 @@ namespace GenerativeAI.Types
             return this.Candidates?[0].Content?.Parts?[0].Text;
         }
 
-        internal ChatFunctionCall? GetFunction()
+        public ChatFunctionCall? GetFunction()
         {
             return Candidates?[0].Content?.Parts?[0].FunctionCall;
         }
