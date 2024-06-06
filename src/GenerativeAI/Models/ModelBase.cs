@@ -9,11 +9,16 @@ using System.Net.Http.Headers;
 using System.Text.Json.Nodes;
 using System.Reflection;
 using System.Net;
+using GenerativeAI.Helpers;
 
 namespace GenerativeAI.Models
 {
     public abstract class ModelBase
-    {
+    {  
+        /// <summary>
+        /// System Instruction
+        /// </summary>
+        public string SystemInstruction { get; set; }
         public string BaseUrl { get; set; } = "https://generativelanguage.googleapis.com";
         public string Version { get; set; } = "v1beta";
         
@@ -33,11 +38,13 @@ namespace GenerativeAI.Models
         protected virtual async Task<EnhancedGenerateContentResponse> GenerateContent(string apiKey, string model, GenerateContentRequest request)
         {
             var url = new RequestUrl(model, Tasks.GenerateContent, apiKey, false, BaseUrl, Version);
+            if (request.SystemInstruction == null)
+                request.SystemInstruction = RequestExtensions.FormatSystemInstruction(this.SystemInstruction);
 
             var json = JsonSerializer.Serialize(request, SerializerOptions);
 
             var stringContent = new StringContent(json, Encoding.UTF8, "application/json");
-
+            
             var response = await Client.PostAsync(url, stringContent);
             if (response.IsSuccessStatusCode)
             {

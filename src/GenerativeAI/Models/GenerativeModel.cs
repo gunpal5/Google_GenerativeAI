@@ -27,13 +27,15 @@ namespace GenerativeAI.Models
         public List<ChatCompletionFunction>? Functions { get; set; }
         public bool FunctionEnabled { get; set; } = true;
         public bool AutoHandleBadFunctionCalls { get; set; } = false;
+
+      
         public IDictionary<string, Func<string, CancellationToken, Task<string>>> Calls { get; set; } =
             new Dictionary<string, Func<string, CancellationToken, Task<string>>>();
 
         #endregion
 
         #region Contructors
-        public GenerativeModel(string apiKey, ModelParams modelParams, HttpClient? client = null, ICollection<ChatCompletionFunction>? functions = null, IReadOnlyDictionary<string, Func<string, CancellationToken, Task<string>>>? calls = null)
+        public GenerativeModel(string apiKey, ModelParams modelParams, HttpClient? client = null, ICollection<ChatCompletionFunction>? functions = null, IReadOnlyDictionary<string, Func<string, CancellationToken, Task<string>>>? calls = null,string? systemInstruction =null)
         {
             if (modelParams.Model != null && modelParams.Model.StartsWith("models/"))
             {
@@ -44,7 +46,7 @@ namespace GenerativeAI.Models
                 this.Model = modelParams.Model ?? "gemini-pro";
             }
             this.ApiKey = apiKey;
-            
+            this.SystemInstruction = systemInstruction;
 
             InitClient(client,modelParams,functions,calls);
         }
@@ -92,12 +94,14 @@ namespace GenerativeAI.Models
         //        Client = client;
         //}
 
-        public GenerativeModel(string apiKey, string model = "gemini-pro", HttpClient? client = null, ICollection<ChatCompletionFunction>? functions = null, IReadOnlyDictionary<string, Func<string, CancellationToken, Task<string>>>? calls = null)
+        public GenerativeModel(string apiKey, string model = "gemini-pro", HttpClient? client = null, ICollection<ChatCompletionFunction>? functions = null, IReadOnlyDictionary<string, Func<string, CancellationToken, Task<string>>>? calls = null,string? systemInstruction = null)
         {
             this.ApiKey = apiKey;
             this.Model = model;
             this.Config = new GenerationConfig();
             this.SafetySettings = new List<SafetySetting>().ToArray();
+            this.SystemInstruction = systemInstruction;
+
             if (functions != null)
                 this.Functions = functions.ToList();
             if (calls != null)

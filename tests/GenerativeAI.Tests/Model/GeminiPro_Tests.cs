@@ -27,6 +27,53 @@ namespace GenerativeAI.Tests.Model
         }
 
         [Fact]
+        public async Task ShouldGenerateResultWithFlash()
+        {
+            var apiKey = Environment.GetEnvironmentVariable("Gemini_API_Key", EnvironmentVariableTarget.User);
+
+            var model = new Gemini15Flash(apiKey);
+
+            var res = await model.GenerateContentAsync("How are you doing?");
+
+            res.ShouldNotBeNullOrEmpty();
+
+            Console.WriteLine(res);
+        }
+
+        [Fact]
+        public async Task ShouldGenerateResultWith15Pro()
+        {
+            var apiKey = Environment.GetEnvironmentVariable("Gemini_API_Key", EnvironmentVariableTarget.User);
+
+            var model = new Gemini15Pro(apiKey);
+
+            var res = await model.GenerateContentAsync("How are you doing?");
+
+            res.ShouldNotBeNullOrEmpty();
+
+            Console.WriteLine(res);
+        }
+
+        [Fact]
+        public async Task SystemInstructionTests()
+        {
+            var apiKey = Environment.GetEnvironmentVariable("Gemini_API_Key", EnvironmentVariableTarget.User);
+
+            var SystemInstruction =
+                "You are a coding expert that specializes in rendering code for front-end interfaces. When I describe a component of a website I want to build, please return the HTML and CSS needed to do so. Do not give an explanation for this code. Also offer some UI design suggestions.";
+            var prompt =
+                "Create a box in the middle of the page that contains a rotating selection of images each with a caption. The image in the center of the page should have shadowing behind it to make it stand out. It should also link to another page of the site. Leave the URL blank so that I can fill it in.";
+
+            var model = new Gemini15Flash(apiKey,SystemInstruction:SystemInstruction);
+
+            var res = await model.GenerateContentAsync(prompt);
+
+            res.ShouldNotBeNullOrEmpty();
+
+            Console.WriteLine(res);
+        }
+
+        [Fact]
         public async Task ShouldGenerateStreamResponse()
         {
             var apiKey = Environment.GetEnvironmentVariable("Gemini_API_Key", EnvironmentVariableTarget.User);
@@ -88,8 +135,8 @@ namespace GenerativeAI.Tests.Model
                     }
                 }
             });
-
-            await model.GenerateContentAsync(new GenerateContentRequest()
+            model.Version = "v1";
+            var response = await model.GenerateContentAsync(new GenerateContentRequest()
             {
                 Contents = new[] { RequestExtensions.FormatGenerateContentInput("Tell me about terrorism") },
                 SafetySettings = new[]
@@ -101,6 +148,7 @@ namespace GenerativeAI.Tests.Model
                     }
                 }
             });
+            response.UsageMetadata.ShouldNotBeNull();
         }
         [Fact]
         public async Task ShouldCountTokens()

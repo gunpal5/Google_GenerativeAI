@@ -10,10 +10,7 @@ using GenerativeAI.Types;
 
 namespace GenerativeAI.Models
 {
-    /// <summary>
-    /// Gemini Pro Vision
-    /// </summary>
-    public class GeminiProVision:GenerativeModel
+    public class Gemini15Flash:GenerativeModel
     {
         /// <summary>
         /// Constructor
@@ -22,7 +19,7 @@ namespace GenerativeAI.Models
         /// <param name="client">HTTP Client</param>
         /// <param name="functions">Available Extension Functions</param>
         /// <param name="calls">Function Calls</param>
-        public GeminiProVision(string apiKey, System.Net.Http.HttpClient? client = null, ICollection<ChatCompletionFunction>? functions = null, IReadOnlyDictionary<string, Func<string, CancellationToken, Task<string>>>? calls = null,string? systemInstruction = null) : base(apiKey, GoogleAIModels.GeminiProVision, client, functions, calls, systemInstruction)
+        public Gemini15Flash(string apiKey, System.Net.Http.HttpClient? client = null, ICollection<ChatCompletionFunction>? functions = null, IReadOnlyDictionary<string, Func<string, CancellationToken, Task<string>>>? calls = null,string? systemInstruction = null) : base(apiKey, GoogleAIModels.Gemini15Flash, client, functions, calls,systemInstruction)
         {
         }
 

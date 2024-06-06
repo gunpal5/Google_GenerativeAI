@@ -26,6 +26,7 @@ namespace GenerativeAI.Types
     {
         public Content[]? Contents { get; set; }
         public List<GenerativeAITool> Tools { get; set; }
+        public Content? SystemInstruction { get; set; }
     }
 
     /// <summary>

@@ -68,6 +68,15 @@ namespace GenerativeAI.Types
     {
         public GenerateContentCandidate[]? Candidates { get; set; }
         public PromptFeedback? PromptFeedback { get; set; }
+
+        public UsageMetadata? UsageMetadata { get; set; }
+    }
+
+    public class UsageMetadata
+    {
+        public int PromptTokenCount { get; set; }
+        public int CandidatesTokenCount { get; set; }
+        public int TotalTokenCount { get; set; }
     }
     /// <summary>
     /// A candidate returned as part of a {@link GenerateContentResponse}.
