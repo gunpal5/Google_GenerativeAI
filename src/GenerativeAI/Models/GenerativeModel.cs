@@ -15,7 +15,7 @@ namespace GenerativeAI.Models
     /// <summary>
     /// Generative AI Model
     /// </summary>
-    public class GenerativeModel : ModelBase
+    public partial class GenerativeModel : ModelBase
     {
         #region Properties
         public string Model { get; set; }

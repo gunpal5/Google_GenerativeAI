@@ -64,7 +64,7 @@ namespace GenerativeAI.Tests.Model
             var prompt =
                 "Create a box in the middle of the page that contains a rotating selection of images each with a caption. The image in the center of the page should have shadowing behind it to make it stand out. It should also link to another page of the site. Leave the URL blank so that I can fill it in.";
 
-            var model = new Gemini15Flash(apiKey,SystemInstruction:SystemInstruction);
+            var model = new Gemini15Flash(apiKey, systemInstruction:SystemInstruction);
 
             var res = await model.GenerateContentAsync(prompt);
 
