@@ -17,9 +17,9 @@ namespace GenerativeAI.Models
 
         ChatClientMetadata IChatClient.Metadata => _metadata ??= new(GetType().Name, new(BaseUrl), this.Model);
 
-        TService? IChatClient.GetService<TService>(object? key) where TService : class
+        object? IChatClient.GetService(Type serviceType, object? key)
         {
-            return this as TService;
+            return key is null && serviceType?.IsInstanceOfType(this) is true ? this : null;
         }
 
         void IDisposable.Dispose() { }
