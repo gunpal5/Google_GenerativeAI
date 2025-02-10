@@ -37,8 +37,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GenerativeAI.Generators\GenerativeAI.Generators.csproj" ReferenceOutputAssembly="false" PackAsAnalyzer="true" />
     <None Include="..\GenerativeAI.Generators\bin\$(Configuration)\netstandard2.0\H.Generators.Extensions.dll" Pack="true" PackagePath="analyzers/dotnet" Visible="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Types\Common\" />
+    <Folder Include="Types\SemanticRetrieval\Chunk\" />
+    <Folder Include="Types\SemanticRetrieval\Document\" />
+    <Folder Include="Types\SemanticRetrieval\Permissions\" />
   </ItemGroup>
 
 </Project>

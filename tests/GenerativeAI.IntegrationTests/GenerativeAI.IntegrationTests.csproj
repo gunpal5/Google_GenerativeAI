@@ -23,7 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-	  <ProjectReference Include="..\..\src\GenerativeAI.Generators\GenerativeAI.Generators.csproj" OutputItemType="Analyzer" />
 	  <ProjectReference Include="..\..\src\GenerativeAI\GenerativeAI.csproj" />
   </ItemGroup>
 
