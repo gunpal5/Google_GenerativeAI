@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using GenerativeAI.Types.SemanticRetrieval.Document;
 
 namespace GenerativeAI.Types.SemanticRetrieval.Corpus;
 

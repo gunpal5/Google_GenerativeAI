@@ -41,10 +41,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Types\Common\" />
-    <Folder Include="Types\SemanticRetrieval\Chunk\" />
-    <Folder Include="Types\SemanticRetrieval\Document\" />
-    <Folder Include="Types\SemanticRetrieval\Permissions\" />
+    <Folder Include="Types\Converters\" />
+    <Folder Include="Types\Tuning\Permissions\" />
   </ItemGroup>
 
 </Project>

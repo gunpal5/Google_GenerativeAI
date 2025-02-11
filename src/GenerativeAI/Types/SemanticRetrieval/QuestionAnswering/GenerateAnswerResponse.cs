@@ -1,7 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 using GenerativeAI.Types.ContentGeneration.Grounding;
 using GenerativeAI.Types.ContentGeneration.Outputs;
-using GenerativeAI.Types.SemanticRetrieval.QuestionAnswering;
+
+namespace GenerativeAI.Types.SemanticRetrieval.QuestionAnswering;
 
 /// <summary>
 /// Response from the model for a grounded answer.

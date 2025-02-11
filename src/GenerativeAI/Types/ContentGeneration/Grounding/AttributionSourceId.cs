@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using GenerativeAI.Types.SemanticRetrieval.Chunks;
 
 namespace GenerativeAI.Types.ContentGeneration.Grounding;
 

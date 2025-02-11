@@ -10,7 +10,7 @@ namespace GenerativeAI.Types.ContentGeneration.Requests;
 /// <summary>
 /// Request to generate content.
 /// </summary>
-/// <seealso href="https://ai.google.dev/api/generate-content#request-body">See Official API Documentation</seealso> 
+/// <seealso href="https://ai.google.dev/api/tokens#request-body">See Official API Documentation</seealso> 
 public class GenerateContentRequest
 {
     /// <summary>

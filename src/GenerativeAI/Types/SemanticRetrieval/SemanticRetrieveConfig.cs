@@ -2,6 +2,7 @@
 using GenerativeAI.Types.ContentGeneration;
 using GenerativeAI.Types.ContentGeneration.Inputs;
 using GenerativeAI.Types.SemanticRetrieval.Corpus;
+using GenerativeAI.Types.SemanticRetrieval.Document;
 
 namespace GenerativeAI.Types.SemanticRetrieval;
 

@@ -49,11 +49,23 @@ public class GenerateAnswerRequest
     [JsonPropertyName("safetySettings")]
     public List<SafetySetting>? SafetySettings { get; set; }
 
+    // /// <summary>
+    // /// The sources in which to ground the answer.
+    // /// </summary>
+    // [JsonPropertyName("groundingSource")]
+    // public GroundingSource? GroundingSource { get; set; }
+    
     /// <summary>
-    /// The sources in which to ground the answer.
+    /// Passages provided inline with the request.
     /// </summary>
-    [JsonPropertyName("groundingSource")]
-    public GroundingSource? GroundingSource { get; set; }
+    [JsonPropertyName("inlinePassages")]
+    public GroundingPassages? InlinePassages { get; set; }
+
+    /// <summary>
+    /// Content retrieved from resources created via the Semantic Retriever API.
+    /// </summary>
+    [JsonPropertyName("semanticRetriever")]
+    public SemanticRetrieverConfig? SemanticRetriever { get; set; }
 
     /// <summary>
     /// Optional. Controls the randomness of the output.
