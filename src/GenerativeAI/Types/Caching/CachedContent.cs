@@ -85,7 +85,7 @@ public class CachedContent
     /// Format: <c>models/{model}</c>
     /// </summary>
     [JsonPropertyName("model")]
-    public string Model { get; set; } = "";
+    public string? Model { get; set; }
 
     /// <summary>
     /// Optional. Input only. Immutable. Developer set system instruction. Currently text only.

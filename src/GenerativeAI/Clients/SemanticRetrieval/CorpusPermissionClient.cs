@@ -1,0 +1,109 @@
+﻿using GenerativeAI.Core;
+using GenerativeAI.Extensions;
+using GenerativeAI.Types.SemanticRetrieval.Permissions;
+using Microsoft.Extensions.Logging;
+
+namespace GenerativeAI.Clients.SemanticRetrieval;
+
+/// <summary>
+/// A client for interacting with the Corpus Permissions endpoint.
+/// </summary>
+/// <seealso href="https://ai.google.dev/api/rest/v1beta/corpora.permissions">See Official API Documentation</seealso>
+public class CorpusPermissionClient : BaseClient
+{
+    public CorpusPermissionClient(IPlatformAdapter platform, HttpClient? httpClient = null, ILogger? logger = null) : base(platform, httpClient, logger)
+    {
+    }
+
+    /// <summary>
+    /// Creates a new <see cref="Permission"/> resource.
+    /// </summary>
+    /// <param name="parent">The parent resource of the <see cref="Permission"/>.</param>
+    /// <param name="permission">The <see cref="Permission"/> to create.</param>
+    /// <returns>The created <see cref="Permission"/>.</returns>
+    /// <seealso href="https://ai.google.dev/api/rest/v1beta/corpora.permissions/create">See Official API Documentation</seealso>
+    public async Task<Permission?> CreatePermissionAsync(string parent, Permission permission)
+    {
+        var url = $"{_platform.GetBaseUrl()}/{parent.ToCorpusId()}/permissions";
+        return await SendAsync<Permission, Permission>(url, permission, HttpMethod.Post);
+    }
+
+    /// <summary>
+    /// Lists available <see cref="Permission"/> resources.
+    /// </summary>
+    /// <param name="parent">The parent resource of the permissions.</param>
+    /// <param name="pageSize">The maximum number of <see cref="Permission"/> resources to return.</param>
+    /// <param name="pageToken">A page token, received from a previous <see cref="ListPermissionsAsync"/> call.</param>
+    /// <returns>A list of <see cref="Permission"/> resources.</returns>
+    /// <seealso href="https://ai.google.dev/api/rest/v1beta/corpora.permissions/list">See Official API Documentation</seealso>
+    public async Task<ListPermissionsResponse?> ListPermissionsAsync(string parent, int? pageSize = null, string? pageToken = null)
+    {
+        var queryParams = new List<string>();
+
+        if (pageSize.HasValue)
+        {
+            queryParams.Add($"pageSize={pageSize.Value}");
+        }
+
+        if (!string.IsNullOrEmpty(pageToken))
+        {
+            queryParams.Add($"pageToken={pageToken}");
+        }
+
+        var queryString = queryParams.Count > 0 ? "?" + string.Join("&", queryParams) : string.Empty;
+        var url = $"{_platform.GetBaseUrl()}/{parent.ToCorpusId()}/permissions{queryString}";
+
+        return await GetAsync<ListPermissionsResponse>(url);
+    }
+
+    /// <summary>
+    /// Gets a specific <see cref="Permission"/> resource.
+    /// </summary>
+    /// <param name="name">The resource name of the <see cref="Permission"/>.</param>
+    /// <returns>The <see cref="Permission"/> resource.</returns>
+    /// <seealso href="https://ai.google.dev/api/rest/v1beta/corpora.permissions/get">See Official API Documentation</seealso>
+    public async Task<Permission?> GetPermissionAsync(string name)
+    {
+        var baseUrl = _platform.GetBaseUrl();
+        var url = $"{baseUrl}/{name}";
+        return await GetAsync<Permission>(url);
+    }
+
+    /// <summary>
+    /// Updates a <see cref="Permission"/> resource.
+    /// </summary>
+    /// <param name="permissionName">The resource name of the permission.</param>
+    /// <param name="permission">The <see cref="Permission"/> resource to update.</param>
+    /// <param name="updateMask">The list of fields to update.</param>
+    /// <returns>The updated <see cref="Permission"/> resource.</returns>
+    /// <seealso href="https://ai.google.dev/api/rest/v1beta/corpora.permissions/patch">See Official API Documentation</seealso>
+    public async Task<Permission?> UpdatePermissionAsync(string permissionName, Permission permission, string? updateMask = null)
+    {
+        var baseUrl = _platform.GetBaseUrl();
+        var url = $"{baseUrl}/{permissionName}";
+
+        var queryParams = new List<string>();
+
+        if (!string.IsNullOrEmpty(updateMask))
+        {
+            queryParams.Add($"updateMask={updateMask}");
+        }
+
+        var queryString = queryParams.Count > 0 ? "?" + string.Join("&", queryParams) : string.Empty;
+
+        return await SendAsync<Permission, Permission>(url + queryString, permission, new HttpMethod("PATCH"));
+    }
+
+    /// <summary>
+    /// Deletes a <see cref="Permission"/> resource.
+    /// </summary>
+    /// <param name="name">The resource name of the <see cref="Permission"/> to delete.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    /// <seealso href="https://ai.google.dev/api/rest/v1beta/corpora.permissions/delete">See Official API Documentation</seealso>
+    public async Task DeletePermissionAsync(string name)
+    {
+        var baseUrl = _platform.GetBaseUrl();
+        var url = $"{baseUrl}/{name}";
+        await DeleteAsync(url);
+    }
+}

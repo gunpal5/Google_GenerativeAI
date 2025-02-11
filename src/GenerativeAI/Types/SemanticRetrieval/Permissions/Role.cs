@@ -1,9 +1,12 @@
-﻿namespace GenerativeAI.Types.SemanticRetrieval.Permissions;
+﻿using System.Text.Json.Serialization;
+
+namespace GenerativeAI.Types.SemanticRetrieval.Permissions;
 
 /// <summary>
 /// Defines the role granted by this permission.
 /// <seealso href="https://ai.google.dev/api/semantic-retrieval/permissions#Permission.Role">See Official API Documentation</seealso>
 /// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum Role
 {
     /// <summary>

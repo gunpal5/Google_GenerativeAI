@@ -1,9 +1,12 @@
+using System.Text.Json.Serialization;
+
 namespace GenerativeAI.Types.Tuning;
 
 /// <summary>
 /// The state of the tuned model.
 /// </summary>
 /// <seealso cref="https://ai.google.dev/api/tuning#State">See Official API Documentation</seealso>
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum State
 {
     /// <summary>

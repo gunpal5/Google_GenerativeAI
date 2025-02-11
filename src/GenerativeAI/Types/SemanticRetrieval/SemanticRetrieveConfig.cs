@@ -24,7 +24,7 @@ public class SemanticRetrieverConfig
     /// Required. Query to use for matching <c>Chunk</c>s in the given resource by similarity.
     /// </summary>
     [JsonPropertyName("query")]
-    public Content Query { get; set; } = new Content();
+    public Content Query { get; set; }
 
     /// <summary>
     /// Optional. Filters for selecting <c>Document</c>s and/or <c>Chunk</c>s from the resource.

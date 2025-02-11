@@ -8,6 +8,7 @@ namespace GenerativeAI.Types.Common;
 /// represented as seconds and fractions of seconds at nanosecond resolution in UTC Epoch time.
 /// </summary>
 /// <seealso href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#google.protobuf.Timestamp">See Official Protobuf Documentation</seealso>
+[JsonConverter(typeof(TimestampJsonConverter))]
 public class Timestamp
 {
     /// <summary>

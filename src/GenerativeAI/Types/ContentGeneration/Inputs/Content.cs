@@ -10,6 +10,12 @@ namespace GenerativeAI.Types.ContentGeneration.Inputs;
 /// <seealso href="https://ai.google.dev/api/caching#Content"/>
 public sealed class Content
 {
+    public Content(IEnumerable<Part> parts, string? role)
+    {
+        this.Parts = parts.ToList();
+        this.Role = role;
+    }
+
     /// <summary>
     /// Ordered <see cref="Parts"/> that constitute a single message. Parts may have different MIME types.
     /// </summary>

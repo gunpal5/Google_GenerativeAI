@@ -1,9 +1,12 @@
+using System.Text.Json.Serialization;
+
 namespace GenerativeAI.Types.SemanticRetrieval.Chunks;
 
 /// <summary>
 /// States for the lifecycle of a <see cref="Chunk"/>.
 /// </summary>
 /// <seealso href="https://ai.google.dev/api/semantic-retrieval/chunks#State">See Official API Documentation</seealso>
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum State
 {
     /// <summary>

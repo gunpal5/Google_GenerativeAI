@@ -1,9 +1,12 @@
-﻿namespace GenerativeAI.Types.SemanticRetrieval.Permissions;
+﻿using System.Text.Json.Serialization;
+
+namespace GenerativeAI.Types.SemanticRetrieval.Permissions;
 
 /// <summary>
 /// Defines types of the grantee of this permission.
 /// <seealso href="https://ai.google.dev/api/semantic-retrieval/permissions#Permission.GranteeType">See Official API Documentation</seealso>
 /// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum GranteeType
 {
     /// <summary>

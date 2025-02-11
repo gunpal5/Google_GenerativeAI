@@ -7,7 +7,7 @@ namespace GenerativeAI.Types.Files;
 /// A file uploaded to the API.
 /// </summary>
 /// <seealso href="https://ai.google.dev/api/files#File">See Official API Documentation</seealso> 
-public class File
+public class RemoteFile
 {
     /// <summary>
     /// Immutable. Identifier. The <c>File</c> resource name. The ID (name excluding the "files/" prefix)
@@ -35,6 +35,7 @@ public class File
     /// Output only. Size of the file in bytes.
     /// </summary>
     [JsonPropertyName("sizeBytes")]
+    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
     public long? SizeBytes { get; set; }
 
     /// <summary>

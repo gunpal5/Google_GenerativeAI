@@ -12,7 +12,7 @@ public class ListFilesResponse
     /// The list of <c>File</c>s.
     /// </summary>
     [JsonPropertyName("files")]
-    public List<File>? Files { get; set; }
+    public List<RemoteFile>? Files { get; set; }
 
     /// <summary>
     /// A token that can be sent as a <c>pageToken</c> into a subsequent <c>files.list</c> call.
