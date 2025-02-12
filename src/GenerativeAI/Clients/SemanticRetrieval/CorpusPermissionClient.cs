@@ -3,7 +3,7 @@ using GenerativeAI.Extensions;
 using GenerativeAI.Types.SemanticRetrieval.Permissions;
 using Microsoft.Extensions.Logging;
 
-namespace GenerativeAI.Clients.SemanticRetrieval;
+namespace GenerativeAI.Clients;
 
 /// <summary>
 /// A client for interacting with the Corpus Permissions endpoint.

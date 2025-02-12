@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.ContentGeneration.Citations
+namespace GenerativeAI.Types
 {
     /// <summary>
     /// A citation to a source for a portion of a specific response.

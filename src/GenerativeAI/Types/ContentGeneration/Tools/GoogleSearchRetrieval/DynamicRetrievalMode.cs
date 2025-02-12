@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.ContentGeneration.Tools.GoogleSearchRetrieval;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// The mode of the predictor to be used in dynamic retrieval.

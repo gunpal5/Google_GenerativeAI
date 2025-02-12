@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.ContentGeneration.Safety;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Safety rating for a piece of content.

@@ -1,11 +1,10 @@
-﻿using System.Net.Http;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using GenerativeAI.Constants;
 using GenerativeAI.Core;
+using GenerativeAI.Exceptions;
 using GenerativeAI.Extensions;
-using GenerativeAI.Platforms.Exceptions;
 using GenerativeAI.Types.Files;
 using Microsoft.Extensions.Logging;
 

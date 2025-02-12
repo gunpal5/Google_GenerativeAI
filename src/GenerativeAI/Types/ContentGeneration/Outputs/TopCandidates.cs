@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.ContentGeneration.Outputs;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Candidates with top log probabilities at each decoding step.

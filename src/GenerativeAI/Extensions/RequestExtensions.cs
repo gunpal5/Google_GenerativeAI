@@ -1,5 +1,5 @@
 ﻿using GenerativeAI.Constants;
-using GenerativeAI.Types.ContentGeneration.Inputs;
+using GenerativeAI.Types;
 
 namespace GenerativeAI.Extensions;
 

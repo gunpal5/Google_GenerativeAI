@@ -1,7 +1,6 @@
 ﻿using System.Text.Json.Serialization;
-using GenerativeAI.Types.ContentGeneration.Config;
 
-namespace GenerativeAI.Types.ContentGeneration.Common;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// The <see cref="Schema">Schema</see> object allows the definition of input and output data types.

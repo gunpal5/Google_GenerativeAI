@@ -1,7 +1,6 @@
 ﻿using System.Text.Json.Serialization;
-using GenerativeAI.Types.ContentGeneration.Inputs;
 
-namespace GenerativeAI.Types.ContentGeneration.Grounding;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Passage included inline with a grounding configuration.

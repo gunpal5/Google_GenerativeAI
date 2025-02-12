@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.Common;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// A Timestamp represents a point in time independent of any time zone or calendar,

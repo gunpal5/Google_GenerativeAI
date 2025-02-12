@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.Common;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// A Duration represents a signed, fixed-length span of time represented as a count of seconds and fractions

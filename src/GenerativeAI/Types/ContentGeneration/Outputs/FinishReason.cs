@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.ContentGeneration.Outputs;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Defines the reason why the model stopped generating tokens.

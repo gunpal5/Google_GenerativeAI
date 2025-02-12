@@ -1,6 +1,4 @@
 ﻿using System.Text.Json.Serialization;
-using GenerativeAI.Types.ContentGeneration.Outputs;
-using GenerativeAI.Types.ContentGeneration.Safety;
 
 namespace GenerativeAI.Types.SemanticRetrieval.QuestionAnswering;
 

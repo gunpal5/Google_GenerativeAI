@@ -1,9 +1,8 @@
-﻿using System.Net.Http;
-using GenerativeAI.Constants;
+﻿using GenerativeAI.Constants;
 using GenerativeAI.Core;
 using GenerativeAI.Extensions;
 
-namespace GenerativeAI.Platforms.Platforms;
+namespace GenerativeAI;
 
 public class GoogleAIPlatformAdapter : IPlatformAdapter
 {

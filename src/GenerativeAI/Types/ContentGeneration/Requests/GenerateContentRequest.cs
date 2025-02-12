@@ -1,11 +1,6 @@
 using System.Text.Json.Serialization;
-using GenerativeAI.Types.ContentGeneration.Config;
-using GenerativeAI.Types.ContentGeneration.Inputs;
-using GenerativeAI.Types.ContentGeneration.Safety;
-using GenerativeAI.Types.ContentGeneration.Tools;
-using GenerativeAI.Types.ContentGeneration.Responses;
 
-namespace GenerativeAI.Types.ContentGeneration.Requests;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Request to generate content.

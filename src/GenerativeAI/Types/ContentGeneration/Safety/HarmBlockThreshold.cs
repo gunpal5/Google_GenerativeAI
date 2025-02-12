@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.ContentGeneration.Safety;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Block at and beyond a specified harm probability.

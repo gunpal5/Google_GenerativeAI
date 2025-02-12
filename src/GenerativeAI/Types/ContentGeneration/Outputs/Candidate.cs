@@ -1,10 +1,6 @@
 ﻿using System.Text.Json.Serialization;
-using GenerativeAI.Types.ContentGeneration.Citations;
-using GenerativeAI.Types.ContentGeneration.Grounding;
-using GenerativeAI.Types.ContentGeneration.Inputs;
-using GenerativeAI.Types.ContentGeneration.Safety;
 
-namespace GenerativeAI.Types.ContentGeneration.Outputs;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// A response candidate generated from the model.

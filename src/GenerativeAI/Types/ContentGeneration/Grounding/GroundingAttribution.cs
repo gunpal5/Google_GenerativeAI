@@ -1,7 +1,6 @@
 using System.Text.Json.Serialization;
-using GenerativeAI.Types.ContentGeneration.Inputs;
 
-namespace GenerativeAI.Types.ContentGeneration.Grounding;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Attribution for a source that contributed to an answer.

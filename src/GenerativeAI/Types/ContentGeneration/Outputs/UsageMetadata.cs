@@ -1,7 +1,6 @@
 using System.Text.Json.Serialization;
-using GenerativeAI.Types.ContentGeneration.Requests;
 
-namespace GenerativeAI.Types.ContentGeneration.Outputs;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Metadata on the generation request's token usage.

@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Platforms.Exceptions;
+namespace GenerativeAI.Exceptions;
 
 /// <summary>
 /// Represents an exception that occurs during API interactions.

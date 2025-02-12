@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.ContentGeneration.Tools.GoogleSearchRetrieval;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Describes the options to customize dynamic retrieval.

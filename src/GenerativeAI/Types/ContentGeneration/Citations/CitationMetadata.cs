@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.ContentGeneration.Citations
+namespace GenerativeAI.Types
 {
     /// <summary>
     /// A collection of source attributions for a piece of content.

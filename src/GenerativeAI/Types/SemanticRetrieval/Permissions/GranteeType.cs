@@ -15,12 +15,12 @@ public enum GranteeType
     GRANTEE_TYPE_UNSPECIFIED,
 
     /// <summary>
-    /// Represents a user. When set, you must provide <see cref="GenerativeAI.Types.SemanticRetrieval.Permissions.Permission.EmailAddress"/> for the user.
+    /// Represents a user. When set, you must provide <see cref="Permission.EmailAddress"/> for the user.
     /// </summary>
     USER,
 
     /// <summary>
-    /// Represents a group. When set, you must provide <see cref="GenerativeAI.Types.SemanticRetrieval.Permissions.Permission.EmailAddress"/> for the group.
+    /// Represents a group. When set, you must provide <see cref="Permission.EmailAddress"/> for the group.
     /// </summary>
     GROUP,
 

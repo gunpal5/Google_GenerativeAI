@@ -1,5 +1,4 @@
-﻿using GenerativeAI.Clients;
-using GenerativeAI.Tests.Base;
+﻿using GenerativeAI.Tests.Base;
 using Shouldly;
 using Xunit.Abstractions;
 

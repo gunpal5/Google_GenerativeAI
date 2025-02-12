@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.ContentGeneration.Outputs;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Represents token counting info for a single modality.

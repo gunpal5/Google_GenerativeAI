@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.ContentGeneration.Grounding;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// A repeated list of passages.

@@ -1,11 +1,6 @@
 ﻿using System.Text.Json.Serialization;
-using GenerativeAI.Types.Common;
-using GenerativeAI.Types.ContentGeneration.Inputs;
-using GenerativeAI.Types.ContentGeneration.Outputs;
-using GenerativeAI.Types.ContentGeneration.Tools;
-using GenerativeAI.Types.Files;
 
-namespace GenerativeAI.Types.Caching;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Content that has been preprocessed and can be used in subsequent requests to GenerativeService.

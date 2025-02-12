@@ -1,7 +1,6 @@
 ﻿using System.Text.Json.Serialization;
-using GenerativeAI.Types.ContentGeneration.Inputs;
 
-namespace GenerativeAI.Types.ContentGeneration.Tools.CodeExecution;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Result of executing the <see cref="ExecutableCode"/>.

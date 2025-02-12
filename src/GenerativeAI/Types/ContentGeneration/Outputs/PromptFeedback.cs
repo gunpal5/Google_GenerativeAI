@@ -1,8 +1,6 @@
 ﻿using System.Text.Json.Serialization;
-using GenerativeAI.Types.ContentGeneration.Requests;
-using GenerativeAI.Types.ContentGeneration.Safety;
 
-namespace GenerativeAI.Types.ContentGeneration.Outputs;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// A set of the feedback metadata the prompt specified in <see cref="GenerateContentRequest.Contents"/>.

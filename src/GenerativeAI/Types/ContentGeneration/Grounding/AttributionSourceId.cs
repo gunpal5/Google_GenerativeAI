@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using GenerativeAI.Types.SemanticRetrieval.Chunks;
 
-namespace GenerativeAI.Types.ContentGeneration.Grounding;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Identifier for the source contributing to this attribution.

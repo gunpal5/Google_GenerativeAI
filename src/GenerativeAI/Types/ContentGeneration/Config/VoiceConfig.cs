@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.ContentGeneration.Config;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// The configuration for the voice to use.

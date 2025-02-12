@@ -1,9 +1,7 @@
 using System.Text.Json.Serialization;
-using GenerativeAI.Types.ContentGeneration.Common;
-using GenerativeAI.Types.ContentGeneration.Outputs;
 using GenerativeAI.Types.Models;
 
-namespace GenerativeAI.Types.ContentGeneration.Config;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Configuration options for model generation and outputs. Not all parameters are configurable

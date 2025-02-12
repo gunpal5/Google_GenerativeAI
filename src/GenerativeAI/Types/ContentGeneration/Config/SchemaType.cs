@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.ContentGeneration.Config;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Type contains the list of OpenAPI data types as defined by

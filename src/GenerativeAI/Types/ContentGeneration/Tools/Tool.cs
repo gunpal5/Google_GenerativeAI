@@ -1,11 +1,6 @@
 ﻿using System.Text.Json.Serialization;
-using GenerativeAI.Types.ContentGeneration.Inputs;
-using GenerativeAI.Types.ContentGeneration.Tools.CodeExecution;
-using GenerativeAI.Types.ContentGeneration.Tools.FunctionCalling;
-using GenerativeAI.Types.ContentGeneration.Tools.GoogleSearch;
-using GenerativeAI.Types.ContentGeneration.Tools.GoogleSearchRetrieval;
 
-namespace GenerativeAI.Types.ContentGeneration.Tools;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Tool details that the model may use to generate response.

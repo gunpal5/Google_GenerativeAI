@@ -4,7 +4,7 @@ using GenerativeAI.Types.SemanticRetrieval.Corpus;
 using GenerativeAI.Types.SemanticRetrieval.Document;
 using Microsoft.Extensions.Logging;
 
-namespace GenerativeAI.Clients.SemanticRetrieval;
+namespace GenerativeAI.Clients;
 
 /// <summary>
 /// A client for interacting with the Gemini API Corpora endpoint.

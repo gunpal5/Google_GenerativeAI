@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.ContentGeneration.Inputs;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// URI based data.

@@ -1,4 +1,4 @@
-﻿namespace GenerativeAI.Platforms.Exceptions;
+﻿namespace GenerativeAI.Exceptions;
 
 public class FileTooLargeException:Exception
 {

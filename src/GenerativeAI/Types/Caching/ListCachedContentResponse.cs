@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.Caching;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Response to listing cached contents.

@@ -1,9 +1,6 @@
-﻿
-using System.Text.Json.Serialization;
-using GenerativeAI.Types.ContentGeneration.Tools.CodeExecution;
-using GenerativeAI.Types.ContentGeneration.Tools.FunctionCalling;
+﻿using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.ContentGeneration.Inputs;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// A datatype containing media that is part of a multi-part <see cref="Content"/> message.

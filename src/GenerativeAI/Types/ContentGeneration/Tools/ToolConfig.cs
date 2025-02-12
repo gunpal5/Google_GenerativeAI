@@ -1,7 +1,6 @@
 ﻿using System.Text.Json.Serialization;
-using GenerativeAI.Types.ContentGeneration.Tools.FunctionCalling;
 
-namespace GenerativeAI.Types.ContentGeneration.Tools;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// The Tool configuration containing parameters for specifying <see cref="Tool">Tool</see> use in the request.

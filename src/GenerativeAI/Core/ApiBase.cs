@@ -1,11 +1,9 @@
-﻿using System.Net.Http;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Web;
+using GenerativeAI.Exceptions;
 using GenerativeAI.Extensions;
 using GenerativeAI.Logging;
-using GenerativeAI.Platforms.Exceptions;
 using Microsoft.Extensions.Logging;
 
 namespace GenerativeAI.Core
@@ -144,7 +142,6 @@ namespace GenerativeAI.Core
         {
             if (!response.IsSuccessStatusCode)
             {
-                //ToDo add proper message
                 _logger?.LogNonSuccessStatusCode((int)response.StatusCode, url.MaskApiKey());
 
                 try

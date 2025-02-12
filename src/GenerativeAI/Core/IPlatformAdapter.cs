@@ -1,7 +1,4 @@
-﻿using System.Net.Http;
-using GenerativeAI.Constants;
-
-namespace GenerativeAI.Core;
+﻿namespace GenerativeAI.Core;
 
 public interface IPlatformAdapter
 {

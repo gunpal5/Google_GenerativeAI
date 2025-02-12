@@ -3,7 +3,7 @@ using GenerativeAI.Types.SemanticRetrieval.Chunks;
 using GenerativeAI.Types.SemanticRetrieval.Document;
 using Microsoft.Extensions.Logging;
 
-namespace GenerativeAI.Clients.SemanticRetrieval;
+namespace GenerativeAI.Clients;
 
 /// <summary>
 /// A client for interacting with the Chunks API.

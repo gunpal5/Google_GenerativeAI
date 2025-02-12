@@ -1,4 +1,4 @@
-﻿using GenerativeAI.Types.Files;
+﻿namespace GenerativeAI.Types.Files;
 
 /// <summary>
 /// Represents the response containing details about a file uploaded through the File API.

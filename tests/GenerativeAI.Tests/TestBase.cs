@@ -1,6 +1,4 @@
-﻿using GenerativeAI.Core;
-using GenerativeAI.Platforms.Platforms;
-using Xunit.Abstractions;
+﻿using Xunit.Abstractions;
 
 namespace GenerativeAI.Tests;
 

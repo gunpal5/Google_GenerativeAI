@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.ContentGeneration.Tools.CodeExecution;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Supported programming languages for the generated code.

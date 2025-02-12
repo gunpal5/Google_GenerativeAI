@@ -1,7 +1,6 @@
-﻿using System.Net.Http;
-using GenerativeAI.Core;
+﻿using GenerativeAI.Core;
 
-namespace GenerativeAI.Platforms.Platforms;
+namespace GenerativeAI;
 
 public class ApiKeyCredentials : ICredentials
 {

@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.ContentGeneration.Tools.FunctionCalling;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// The result output from a <see cref="FunctionCall"/> that contains a string representing the

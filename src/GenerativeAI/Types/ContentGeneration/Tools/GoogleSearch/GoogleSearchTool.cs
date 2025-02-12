@@ -1,4 +1,4 @@
-﻿namespace GenerativeAI.Types.ContentGeneration.Tools.GoogleSearch;
+﻿namespace GenerativeAI.Types;
 
 /// <summary>
 /// GoogleSearch tool type. Tool to support Google Search in Model. Powered by Google.

@@ -1,7 +1,6 @@
 ﻿using System.Text.Json.Serialization;
-using GenerativeAI.Types.ContentGeneration.Common;
 
-namespace GenerativeAI.Types.ContentGeneration.Tools.FunctionCalling;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Declaration of a function that can be used as a <see cref="Tool"/>>Tool</see>.

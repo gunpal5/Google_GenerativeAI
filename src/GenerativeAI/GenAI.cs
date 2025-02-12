@@ -1,6 +1,6 @@
 ﻿using GenerativeAI.Core;
 
-namespace GenerativeAI.Platforms;
+namespace GenerativeAI;
 
 public abstract class GenAI
 {

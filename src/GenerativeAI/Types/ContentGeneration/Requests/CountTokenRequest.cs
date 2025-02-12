@@ -1,7 +1,6 @@
 ﻿using System.Text.Json.Serialization;
-using GenerativeAI.Types.ContentGeneration.Inputs;
 
-namespace GenerativeAI.Types.ContentGeneration.Requests;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Request to count tokens.

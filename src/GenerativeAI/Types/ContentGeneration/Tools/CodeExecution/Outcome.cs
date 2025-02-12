@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.ContentGeneration.Tools.CodeExecution;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Enumeration of possible outcomes of the code execution.

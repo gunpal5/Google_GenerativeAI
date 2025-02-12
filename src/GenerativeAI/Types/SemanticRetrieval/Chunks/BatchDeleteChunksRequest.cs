@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace GenerativeAI.Types.SemanticRetrieval.Chunks;
+﻿namespace GenerativeAI.Types.SemanticRetrieval.Chunks;
 
 /// <summary>
 /// Represents a request to batch delete chunks.

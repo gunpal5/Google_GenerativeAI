@@ -1,11 +1,5 @@
 ﻿using System.Net;
-using GenerativeAI.Clients;
-using GenerativeAI.Extensions;
 using GenerativeAI.Tests.Base;
-using GenerativeAI.Types.Caching;
-using GenerativeAI.Types.Common;
-using GenerativeAI.Types.ContentGeneration.Inputs;
-using GenerativeAI.Types.ContentGeneration.Tools;
 using Shouldly;
 using Xunit;
 using Xunit.Abstractions;

@@ -1,6 +1,4 @@
-﻿using System.Net.Http;
-
-namespace GenerativeAI.Core;
+﻿namespace GenerativeAI.Core;
 
 public interface ICredentials
 {

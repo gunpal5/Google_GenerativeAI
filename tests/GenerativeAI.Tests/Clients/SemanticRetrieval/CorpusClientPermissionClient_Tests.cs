@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using GenerativeAI.Clients;
-using GenerativeAI.Clients.SemanticRetrieval;
 using GenerativeAI.Tests.Base;
-using GenerativeAI.Types.SemanticRetrieval.Permissions;
 using Shouldly;
 using Xunit;
 using Xunit.Abstractions;

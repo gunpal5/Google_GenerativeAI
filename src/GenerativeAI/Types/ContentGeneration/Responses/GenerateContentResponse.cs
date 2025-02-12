@@ -1,7 +1,6 @@
 using System.Text.Json.Serialization;
-using GenerativeAI.Types.ContentGeneration.Outputs;
 
-namespace GenerativeAI.Types.ContentGeneration.Responses;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Response from the model supporting multiple candidate responses.

@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.ContentGeneration.Tools.GoogleSearchRetrieval;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Tool to retrieve public web data for grounding, powered by Google.

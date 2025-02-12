@@ -1,8 +1,5 @@
 ﻿using System.Net;
-using GenerativeAI.Clients;
-using GenerativeAI.Clients.SemanticRetrieval;
 using GenerativeAI.Tests.Base;
-using GenerativeAI.Types.SemanticRetrieval.Document;
 using Shouldly;
 using Xunit;
 using Xunit.Abstractions;

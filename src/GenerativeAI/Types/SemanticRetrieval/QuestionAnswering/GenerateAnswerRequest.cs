@@ -1,8 +1,4 @@
-﻿using GenerativeAI.Types.ContentGeneration.Grounding;
-using GenerativeAI.Types.ContentGeneration.Inputs;
-using GenerativeAI.Types.ContentGeneration.Safety;
-using System.Collections.Generic;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace GenerativeAI.Types.SemanticRetrieval.QuestionAnswering;
 
