@@ -16,11 +16,12 @@ namespace GenerativeAI.Types;
 /// <seealso href="https://ai.google.dev/api/generate-content#generatecontentresponse">See Official API Documentation</seealso>
 public class GenerateContentResponse
 {
+    
     /// <summary>
     /// Candidate responses from the model.
     /// </summary>
     [JsonPropertyName("candidates")]
-    public List<Candidate>? Candidates { get; set; }
+    public Candidate[]? Candidates { get; set; }
 
     /// <summary>
     /// Returns the prompt's feedback related to the content filters.
@@ -39,4 +40,36 @@ public class GenerateContentResponse
     /// </summary>
     [JsonPropertyName("modelVersion")]
     public string? ModelVersion { get; set; }
+
+    /// <summary>
+    /// Converts the GenerateContentResponse instance to its string representation.
+    /// </summary>
+    /// <returns>A formatted string displaying the properties of the object.</returns>
+    public override string ToString()
+    {
+        var text = this.Text();
+        if (string.IsNullOrEmpty(text))
+        {
+            var candidatesStr = Candidates is not null
+                ? string.Join(", ", Candidates.Select(c => c.ToString()))
+                : "null";
+            var feedbackStr = PromptFeedback?.ToString() ?? "null";
+            var metadataStr = UsageMetadata?.ToString() ?? "null";
+            var versionStr = ModelVersion ?? "null";
+
+            return
+                $"GenerateContentResponse {{ Candidates = [{candidatesStr}], PromptFeedback = {feedbackStr}, UsageMetadata = {metadataStr}, ModelVersion = {versionStr} }}";
+        }
+        return text;
+    }
+
+    /// <summary>
+    /// Converts the GenerateContentResponse instance to its string representation explicitly.
+    /// </summary>
+    /// <param name="response">The GenerateContentResponse instance to convert.</param>
+    /// <returns>A string that represents the content of the GenerateContentResponse instance.</returns>
+    public static explicit operator string(GenerateContentResponse response)
+    {
+        return response.Text() ?? string.Empty;
+    }
 }

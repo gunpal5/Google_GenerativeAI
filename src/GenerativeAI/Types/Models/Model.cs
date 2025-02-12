@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.Models;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Information about a Generative Language Model.

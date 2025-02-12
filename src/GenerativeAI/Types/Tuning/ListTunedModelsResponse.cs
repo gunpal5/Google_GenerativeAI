@@ -5,7 +5,7 @@ namespace GenerativeAI.Types;
 /// <summary>
 /// Response from <c>tunedModels.list</c> containing a paginated list of Models.
 /// </summary>
-/// <seealso cref="https://ai.google.dev/api/tuning#response-body_4">See Official API Documentation</seealso>
+/// <seealso href="https://ai.google.dev/api/tuning#response-body_4">See Official API Documentation</seealso>
 public class ListTunedModelsResponse
 {
     /// <summary>

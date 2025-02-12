@@ -1,4 +1,5 @@
-﻿using Shouldly;
+﻿using GenerativeAI.Clients;
+using Shouldly;
 using Xunit.Abstractions;
 
 namespace GenerativeAI.Tests.Clients

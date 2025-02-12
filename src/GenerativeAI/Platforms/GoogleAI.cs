@@ -1,6 +1,5 @@
 ﻿using GenerativeAI.Constants;
 using GenerativeAI.Core;
-using GenerativeAI.Extensions;
 
 namespace GenerativeAI;
 

@@ -1,6 +1,5 @@
 ﻿using GenerativeAI.Core;
-using GenerativeAI.Extensions;
-using GenerativeAI.Types.Models;
+using GenerativeAI.Types;
 using Microsoft.Extensions.Logging;
 
 namespace GenerativeAI.Clients;

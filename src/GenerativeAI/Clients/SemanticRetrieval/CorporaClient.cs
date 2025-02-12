@@ -1,5 +1,4 @@
 ﻿using GenerativeAI.Core;
-using GenerativeAI.Extensions;
 using GenerativeAI.Types;
 using Microsoft.Extensions.Logging;
 

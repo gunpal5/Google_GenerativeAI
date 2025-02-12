@@ -1,4 +1,5 @@
-﻿using Xunit.Abstractions;
+﻿using GenerativeAI.Core;
+using Xunit.Abstractions;
 
 namespace GenerativeAI.Tests;
 

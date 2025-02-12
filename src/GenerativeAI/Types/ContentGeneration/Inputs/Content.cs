@@ -10,6 +10,10 @@ namespace GenerativeAI.Types;
 /// <seealso href="https://ai.google.dev/api/caching#Content"/>
 public sealed class Content
 {
+    public Content()
+    {
+        
+    }
     public Content(IEnumerable<Part> parts, string? role)
     {
         this.Parts = parts.ToList();

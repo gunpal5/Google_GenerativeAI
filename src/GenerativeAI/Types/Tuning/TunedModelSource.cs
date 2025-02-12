@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using GenerativeAI.Types.Models;
 
 namespace GenerativeAI.Types;
 

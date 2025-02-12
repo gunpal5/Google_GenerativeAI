@@ -76,4 +76,41 @@ public class GenerateContentRequest
     /// </summary>
     [JsonPropertyName("cachedContent")]
     public string? CachedContent { get; set; }
+
+    /// <summary>
+    /// Represents a request to generate content.
+    /// This class contains parameters required to define the specifics of content generation,
+    /// including inputs, tools, configurations, and safety constraints.
+    /// </summary>
+    public GenerateContentRequest()
+    {
+        
+    }
+
+    /// <summary>
+    /// Represents a request used to generate content.
+    /// This class includes properties like content, tools, configurations,
+    /// safety settings, and instructions required for the content generation process.
+    /// </summary>
+    public GenerateContentRequest(List<Content> contents, List<Tool>? tools = null, ToolConfig? toolConfig = null, List<SafetySetting>? safetySettings = null, Content? systemInstruction = null, GenerationConfig? generationConfig = null, string? cachedContent = null)
+    {
+        Contents = contents;
+        Tools = tools;
+        ToolConfig = toolConfig;
+        SafetySettings = safetySettings;
+        SystemInstruction = systemInstruction;
+        GenerationConfig = generationConfig;
+        CachedContent = cachedContent;
+    }
+
+    /// <summary>
+    /// Represents a request to generate content.
+    /// This class enables the definition of content generation specifics through properties
+    /// such as the content details, tools, tool configurations, safety settings, and system instructions.
+    /// Optional configurations allow customization and adaptation of the generation process.
+    /// </summary>
+    public GenerateContentRequest(Content content)
+    {
+        Contents = new List<Content>() { content };
+    }
 }

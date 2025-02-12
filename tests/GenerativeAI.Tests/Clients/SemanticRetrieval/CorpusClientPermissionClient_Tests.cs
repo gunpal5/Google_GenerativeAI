@@ -1,12 +1,10 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using GenerativeAI.Clients;
 using GenerativeAI.Tests.Base;
+using GenerativeAI.Types;
 using Shouldly;
-using Xunit;
 using Xunit.Abstractions;
 
-namespace GenerativeAI.Tests.Clients
+namespace GenerativeAI.Tests.Clients.SemanticRetrieval
 {
     [TestCaseOrderer(
         ordererTypeName: "GenerativeAI.Tests.Base.PriorityOrderer",

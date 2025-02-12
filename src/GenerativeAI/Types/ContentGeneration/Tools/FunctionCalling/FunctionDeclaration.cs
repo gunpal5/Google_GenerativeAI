@@ -3,7 +3,7 @@
 namespace GenerativeAI.Types;
 
 /// <summary>
-/// Declaration of a function that can be used as a <see cref="Tool"/>>Tool</see>.
+/// Declaration of a function that can be used as a <see cref="Tool">Tool</see>.
 /// </summary>
 /// <seealso href="https://ai.google.dev/api/caching#FunctionDeclaration">See Official API Documentation</seealso> 
 public class FunctionDeclaration

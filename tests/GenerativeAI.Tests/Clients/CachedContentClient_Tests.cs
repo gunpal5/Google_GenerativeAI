@@ -1,5 +1,7 @@
 ﻿using System.Net;
+using GenerativeAI.Clients;
 using GenerativeAI.Tests.Base;
+using GenerativeAI.Types;
 using Shouldly;
 using Xunit;
 using Xunit.Abstractions;

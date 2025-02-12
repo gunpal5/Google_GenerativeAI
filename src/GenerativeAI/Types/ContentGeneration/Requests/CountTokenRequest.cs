@@ -23,5 +23,5 @@ public class CountTokensRequest
     /// <c>Model</c> + <c>Content</c>s or a <c>generateContentRequest</c>, but never both.
     /// </summary>
     [JsonPropertyName("generateContentRequest")]
-    public GenerateContentRequest? GenerateContentRequest { get; set; }
+    public GenerateContentRequestForCountToken? GenerateContentRequest { get; set; }
 }

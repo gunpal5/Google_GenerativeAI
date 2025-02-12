@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents the response containing details about a file uploaded through the File API.
 /// </summary>
-/// <seealso cref="https://ai.google.dev/api/files">Official API Documentation</seealso>
+/// <seealso href="https://ai.google.dev/api/files">Official API Documentation</seealso>
 public class UploadFileResponse
 {
     /// <summary>

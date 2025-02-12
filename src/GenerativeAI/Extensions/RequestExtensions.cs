@@ -1,7 +1,7 @@
 ﻿using GenerativeAI.Constants;
 using GenerativeAI.Types;
 
-namespace GenerativeAI.Extensions;
+namespace GenerativeAI;
 
 public static class RequestExtensions
 {
@@ -11,8 +11,10 @@ public static class RequestExtensions
         return new Content(parts, role);
     }
 
-    public static Content FormatSystemInstruction(string @params)
+    public static Content? FormatSystemInstruction(string? @params)
     {
+        if (string.IsNullOrEmpty(@params))
+            return null;
         var parts = new[] { new Part() { Text = @params } };
         return new Content(parts, Roles.System);
     }

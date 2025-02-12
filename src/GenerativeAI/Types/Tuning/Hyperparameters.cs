@@ -6,7 +6,7 @@ namespace GenerativeAI.Types
     /// Hyperparameters controlling the tuning process.
     /// Read more at <a href="https://ai.google.dev/docs/model_tuning_guidance">https://ai.google.dev/docs/model_tuning_guidance</a>
     /// </summary>
-    /// <seealso cref="https://ai.google.dev/api/tuning#Hyperparameters">See Official API Documentation</seealso>
+    /// <seealso href="https://ai.google.dev/api/tuning#Hyperparameters">See Official API Documentation</seealso>
     public class Hyperparameters
     {
         /// <summary>

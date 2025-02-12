@@ -1,6 +1,6 @@
 ﻿using System.Web;
 
-namespace GenerativeAI.Extensions;
+namespace GenerativeAI;
 
 /// <summary>
 /// Provides extension methods for string-related model manipulations.

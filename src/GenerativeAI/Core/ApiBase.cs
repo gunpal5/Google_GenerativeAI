@@ -2,7 +2,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using GenerativeAI.Exceptions;
-using GenerativeAI.Extensions;
 using GenerativeAI.Logging;
 using Microsoft.Extensions.Logging;
 
@@ -16,6 +15,7 @@ namespace GenerativeAI.Core
         private readonly HttpClient _httpClient;
         private readonly ILogger? _logger;
         protected HttpClient HttpClient => _httpClient;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ApiBase"/> class.
         /// </summary>
@@ -67,18 +67,19 @@ namespace GenerativeAI.Core
                 _logger?.LogGetRequest(url);
 
                 var request = new HttpRequestMessage(HttpMethod.Get, new Uri(url));
-                
+
                 AddAuthorizationHeader(request);
 
                 // Send GET request
                 var response = await _httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
-                await CheckAndHandleErrors(response,url);
+                await CheckAndHandleErrors(response, url);
                 var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 _logger?.LogSuccessfulGetResponse(url, content);
 
                 // Deserialize and return the response
-                return JsonSerializer.Deserialize<T>(content) ?? throw new InvalidOperationException("Deserialized response is null.");
+                return JsonSerializer.Deserialize<T>(content) ??
+                       throw new InvalidOperationException("Deserialized response is null.");
             }
             catch (Exception ex) when (ex is TaskCanceledException or OperationCanceledException)
             {
@@ -123,7 +124,7 @@ namespace GenerativeAI.Core
                 // Send HTTP request
                 var response = await _httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
-                await CheckAndHandleErrors(response,url);
+                await CheckAndHandleErrors(response, url);
                 return await Deserialize<TResponse>(response).ConfigureAwait(false);
             }
             catch (Exception ex) when (ex is TaskCanceledException or OperationCanceledException)
@@ -138,7 +139,7 @@ namespace GenerativeAI.Core
             }
         }
 
-        protected async Task CheckAndHandleErrors(HttpResponseMessage response,string url)
+        protected async Task CheckAndHandleErrors(HttpResponseMessage response, string url)
         {
             if (!response.IsSuccessStatusCode)
             {
@@ -147,10 +148,10 @@ namespace GenerativeAI.Core
                 try
                 {
                     var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    
+
                     var errorDocument = JsonDocument.Parse(content);
                     var error = errorDocument.RootElement.GetProperty("error");
-                    if(error.ValueKind == JsonValueKind.Null)
+                    if (error.ValueKind == JsonValueKind.Null)
                         throw new Exception();
                     error.TryGetProperty("status", out var status);
                     error.TryGetProperty("message", out var message);
@@ -159,7 +160,7 @@ namespace GenerativeAI.Core
                     {
                         throw new Exception();
                     }
-                    
+
                     throw new ApiException(code.GetInt32(), message.GetString(), status.GetString());
                 }
                 catch (ApiException)
@@ -168,12 +169,12 @@ namespace GenerativeAI.Core
                 }
                 catch
                 {
-                    throw new HttpRequestException($"Request to {url.MaskApiKey()} failed with status code {response.StatusCode}");
+                    throw new HttpRequestException(
+                        $"Request to {url.MaskApiKey()} failed with status code {response.StatusCode}");
                 }
-                
-               
             }
         }
+
         /// <summary>
         /// Deserializes a JSON string into an object of the specified type.
         /// </summary>
@@ -186,7 +187,7 @@ namespace GenerativeAI.Core
 
             return Deserialize<T>(responseContent);
         }
-        
+
         /// <summary>
         /// Deserializes a JSON string into an object of the specified type.
         /// </summary>
@@ -197,6 +198,7 @@ namespace GenerativeAI.Core
         {
             return JsonSerializer.Deserialize<T>(json, SerializerOptions);
         }
+
         /// <summary>
         /// Sends a DELETE request to the specified URL.
         /// </summary>
@@ -217,7 +219,7 @@ namespace GenerativeAI.Core
                 // Send DELETE request
                 var response = await _httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
-                await CheckAndHandleErrors(response,url);
+                await CheckAndHandleErrors(response, url);
 
                 _logger?.LogSuccessfulHttpResponse(url, null);
                 return true; // DELETE requests typically do not return a response body
@@ -233,8 +235,8 @@ namespace GenerativeAI.Core
                 throw;
             }
         }
-        
-         /// <summary>
+
+        /// <summary>
         /// Uploads a file to the specified URL with progress reporting.
         /// </summary>
         /// <param name="url">The full URL of the API endpoint.</param>
@@ -244,23 +246,25 @@ namespace GenerativeAI.Core
         /// <param name="cancellationToken">Token to propagate notification that the operation should be canceled.</param>
         /// <returns>The server's response as a string.</returns>
         public async Task<string> UploadFileWithProgressAsync(
-            string url, 
-            string filePath, 
-            Action<double> progress, 
+            string url,
+            string filePath,
+            Action<double> progress,
             Dictionary<string, string>? additionalHeaders = null,
             CancellationToken cancellationToken = default)
         {
             var mimeType = MimeTypeMap.GetMimeType(filePath);
             var fileName = System.IO.Path.GetFileName(filePath);
             using var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-            return await UploadFileWithProgressAsync(fileStream, fileName,mimeType, url, progress, additionalHeaders, cancellationToken).ConfigureAwait(false);
+            return await UploadFileWithProgressAsync(fileStream, fileName, mimeType, url, progress, additionalHeaders,
+                cancellationToken).ConfigureAwait(false);
         }
+
 
         public async Task<string> UploadFileWithProgressAsync(Stream stream,
             string fileName,
             string mimeType,
             string url,
-            Action<double> progress, 
+            Action<double> progress,
             Dictionary<string, string>? additionalHeaders = null,
             CancellationToken cancellationToken = default)
         {
@@ -287,13 +291,15 @@ namespace GenerativeAI.Core
 
                 AddAuthorizationHeader(request);
 
-                var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken)
+                var response = await _httpClient
+                    .SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken)
                     .ConfigureAwait(false);
 
                 if (!response.IsSuccessStatusCode)
                 {
                     _logger?.LogNonSuccessStatusCode((int)response.StatusCode, url.MaskApiKey());
-                    throw new HttpRequestException($"File upload to {url.MaskApiKey()} failed with status code {response.StatusCode}");
+                    throw new HttpRequestException(
+                        $"File upload to {url.MaskApiKey()} failed with status code {response.StatusCode}");
                 }
 
                 var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -310,6 +316,66 @@ namespace GenerativeAI.Core
             {
                 _logger?.LogException(ex.Message);
                 throw;
+            }
+        }
+
+        /// <summary>
+        /// Streams responses by sending an HTTP request with a JSON payload and
+        /// yielding the deserialized items as they arrive.
+        /// </summary>
+        /// <typeparam name="TRequest">The type of the request payload to serialize.</typeparam>
+        /// <typeparam name="TResponse">The type of the response items to deserialize.</typeparam>
+        /// <param name="payload">The request payload.</param>
+        /// <param name="url">The target endpoint URL to which the request is sent.</param>
+        /// <param name="cancellationToken">A token for cancelling the operation.</param>
+        /// <returns>An async stream of response items.</returns>
+        public async IAsyncEnumerable<TResponse> StreamAsync<TRequest, TResponse>(
+            string url,
+            TRequest payload,
+            CancellationToken cancellationToken = default)
+        {
+            // Serialize the request payload into a MemoryStream
+            using var ms = new MemoryStream();
+            await JsonSerializer.SerializeAsync(ms, payload, SerializerOptions, cancellationToken).ConfigureAwait(false);
+            ms.Seek(0, SeekOrigin.Begin);
+
+            // Prepare an HTTP request message
+            using var request = new HttpRequestMessage(HttpMethod.Post, url);
+
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            // Attach the serialized payload as StreamContent
+            using var requestContent = new StreamContent(ms);
+            requestContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            request.Content = requestContent;
+            AddAuthorizationHeader(request);
+            // Call your existing SendAsync method (assumed to handle HttpCompletionOption, etc.)
+            using var response = await HttpClient
+                .SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+
+            // Ensure success (or handle the status code if needed)
+            response.EnsureSuccessStatusCode();
+
+            // Read and deserialize the response stream asynchronously
+            if (response.Content != null)
+            {
+                #if NETSTANDARD2_0 || NET462_OR_GREATER
+                using var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+
+                #else
+                using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+                #endif
+                
+                await foreach (var item in JsonSerializer.DeserializeAsyncEnumerable<TResponse>(
+                                   stream,
+                                   SerializerOptions,
+                                   cancellationToken)
+                              )
+                {
+                    if (cancellationToken.IsCancellationRequested)
+                        yield break;
+
+                    yield return item;
+                }
             }
         }
     }

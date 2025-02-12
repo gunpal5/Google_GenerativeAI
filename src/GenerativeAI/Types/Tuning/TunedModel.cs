@@ -5,7 +5,7 @@ namespace GenerativeAI.Types;
 /// <summary>
 /// A fine-tuned model created using <see cref="ModelService"/>.CreateTunedModel.
 /// </summary>
-/// <seealso cref="https://developers.generativeai.google/api/tuning#TunedModel">See Official API Documentation</seealso>
+/// <seealso href="https://developers.generativeai.google/api/tuning#TunedModel">See Official API Documentation</seealso>
 public class TunedModel
 {
     /// <summary>

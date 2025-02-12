@@ -4,7 +4,6 @@ using System.Text.Json;
 using GenerativeAI.Constants;
 using GenerativeAI.Core;
 using GenerativeAI.Exceptions;
-using GenerativeAI.Extensions;
 using GenerativeAI.Types;
 using Microsoft.Extensions.Logging;
 

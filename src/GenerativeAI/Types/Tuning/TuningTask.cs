@@ -5,7 +5,7 @@ namespace GenerativeAI.Types;
 /// <summary>
 /// Tuning tasks that create tuned models.
 /// </summary>
-/// <seealso cref="https://ai.google.dev/api/tuning#TuningTask">See Official API Documentation</seealso>
+/// <seealso href="https://ai.google.dev/api/tuning#TuningTask">See Official API Documentation</seealso>
 public class TuningTask
 {
     /// <summary>

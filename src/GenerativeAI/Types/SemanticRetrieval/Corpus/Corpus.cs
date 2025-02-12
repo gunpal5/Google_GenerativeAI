@@ -5,7 +5,7 @@ namespace GenerativeAI.Types;
 /// <summary>
 /// A <see cref="Corpus"/> is a collection of <see cref="Document"/>. A project can create up to 5 corpora.
 /// </summary>
-/// <seealso cref="https://ai.google.dev/api/semantic-retrieval/corpora#Corpus">See Official API Documentation</seealso>
+/// <seealso href="https://ai.google.dev/api/semantic-retrieval/corpora#Corpus">See Official API Documentation</seealso>
 public class Corpus
 {
     /// <summary>

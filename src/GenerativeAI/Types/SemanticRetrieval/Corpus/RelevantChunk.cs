@@ -5,7 +5,7 @@ namespace GenerativeAI.Types;
 /// <summary>
 /// The information for a chunk relevant to a query.
 /// </summary>
-/// <seealso cref="https://ai.google.dev/api/semantic-retrieval/corpora#relevantchunk">See Official API Documentation</seealso>
+/// <seealso href="https://ai.google.dev/api/semantic-retrieval/corpora#relevantchunk">See Official API Documentation</seealso>
 public class RelevantChunk
 {
     /// <summary>
