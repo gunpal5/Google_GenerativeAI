@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.SemanticRetrieval.Chunks;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Extracted data that represents the <see cref="Chunk"/> content.

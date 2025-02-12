@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.SemanticRetrieval.Chunks;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Response from <c>chunks.list</c> containing a paginated list of <see cref="Chunk"/>.

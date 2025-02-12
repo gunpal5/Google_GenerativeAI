@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.Tuning;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// A fine-tuned model created using <see cref="ModelService"/>.CreateTunedModel.
@@ -37,7 +37,7 @@ public class TunedModel
     /// Output only. The state of the tuned model.
     /// </summary>
     [JsonPropertyName("state")]
-    public State? State { get; set; }
+    public TuningState? State { get; set; }
 
     /// <summary>
     /// Output only. The timestamp when this model was created.

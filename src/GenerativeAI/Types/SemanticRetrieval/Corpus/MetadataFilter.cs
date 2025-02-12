@@ -1,8 +1,6 @@
 ﻿using System.Text.Json.Serialization;
-using GenerativeAI.Types.SemanticRetrieval.Chunks;
-using GenerativeAI.Types.SemanticRetrieval.Document;
 
-namespace GenerativeAI.Types.SemanticRetrieval.Corpus;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// User provided filter to limit retrieval based on <see cref="Chunk"/> or <see cref="Document"/> level metadata

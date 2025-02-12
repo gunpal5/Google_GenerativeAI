@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.Tuning
+namespace GenerativeAI.Types
 {
     /// <summary>
     /// Hyperparameters controlling the tuning process.

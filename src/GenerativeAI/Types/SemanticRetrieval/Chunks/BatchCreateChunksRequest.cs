@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.SemanticRetrieval.Chunks;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Represents a request to batch create chunks.

@@ -1,7 +1,6 @@
 ﻿using System.Text.Json.Serialization;
-using GenerativeAI.Types.SemanticRetrieval.Document;
 
-namespace GenerativeAI.Types.SemanticRetrieval.Chunks;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Represents a request to create a <see cref="Chunk"/>.

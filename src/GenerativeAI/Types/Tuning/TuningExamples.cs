@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.Tuning;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// A set of tuning examples. Can be training or validation data.

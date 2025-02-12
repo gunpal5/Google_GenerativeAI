@@ -1,8 +1,6 @@
 ﻿using GenerativeAI.Core;
 using GenerativeAI.Extensions;
-using GenerativeAI.Types.SemanticRetrieval.Chunks;
-using GenerativeAI.Types.SemanticRetrieval.Corpus;
-using GenerativeAI.Types.SemanticRetrieval.Document;
+using GenerativeAI.Types;
 using Microsoft.Extensions.Logging;
 
 namespace GenerativeAI.Clients;

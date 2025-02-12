@@ -1,7 +1,6 @@
 using System.Text.Json.Serialization;
-using GenerativeAI.Types.Tuning;
 
-namespace GenerativeAI.Types.SemanticRetrieval.Permissions;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Permission resource grants user, group or the rest of the world access to the PaLM API resource (e.g. a tuned model, corpus).

@@ -1,4 +1,4 @@
-﻿namespace GenerativeAI.Types.Files;
+﻿namespace GenerativeAI.Types;
 
 /// <summary>
 /// Represents a request to upload a local file in order to create a File resource.

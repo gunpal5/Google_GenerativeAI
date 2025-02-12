@@ -5,7 +5,7 @@ using GenerativeAI.Constants;
 using GenerativeAI.Core;
 using GenerativeAI.Exceptions;
 using GenerativeAI.Extensions;
-using GenerativeAI.Types.Files;
+using GenerativeAI.Types;
 using Microsoft.Extensions.Logging;
 
 namespace GenerativeAI.Clients;

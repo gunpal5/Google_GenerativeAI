@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.SemanticRetrieval.Corpus;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Filter condition applicable to a single key.

@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.Embeddings;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Represents a list of floats that make up an embedding.

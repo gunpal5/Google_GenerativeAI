@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.Files;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Metadata for a video <c>File</c>.

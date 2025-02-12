@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.SemanticRetrieval.QuestionAnswering;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Response from the model for a grounded answer.

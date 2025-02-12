@@ -1,4 +1,4 @@
-﻿namespace GenerativeAI.Types.SemanticRetrieval.Chunks;
+﻿namespace GenerativeAI.Types;
 
 /// <summary>
 /// Represents a request to batch delete chunks.

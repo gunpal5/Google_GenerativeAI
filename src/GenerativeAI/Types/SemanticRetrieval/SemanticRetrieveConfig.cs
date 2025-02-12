@@ -1,8 +1,6 @@
 ﻿using System.Text.Json.Serialization;
-using GenerativeAI.Types.SemanticRetrieval.Corpus;
-using GenerativeAI.Types.SemanticRetrieval.Document;
 
-namespace GenerativeAI.Types.SemanticRetrieval;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Configuration for retrieving grounding content from a <see cref="Corpus"/> or <see cref="Document"/>

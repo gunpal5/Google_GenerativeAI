@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.Files;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// A file uploaded to the API.
@@ -88,7 +88,7 @@ public class RemoteFile
     /// Output only. Processing state of the File.
     /// </summary>
     [JsonPropertyName("state")]
-    public State? State { get; set; }
+    public FileState? State { get; set; }
 
     /// <summary>
     /// Source of the File.

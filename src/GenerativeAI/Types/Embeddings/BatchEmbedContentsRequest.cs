@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.Embeddings;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Represents a batched request for embedding content.

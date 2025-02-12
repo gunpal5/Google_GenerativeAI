@@ -1,7 +1,6 @@
 using System.Text.Json.Serialization;
-using GenerativeAI.Types.SemanticRetrieval.Corpus;
 
-namespace GenerativeAI.Types.SemanticRetrieval.Document;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Request body for performing semantic search over a <see cref="Document"/>.

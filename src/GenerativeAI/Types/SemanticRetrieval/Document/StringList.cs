@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.SemanticRetrieval.Document;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// User provided string values assigned to a single metadata key.

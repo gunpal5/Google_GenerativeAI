@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.SemanticRetrieval.Document;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// A <see cref="Document"/> is a collection of <c>Chunk</c>s. A <c>Corpus</c> can have a maximum of 10,000 <see cref="Document"/>s.

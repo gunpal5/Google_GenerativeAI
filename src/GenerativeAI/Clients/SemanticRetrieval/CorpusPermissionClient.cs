@@ -1,6 +1,6 @@
 ﻿using GenerativeAI.Core;
 using GenerativeAI.Extensions;
-using GenerativeAI.Types.SemanticRetrieval.Permissions;
+using GenerativeAI.Types;
 using Microsoft.Extensions.Logging;
 
 namespace GenerativeAI.Clients;
@@ -16,11 +16,11 @@ public class CorpusPermissionClient : BaseClient
     }
 
     /// <summary>
-    /// Creates a new <see cref="Permission"/> resource.
+    /// Creates a new <see cref="GenerativeAI.Types.Permission"/> resource.
     /// </summary>
-    /// <param name="parent">The parent resource of the <see cref="Permission"/>.</param>
-    /// <param name="permission">The <see cref="Permission"/> to create.</param>
-    /// <returns>The created <see cref="Permission"/>.</returns>
+    /// <param name="parent">The parent resource of the <see cref="GenerativeAI.Types.Permission"/>.</param>
+    /// <param name="permission">The <see cref="GenerativeAI.Types.Permission"/> to create.</param>
+    /// <returns>The created <see cref="GenerativeAI.Types.Permission"/>.</returns>
     /// <seealso href="https://ai.google.dev/api/rest/v1beta/corpora.permissions/create">See Official API Documentation</seealso>
     public async Task<Permission?> CreatePermissionAsync(string parent, Permission permission)
     {
@@ -29,12 +29,12 @@ public class CorpusPermissionClient : BaseClient
     }
 
     /// <summary>
-    /// Lists available <see cref="Permission"/> resources.
+    /// Lists available <see cref="GenerativeAI.Types.Permission"/> resources.
     /// </summary>
     /// <param name="parent">The parent resource of the permissions.</param>
-    /// <param name="pageSize">The maximum number of <see cref="Permission"/> resources to return.</param>
+    /// <param name="pageSize">The maximum number of <see cref="GenerativeAI.Types.Permission"/> resources to return.</param>
     /// <param name="pageToken">A page token, received from a previous <see cref="ListPermissionsAsync"/> call.</param>
-    /// <returns>A list of <see cref="Permission"/> resources.</returns>
+    /// <returns>A list of <see cref="GenerativeAI.Types.Permission"/> resources.</returns>
     /// <seealso href="https://ai.google.dev/api/rest/v1beta/corpora.permissions/list">See Official API Documentation</seealso>
     public async Task<ListPermissionsResponse?> ListPermissionsAsync(string parent, int? pageSize = null, string? pageToken = null)
     {
@@ -57,10 +57,10 @@ public class CorpusPermissionClient : BaseClient
     }
 
     /// <summary>
-    /// Gets a specific <see cref="Permission"/> resource.
+    /// Gets a specific <see cref="GenerativeAI.Types.Permission"/> resource.
     /// </summary>
-    /// <param name="name">The resource name of the <see cref="Permission"/>.</param>
-    /// <returns>The <see cref="Permission"/> resource.</returns>
+    /// <param name="name">The resource name of the <see cref="GenerativeAI.Types.Permission"/>.</param>
+    /// <returns>The <see cref="GenerativeAI.Types.Permission"/> resource.</returns>
     /// <seealso href="https://ai.google.dev/api/rest/v1beta/corpora.permissions/get">See Official API Documentation</seealso>
     public async Task<Permission?> GetPermissionAsync(string name)
     {
@@ -70,12 +70,12 @@ public class CorpusPermissionClient : BaseClient
     }
 
     /// <summary>
-    /// Updates a <see cref="Permission"/> resource.
+    /// Updates a <see cref="GenerativeAI.Types.Permission"/> resource.
     /// </summary>
     /// <param name="permissionName">The resource name of the permission.</param>
-    /// <param name="permission">The <see cref="Permission"/> resource to update.</param>
+    /// <param name="permission">The <see cref="GenerativeAI.Types.Permission"/> resource to update.</param>
     /// <param name="updateMask">The list of fields to update.</param>
-    /// <returns>The updated <see cref="Permission"/> resource.</returns>
+    /// <returns>The updated <see cref="GenerativeAI.Types.Permission"/> resource.</returns>
     /// <seealso href="https://ai.google.dev/api/rest/v1beta/corpora.permissions/patch">See Official API Documentation</seealso>
     public async Task<Permission?> UpdatePermissionAsync(string permissionName, Permission permission, string? updateMask = null)
     {
@@ -95,9 +95,9 @@ public class CorpusPermissionClient : BaseClient
     }
 
     /// <summary>
-    /// Deletes a <see cref="Permission"/> resource.
+    /// Deletes a <see cref="GenerativeAI.Types.Permission"/> resource.
     /// </summary>
-    /// <param name="name">The resource name of the <see cref="Permission"/> to delete.</param>
+    /// <param name="name">The resource name of the <see cref="GenerativeAI.Types.Permission"/> to delete.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <seealso href="https://ai.google.dev/api/rest/v1beta/corpora.permissions/delete">See Official API Documentation</seealso>
     public async Task DeletePermissionAsync(string name)

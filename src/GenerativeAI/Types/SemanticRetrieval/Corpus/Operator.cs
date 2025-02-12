@@ -1,7 +1,6 @@
 ﻿using System.Text.Json.Serialization;
-using GenerativeAI.Types.SemanticRetrieval.Document;
 
-namespace GenerativeAI.Types.SemanticRetrieval.Corpus;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Defines the valid operators that can be applied to a key-value pair.

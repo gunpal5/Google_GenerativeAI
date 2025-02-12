@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
 using GenerativeAI.Types.Models;
 
-namespace GenerativeAI.Types.Tuning;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Tuned model as a source for training a new model.

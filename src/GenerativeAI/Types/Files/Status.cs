@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.Files;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// The <c>Status</c> type defines a logical error model that is suitable for different

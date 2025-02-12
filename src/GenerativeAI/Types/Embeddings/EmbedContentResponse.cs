@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.Embeddings;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Represents the response to an <see cref="EmbedContentRequest"/>.

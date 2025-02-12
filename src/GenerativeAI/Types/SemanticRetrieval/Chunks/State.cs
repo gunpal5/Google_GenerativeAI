@@ -1,13 +1,13 @@
 using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.SemanticRetrieval.Chunks;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// States for the lifecycle of a <see cref="Chunk"/>.
 /// </summary>
 /// <seealso href="https://ai.google.dev/api/semantic-retrieval/chunks#State">See Official API Documentation</seealso>
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum State
+public enum ChunkState
 {
     /// <summary>
     /// The default value. This value is used if the state is omitted.

@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.SemanticRetrieval.Corpus;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Represents a list corpora response.

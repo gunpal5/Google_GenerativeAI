@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.Tuning;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Response from <c>tunedModels.list</c> containing a paginated list of Models.

@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.SemanticRetrieval.Document;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Response from <c>documents.list</c> containing a paginated list of <see cref="Document"/>.

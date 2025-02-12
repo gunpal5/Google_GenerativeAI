@@ -1,7 +1,6 @@
 using System.Text.Json.Serialization;
-using GenerativeAI.Types.SemanticRetrieval.Document;
 
-namespace GenerativeAI.Types.SemanticRetrieval.Chunks;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// A <see cref="Chunk"/> is a subpart of a <see cref="Document"/> that is treated as an independent unit for the purposes of vector representation and storage.
@@ -49,5 +48,5 @@ public class Chunk
     /// Output only. Current state of the <see cref="Chunk"/>.
     /// </summary>
     [JsonPropertyName("state")]
-    public State? State { get; set; }
+    public ChunkState? State { get; set; }
 }

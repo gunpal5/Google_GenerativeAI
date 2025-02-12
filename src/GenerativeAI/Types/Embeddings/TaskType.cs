@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.Embeddings;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Specifies the type of task for which the embedding will be used.

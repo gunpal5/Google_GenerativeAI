@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.SemanticRetrieval.Permissions;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Response from <see cref="ListPermissions"/> containing a paginated list of permissions.

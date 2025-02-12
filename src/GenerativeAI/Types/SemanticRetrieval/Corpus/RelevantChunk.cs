@@ -1,7 +1,6 @@
 using System.Text.Json.Serialization;
-using GenerativeAI.Types.SemanticRetrieval.Chunks;
 
-namespace GenerativeAI.Types.SemanticRetrieval.Corpus;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// The information for a chunk relevant to a query.

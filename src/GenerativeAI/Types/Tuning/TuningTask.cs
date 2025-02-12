@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.Tuning;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Tuning tasks that create tuned models.

@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.SemanticRetrieval.Permissions;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Defines the role granted by this permission.

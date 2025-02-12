@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.SemanticRetrieval.Corpus;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// A <see cref="Corpus"/> is a collection of <see cref="Document"/>. A project can create up to 5 corpora.

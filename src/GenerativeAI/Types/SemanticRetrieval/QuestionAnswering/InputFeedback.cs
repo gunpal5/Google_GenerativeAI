@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace GenerativeAI.Types.SemanticRetrieval.QuestionAnswering;
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// Feedback related to the input data used to answer the question, as opposed to the
