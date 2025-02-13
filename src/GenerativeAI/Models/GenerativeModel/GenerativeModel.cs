@@ -22,20 +22,7 @@ namespace GenerativeAI
         public List<SafetySetting>? SafetySettings { get; set; } = null;
 
         public CachedContent? CachedContent { get; set; }
-
-        // Used to show or hide function-call capabilities
-        public bool AutoCallFunction { get; set; } = true;
-        public bool AutoReplyFunction { get; set; } = true;
-        public List<FunctionDeclaration>? Functions { get; set; }
-        public bool FunctionEnabled { get; set; } = true;
-        public bool AutoHandleBadFunctionCalls { get; set; } = false;
-
-        /// <summary>
-        /// Stores the mapping from function name to a delegate that handles the call
-        /// </summary>
-        public IDictionary<string, Func<string, CancellationToken, Task<string>>> Calls { get; set; }
-            = new Dictionary<string, Func<string, CancellationToken, Task<string>>>();
-
+       
         #endregion
 
         #region Constructors

@@ -14,7 +14,7 @@ public class Schema
     /// Required. Data type.
     /// </summary>
     [JsonPropertyName("type")]
-    public SchemaType Type { get; set; }
+    public string Type { get; set; }
 
     /// <summary>
     /// Optional. The format of the data. This is used only for primitive datatypes.

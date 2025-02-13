@@ -272,4 +272,19 @@ public static class GenerateContentRequestExtensions
             request.Contents.Add(content);
         }
     }
+
+
+    /// <summary>
+    /// Configures the <see cref="GenerateContentRequest"/> to use JSON mode for responses of the specified type <typeparamref name="T"/>.
+    /// </summary>
+    /// <typeparam name="T">The type that defines the response schema for the JSON.</typeparam>
+    /// <param name="request">The <see cref="GenerateContentRequest"/> on which JSON mode will be applied.</param>
+    /// <remarks>Some of the complex data types are not supported such as Dictionary. So make sure to avoid these.</remarks>
+    public static void UseJsonMode<T>(this GenerateContentRequest request) where T : class
+    {
+        if(request.GenerationConfig == null)
+            request.GenerationConfig = new GenerationConfig();
+        request.GenerationConfig.ResponseMimeType = "application/json";
+        request.GenerationConfig.ResponseSchema = typeof(T);
+    }
 }

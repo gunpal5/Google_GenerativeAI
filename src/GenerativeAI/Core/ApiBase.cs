@@ -27,17 +27,13 @@ namespace GenerativeAI.Core
             _httpClient = httpClient ?? new HttpClient();
             _logger = logger;
 
-            SerializerOptions = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase, Converters = { new JsonStringEnumConverter() },
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-            };
+            SerializerOptions = DefaultSerializerOptions.Options;
         }
 
         /// <summary>
         /// JSON serialization options used for API requests and responses.
         /// </summary>
-        protected JsonSerializerOptions? SerializerOptions { get; }
+        protected JsonSerializerOptions? SerializerOptions { get; } 
 
         /// <summary>
         /// Adds authorization headers to an HTTP request.

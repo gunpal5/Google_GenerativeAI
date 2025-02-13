@@ -29,8 +29,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="CSharpToJsonSchema" Version="3.10.1" />
+    <PackageReference Include="JsonSchema.Net.Generation" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <PackageReference Include="System.Text.Json" Version="9.0.1" />
@@ -43,7 +44,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\GenerativeAI.Generators\bin\$(Configuration)\netstandard2.0\H.Generators.Extensions.dll" Pack="true" PackagePath="analyzers/dotnet" Visible="false" />
+    
   </ItemGroup>
 
   <ItemGroup>

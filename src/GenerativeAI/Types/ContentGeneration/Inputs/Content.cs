@@ -21,7 +21,7 @@ public sealed class Content
     }
 
     /// <summary>
-    /// Ordered <see cref="Parts"/> that constitute a single message. Parts may have different MIME types.
+    /// Ordered <see cref="Part">Parts</see> that constitute a single message. Parts may have different MIME types.
     /// </summary>
     [JsonPropertyName("parts")]
     public List<Part> Parts { get; set; } = new List<Part>();

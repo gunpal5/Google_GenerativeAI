@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 namespace GenerativeAI.Types;
 
@@ -29,5 +30,5 @@ public class FunctionResponse
     /// Required. The function response in JSON object format.
     /// </summary>
     [JsonPropertyName("response")]
-    public object Response { get; set; }
+    public dynamic? Response { get; set; }
 }

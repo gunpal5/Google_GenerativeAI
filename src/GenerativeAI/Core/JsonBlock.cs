@@ -53,7 +53,7 @@ public class JsonBlock
     {
         try
         {
-            return JsonSerializer.Deserialize<T>(Json);
+            return JsonSerializer.Deserialize<T>(Json, DefaultSerializerOptions.Options);
         }
         catch (Exception ex)
         {

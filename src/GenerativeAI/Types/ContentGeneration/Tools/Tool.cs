@@ -8,9 +8,7 @@ namespace GenerativeAI.Types;
 /// to perform an action, or set of actions, outside of knowledge and scope of the model.
 /// </summary>
 /// <seealso href="https://ai.google.dev/api/caching#Tool">See Official API Documentation</seealso> 
-public class 
-    
-    Tool
+public class Tool
 {
     /// <summary>
     /// Optional. A list of FunctionDeclarations available to the model that can be used for function calling.
