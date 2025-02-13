@@ -1,17 +1,13 @@
-﻿using System.Net.Http;
-using GenerativeAI.Clients;
-using GenerativeAI.Constants;
+﻿using GenerativeAI.Clients;
 using GenerativeAI.Core;
 using GenerativeAI.Exceptions;
 using GenerativeAI.Types;
 using Microsoft.Extensions.Logging;
 
-namespace GenerativeAI.Models;
+namespace GenerativeAI;
 
 public abstract class BaseModel : BaseClient
 {
-    public string? SystemInstruction { get; set; }
-
     protected BaseModel(IPlatformAdapter platform, HttpClient? httpClient, ILogger? logger = null) : base(platform,
         httpClient, logger)
     {
@@ -38,12 +34,10 @@ public abstract class BaseModel : BaseClient
     /// <param name="request">The <see cref="GenerateContentRequest"/> containing the content of the current conversation with the model.</param>
     /// <returns>The <see cref="GenerateContentResponse"/> containing the model's response.</returns>
     /// <seealso href="https://ai.google.dev/gemini-api/docs/text-generation">See Official API Documentation</seealso>
-    protected virtual async Task<GenerateContentResponse?> GenerateContentAsync(string model, GenerateContentRequest request)
+    protected virtual async Task<GenerateContentResponse> GenerateContentAsync(string model, GenerateContentRequest request)
     {
         var url = $"{_platform.GetBaseUrl()}/{model.ToModelId()}:{Tasks.GenerateContent}";
 
-        if (request.SystemInstruction == null)
-            request.SystemInstruction = RequestExtensions.FormatSystemInstruction(this.SystemInstruction);
         var response = await SendAsync<GenerateContentRequest, GenerateContentResponse>(url, request, HttpMethod.Post);
         CheckBlockedResponse(response, url);
         return response;
@@ -69,11 +63,7 @@ public abstract class BaseModel : BaseClient
         CancellationToken cancellationToken = default)
     {
         var url = $"{_platform.GetBaseUrl()}/{model.ToModelId()}:{Tasks.StreamGenerateContent}";
-
-        // If SystemInstruction isn't set, fall back to a default.
-        if (request.SystemInstruction == null)
-            request.SystemInstruction = RequestExtensions.FormatSystemInstruction(this.SystemInstruction);
-
+       
         await foreach (var response in StreamAsync<GenerateContentRequest, GenerateContentResponse>(url, request, cancellationToken))
             yield return response;
     }
@@ -85,7 +75,7 @@ public abstract class BaseModel : BaseClient
     /// <param name="request">The <see cref="CountTokensRequest"/> containing the input data for token counting.</param>
     /// <returns>The <see cref="CountTokensResponse"/> containing details about the token count.</returns>
     /// <seealso href="https://ai.google.dev/api/tokens">See Official API Documentation</seealso>
-    protected virtual async Task<CountTokensResponse?> CountTokensAsync(string model, CountTokensRequest request)
+    protected virtual async Task<CountTokensResponse> CountTokensAsync(string model, CountTokensRequest request)
     {
         var url = $"{_platform.GetBaseUrl()}/{model.ToModelId()}:{Tasks.CountTokens}";
         return await SendAsync<CountTokensRequest, CountTokensResponse>(url, request, HttpMethod.Post);
@@ -104,17 +94,17 @@ public abstract class BaseModel : BaseClient
     /// </param>
     /// <returns>The <see cref="BatchEmbedContentsResponse"/> containing the content embeddings.</returns>
     /// <seealso href="https://ai.google.dev/api/embeddings">See Official API Documentation</seealso>
-    protected virtual async Task<BatchEmbedContentsResponse?> BatchEmbedContentAsync(string model, BatchEmbedContentRequest request)
+    protected virtual async Task<BatchEmbedContentsResponse> BatchEmbedContentAsync(string model, BatchEmbedContentRequest request)
     {
         var url = $"{_platform.GetBaseUrl()}/{model.ToModelId()}:{Tasks.BatchEmbedContents}";
         foreach (var req in request.Requests)
         {
-            ValidateRequest(model,req);
+            ValidateEmbeddingRequest(model,req);
         }
         return await SendAsync<BatchEmbedContentRequest, BatchEmbedContentsResponse>(url, request, HttpMethod.Post);
     }
 
-    private void ValidateRequest(string model, EmbedContentRequest req)
+    private void ValidateEmbeddingRequest(string model, EmbedContentRequest req)
     {
         req.Model = req.Model?? model;
         
@@ -137,10 +127,10 @@ public abstract class BaseModel : BaseClient
     /// </param>
     /// <returns>The <see cref="EmbedContentResponse"/> containing the generated text embedding vector.</returns>
     /// <seealso href="https://ai.google.dev/gemini-api/docs/embeddings">See Official API Documentation</seealso>
-    protected virtual async Task<EmbedContentResponse?> EmbedContentAsync(string model, EmbedContentRequest request)
+    protected virtual async Task<EmbedContentResponse> EmbedContentAsync(string model, EmbedContentRequest request)
     {
         var url = $"{_platform.GetBaseUrl()}/{model.ToModelId()}:{Tasks.EmbedContent}";
-        ValidateRequest(model,request); 
+        ValidateEmbeddingRequest(model,request); 
         return await SendAsync<EmbedContentRequest, EmbedContentResponse>(url, request, HttpMethod.Post);
     }
 }

@@ -1,5 +1,4 @@
-﻿using GenerativeAI.Constants;
-using GenerativeAI.Core;
+﻿using GenerativeAI.Core;
 
 namespace GenerativeAI;
 

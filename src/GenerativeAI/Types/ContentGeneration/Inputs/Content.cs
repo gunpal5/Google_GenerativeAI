@@ -31,5 +31,5 @@ public sealed class Content
     /// Useful to set for multi-turn conversations, otherwise can be left blank or unset.
     /// </summary>
     [JsonPropertyName("role")]
-    public string? Role { get; set; } 
+    public string? Role { get; set; }
 }

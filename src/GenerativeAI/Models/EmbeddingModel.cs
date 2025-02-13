@@ -1,9 +1,8 @@
-﻿using GenerativeAI.Constants;
-using GenerativeAI.Core;
+﻿using GenerativeAI.Core;
 using GenerativeAI.Types;
 using Microsoft.Extensions.Logging;
 
-namespace GenerativeAI.Models;
+namespace GenerativeAI;
 
 public class EmbeddingModel : BaseModel
 {
@@ -22,12 +21,12 @@ public class EmbeddingModel : BaseModel
     /// <param name="content">The content object to generate embeddings from.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A task representing the asynchronous operation, containing the embedding response.</returns>
-    public async Task<EmbedContentResponse?> EmbedContentAsync(
+    public async Task<EmbedContentResponse> EmbedContentAsync(
         Content content,
         CancellationToken cancellationToken = default)
     {
         
-        return await EmbedContentAsync(new EmbedContentRequest(){Content = content}).ConfigureAwait(false);
+        return await EmbedContentAsync(new EmbedContentRequest(){Content = content},cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -36,7 +35,7 @@ public class EmbeddingModel : BaseModel
     /// <param name="request">The request object to generate embeddings from.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A task representing the asynchronous operation, containing the embedding response.</returns>
-    public async Task<EmbedContentResponse?> EmbedContentAsync(
+    public async Task<EmbedContentResponse> EmbedContentAsync(
         EmbedContentRequest request,
         CancellationToken cancellationToken = default)
     {
@@ -49,12 +48,12 @@ public class EmbeddingModel : BaseModel
     /// <param name="message">The text input to generate embeddings from.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A task representing the asynchronous operation, containing the embedding response.</returns>
-    public async Task<EmbedContentResponse?> EmbedContentAsync(
+    public async Task<EmbedContentResponse> EmbedContentAsync(
         string message,
         CancellationToken cancellationToken = default)
     {
 
-        return await EmbedContentAsync(RequestExtensions.FormatGenerateContentInput(message) ).ConfigureAwait(false);
+        return await EmbedContentAsync(RequestExtensions.FormatGenerateContentInput(message) ,cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -63,11 +62,11 @@ public class EmbeddingModel : BaseModel
     /// <param name="parts">The sequence of Part objects to be used for embedding content.</param>
     /// <param name="cancellationToken">A token for cancelling the operation, if needed.</param>
     /// <returns>Returns an instance of EmbedContentResponse containing the embeddings.</returns>
-    public async Task<EmbedContentResponse?> EmbedContentAsync(
+    public async Task<EmbedContentResponse> EmbedContentAsync(
         IEnumerable<Part> parts,
         CancellationToken cancellationToken = default)
     {
-        return await EmbedContentAsync(RequestExtensions.FormatGenerateContentInput(parts)).ConfigureAwait(false);
+        return await EmbedContentAsync(RequestExtensions.FormatGenerateContentInput(parts),cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -76,12 +75,12 @@ public class EmbeddingModel : BaseModel
     /// <param name="messages">The collection of text strings to generate embeddings from.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A task representing the asynchronous operation, containing the embedding response.</returns>
-    public async Task<EmbedContentResponse?> EmbedContentAsync(
+    public async Task<EmbedContentResponse> EmbedContentAsync(
         IEnumerable<string> messages,
         CancellationToken cancellationToken = default)
     {
 
-        return await EmbedContentAsync(RequestExtensions.FormatGenerateContentInput(messages)).ConfigureAwait(false);
+        return await EmbedContentAsync(RequestExtensions.FormatGenerateContentInput(messages),cancellationToken).ConfigureAwait(false);
     }
     
     /// <summary>
@@ -90,7 +89,7 @@ public class EmbeddingModel : BaseModel
     /// <param name="requests">The collection of <see cref="EmbedContentRequest"/> requests to embed.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A task representing the asynchronous operation, containing the batch embedding response.</returns>
-    public async Task<BatchEmbedContentsResponse?> BatchEmbedContentAsync(
+    public async Task<BatchEmbedContentsResponse> BatchEmbedContentAsync(
         IEnumerable<EmbedContentRequest> requests,
         CancellationToken cancellationToken = default)
     {
@@ -104,7 +103,7 @@ public class EmbeddingModel : BaseModel
     /// <param name="contents">The collection of <see cref="Content"/> objects to embed.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A task representing the asynchronous operation, containing the batch embedding response.</returns>
-    public async Task<BatchEmbedContentsResponse?> BatchEmbedContentAsync(
+    public async Task<BatchEmbedContentsResponse> BatchEmbedContentAsync(
         IEnumerable<Content> contents,
         CancellationToken cancellationToken = default)
     {
@@ -114,7 +113,7 @@ public class EmbeddingModel : BaseModel
             Model = Model.ToModelId()
         });
         
-        return await BatchEmbedContentAsync(requests).ConfigureAwait(false);
+        return await BatchEmbedContentAsync(requests,cancellationToken).ConfigureAwait(false);
     }
     
    

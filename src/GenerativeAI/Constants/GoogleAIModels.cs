@@ -1,6 +1,4 @@
-﻿namespace GenerativeAI.Constants;
-
-using System;
+﻿namespace GenerativeAI;
 
 /// <summary>
 /// Provides constants for Gemini model variations and related information.
@@ -9,7 +7,7 @@ using System;
 /// This class defines constants based on the Gemini models documented at:
 /// <seealso href="https://ai.google.dev/gemini-api/docs/models/gemini"/>
 /// </remarks>
-public static class GeminiConstants
+public static class GoogleAIModels
 {
     
     public const string DefaultGeminiModel = Gemini15Flash;

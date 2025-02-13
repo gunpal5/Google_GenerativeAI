@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GenerativeAI;
-using GenerativeAI.Constants;
 using GenerativeAI.Core;
-using GenerativeAI.Models;
 using GenerativeAI.Tests.Base;
 using GenerativeAI.Types;
 using Shouldly;
@@ -19,7 +17,7 @@ namespace GenerativeAI.Tests.Model
         ordererAssemblyName: "GenerativeAI.Tests")]
     public class GenerativeModelEmbedding_Tests : TestBase
     {
-        private const string DefaultTestModelName = GeminiConstants.TextEmbedding;
+        private const string DefaultTestModelName = GoogleAIModels.TextEmbedding;
 
         public GenerativeModelEmbedding_Tests(ITestOutputHelper helper) : base(helper)
         {

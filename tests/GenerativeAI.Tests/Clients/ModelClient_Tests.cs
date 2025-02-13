@@ -48,7 +48,7 @@ namespace GenerativeAI.Tests.Clients
         {
             var client = new ModelClient(GetTestGooglePlatform());
 
-            var modelInfo = await client.GetModelAsync("gemini-flash-1.0");
+            var modelInfo = await client.GetModelAsync(GoogleAIModels.DefaultGeminiModel);
             modelInfo.Name.ShouldNotBeNullOrEmpty();
             modelInfo.Description.ShouldNotBeNullOrEmpty();
             modelInfo.DisplayName.ShouldNotBeNullOrEmpty();

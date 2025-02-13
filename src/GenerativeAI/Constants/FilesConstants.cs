@@ -1,4 +1,4 @@
-﻿namespace GenerativeAI.Constants;
+﻿namespace GenerativeAI;
 
 /// <summary>
 /// Defines a collection of constants representing supported MIME types for various file operations within the API.
@@ -12,7 +12,7 @@ public static class FilesConstants
     /// <seealso href="https://ai.google.dev/gemini-api/docs/vision">Official Documentation for Vision</seealso>
     /// <seealso href="https://ai.google.dev/gemini-api/docs/audio">Official Documentation for Audio</seealso>
     /// <seealso jref="https://ai.google.dev/gemini-api/docs/document-processing">Official Documentation for Document Processing</seealso>
-    public static readonly HashSet<string> RemoteFiles = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+    public static readonly HashSet<string> SupportedMimeTypes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
     {
         // Image formats
         "image/jpeg", "image/png", "image/heif", "image/heic", "image/webp",

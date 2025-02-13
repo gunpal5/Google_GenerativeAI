@@ -1,12 +1,12 @@
-﻿namespace GenerativeAI.Constants;
+﻿namespace GenerativeAI;
 
 public static class SupportedEmbedingModels
 {
     public static readonly List<string> All = new()
     {
         // From GeminiConstants
-        GeminiConstants.TextEmbedding,
-        GeminiConstants.Embedding,
+        GoogleAIModels.TextEmbedding,
+        GoogleAIModels.Embedding,
 
         // From VertexAIModels.Embeddings
         VertexAIModels.Embeddings.TextEmbeddingGecko001,

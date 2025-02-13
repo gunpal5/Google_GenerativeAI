@@ -1,4 +1,4 @@
-﻿namespace GenerativeAI.Constants;
+﻿namespace GenerativeAI;
 
 public class Roles
 {

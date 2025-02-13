@@ -1,11 +1,12 @@
-﻿using GenerativeAI.Clients;
+﻿using System.Diagnostics.CodeAnalysis;
+using GenerativeAI.Clients;
 using GenerativeAI.Tests.Base;
 using GenerativeAI.Types;
 using Shouldly;
 using Xunit.Abstractions;
 
 namespace GenerativeAI.Tests.Clients.SemanticRetrieval;
-
+[ExcludeFromCodeCoverage(Justification = "Work in Progress")]
 [TestCaseOrderer(
     ordererTypeName: "GenerativeAI.Tests.Base.PriorityOrderer",
     ordererAssemblyName: "GenerativeAI.Tests")]

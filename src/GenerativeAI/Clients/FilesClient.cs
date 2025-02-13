@@ -1,7 +1,7 @@
-﻿using System.Net.Http.Headers;
+﻿using System.Diagnostics;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using GenerativeAI.Constants;
 using GenerativeAI.Core;
 using GenerativeAI.Exceptions;
 using GenerativeAI.Types;
@@ -21,12 +21,14 @@ public class FileClient : BaseClient
     }
 
     /// <summary>
-    /// Creates a <see cref="RemoteFile"/>.
+    /// Uploads a file to the remote server and creates a <see cref="RemoteFile"/> object.
     /// </summary>
-    /// <param name="file">Metadata for the file to create.</param>
-    /// <returns>The <see cref="RemoteFile"/> information.</returns>
-    /// <seealso href="https://ai.google.dev/api/files#method:-media.upload">See Official API Documentation</seealso>
-    public async Task<RemoteFile?> UploadFileAsync(string filePath, Action<double>? progressCallback = null)
+    /// <param name="filePath">The path to the file to upload.</param>
+    /// <param name="progressCallback">An optional callback to report the upload progress.</param>
+    /// <param name="cancellationToken">An optional token to cancel the upload operation.</param>
+    /// <returns>The uploaded file's information as a <see cref="RemoteFile"/> object.</returns>
+    public async Task<RemoteFile> UploadFileAsync(string filePath, Action<double>? progressCallback = null,
+        CancellationToken cancellationToken = default)
     {
         var baseUrl = _platform.GetBaseUrl(false);
         var apiVersion = _platform.GetApiVersion();
@@ -61,7 +63,7 @@ public class FileClient : BaseClient
         });
         httpMessage.Content = multipart;
         _platform.AddAuthorization(httpMessage);
-        var response = await HttpClient.SendAsync(httpMessage);
+        var response = await HttpClient.SendAsync(httpMessage,cancellationToken);
         await CheckAndHandleErrors(response, url);
 
         var fileResponse = await Deserialize<UploadFileResponse>(response);
@@ -77,7 +79,7 @@ public class FileClient : BaseClient
     /// <param name="progressCallback">An optional callback to track the progress of the upload, represented as a percentage.</param>
     /// <returns>The uploaded <see cref="RemoteFile"/> information.</returns>
     /// <seealso href="https://ai.google.dev/api/files#method:-media.upload">See Official API Documentation</seealso>
-    public async Task<RemoteFile?> UploadStreamAsync(Stream stream, string displayName, string mimeType,
+    public async Task<RemoteFile> UploadStreamAsync(Stream stream, string displayName, string mimeType,
         Action<double>? progressCallback = null)
     {
         var baseUrl = _platform.GetBaseUrl(false);
@@ -152,7 +154,7 @@ public class FileClient : BaseClient
             throw new ArgumentNullException(nameof(mimeType), "MIME type cannot be null.");
         }
 
-        var supportedMimeTypes = FilesConstants.RemoteFiles;
+        var supportedMimeTypes = FilesConstants.SupportedMimeTypes;
 
         if (!supportedMimeTypes.Contains(mimeType, StringComparer.OrdinalIgnoreCase))
         {
@@ -167,12 +169,12 @@ public class FileClient : BaseClient
     /// <param name="name">The name of the <see cref="RemoteFile"/> to get.</param>
     /// <returns>The <see cref="RemoteFile"/> information.</returns>
     /// <seealso href="https://ai.google.dev/api/files#method:-files.get">See Official API Documentation</seealso>
-    public async Task<RemoteFile?> GetFileAsync(string name)
+    public async Task<RemoteFile> GetFileAsync(string name,CancellationToken cancellationToken = default)
     {
         var baseUrl = _platform.GetBaseUrl();
 
         var url = $"{baseUrl}/{name.ToFileId()}";
-        return await GetAsync<RemoteFile>(url);
+        return await GetAsync<RemoteFile>(url,cancellationToken);
     }
 
     /// <summary>
@@ -182,7 +184,7 @@ public class FileClient : BaseClient
     /// <param name="pageToken">A page token from a previous <see cref="ListMyCustomFilesAsync"/> call.</param>
     /// <returns>A list of <see cref="RemoteFile"/>s.</returns>
     /// <seealso href="https://ai.google.dev/api/files#method:-files.list">See Official API Documentation</seealso>
-    public async Task<ListFilesResponse?> ListFilesAsync(int? pageSize = null, string? pageToken = null)
+    public async Task<ListFilesResponse> ListFilesAsync(int? pageSize = null, string? pageToken = null)
     {
         var queryParams = new List<string>();
 
@@ -213,5 +215,26 @@ public class FileClient : BaseClient
 
         var url = $"{baseUrl}/{name.ToFileId()}";
         await DeleteAsync(url);
+    }
+
+    public async Task AwaitForFileStateActiveAsync(RemoteFile file, int maxSeconds, CancellationToken cancellationToken)
+    {
+        Stopwatch sw = new Stopwatch();
+        sw.Start();
+        while (sw.Elapsed.TotalSeconds < maxSeconds)
+        {
+            var remoteFile = await GetFileAsync(file.Name, cancellationToken);
+            if(remoteFile.State == FileState.ACTIVE)
+            {
+                return;
+            }
+            else if (remoteFile.State != FileState.PROCESSING)
+            {
+                throw new GenerativeAIException("There was an error processing the file.", remoteFile.Error?.Message);
+            }
+            
+            await Task.Delay(1000, cancellationToken);
+        }
+        sw.Stop();
     }
 }

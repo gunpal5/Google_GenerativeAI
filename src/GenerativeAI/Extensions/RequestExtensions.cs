@@ -1,5 +1,4 @@
-﻿using GenerativeAI.Constants;
-using GenerativeAI.Types;
+﻿using GenerativeAI.Types;
 
 namespace GenerativeAI;
 
@@ -30,4 +29,6 @@ public static class RequestExtensions
     {
         return new Content(request.ToArray(), role);
     }
+    
+    
 }

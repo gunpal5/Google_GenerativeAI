@@ -1,4 +1,4 @@
-﻿namespace GenerativeAI.Constants;
+﻿namespace GenerativeAI;
 
 /// <summary>
 /// Provides constants for Vertex AI model variations and related information.

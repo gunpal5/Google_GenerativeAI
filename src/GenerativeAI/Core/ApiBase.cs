@@ -14,6 +14,7 @@ namespace GenerativeAI.Core
     {
         private readonly HttpClient _httpClient;
         private readonly ILogger? _logger;
+        protected ILogger? Logger => _logger;
         protected HttpClient HttpClient => _httpClient;
 
         /// <summary>
@@ -105,7 +106,7 @@ namespace GenerativeAI.Core
         /// <returns>The deserialized object from the response.</returns>
         /// <exception cref="HttpRequestException">Throws upon a non-success status code.</exception>
         /// <exception cref="InvalidOperationException">Throws if deserialization fails.</exception>
-        protected async Task<TResponse?> SendAsync<TRequest, TResponse>(string url, TRequest payload, HttpMethod method,
+        protected async Task<TResponse> SendAsync<TRequest, TResponse>(string url, TRequest payload, HttpMethod method,
             CancellationToken cancellationToken = default)
         {
             try
