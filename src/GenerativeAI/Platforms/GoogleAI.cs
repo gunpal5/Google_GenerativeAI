@@ -11,17 +11,16 @@ namespace GenerativeAI;
 /// This class integrates Google's AI platform capabilities by utilizing appropriate models
 /// and configurations to handle generative AI tasks, embeddings, and other related operations.
 /// </summary>
-public class GoogleAi:GenAI
+public class GoogleAi : GenAI
 {
-    
     /// <summary>
     /// Implements a client adapter for Google's AI platform to facilitate integration with its generative AI services.
     /// Provides configuration and methods for managing credentials, setting API versions, creating task URLs,
     /// and authorizing requests for secure access to Google's AI APIs.
     /// </summary>
-    public GoogleAi(string apiKey, string? accessToken = null, HttpClient? client = null, ILogger? logger = null):this(new GoogleAIPlatformAdapter(apiKey, accessToken), client, logger)
+    public GoogleAi(string apiKey, string? accessToken = null, HttpClient? client = null, ILogger? logger = null) :
+        this(new GoogleAIPlatformAdapter(apiKey, accessToken), client, logger)
     {
-      
     }
 
     /// <summary>
@@ -29,8 +28,8 @@ public class GoogleAi:GenAI
     /// Offers functionality to interact with Google's generative AI and machine learning models.
     /// Provides support for initialization with various parameters such as API keys, access tokens, HTTP client, and logging.
     /// </summary>
-    public GoogleAi(IPlatformAdapter adapter, HttpClient? client = null, ILogger? logger = null):base(adapter, client, logger)
+    public GoogleAi(IPlatformAdapter adapter, HttpClient? client = null, ILogger? logger = null) : base(adapter, client,
+        logger)
     {
-      
     }
 }

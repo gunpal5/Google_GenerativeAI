@@ -57,7 +57,7 @@ public class GenerativeAI_Tools_Tests:TestBase
     public async Task Should_Add_GoogleSearch_Grounding_Tool_When_UseGoogleSearch_Is_True()
     {
         // Arrange
-        var model = InitializeModel(useGrounding: true);
+        var model = InitializeModel(useGoogleSearch: true);
 
         var prompt = "What is the current Google stock price?";
         

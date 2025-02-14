@@ -29,7 +29,7 @@ namespace GenerativeAI.Tests.Model
             //Assert
             var text = result.Text();
             text.ShouldNotBeNull();
-            text.ShouldContain("Flower", Case.Insensitive);
+            text.ShouldContain("blueberry", Case.Insensitive);
             Console.WriteLine(result.Text());
         }
 
@@ -48,7 +48,7 @@ namespace GenerativeAI.Tests.Model
             result.ShouldNotBeNull();
             var text = result.Text();
             text.ShouldNotBeNull();
-            text.ShouldContain("Flower", Case.Insensitive);
+            text.ShouldContain("blueberry", Case.Insensitive);
             Console.WriteLine(result.Text());
         }
 

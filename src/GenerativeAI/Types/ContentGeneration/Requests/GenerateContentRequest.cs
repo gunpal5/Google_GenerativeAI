@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using GenerativeAI.Core;
 
 namespace GenerativeAI.Types;
 
@@ -6,7 +7,7 @@ namespace GenerativeAI.Types;
 /// Request to generate content.
 /// </summary>
 /// <seealso href="https://ai.google.dev/api/tokens#request-body">See Official API Documentation</seealso> 
-public class GenerateContentRequest
+public class GenerateContentRequest:IContentsRequest
 {
     /// <summary>
     /// Required. The content of the current conversation with the model.

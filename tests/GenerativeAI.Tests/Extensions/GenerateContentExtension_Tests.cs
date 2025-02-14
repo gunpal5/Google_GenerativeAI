@@ -235,8 +235,8 @@ namespace GenerativeAI.Tests
             request.AddInlineFile(filePath, appendToLastContent: false, role: Roles.Model);
 
             // Assert
-            // Notice the extension method never adds the new content to the request if appendToLastContent == false
-            request.Contents.Count.ShouldBe(1); 
+            // Notice the extension method adds the new content to the request if appendToLastContent == false
+            request.Contents.Count.ShouldBe(2); 
             request.Contents[0].Parts.Count.ShouldBe(0);
         }
 
@@ -295,7 +295,7 @@ namespace GenerativeAI.Tests
             request.AddInlineData(data, mimeType, appendToLastContent: false, role: Roles.System);
 
             // Assert
-            request.Contents.Count.ShouldBe(1);
+            request.Contents.Count.ShouldBe(2);
             request.Contents[0].Parts.Count.ShouldBe(0);
         }
 
@@ -338,7 +338,7 @@ namespace GenerativeAI.Tests
         }
 
         [Fact]
-        public void AddRemoteFile_Object_DoNotAppendIfContentExists_ShouldNotAddTheNewContentToRequest()
+        public void AddRemoteFile_Object_DoNotAppendIfContentExists_ShouldAddTheNewContentToRequest()
         {
             // Arrange
             var request = new GenerateContentRequest();
@@ -349,8 +349,8 @@ namespace GenerativeAI.Tests
             request.AddRemoteFile(remoteFile, appendToLastContent: false, role: Roles.Model);
 
             // Assert
-            // The extension never adds the new content if appendToLastContent == false
-            request.Contents.Count.ShouldBe(1);
+            // The extension adds the new content if appendToLastContent == false
+            request.Contents.Count.ShouldBe(2);
             request.Contents[0].Parts.Count.ShouldBe(0);
         }
 
@@ -385,7 +385,7 @@ namespace GenerativeAI.Tests
             request.AddRemoteFile(url, mimeType, appendToLastContent: false, role: Roles.Model);
 
             // Assert
-            request.Contents.Count.ShouldBe(1);
+            request.Contents.Count.ShouldBe(2);
             request.Contents[0].Parts.Count.ShouldBe(0);
         }
 

@@ -29,7 +29,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CSharpToJsonSchema" Version="3.10.1" />
     <PackageReference Include="JsonSchema.Net.Generation" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.1" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />

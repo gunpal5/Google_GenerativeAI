@@ -15,6 +15,7 @@ public partial class GenerativeModel
     /// <param name="request">An instance of <see cref="GenerateContentRequest"/> containing the input configuration and settings for content generation.</param>
     /// <param name="cancellationToken">Token to monitor for cancellation requests.</param>
     /// <returns>A task that represents the asynchronous operation, containing the <see cref="GenerateContentResponse"/> with the generated content.</returns>
+    /// <seealso href="https://ai.google.dev/gemini-api/docs/text-generation">See Official API Documentation</seealso>
     public virtual async Task<GenerateContentResponse> GenerateContentAsync(
         GenerateContentRequest request,
         CancellationToken cancellationToken = default)
@@ -34,6 +35,8 @@ public partial class GenerativeModel
     /// <param name="prompt">The text input used to generate the content.</param>
     /// <param name="cancellationToken">Token to monitor for cancellation requests.</param>
     /// <returns>A task representing the asynchronous operation, containing the generated content response.</returns>
+    /// <seealso href="https://ai.google.dev/gemini-api/docs/text-generation">See Official API Documentation</seealso>
+
     public async Task<GenerateContentResponse> GenerateContentAsync(
         string prompt,
         CancellationToken cancellationToken = default)
@@ -53,6 +56,9 @@ public partial class GenerativeModel
     /// <param name="filePath">The path to an file that should be included in the content generation request.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A task that represents the asynchronous operation, containing the <see cref="GenerateContentResponse"/> or null if content generation fails.</returns>
+    /// <seealso href="https://ai.google.dev/gemini-api/docs/vision">See Official API Documentation For Vision Capabilities</seealso>
+    /// <seealso href="https://ai.google.dev/gemini-api/docs/audio">See Official API Documentation For Audio Understanding</seealso>
+   
     public async Task<GenerateContentResponse> GenerateContentAsync(
         string prompt,
         string filePath,
@@ -74,6 +80,8 @@ public partial class GenerativeModel
     /// <param name="parts">The sequence of Part objects to be used for generating content.</param>
     /// <param name="cancellationToken">A token for cancelling the operation, if needed.</param>
     /// <returns>Returns an instance of GenerateContentResponse containing the generated content.</returns>
+    /// <seealso href="https://ai.google.dev/gemini-api/docs/text-generation">See Official API Documentation</seealso>
+
     public async Task<GenerateContentResponse> GenerateContentAsync(
         IEnumerable<Part> parts,
         CancellationToken cancellationToken = default)
@@ -96,6 +104,8 @@ public partial class GenerativeModel
     /// <param name="request">The content generation request containing input configurations and options.</param>
     /// <param name="cancellationToken">An optional token to monitor for cancellation requests.</param>
     /// <returns>An asynchronous enumerable of <see cref="GenerateContentResponse"/> objects containing the streamed generation results.</returns>
+    /// <seealso href="https://ai.google.dev/gemini-api/docs/text-generation?lang=rest#generate-a-text-stream">See Official API Documentation</seealso>
+
     public virtual async IAsyncEnumerable<GenerateContentResponse> StreamContentAsync(
         GenerateContentRequest request,
         CancellationToken cancellationToken = default)
@@ -118,6 +128,7 @@ public partial class GenerativeModel
     /// <param name="prompt">The input prompt to be processed and streamed.</param>
     /// <param name="cancellationToken">A token to observe for cancellation requests.</param>
     /// <returns>An asynchronous enumerable of generated content responses.</returns>
+    /// <seealso href="https://ai.google.dev/gemini-api/docs/text-generation?lang=rest#generate-a-text-stream">See Official API Documentation</seealso>
     public async IAsyncEnumerable<GenerateContentResponse> StreamContentAsync(
         string prompt,
         CancellationToken cancellationToken = default)
@@ -141,6 +152,11 @@ public partial class GenerativeModel
     /// <param name="filePath">The file path associated with the generation operation.</param>
     /// <param name="cancellationToken">A token to observe for cancellation requests.</param>
     /// <returns>An asynchronous enumerable containing instances of <see cref="GenerateContentResponse"/> representing the streamed generated content.</returns>
+    /// <seealso href="https://ai.google.dev/gemini-api/docs/vision">See Official API Documentation For Vision Capabilities</seealso>
+    /// <seealso href="https://ai.google.dev/gemini-api/docs/audio">See Official API Documentation For Audio Understanding</seealso>
+
+    
+    
     public async IAsyncEnumerable<GenerateContentResponse> StreamContentAsync(
         string prompt,
         string filePath,

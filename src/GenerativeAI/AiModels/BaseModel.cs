@@ -13,7 +13,7 @@ public abstract class BaseModel : BaseClient
     {
     }
 
-    private void CheckBlockedResponse(GenerateContentResponse? response, string url)
+    protected void CheckBlockedResponse(GenerateContentResponse? response, string url)
     {
         if (!(response.Candidates is { Length: > 0 }))
         {
@@ -36,7 +36,7 @@ public abstract class BaseModel : BaseClient
     /// <seealso href="https://ai.google.dev/gemini-api/docs/text-generation">See Official API Documentation</seealso>
     protected virtual async Task<GenerateContentResponse> GenerateContentAsync(string model, GenerateContentRequest request)
     {
-        var url = $"{_platform.GetBaseUrl()}/{model.ToModelId()}:{Tasks.GenerateContent}";
+        var url = $"{_platform.GetBaseUrl()}/{model.ToModelId()}:{GenerativeModelTasks.GenerateContent}";
 
         var response = await SendAsync<GenerateContentRequest, GenerateContentResponse>(url, request, HttpMethod.Post);
         CheckBlockedResponse(response, url);
@@ -62,7 +62,7 @@ public abstract class BaseModel : BaseClient
         [System.Runtime.CompilerServices.EnumeratorCancellation]
         CancellationToken cancellationToken = default)
     {
-        var url = $"{_platform.GetBaseUrl()}/{model.ToModelId()}:{Tasks.StreamGenerateContent}";
+        var url = $"{_platform.GetBaseUrl()}/{model.ToModelId()}:{GenerativeModelTasks.StreamGenerateContent}";
        
         await foreach (var response in StreamAsync<GenerateContentRequest, GenerateContentResponse>(url, request, cancellationToken))
             yield return response;
@@ -77,7 +77,7 @@ public abstract class BaseModel : BaseClient
     /// <seealso href="https://ai.google.dev/api/tokens">See Official API Documentation</seealso>
     protected virtual async Task<CountTokensResponse> CountTokensAsync(string model, CountTokensRequest request)
     {
-        var url = $"{_platform.GetBaseUrl()}/{model.ToModelId()}:{Tasks.CountTokens}";
+        var url = $"{_platform.GetBaseUrl()}/{model.ToModelId()}:{GenerativeModelTasks.CountTokens}";
         return await SendAsync<CountTokensRequest, CountTokensResponse>(url, request, HttpMethod.Post);
     }
     
@@ -96,7 +96,7 @@ public abstract class BaseModel : BaseClient
     /// <seealso href="https://ai.google.dev/api/embeddings">See Official API Documentation</seealso>
     protected virtual async Task<BatchEmbedContentsResponse> BatchEmbedContentAsync(string model, BatchEmbedContentRequest request)
     {
-        var url = $"{_platform.GetBaseUrl()}/{model.ToModelId()}:{Tasks.BatchEmbedContents}";
+        var url = $"{_platform.GetBaseUrl()}/{model.ToModelId()}:{GenerativeModelTasks.BatchEmbedContents}";
         foreach (var req in request.Requests)
         {
             ValidateEmbeddingRequest(model,req);
@@ -129,8 +129,21 @@ public abstract class BaseModel : BaseClient
     /// <seealso href="https://ai.google.dev/gemini-api/docs/embeddings">See Official API Documentation</seealso>
     protected virtual async Task<EmbedContentResponse> EmbedContentAsync(string model, EmbedContentRequest request)
     {
-        var url = $"{_platform.GetBaseUrl()}/{model.ToModelId()}:{Tasks.EmbedContent}";
+        var url = $"{_platform.GetBaseUrl()}/{model.ToModelId()}:{GenerativeModelTasks.EmbedContent}";
         ValidateEmbeddingRequest(model,request); 
         return await SendAsync<EmbedContentRequest, EmbedContentResponse>(url, request, HttpMethod.Post);
+    }
+
+    /// <summary>
+    /// Generates a grounded answer from the model given an input <see cref="GenerateAnswerRequest"/>.
+    /// </summary>
+    /// <param name="model">The name of the <see cref="Model"/> to use for generating the grounded response. Format: <c>models/{model}</c>.</param>
+    /// <param name="request">The <see cref="GenerateAnswerRequest"/> containing the input data.</param>
+    /// <returns>The <see cref="GenerateAnswerResponse"/> containing the model's answer.</returns>
+    /// <seealso href="https://ai.google.dev/gemini-api/docs/question_answering#method:-models.generateanswer">See Official API Documentation</seealso>
+    protected async Task<GenerateAnswerResponse> GenerateAnswerAsync(string model, GenerateAnswerRequest request,CancellationToken cancellationToken=default)
+    {
+        var url = $"{_platform.GetBaseUrl()}/{model.ToModelId()}:{GenerativeModelTasks.GenerateAnswer}";
+        return await SendAsync<GenerateAnswerRequest, GenerateAnswerResponse>(url, request, HttpMethod.Post, cancellationToken);
     }
 }

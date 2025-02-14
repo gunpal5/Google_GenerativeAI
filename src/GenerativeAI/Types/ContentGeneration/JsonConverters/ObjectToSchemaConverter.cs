@@ -11,7 +11,9 @@ namespace GenerativeAI.Types;
 /// <summary>
 /// This converter interprets objects and writes them as JSON schema definitions.
 /// </summary>
-public sealed class ObjectToJsonSchemaConverter : JsonConverter<object>
+
+
+sealed class ObjectToJsonSchemaConverter : JsonConverter<object>
 {
     /// <summary>
     /// Reads an incoming JSON value and deserializes it as a dynamic object.

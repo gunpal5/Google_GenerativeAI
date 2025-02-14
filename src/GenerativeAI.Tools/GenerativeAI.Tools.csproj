@@ -6,10 +6,13 @@
         <LangVersion>11.0</LangVersion>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
         <PackageId>Google_$(AssemblyName)</PackageId>
-        <Title>Google AI Function Calling Tools - Concrete Implementations with Code Generators</Title>
+        <Title>Function Calling Tools for Google Generative AI SDK</Title>
         <Authors>Gunpal Jain</Authors>
         <Company/>
-        <Description>This library provides concrete implementations for interfaces defined for Google AI function calling in the Google_GenerativeAI package, with support for code generators to enhance development.</Description>
+        <Description>Provides a set of tools and concrete implementations to facilitate function calling with the Google_GenerativeAI SDK, including support for code generation.</Description>
+        
+        
+        
         <PackageProjectUrl>https://github.com/gunpal5/Google_GenerativeAI</PackageProjectUrl>
 <!--        <PackageReadmeFile>README.md</PackageReadmeFile>-->
         <RepositoryUrl>https://github.com/gunpal5/Google_GenerativeAI</RepositoryUrl>
@@ -21,7 +24,7 @@
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     </PropertyGroup>
     <ItemGroup>
-      <ProjectReference Include="..\src\GenerativeAI\GenerativeAI.csproj" />
+      <ProjectReference Include="..\GenerativeAI\GenerativeAI.csproj" />
     </ItemGroup>
     <ItemGroup>
       <PackageReference Include="CSharpToJsonSchema" Version="3.10.1" />

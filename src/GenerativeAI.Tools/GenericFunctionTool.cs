@@ -7,8 +7,12 @@ using Tool = GenerativeAI.Types.Tool;
 
 namespace GenerativeAI.Tools;
 
-
-/// <inheritdoc/>
+/// <summary>
+/// GenericFunctionTool provides a generic implementation of the <see cref="IFunctionTool"/> interface,
+/// allowing seamless interaction with a collection of tools and their corresponding functions.
+/// It utilizes the code generation capabilities available in <see href="https://www.nuget.org/packages/CSharpToJsonSchema">CSharpToJsonSchema</see> for transforming
+/// tool definitions into executable formats and managing function invocations.
+/// </summary>
 public class GenericFunctionTool:IFunctionTool
 {
     /// <summary>

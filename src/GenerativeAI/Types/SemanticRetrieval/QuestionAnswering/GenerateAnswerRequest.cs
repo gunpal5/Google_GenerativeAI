@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using GenerativeAI.Core;
 
 namespace GenerativeAI.Types;
 
@@ -8,7 +9,7 @@ namespace GenerativeAI.Types;
 /// Request to generate an answer.
 /// </summary>
 /// <seealso href="https://ai.google.dev/api/semantic-retrieval/question-answering#request-body">See Official API Documentation</seealso>
-public class GenerateAnswerRequest
+public class GenerateAnswerRequest:IContentsRequest
 {
     /// <summary>
     /// Required. The content of the current conversation with the <see cref="Model"/>.
