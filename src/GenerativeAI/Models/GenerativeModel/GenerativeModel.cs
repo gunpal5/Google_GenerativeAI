@@ -12,16 +12,49 @@ namespace GenerativeAI
     {
         #region Properties
 
+        /// <summary>
+        /// Gets or sets the system instruction used to guide the behavior of the generative model.
+        /// This property defines the overarching context or guideline for content generation,
+        /// shaping the responses produced by the model to align with specific requirements or objectives.
+        /// </summary>
         public string? SystemInstruction { get; set; }
 
+        /// <summary>
+        /// Gets or sets the name or identifier of the model used for generative tasks.
+        /// This property determines the specific model implementation to be used
+        /// for content generation and other related operations.
+        /// </summary>
         public string Model { get; set; } = GoogleAIModels.DefaultGeminiModel;
 
-        public GenerationConfig Config { get; set; } =
-            new GenerationConfig { Temperature = 0.8, MaxOutputTokens = 2048 };
+        /// <summary>
+        /// Gets or sets the configuration for content generation.
+        /// This property defines specific parameters, such as temperature and maximum output tokens,
+        /// that influence the behavior and output of the generative model. It serves as a central
+        /// customization point for tailoring the content creation process.
+        /// </summary>
+        public GenerationConfig Config { get; set; }
 
+        /// <summary>
+        /// Gets or sets the collection of safety settings that define constraints or limits
+        /// on content generation. This property is used to enforce specified safety rules
+        /// to ensure the generated content aligns with predetermined guidelines or restrictions.
+        /// </summary>
         public List<SafetySetting>? SafetySettings { get; set; } = null;
 
+        /// <summary>
+        /// Gets or sets preloaded or previously generated content associated with the generative model.
+        /// This property allows for the reuse of specific content, bypassing the need for regeneration,
+        /// while ensuring alignment with the current model configuration and constraints.
+        /// </summary>
         public CachedContent? CachedContent { get; set; }
+
+        /// <summary>
+        /// Gets or sets the client used for managing cached content operations in the generative AI model.
+        /// This property provides an interface for interacting with caching-related functionalities,
+        /// such as creating, updating, retrieving, or deleting cached content. It helps manage content efficiently
+        /// by leveraging the CachingClient within the model's context.
+        /// </summary>
+        public CachingClient CachingClient { get; set; }
        
         #endregion
 
@@ -119,6 +152,7 @@ namespace GenerativeAI
         private void InitializeClients(IPlatformAdapter platform, HttpClient? httpClient, ILogger? logger)
         {
             Files = new FileClient(platform, httpClient, logger);
+            CachingClient = new CachingClient(platform, httpClient, logger);
         }
 
         #endregion

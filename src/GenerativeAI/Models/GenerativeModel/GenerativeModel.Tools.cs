@@ -101,11 +101,14 @@ public partial class GenerativeModel
     public List<IFunctionTool> FunctionTools { get; set; } = new List<IFunctionTool>();
 
 
+    public ToolConfig? ToolConfig { get; set; }
+    
     #region Public Methods Related to Tools
 
-    public void AddFunctionTool(IFunctionTool tool)
+    public void AddFunctionTool(IFunctionTool tool, ToolConfig? toolConfig = null)
     {
         this.FunctionTools.Add(tool);
+        this.ToolConfig = toolConfig;
     }
 
     /// <summary>
@@ -134,7 +137,7 @@ public partial class GenerativeModel
         {
             foreach (var tool in FunctionTools)
             {
-                request.AddTool(tool.AsTool());
+                request.AddTool(tool.AsTool(), this.ToolConfig);
             }
         }
 

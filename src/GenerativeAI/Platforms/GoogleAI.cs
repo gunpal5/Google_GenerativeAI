@@ -1,59 +1,36 @@
-﻿using GenerativeAI.Core;
+﻿using GenerativeAI.Clients;
+using GenerativeAI.Core;
+using GenerativeAI.Types;
+using Microsoft.Extensions.Logging;
 
 namespace GenerativeAI;
 
-public class GoogleAIPlatformAdapter : IPlatformAdapter
+/// <summary>
+/// The GoogleAI class serves as the main entry point for interacting with Google's AI models.
+/// It provides methods to create generative and embedding models, as well as manage and retrieve model details.
+/// This class integrates Google's AI platform capabilities by utilizing appropriate models
+/// and configurations to handle generative AI tasks, embeddings, and other related operations.
+/// </summary>
+public class GoogleAi:GenAI
 {
-    public ApiKeyCredentials Credentials { get; }
-    public string BaseUrl { get; set; } = BaseUrls.GoogleGenerativeAI;
-    public string ApiVersion { get; set; } = ApiVersions.v1Beta;
-
-    public GoogleAIPlatformAdapter(string googleApiKey,string apiVersion = ApiVersions.v1Beta)
+    
+    /// <summary>
+    /// Implements a client adapter for Google's AI platform to facilitate integration with its generative AI services.
+    /// Provides configuration and methods for managing credentials, setting API versions, creating task URLs,
+    /// and authorizing requests for secure access to Google's AI APIs.
+    /// </summary>
+    public GoogleAi(string apiKey, string? accessToken = null, HttpClient? client = null, ILogger? logger = null):this(new GoogleAIPlatformAdapter(apiKey, accessToken), client, logger)
     {
-        Credentials = new ApiKeyCredentials(googleApiKey);
-        this.ApiVersion = apiVersion;
+      
     }
 
-    public void AddAuthorization(HttpRequestMessage request)
+    /// <summary>
+    /// Represents a specific implementation of the GenAI base class designed for Google's AI platform.
+    /// Offers functionality to interact with Google's generative AI and machine learning models.
+    /// Provides support for initialization with various parameters such as API keys, access tokens, HTTP client, and logging.
+    /// </summary>
+    public GoogleAi(IPlatformAdapter adapter, HttpClient? client = null, ILogger? logger = null):base(adapter, client, logger)
     {
-        if (request.RequestUri == null)
-            throw new InvalidOperationException("Request URI cannot be null.");
-
-        var uriBuilder = new UriBuilder(request.RequestUri);
-        var query = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
-        query["key"] = Credentials.ApiKey;
-        uriBuilder.Query = query.ToString();
-        request.RequestUri = uriBuilder.Uri;
-    }
-
-    public void ValidateCredentials()
-    {
-        Credentials.ValidateCredentials();
-    }
-
-    public Task AuthorizeAsync(CancellationToken cancellationToken = default)
-    {
-        return Task.CompletedTask;
-    }
-
-    public string GetBaseUrl(bool appendVesion = true)
-    {
-        if(appendVesion)
-            return $"{BaseUrl}/{ApiVersion}";
-        return BaseUrl;
-    }
-
-    public string CreateUrlForModel(string modelId, string task)
-    {
-        return $"{GetBaseUrl()}/{modelId.ToModelId()}:{task}";
-    }
-
-    public string CreateUrlForTunedModel(string modelId, string task)
-    {
-        return $"{GetBaseUrl()}/{modelId.ToTunedModelId()}:{task}";
-    }
-    public string GetApiVersion()
-    {
-        return ApiVersion;
+      
     }
 }

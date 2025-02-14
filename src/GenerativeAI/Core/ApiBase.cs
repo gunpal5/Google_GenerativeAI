@@ -242,7 +242,7 @@ namespace GenerativeAI.Core
         /// <param name="additionalHeaders">Optional. Additional headers to add to the request.</param>
         /// <param name="cancellationToken">Token to propagate notification that the operation should be canceled.</param>
         /// <returns>The server's response as a string.</returns>
-        public async Task<string> UploadFileWithProgressAsync(
+        protected async Task<string> UploadFileWithProgressAsync(
             string url,
             string filePath,
             Action<double> progress,
@@ -257,7 +257,7 @@ namespace GenerativeAI.Core
         }
 
 
-        public async Task<string> UploadFileWithProgressAsync(Stream stream,
+        protected async Task<string> UploadFileWithProgressAsync(Stream stream,
             string fileName,
             string mimeType,
             string url,
@@ -326,7 +326,7 @@ namespace GenerativeAI.Core
         /// <param name="url">The target endpoint URL to which the request is sent.</param>
         /// <param name="cancellationToken">A token for cancelling the operation.</param>
         /// <returns>An async stream of response items.</returns>
-        public async IAsyncEnumerable<TResponse> StreamAsync<TRequest, TResponse>(
+        protected async IAsyncEnumerable<TResponse> StreamAsync<TRequest, TResponse>(
             string url,
             TRequest payload,
             CancellationToken cancellationToken = default)

@@ -7,8 +7,14 @@ using Tool = GenerativeAI.Types.Tool;
 
 namespace GenerativeAI.Tools;
 
+
+/// <inheritdoc/>
 public class GenericFunctionTool:IFunctionTool
 {
+    /// <summary>
+    /// Represents a generic functional tool that enables interaction with a set of tools and their associated functions,
+    /// facilitating the conversion of provided tools into a compatible format for execution and integration.
+    /// </summary>
     public GenericFunctionTool(IEnumerable<CSharpToJsonSchema.Tool> tools, IReadOnlyDictionary<string, Func<string, CancellationToken, Task<string>>> calls)
     {
         Calls = calls;
@@ -16,7 +22,9 @@ public class GenericFunctionTool:IFunctionTool
     }
     public IReadOnlyDictionary<string, Func<string, CancellationToken, Task<string>>> Calls { get; private set; }
     public IReadOnlyList<CSharpToJsonSchema.Tool> Tools { get; private set; }
-    //public void Add()
+    
+   
+    /// <inheritdoc/>
     public Tool AsTool()
     {
         return new Tool()
@@ -30,12 +38,13 @@ public class GenericFunctionTool:IFunctionTool
         };
     }
 
-    Schema ToSchema(object parameters)
+    private Schema ToSchema(object parameters)
     {
         var param = JsonSerializer.Serialize(parameters);
         return JsonSerializer.Deserialize<Schema>(param);
     }
 
+    /// <inheritdoc/>
     public async Task<FunctionResponse?> CallAsync(FunctionCall functionCall, CancellationToken cancellationToken = default)
     {
         if (this.Calls.TryGetValue(functionCall.Name, out var call))
@@ -50,6 +59,7 @@ public class GenericFunctionTool:IFunctionTool
         return null;
     }
 
+    /// <inheritdoc/>
     public bool IsContainFunction(string name)
     {
         return Tools.Any(s => s.Name == name);

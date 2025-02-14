@@ -189,7 +189,7 @@ public static class GenerateContentRequestExtensions
     /// <param name="config">Optional <see cref="ToolConfig"/> for configuring the <see cref="Tool"/>.</param>
     public static void AddTool(
         this GenerateContentRequest request,
-        Tool tool, ToolConfig config = null)
+        Tool tool, ToolConfig? config = null)
     {
         request.Tools ??= new List<Tool>();
         request.Tools.Add(tool);

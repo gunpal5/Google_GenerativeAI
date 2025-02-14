@@ -14,30 +14,33 @@ public class ModelClient : BaseClient
         httpClient, logger)
     {
     }
-    
+
     /// <summary>
     /// Gets information about a specific <see cref="Model"/> such as its version number, token limits,
     /// parameters and other metadata.
     /// </summary>
     /// <param name="name">The resource name of the model.</param>
+    /// <param name="cancellationToken">The cancellation token to observe while waiting for the task to complete.</param>
     /// <returns>The <see cref="Model"/> information.</returns>
     /// <seealso href="https://ai.google.dev/api/models#method:-models.get">See Official API Documentation</seealso>
-    public async Task<Model?> GetModelAsync(string name)
+    public async Task<Model> GetModelAsync(string name, CancellationToken cancellationToken = default)
     {
         var baseUrl = _platform.GetBaseUrl();
 
         var url = $"{baseUrl}/{name.ToModelId()}";
-        return await GetAsync<Model>(url);
+        return await GetAsync<Model>(url, cancellationToken);
     }
 
     /// <summary>
     /// Lists the <see cref="Model"/>s available through the Gemini API.
     /// </summary>
     /// <param name="pageSize">The maximum number of <see cref="Model"/>s to return per page.</param>
-    /// <param name="pageToken">A page token, received from a previous <see cref="ListModelsAsync"/> call.</param>
-    /// <returns>A list of <see cref="Model"/>s.</returns>
+    /// <param name="pageToken">A page token, received from a previous <see cref="ListModelsAsync"/> call, to retrieve the next page of results.</param>
+    /// <param name="cancellationToken">The cancellation token to observe while waiting for the task to complete.</param>
+    /// <returns>A <see cref="ListModelsResponse"/> containing a list of <see cref="Model"/>s and associated metadata.</returns>
     /// <seealso href="https://ai.google.dev/api/models#method:-models.list">See Official API Documentation</seealso>
-    public async Task<ListModelsResponse?> ListModelsAsync(int? pageSize = null, string? pageToken = null)
+    public async Task<ListModelsResponse> ListModelsAsync(int? pageSize = null, string? pageToken = null,
+        CancellationToken cancellationToken = default)
     {
         var queryParams = new List<string>();
 
@@ -54,6 +57,6 @@ public class ModelClient : BaseClient
         var queryString = queryParams.Count > 0 ? "?" + string.Join("&", queryParams) : string.Empty;
         var url = $"{_platform.GetBaseUrl()}/models{queryString}";
 
-        return await GetAsync<ListModelsResponse>(url);
+        return await GetAsync<ListModelsResponse>(url,cancellationToken);
     }
 }
