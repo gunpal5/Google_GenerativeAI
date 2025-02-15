@@ -11,7 +11,7 @@ namespace GenerativeAI;
 /// This class integrates Google's AI platform capabilities by utilizing appropriate models
 /// and configurations to handle generative AI tasks, embeddings, and other related operations.
 /// </summary>
-public class GoogleAi : GenAI
+public class GoogleAi : GenAI,IGenerativeAI
 {
     /// <summary>
     /// Implements a client adapter for Google's AI platform to facilitate integration with its generative AI services.

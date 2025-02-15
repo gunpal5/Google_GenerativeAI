@@ -55,6 +55,11 @@ public class ChunkClient : BaseClient
         return await GetAsync<ListChunksResponse>(url);
     }
 
+    protected override Task AddAuthorizationHeader(HttpRequestMessage request, bool requireAccessToken = false, CancellationToken cancellationToken = default)
+    {
+        return base.AddAuthorizationHeader(request,true, cancellationToken);
+    }
+
     /// <summary>
     /// Gets a specific <see cref="Chunk"/> resource.
     /// </summary>

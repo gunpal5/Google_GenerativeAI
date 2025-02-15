@@ -105,4 +105,10 @@ public class CorpusPermissionClient : BaseClient
         var url = $"{baseUrl}/{name}";
         await DeleteAsync(url);
     }
+
+    protected override Task AddAuthorizationHeader(HttpRequestMessage request, bool requiredAccessToken = false,
+        CancellationToken cancellationToken = default)
+    {
+        return base.AddAuthorizationHeader(request, true, cancellationToken);
+    }
 }

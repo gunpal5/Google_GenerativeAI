@@ -101,4 +101,15 @@ public abstract class GenAI
     {
         return await this.ModelClient.GetModelAsync(modelName, cancellationToken);
     }
+
+    /// <summary>
+    /// Retrieves the platform adapter associated with this instance.
+    /// The platform adapter provides core functionalities, such as authorization,
+    /// URL creation, and API version management, for interacting with the underlying platform.
+    /// </summary>
+    /// <returns>The platform adapter instance implementing <see cref="IPlatformAdapter"/>.</returns>
+    public IPlatformAdapter GetPlatformAdapter()
+    {
+        return this.Platform;
+    }
 }

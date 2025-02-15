@@ -118,7 +118,8 @@ public class VertextPlatformAdapter : IPlatformAdapter
         return credentials;
     }
 
-    public async Task AddAuthorizationAsync(HttpRequestMessage request, CancellationToken cancellationToken = default)
+    public async Task AddAuthorizationAsync(HttpRequestMessage request, bool requireAccessToken,
+        CancellationToken cancellationToken = default)
     {
         if (this.Credentials == null || this.Credentials.AuthToken == null)
         {

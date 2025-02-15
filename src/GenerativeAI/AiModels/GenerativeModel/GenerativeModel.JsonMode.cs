@@ -4,6 +4,17 @@ namespace GenerativeAI;
 
 public partial class GenerativeModel
 {
+    /// <summary>
+    /// Determines whether JSON mode is enabled. JSON mode adjusts the content generation response
+    /// to specifically produce outputs in JSON format as defined in generation configurations.
+    /// </summary>
+    /// <remarks>
+    /// JSON mode is incompatible with grounding, Google Search, and code execution tools.
+    /// Enabling this mode will override other response formats with "application/json".
+    /// </remarks>
+    public bool UseJsonMode { get; set; } = false;
+
+    
     #region Generate Object
     
     /// <summary>

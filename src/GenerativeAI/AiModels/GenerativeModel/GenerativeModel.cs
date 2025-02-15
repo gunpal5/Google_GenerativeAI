@@ -8,7 +8,7 @@ namespace GenerativeAI
     /// <summary>
     /// A Generative AI Model that extends BaseModel
     /// </summary>
-    public partial class GenerativeModel : BaseModel
+    public partial class GenerativeModel : BaseModel,IGenerativeModel
     {
         #region Properties
 

@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 
 namespace GenerativeAI;
 
-public class VertexAI:GenAI
+public class VertexAI:GenAI,IGenerativeAI
 {
     public VertexAI(IPlatformAdapter platformAdapter, HttpClient? client = null, ILogger? logger = null) : base(platformAdapter, client, logger)
     {

@@ -62,8 +62,8 @@ public class FileClient : BaseClient
             }
         });
         httpMessage.Content = multipart;
-        await _platform.AddAuthorizationAsync(httpMessage);
-        var response = await HttpClient.SendAsync(httpMessage,cancellationToken);
+        await _platform.AddAuthorizationAsync(httpMessage, false, cancellationToken).ConfigureAwait(true);
+        var response = await HttpClient.SendAsync(httpMessage,cancellationToken).ConfigureAwait(true);
         await CheckAndHandleErrors(response, url);
 
         var fileResponse = await Deserialize<UploadFileResponse>(response);
@@ -80,7 +80,7 @@ public class FileClient : BaseClient
     /// <returns>The uploaded <see cref="RemoteFile"/> information.</returns>
     /// <seealso href="https://ai.google.dev/api/files#method:-media.upload">See Official API Documentation</seealso>
     public async Task<RemoteFile> UploadStreamAsync(Stream stream, string displayName, string mimeType,
-        Action<double>? progressCallback = null)
+        Action<double>? progressCallback = null,CancellationToken cancellationToken = default)
     {
         var baseUrl = _platform.GetBaseUrl(false);
         var apiVersion = _platform.GetApiVersion();
@@ -102,23 +102,25 @@ public class FileClient : BaseClient
         var json = JsonSerializer.Serialize(request, SerializerOptions);
         //Upload File
 
-        var httpMessage = new HttpRequestMessage(HttpMethod.Post, url);
-        var multipart = new MultipartContent("related");
-        multipart.Add(new StringContent(json, Encoding.UTF8, "application/json"));
-        multipart.Add(new ProgressStreamContent(stream, progressCallback)
+        using var httpMessage = new HttpRequestMessage(HttpMethod.Post, url);
+        using var multipart = new MultipartContent("related");
+        using var content2 = new StringContent(json, Encoding.UTF8, "application/json");
+        multipart.Add(content2);
+        using var content = new ProgressStreamContent(stream, progressCallback)
         {
             Headers =
             {
                 ContentType = new MediaTypeHeaderValue(mimeType),
                 ContentLength = stream.Length
             }
-        });
+        };
+        multipart.Add(content);
         httpMessage.Content = multipart;
-        await _platform.AddAuthorizationAsync(httpMessage);
-        var response = await HttpClient.SendAsync(httpMessage);
-        await CheckAndHandleErrors(response, url);
+        await _platform.AddAuthorizationAsync(httpMessage, false, cancellationToken).ConfigureAwait(true);
+        var response = await HttpClient.SendAsync(httpMessage).ConfigureAwait(true);
+        await CheckAndHandleErrors(response, url).ConfigureAwait(true);
 
-        var fileResponse = await Deserialize<UploadFileResponse>(response);
+        var fileResponse = await Deserialize<UploadFileResponse>(response).ConfigureAwait(true);
         return fileResponse.File;
     }
 

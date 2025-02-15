@@ -38,52 +38,14 @@ public partial class GenerativeModel
     /// </remarks>
     public bool UseCodeExecutionTool { get; set; } = false;
 
-    /// <summary>
-    /// Determines whether JSON mode is enabled. JSON mode adjusts the content generation response
-    /// to specifically produce outputs in JSON format as defined in generation configurations.
-    /// </summary>
-    /// <remarks>
-    /// JSON mode is incompatible with grounding, Google Search, and code execution tools.
-    /// Enabling this mode will override other response formats with "application/json".
-    /// </remarks>
-    public bool UseJsonMode { get; set; } = false;
 
-    // Used to show or hide function-call capabilities
-    /// <summary>
-    /// Determines whether function-call capabilities are automatically invoked in the generative process.
-    /// This property enables or disables the auto-execution of predefined functions as part of the model's response generation.
-    /// </summary>
-    /// <remarks>
-    /// Can be used to enhance workflow automation by allowing predefined functions to operate without manual invocation.
-    /// </remarks>
-    public bool AutoCallFunction { get; set; } = true;
-
-    /// <summary>
-    /// Enables or disables automatic function replies. When enabled, the model automatically generates responses
-    /// for functions that are invoked during an interaction without requiring explicit prompts.
-    /// </summary>
-    /// <remarks>
-    /// Useful for streamlining automated workflows involving generative AI functions.
-    /// </remarks>
-    public bool AutoReplyFunction { get; set; } = true;
-
-    /// <summary>
-    /// Determines whether function-based tools and capabilities are enabled within the generative model.
-    /// These tools can include processing mechanisms that enhance content generation or facilitate specific operations.
-    /// </summary>
-    /// <remarks>
-    /// Disabling this property prevents the model from utilizing any function-based features.
-    /// </remarks>
-    public bool FunctionEnabled { get; set; } = true;
-
-    /// <summary>
-    /// Determines whether the system automatically resolves issues caused by improper or unrecognized function calls.
-    /// When enabled, it helps ensure smoother operation by handling invalid or malformed function requests.
-    /// </summary>
-    /// <remarks>
-    /// Useful in scenarios where user-defined functions or external integrations might encounter unexpected failures.
-    /// </remarks>
-    public bool AutoHandleBadFunctionCalls { get; set; } = false;
+    public FunctionCallingBehaviour FunctionCallingBehaviour { get; set; } = new FunctionCallingBehaviour()
+    {
+        AutoCallFunction = true,
+        AutoReplyFunction = true,
+        AutoHandleBadFunctionCalls = false,
+        FunctionEnabled = true
+    };
 
     public Tool DefaultSearchTool = new Tool() { GoogleSearch = new GoogleSearchTool() };
 
@@ -105,10 +67,14 @@ public partial class GenerativeModel
     
     #region Public Methods Related to Tools
 
-    public void AddFunctionTool(IFunctionTool tool, ToolConfig? toolConfig = null)
+    public void AddFunctionTool(IFunctionTool tool, ToolConfig? toolConfig = null,FunctionCallingBehaviour? functionCallingBehaviour=null)
     {
         this.FunctionTools.Add(tool);
         this.ToolConfig = toolConfig;
+        if (functionCallingBehaviour != null)
+        {
+            this.FunctionCallingBehaviour = functionCallingBehaviour;
+        }
     }
 
     /// <summary>
@@ -116,7 +82,7 @@ public partial class GenerativeModel
     /// </summary>
     public void DisableFunctions()
     {
-        FunctionEnabled = false;
+        FunctionCallingBehaviour.FunctionEnabled = false;
     }
 
     /// <summary>
@@ -124,7 +90,7 @@ public partial class GenerativeModel
     /// </summary>
     public void EnableFunctions()
     {
-        FunctionEnabled = true;
+        FunctionCallingBehaviour.FunctionEnabled = true;
     }
 
     #endregion
@@ -133,7 +99,7 @@ public partial class GenerativeModel
 
     private void AddTools(GenerateContentRequest request)
     {
-        if (FunctionEnabled && FunctionTools.Count > 0)
+        if (FunctionCallingBehaviour.FunctionEnabled && FunctionTools.Count > 0)
         {
             foreach (var tool in FunctionTools)
             {
@@ -173,7 +139,7 @@ public partial class GenerativeModel
         CancellationToken cancellationToken)
     {
         var functionCall = response.GetFunction();
-        if (!AutoCallFunction || functionCall == null)
+        if (!FunctionCallingBehaviour.AutoCallFunction || functionCall == null)
             return response;
 
         var name = functionCall.Name ?? string.Empty;
@@ -183,7 +149,7 @@ public partial class GenerativeModel
         FunctionResponse functionResponse;
         if (tool == null)
         {
-            if (!AutoHandleBadFunctionCalls)
+            if (!FunctionCallingBehaviour.AutoHandleBadFunctionCalls)
             {
                 throw new GenerativeAIException(
                     $"AI Model called an invalid function: {name}",
@@ -210,7 +176,7 @@ public partial class GenerativeModel
         }
 
         // If enabled, pass the function result back into the model
-        if (AutoReplyFunction)
+        if (FunctionCallingBehaviour.AutoReplyFunction)
         {
             var content = functionResponse.ToFunctionCallContent();
 

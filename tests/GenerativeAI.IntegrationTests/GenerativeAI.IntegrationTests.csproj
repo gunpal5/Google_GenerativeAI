@@ -25,6 +25,7 @@
   <ItemGroup>
 	  <ProjectReference Include="..\..\src\GenerativeAI.Tools\GenerativeAI.Tools.csproj" />
 	  <ProjectReference Include="..\..\src\GenerativeAI\GenerativeAI.csproj" />
+	  <ProjectReference Include="..\GenerativeAI.TestBase\GenerativeAI.TestBase.csproj" />
   </ItemGroup>
 
 </Project>

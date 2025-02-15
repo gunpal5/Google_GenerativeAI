@@ -43,7 +43,7 @@ namespace GenerativeAI.Core
         /// Override this method in derived classes to dynamically add authorization headers.
         /// By default, this implementation does nothing.
         /// </remarks>
-        protected virtual async Task AddAuthorizationHeader(HttpRequestMessage request)
+        protected virtual async Task AddAuthorizationHeader(HttpRequestMessage request, bool requireAccessToken = false, CancellationToken cancellationToken = default)
         {
             // No action in the base class; override in derived classes to add specific headers.
         }

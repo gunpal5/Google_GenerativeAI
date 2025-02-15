@@ -1,4 +1,6 @@
-﻿using GenerativeAI.Core;
+﻿using GenerativeAI.Authenticators;
+using GenerativeAI.Core;
+using Microsoft.Extensions.Logging;
 
 namespace GenerativeAI;
 
@@ -14,7 +16,7 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
     /// This property provides an instance of <see cref="GoogleAICredentials"/> which encapsulates
     /// the API key and optionally an access token required for authorization.
     /// </summary>
-    public GoogleAICredentials Credentials { get; }
+    public GoogleAICredentials Credentials { get; private set; }
 
     /// <summary>
     /// Gets or sets the base URL used for making requests to the Google AI Generative API.
@@ -28,16 +30,25 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
     /// with the Google AI platform. This property must be set to a valid version string defined in <see cref="ApiVersions"/>.
     /// </summary>
     public string ApiVersion { get; set; } = ApiVersions.v1Beta;
-    
+
     IGoogleAuthenticator? Authenticator { get; set; }
+    bool ValidateAccessToken { get; set; } = true;
+    ILogger? Logger { get; set; }
 
     /// Represents an adapter to interact with the Google GenAI Platform.
     /// This class is responsible for managing API calls, constructing URLs,
     /// adding authorization headers, and handling versioning for the Google GenAI API.
-    public GoogleAIPlatformAdapter(string googleApiKey, string apiVersion = ApiVersions.v1Beta)
+    public GoogleAIPlatformAdapter(string googleApiKey, string apiVersion = ApiVersions.v1Beta,
+        string? accessToken = null, IGoogleAuthenticator? authenticator = null, bool validateAccessToken = true,
+        ILogger? logger = null)
     {
         Credentials = new GoogleAICredentials(googleApiKey);
         this.ApiVersion = apiVersion;
+        this.Authenticator = authenticator;
+        if (!string.IsNullOrEmpty(accessToken))
+            Credentials.AuthToken = new AuthTokens(accessToken);
+        this.ValidateAccessToken = validateAccessToken;
+        this.Logger = logger;
     }
 
     /// <summary>
@@ -45,22 +56,112 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
     /// This includes both API key and OAuth2 Bearer token as applicable.
     /// </summary>
     /// <param name="request">The HTTP request message to which the authorization headers will be added.</param>
+    /// <param name="requireAccessToken"></param>
     /// <param name="cancellationToken"></param>
-    public async Task AddAuthorizationAsync(HttpRequestMessage request, CancellationToken cancellationToken = default)
+    public async Task AddAuthorizationAsync(HttpRequestMessage request, bool requireAccessToken,
+        CancellationToken cancellationToken = default)
     {
-        this.ValidateCredentialsAsync(cancellationToken);
-        if(!string.IsNullOrEmpty(Credentials.ApiKey))
-            request.Headers.Add("x-goog-api-key",Credentials.ApiKey);
-        if(this.Credentials.AuthToken!=null &&  this.Credentials.AuthToken.Validate())
-            request.Headers.Add("Authorization","Bearer "+Credentials.AuthToken.AccessToken);
+        if (!requireAccessToken)
+        {
+            await this.ValidateCredentialsAsync(cancellationToken).ConfigureAwait(true);
+            if (!string.IsNullOrEmpty(Credentials.ApiKey))
+                request.Headers.Add("x-goog-api-key", Credentials.ApiKey);
+            if (this.Credentials.AuthToken != null && this.Credentials.AuthToken.Validate())
+                request.Headers.Add("Authorization", "Bearer " + Credentials.AuthToken.AccessToken);
+        }
+        else
+        {
+            if (this.Credentials == null || this.Credentials.AuthToken == null)
+            {
+                await this.AuthorizeAsync(cancellationToken).ConfigureAwait(true);
+            }
+
+            if (this.Credentials != null && this.Credentials.AuthToken != null &&
+                !this.Credentials.AuthToken.Validate())
+            {
+                if (this.Authenticator != null)
+                {
+                    var newToken =
+                        await this.Authenticator.RefreshAccessTokenAsync(this.Credentials.AuthToken, cancellationToken).ConfigureAwait(true);
+                    if (newToken != null)
+                    {
+                        this.Credentials.AuthToken.AccessToken = newToken.AccessToken;
+                        this.Credentials.AuthToken.ExpiryTime = newToken.ExpiryTime;
+                    }
+                    else
+                    {
+                        Logger?.LogError("Error while refreshing access token. Please try again.");
+                        throw new UnauthorizedAccessException("Error while refreshing access token. Please try again.");
+                    }
+                }
+            }
+
+            await this.ValidateCredentialsAsync(true, cancellationToken).ConfigureAwait(true);
+
+            if (!string.IsNullOrEmpty(Credentials.ApiKey))
+                request.Headers.Add("x-goog-api-key", Credentials.ApiKey);
+            if (this.Credentials.AuthToken != null && !string.IsNullOrEmpty(Credentials.AuthToken.AccessToken))
+                request.Headers.Add("Authorization", "Bearer " + Credentials.AuthToken.AccessToken);
+        }
+    }
+
+    public async Task ValidateCredentialsAsync(CancellationToken cancellationToken = default)
+    {
+        await ValidateCredentialsAsync(false, cancellationToken).ConfigureAwait(true);
+        
     }
 
     /// Validates the current credentials by ensuring that the API Key or
     /// Access Token is present. If neither is available, an exception is thrown.
     /// <param name="cancellationToken"></param>
-    public async Task ValidateCredentialsAsync(CancellationToken cancellationToken = default)
+    public async Task ValidateCredentialsAsync(bool requireAccessToken, CancellationToken cancellationToken = default)
     {
-        Credentials.ValidateCredentials();
+        if (!requireAccessToken)
+        {
+            Credentials.ValidateCredentials();
+        }
+        else
+        {
+            if (this.Credentials == null)
+                throw new Exception("Credentials are required for Google Gemini AI.");
+            if (ValidateAccessToken && this.Credentials.AuthToken != null &&
+                !this.Credentials.AuthToken.ExpiryTime.HasValue)
+            {
+                if (this.Authenticator == null)
+                {
+                    var adcAuthenticator = new GoogleCloudAdcAuthenticator();
+                    var token = await adcAuthenticator.ValidateAccessTokenAsync(Credentials.AuthToken.AccessToken, true,
+                        cancellationToken).ConfigureAwait(true);
+                    // this.Credentials.AuthToken.AccessToken = token.AccessToken;
+                    this.Credentials.AuthToken.ExpiryTime = token.ExpiryTime;
+                }
+                else
+                {
+                    var token = await this.Authenticator.ValidateAccessTokenAsync(Credentials.AuthToken.AccessToken,
+                        false, cancellationToken).ConfigureAwait(true);
+                    if (token != null)
+                    {
+                        //this.Credentials.AuthToken.AccessToken = token.AccessToken;
+                        this.Credentials.AuthToken.ExpiryTime = token.ExpiryTime;
+                    }
+                    else
+                    {
+                        var newToken = await this.Authenticator.GetAccessTokenAsync(cancellationToken).ConfigureAwait(true);
+                        if (newToken != null)
+                        {
+                            this.Credentials.AuthToken.AccessToken = newToken.AccessToken;
+                            this.Credentials.AuthToken.ExpiryTime = newToken.ExpiryTime;
+                        }
+                        else throw new UnauthorizedAccessException("Access token is invalid.");
+                    }
+                }
+            }
+
+            if (!this.Credentials.AuthToken.Validate())
+            {
+                throw new UnauthorizedAccessException("Access token is invalid.");
+            }
+        }
     }
 
     /// Asynchronously authorizes the adapter for interaction with the Google GenAI API.
@@ -71,9 +172,28 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
     /// <return>
     /// A task representing the asynchronous operation.
     /// </return>
-    public Task AuthorizeAsync(CancellationToken cancellationToken = default)
+    public async Task AuthorizeAsync(CancellationToken cancellationToken = default)
     {
-        return Task.CompletedTask;
+        //Authorize Through ADC
+        if (this.Authenticator == null)
+            this.Authenticator = new GoogleCloudAdcAuthenticator();
+
+        var existingToken = this.Credentials?.AuthToken;
+
+        var token = await Authenticator.GetAccessTokenAsync(cancellationToken);
+
+        if (this.Credentials == null)
+            this.Credentials = new GoogleAICredentials("", token.AccessToken, token.ExpiryTime);
+        else
+        {
+            if (this.Credentials.AuthToken == null)
+                this.Credentials.AuthToken = token;
+            else
+            {
+                this.Credentials.AuthToken.AccessToken = token.AccessToken;
+                this.Credentials.AuthToken.ExpiryTime = token.ExpiryTime;
+            }
+        }
     }
 
     /// <summary>
@@ -84,7 +204,7 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
     /// <returns>The base URL for the Google Generative AI platform, with or without the API version appended, based on the parameter value.</returns>
     public string GetBaseUrl(bool appendVesion = true)
     {
-        if(appendVesion)
+        if (appendVesion)
             return $"{BaseUrl}/{ApiVersion}";
         return BaseUrl;
     }

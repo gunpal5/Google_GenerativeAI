@@ -126,4 +126,10 @@ public class CorporaClient : BaseClient
 
         await DeleteAsync(url + queryString);
     }
+
+    protected override Task AddAuthorizationHeader(HttpRequestMessage request, bool requiredAccessToken = false,
+        CancellationToken cancellationToken = default)
+    {
+        return base.AddAuthorizationHeader(request, true, cancellationToken);
+    }
 }
