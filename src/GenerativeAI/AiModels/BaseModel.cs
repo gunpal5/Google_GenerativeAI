@@ -144,6 +144,7 @@ public abstract class BaseModel : BaseClient
     protected async Task<GenerateAnswerResponse> GenerateAnswerAsync(string model, GenerateAnswerRequest request,CancellationToken cancellationToken=default)
     {
         var url = $"{_platform.GetBaseUrl()}/{model.ToModelId()}:{GenerativeModelTasks.GenerateAnswer}";
+     
         return await SendAsync<GenerateAnswerRequest, GenerateAnswerResponse>(url, request, HttpMethod.Post, cancellationToken);
     }
 }

@@ -12,8 +12,8 @@ public class BaseClient:ApiBase
         _platform = platform;
     }
 
-    protected override void AddAuthorizationHeader(HttpRequestMessage request)
+    protected override async Task AddAuthorizationHeader(HttpRequestMessage request)
     {
-        _platform.AddAuthorization(request);
+        await _platform.AddAuthorizationAsync(request);
     }
 }

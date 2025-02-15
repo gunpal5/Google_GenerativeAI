@@ -20,16 +20,17 @@ public class GoogleAICredentials : ICredentials
     /// This token is used for OAuth2-based authentication and is typically
     /// required when an API Key alone is insufficient for certain protected resources.
     /// </summary>
-    public string? AccessToken { get; }
+    public AuthTokens? AuthToken { get; set; }
 
     /// <summary>
     /// Represents the credentials required to authenticate with Google AI Generative APIs.
     /// Manages the API Key and optional Access Token necessary for making API requests.
     /// </summary>
-    public GoogleAICredentials(string apiKey,string? accessToken = null)
+    public GoogleAICredentials(string apiKey,string? accessToken = null, DateTime? expiry = null)
     {
         this.ApiKey = apiKey;
-        this.AccessToken = accessToken;
+        if(!string.IsNullOrEmpty(accessToken))
+            this.AuthToken = new AuthTokens(accessToken, expiryTime:expiry);
     }
 
     /// <summary>
@@ -42,7 +43,7 @@ public class GoogleAICredentials : ICredentials
     /// </exception>
     public void ValidateCredentials()
     {
-        if(string.IsNullOrEmpty(ApiKey) && string.IsNullOrEmpty(this.AccessToken))
+        if(string.IsNullOrEmpty(ApiKey) && this.AuthToken ==null && this.AuthToken.Validate())
             throw new Exception("API Key or Access Token is required to call the API.");
     }
 }

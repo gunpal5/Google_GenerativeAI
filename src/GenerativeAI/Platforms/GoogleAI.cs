@@ -32,4 +32,18 @@ public class GoogleAi : GenAI
         logger)
     {
     }
+
+    public override GenerativeModel CreateGenerativeModel(string modelName, GenerationConfig? config = null,
+        ICollection<SafetySetting>? safetyRatings = null, string? systemInstruction = null)
+    {
+        return new GeminiModel(this.Platform, modelName, config, safetyRatings, systemInstruction, this.HttpClient,
+            this.Logger);
+    }
+    
+    public GeminiModel CreateGeminiModel(string modelName, GenerationConfig? config = null,
+        ICollection<SafetySetting>? safetyRatings = null, string? systemInstruction = null)
+    {
+        return new GeminiModel(this.Platform, modelName, config, safetyRatings, systemInstruction, this.HttpClient,
+            this.Logger);
+    }
 }

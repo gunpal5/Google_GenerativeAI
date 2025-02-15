@@ -53,7 +53,7 @@ public partial class GenerativeModel
     /// Generates content asynchronously based on the provided text prompt and an inline file path.
     /// </summary>
     /// <param name="prompt">The input text prompt used for generating content.</param>
-    /// <param name="filePath">The path to an file that should be included in the content generation request.</param>
+    /// <param name="fileUri">The URI to an file that should be included in the content generation request.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A task that represents the asynchronous operation, containing the <see cref="GenerateContentResponse"/> or null if content generation fails.</returns>
     /// <seealso href="https://ai.google.dev/gemini-api/docs/vision">See Official API Documentation For Vision Capabilities</seealso>
@@ -61,15 +61,17 @@ public partial class GenerativeModel
    
     public async Task<GenerateContentResponse> GenerateContentAsync(
         string prompt,
-        string filePath,
+        string fileUri,
+        string mimeType,
         CancellationToken cancellationToken = default)
     {
         var request = new GenerateContentRequest();
 
         request.AddContent(new Content(){Role = Roles.User});
-        await AppendFile(filePath, request,cancellationToken);
-        
+        //await AppendFile(filePath, request,cancellationToken);
+        request.AddRemoteFile(fileUri, mimeType);
         request.AddText(prompt);
+        
 
         return await GenerateContentAsync(request, cancellationToken).ConfigureAwait(false);
     }
@@ -146,26 +148,26 @@ public partial class GenerativeModel
     }
 
     /// <summary>
-    /// Streams content generation asynchronously based on the provided prompt and file path.
+    /// Streams content generation asynchronously based on the given input prompt, file URI, and MIME type.
     /// </summary>
-    /// <param name="prompt">The input string prompt used to generate and stream content.</param>
-    /// <param name="filePath">The file path associated with the generation operation.</param>
-    /// <param name="cancellationToken">A token to observe for cancellation requests.</param>
-    /// <returns>An asynchronous enumerable containing instances of <see cref="GenerateContentResponse"/> representing the streamed generated content.</returns>
-    /// <seealso href="https://ai.google.dev/gemini-api/docs/vision">See Official API Documentation For Vision Capabilities</seealso>
-    /// <seealso href="https://ai.google.dev/gemini-api/docs/audio">See Official API Documentation For Audio Understanding</seealso>
-
-    
-    
+    /// <param name="prompt">The input string used as a prompt for generating and streaming content.</param>
+    /// <param name="fileUri">The URI of the file to be used for content generation.</param>
+    /// <param name="mimeType">The MIME type associated with the provided file URI.</param>
+    /// <param name="cancellationToken">Token to monitor for cancellation requests.</param>
+    /// <returns>An asynchronous enumerable of <see cref="GenerateContentResponse"/> instances representing the streamed content responses.</returns>
+    /// <seealso href="https://ai.google.dev/gemini-api/docs/vision">See Official Vision API Documentation</seealso>
+    /// <seealso href="https://ai.google.dev/gemini-api/docs/audio">See Official Audio API Documentation</seealso>
     public async IAsyncEnumerable<GenerateContentResponse> StreamContentAsync(
         string prompt,
-        string filePath,
+        string fileUri,
+        string mimeType,
         CancellationToken cancellationToken = default)
     {
         var request = new GenerateContentRequest();
 
-        request.AddContent(new Content(){Role = Roles.User});
-        await AppendFile(filePath, request, cancellationToken);
+        request.AddContent(new Content() { Role = Roles.User });
+        //await AppendFile(filePath, request, cancellationToken);
+        request.AddRemoteFile(fileUri, mimeType);
         request.AddText(prompt);
 
         await foreach (var streamedItem in StreamContentAsync(request, cancellationToken))

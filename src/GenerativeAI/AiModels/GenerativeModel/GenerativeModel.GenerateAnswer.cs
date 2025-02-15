@@ -14,6 +14,14 @@ public partial class GenerativeModel
     public async Task<GenerateAnswerResponse> GenerateAnswerAsync(GenerateAnswerRequest request,
         CancellationToken cancellationToken = default)
     {
+        if (request.AnswerStyle == AnswerStyle.ANSWER_STYLE_UNSPECIFIED)
+            request.AnswerStyle = AnswerStyle.ABSTRACTIVE;
+
+        if (request.InlinePassages == null && request.SemanticRetriever == null)
+        {
+            throw new ArgumentNullException(nameof(request.InlinePassages), "Grounding source is required. either InlinePassages or SemanticRetriever set.");
+        }
+
         return await GenerateAnswerAsync(Model, request, cancellationToken);
     }
 
@@ -26,13 +34,21 @@ public partial class GenerativeModel
     /// <param name="cancellationToken">A token to monitor for cancellation requests during the asynchronous operation.</param>
     /// <returns>Returns a <see cref="GenerateAnswerResponse"/> object containing the generated response and associated metadata.</returns>
     /// <seealso href="https://ai.google.dev/gemini-api/docs/question_answering#method:-models.generateanswer">See Official API Documentation</seealso>
-    public async Task<GenerateAnswerResponse> GenerateAnswerAsync(string prompt, AnswerStyle? answerStyle = null,
+    public async Task<GenerateAnswerResponse> GenerateAnswerAsync(string prompt,  AnswerStyle answerStyle = AnswerStyle.ABSTRACTIVE,
         ICollection<SafetySetting>? safetySettings = null,
         CancellationToken cancellationToken = default)
     {
         var request = new GenerateAnswerRequest();
         request.AddText(prompt);
-        request.AnswerStyle = answerStyle ?? AnswerStyle.ANSWER_STYLE_UNSPECIFIED;
+        // if(groundingSource ==null)
+        //     throw new ArgumentNullException(nameof(groundingSource));
+        // if(groundingSource.InlinePassages!=null)
+        //     request.InlinePassages = groundingSource.InlinePassages;
+        // else if(groundingSource.SemanticRetriever !=null)
+        //     request.SemanticRetriever = groundingSource.SemanticRetriever;
+        // else throw new ArgumentNullException(nameof(groundingSource), "Grounding source must have either InlinePassages or SemanticRetriever set.");
+        
+        
         request.SafetySettings = safetySettings == null ? this.SafetySettings : safetySettings.ToList();
         return await GenerateAnswerAsync(Model, request, cancellationToken);
     }

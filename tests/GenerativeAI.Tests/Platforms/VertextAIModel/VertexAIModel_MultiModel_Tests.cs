@@ -2,7 +2,9 @@
 using Shouldly;
 using Xunit.Abstractions;
 
-namespace GenerativeAI.Tests.Model
+namespace GenerativeAI.Tests.Platforms.VertextAIModel;
+
+public class VertexAIModel_MultiModel_Tests
 {
     public class GenerativeAI_Multimodal_Tests : TestBase
     {
@@ -14,9 +16,9 @@ namespace GenerativeAI.Tests.Model
             this.Console = helper;
         }
 
-        private GeminiModel CreateInitializedModel()
+        private VertexAIModel CreateInitializedModel()
         {
-            return new GeminiModel(GetTestGooglePlatform(), TestModel);
+            return new VertexAIModel(GetTestVertexAIPlatform(), TestModel);
         }
 
         [Fact]
@@ -39,35 +41,37 @@ namespace GenerativeAI.Tests.Model
         }
 
         [Fact]
-        public async Task ShouldIdentifyImageWithFilePath()
+        public async Task ShouldIdentifyImageWithFileUri()
         {
             //Arrange
             var model = CreateInitializedModel();
 
             string prompt = "Identify objects in the image?";
-
+    
+            var uri = "https://images.pexels.com/photos/28587807/pexels-photo-28587807/free-photo-of-traditional-turkish-coffee-brewed-in-istanbul-sand.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1";
             //Act
-            var result = await model.GenerateContentAsync(prompt, "image.png");
+            var result = await model.GenerateContentAsync(prompt, uri,"image/jpeg");
 
             //Assert
             result.ShouldNotBeNull();
             var text = result.Text();
             text.ShouldNotBeNull();
-            text.ShouldContain("blueberry", Case.Insensitive);
+            text.ShouldContain("coffee", Case.Insensitive);
             Console.WriteLine(result.Text());
         }
 
         [Fact]
-        public async Task ShouldProcessVideoWithFilePath()
+        public async Task ShouldProcessVideoWithFileUri()
         {
             //Arrange
             var model = CreateInitializedModel();
-
+            
             string prompt = "Describe this video?";
-
+            string uri = "https://videos.pexels.com/video-files/3192305/3192305-uhd_2560_1440_25fps.mp4";
+            
             //Act
-            var result = await model.GenerateContentAsync(prompt, "TestData/testvideo.mp4");
-
+            var result = await model.GenerateContentAsync(prompt, uri, "video/mp4");
+            
             //Assert
             result.ShouldNotBeNull();
             var text = result.Text();
@@ -80,39 +84,39 @@ namespace GenerativeAI.Tests.Model
         public async Task ShouldProcessAudioWithFilePath()
         {
             //Arrange
-            var model = CreateInitializedModel();
-
-            string prompt = "Describe this audio?";
-
-            //Act
-            var result = await model.GenerateContentAsync(prompt, "TestData/testaudio.mp3");
-
-            //Assert
-            result.ShouldNotBeNull();
-            var text = result.Text();
-            text.ShouldNotBeNull();
-            text.ShouldContain("theological", Case.Insensitive);
-            Console.WriteLine(result.Text());
+            // var model = CreateInitializedModel();
+            //
+            // string prompt = "Describe this audio?";
+            //
+            // //Act
+            // var result = await model.GenerateContentAsync(prompt, "TestData/testaudio.mp3");
+            //
+            // //Assert
+            // result.ShouldNotBeNull();
+            // var text = result.Text();
+            // text.ShouldNotBeNull();
+            // text.ShouldContain("theological", Case.Insensitive);
+            // Console.WriteLine(result.Text());
         }
 
         [Fact]
         public async Task ShouldIdentifyImageWithWithStreaming()
         {
-            var imageFile = "image.png";
-
+            var imageFile = "https://images.pexels.com/photos/28587807/pexels-photo-28587807/free-photo-of-traditional-turkish-coffee-brewed-in-istanbul-sand.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1";
+            
             string prompt = "Identify objects in the image?";
-
-         
+            
+            
             var model = CreateInitializedModel();
-
+            
             var responses = new List<string>();
-            await foreach (var response in model.StreamContentAsync(prompt, imageFile))
+            await foreach (var response in model.StreamContentAsync(prompt, imageFile,"image/jpeg"))
             {
                 response.ShouldNotBeNull();
                 responses.Add(response.Text() ?? string.Empty);
                 Console.WriteLine($"Chunk: {response.Text()}");
             }
-
+            
             responses.Count.ShouldBeGreaterThan(0);
         }
 

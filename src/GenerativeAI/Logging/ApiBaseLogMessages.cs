@@ -20,7 +20,7 @@ internal static partial class ApiBaseLogMessages
     /// </summary>
     /// <param name="logger">The <see cref="ILogger"/> instance used for logging.</param>
     /// <param name="url">The URL of the API endpoint being requested.</param>
-    [LoggerMessage(EventId = 1, Level = LogLevel.Information, Message = "Sending GET request to URL: {Url}")]
+    [LoggerMessage(EventId = 1, Level = LogLevel.Debug, Message = "Sending GET request to URL: {Url}")]
     public static partial void LogGetRequest(this ILogger logger, string url);
 
     /// <summary>
@@ -39,7 +39,7 @@ internal static partial class ApiBaseLogMessages
     /// <param name="logger">The <see cref="ILogger"/> instance used for logging.</param>
     /// <param name="url">The URL of the API endpoint that responded successfully.</param>
     /// <param name="content">The content of the response returned by the API.</param>
-    [LoggerMessage(EventId = 3, Level = LogLevel.Information, Message = "Successful response from {Url}: {Content}")]
+    [LoggerMessage(EventId = 3, Level = LogLevel.Debug, Message = "Successful response from {Url}: {Content}")]
     public static partial void LogSuccessfulGetResponse(this ILogger logger, string url, string content);
 
     /// <summary>
@@ -56,7 +56,7 @@ internal static partial class ApiBaseLogMessages
     /// <param name="httpMethod">The HTTP method used for the request (e.g., POST, PUT, or PATCH).</param>
     /// <param name="url">The URL of the API endpoint being requested.</param>
     /// <param name="payload">The payload data sent as part of the request body.</param>
-    [LoggerMessage(EventId = 5, Level = LogLevel.Information,
+    [LoggerMessage(EventId = 5, Level = LogLevel.Debug,
         Message = "Sending {HttpMethod} request to URL: {Url} with payload: {@Payload}")]
     public static partial void LogHttpRequest(this ILogger logger, string httpMethod, string url, object payload);
 
@@ -66,7 +66,7 @@ internal static partial class ApiBaseLogMessages
     /// <param name="logger">The <see cref="ILogger"/> instance used for logging.</param>
     /// <param name="url">The URL of the API endpoint that responded successfully.</param>
     /// <param name="content">The content of the response returned by the API.</param>
-    [LoggerMessage(EventId = 6, Level = LogLevel.Information, Message = "Successful response from {Url}: {Content}")]
+    [LoggerMessage(EventId = 6, Level = LogLevel.Debug, Message = "Successful response from {Url}: {Content}")]
     public static partial void LogSuccessfulHttpResponse(this ILogger logger, string url, string content);
 
     /// <summary>

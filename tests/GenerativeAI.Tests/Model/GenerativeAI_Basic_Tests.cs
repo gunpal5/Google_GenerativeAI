@@ -18,7 +18,6 @@ namespace GenerativeAI.Tests.Model
         ordererAssemblyName: "GenerativeAI.Tests")]
     public class GenerativeModel_Tests : TestBase
     {
-        // New local constant for referencing the default Gemini model in tests
         private const string DefaultTestModelName = GoogleAIModels.DefaultGeminiModel;
 
         public GenerativeModel_Tests(ITestOutputHelper helper) : base(helper)

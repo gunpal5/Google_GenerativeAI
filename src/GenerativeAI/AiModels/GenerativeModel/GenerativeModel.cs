@@ -75,7 +75,7 @@ namespace GenerativeAI
         /// </remarks>
         public GenerativeModel(
             IPlatformAdapter platform,
-            string model,
+            string? model,
             GenerationConfig config = null,
             ICollection<SafetySetting>? safetySettings = null,
             string? systemInstruction = null,
@@ -83,6 +83,8 @@ namespace GenerativeAI
             ILogger? logger = null)
             : base(platform, httpClient, logger)
         {
+            model ??= EnvironmentVariables.GOOGLE_AI_MODEL ?? GoogleAIModels.DefaultGeminiModel;
+            
             Initialize(platform, model, config, safetySettings, systemInstruction);
             InitializeClients(platform, httpClient, logger);
         }
@@ -105,7 +107,7 @@ namespace GenerativeAI
         /// </remarks>
         public GenerativeModel(string apiKey, ModelParams modelParams, HttpClient? client = null,
             ILogger? logger = null) : this(new GoogleAIPlatformAdapter(apiKey),
-            modelParams.Model ?? GoogleAIModels.DefaultGeminiModel, modelParams.GenerationConfig,
+            modelParams.Model ?? EnvironmentVariables.GOOGLE_AI_MODEL ?? GoogleAIModels.DefaultGeminiModel, modelParams.GenerationConfig,
             modelParams.SafetySettings, modelParams.SystemInstruction, client, logger)
         {
         }
@@ -129,12 +131,12 @@ namespace GenerativeAI
         /// <remarks>
         /// The class also includes methods to validate and prepare content generation requests, along with the ability to initialize a conversational chat session.
         /// </remarks>
-        public GenerativeModel(string apiKey, string model,
+        public GenerativeModel(string apiKey, string? model,
             GenerationConfig config = null,
             ICollection<SafetySetting>? safetySettings = null,
             string? systemInstruction = null,
             HttpClient? httpClient = null,
-            ILogger? logger = null) : this(new GoogleAIPlatformAdapter(apiKey), model, config, safetySettings,
+            ILogger? logger = null) : this(new GoogleAIPlatformAdapter(apiKey), model??EnvironmentVariables.GOOGLE_AI_MODEL??GoogleAIModels.DefaultGeminiModel, config, safetySettings,
             systemInstruction, httpClient, logger)
         {
         }
@@ -151,7 +153,7 @@ namespace GenerativeAI
 
         private void InitializeClients(IPlatformAdapter platform, HttpClient? httpClient, ILogger? logger)
         {
-            Files = new FileClient(platform, httpClient, logger);
+            //Files = new FileClient(platform, httpClient, logger);
             CachingClient = new CachingClient(platform, httpClient, logger);
         }
 

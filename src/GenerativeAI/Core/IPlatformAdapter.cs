@@ -2,11 +2,15 @@
 
 public interface IPlatformAdapter
 {
-    void AddAuthorization(HttpRequestMessage request);
-    void ValidateCredentials();
+    Task AddAuthorizationAsync(HttpRequestMessage request, CancellationToken cancellationToken = default);
+    Task ValidateCredentialsAsync(CancellationToken cancellationToken = default);
     Task AuthorizeAsync(CancellationToken cancellationToken = default);
     string GetBaseUrl(bool appendVesion = true);
+    string GetBaseUrlForFile();
     string CreateUrlForModel(string modelId,string task);
     string CreateUrlForTunedModel(string modelId, string task);
     string GetApiVersion();
+    object GetApiVersionForFile();
+    
+    
 }

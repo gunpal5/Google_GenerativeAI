@@ -36,11 +36,11 @@ public abstract class GenAI
     /// </summary>
     public ModelClient ModelClient { get; }
    
-    protected GenAI(IPlatformAdapter platformAdapter, HttpClient? client = null, ILogger? looger = null)
+    protected GenAI(IPlatformAdapter platformAdapter, HttpClient? client = null, ILogger? logger = null)
     {
         this.Platform = platformAdapter;
         this.HttpClient = client;
-        this.Logger = looger;
+        this.Logger = logger;
         this.ModelClient = new ModelClient(this.Platform, this.HttpClient, this.Logger);
     }
     
@@ -57,7 +57,7 @@ public abstract class GenAI
     /// <param name="systemInstruction">Optional system-wide instruction to apply
     /// when the model processes requests or generates responses.</param>
     /// <returns>An instance of <see cref="GenerativeModel"/> configured with the specified parameters.</returns>
-    public GenerativeModel CreateGenerativeModel(string modelName, GenerationConfig? config = null,
+    public virtual GenerativeModel CreateGenerativeModel(string modelName, GenerationConfig? config = null,
         ICollection<SafetySetting>? safetyRatings = null, string? systemInstruction = null)
     {
         return new GenerativeModel(this.Platform, modelName, config, safetyRatings, systemInstruction, this.HttpClient,

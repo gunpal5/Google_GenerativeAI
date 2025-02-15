@@ -15,9 +15,19 @@ public abstract class TestBase
     {
         this.Console = testOutputHelper;
     }
-    protected IPlatformAdapter GetTestGooglePlatform()
+    protected static IPlatformAdapter GetTestGooglePlatform()
     {
+        //return GetTestVertexAIPlatform();
         var apiKey = Environment.GetEnvironmentVariable("Gemini_API_Key", EnvironmentVariableTarget.User);
         return new GoogleAIPlatformAdapter(apiKey);
+    }
+    
+    protected static IPlatformAdapter GetTestVertexAIPlatform()
+    {
+        var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY", EnvironmentVariableTarget.User);
+        var projectId = Environment.GetEnvironmentVariable("GOOGLE_PROJECT_ID", EnvironmentVariableTarget.User);
+        var region = Environment.GetEnvironmentVariable("GOOGLE_REGION", EnvironmentVariableTarget.User);
+
+        return new VertextPlatformAdapter(projectId, region,false, apiKey);
     }
 }

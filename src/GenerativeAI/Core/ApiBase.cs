@@ -43,7 +43,7 @@ namespace GenerativeAI.Core
         /// Override this method in derived classes to dynamically add authorization headers.
         /// By default, this implementation does nothing.
         /// </remarks>
-        protected virtual void AddAuthorizationHeader(HttpRequestMessage request)
+        protected virtual async Task AddAuthorizationHeader(HttpRequestMessage request)
         {
             // No action in the base class; override in derived classes to add specific headers.
         }
@@ -65,7 +65,7 @@ namespace GenerativeAI.Core
 
                 var request = new HttpRequestMessage(HttpMethod.Get, new Uri(url));
 
-                AddAuthorizationHeader(request);
+                await AddAuthorizationHeader(request);
 
                 // Send GET request
                 var response = await _httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
@@ -116,7 +116,7 @@ namespace GenerativeAI.Core
                     Content = new StringContent(jsonPayload, System.Text.Encoding.UTF8, "application/json")
                 };
 
-                AddAuthorizationHeader(request);
+                await AddAuthorizationHeader(request);
 
                 // Send HTTP request
                 var response = await _httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
@@ -211,7 +211,7 @@ namespace GenerativeAI.Core
 
                 using var request = new HttpRequestMessage(HttpMethod.Delete, url);
 
-                AddAuthorizationHeader(request);
+                await AddAuthorizationHeader(request);
 
                 // Send DELETE request
                 var response = await _httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
@@ -286,7 +286,7 @@ namespace GenerativeAI.Core
                     Content = form
                 };
 
-                AddAuthorizationHeader(request);
+                await AddAuthorizationHeader(request);
 
                 var response = await _httpClient
                     .SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken)
@@ -344,7 +344,7 @@ namespace GenerativeAI.Core
             using var requestContent = new StreamContent(ms);
             requestContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             request.Content = requestContent;
-            AddAuthorizationHeader(request);
+            await AddAuthorizationHeader(request);
             // Call your existing SendAsync method (assumed to handle HttpCompletionOption, etc.)
             using var response = await HttpClient
                 .SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);

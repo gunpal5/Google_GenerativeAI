@@ -62,7 +62,7 @@ public class FileClient : BaseClient
             }
         });
         httpMessage.Content = multipart;
-        _platform.AddAuthorization(httpMessage);
+        await _platform.AddAuthorizationAsync(httpMessage);
         var response = await HttpClient.SendAsync(httpMessage,cancellationToken);
         await CheckAndHandleErrors(response, url);
 
@@ -114,7 +114,7 @@ public class FileClient : BaseClient
             }
         });
         httpMessage.Content = multipart;
-        _platform.AddAuthorization(httpMessage);
+        await _platform.AddAuthorizationAsync(httpMessage);
         var response = await HttpClient.SendAsync(httpMessage);
         await CheckAndHandleErrors(response, url);
 

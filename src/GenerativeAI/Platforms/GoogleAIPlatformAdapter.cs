@@ -28,11 +28,13 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
     /// with the Google AI platform. This property must be set to a valid version string defined in <see cref="ApiVersions"/>.
     /// </summary>
     public string ApiVersion { get; set; } = ApiVersions.v1Beta;
+    
+    IGoogleAuthenticator? Authenticator { get; set; }
 
     /// Represents an adapter to interact with the Google GenAI Platform.
     /// This class is responsible for managing API calls, constructing URLs,
     /// adding authorization headers, and handling versioning for the Google GenAI API.
-    public GoogleAIPlatformAdapter(string googleApiKey,string apiVersion = ApiVersions.v1Beta)
+    public GoogleAIPlatformAdapter(string googleApiKey, string apiVersion = ApiVersions.v1Beta)
     {
         Credentials = new GoogleAICredentials(googleApiKey);
         this.ApiVersion = apiVersion;
@@ -43,18 +45,20 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
     /// This includes both API key and OAuth2 Bearer token as applicable.
     /// </summary>
     /// <param name="request">The HTTP request message to which the authorization headers will be added.</param>
-    public void AddAuthorization(HttpRequestMessage request)
+    /// <param name="cancellationToken"></param>
+    public async Task AddAuthorizationAsync(HttpRequestMessage request, CancellationToken cancellationToken = default)
     {
-        this.ValidateCredentials();
+        this.ValidateCredentialsAsync(cancellationToken);
         if(!string.IsNullOrEmpty(Credentials.ApiKey))
             request.Headers.Add("x-goog-api-key",Credentials.ApiKey);
-        if(!string.IsNullOrEmpty(Credentials.AccessToken))
-            request.Headers.Add("Authorization","Bearer "+Credentials.AccessToken);
+        if(this.Credentials.AuthToken!=null &&  this.Credentials.AuthToken.Validate())
+            request.Headers.Add("Authorization","Bearer "+Credentials.AuthToken.AccessToken);
     }
 
     /// Validates the current credentials by ensuring that the API Key or
     /// Access Token is present. If neither is available, an exception is thrown.
-    public void ValidateCredentials()
+    /// <param name="cancellationToken"></param>
+    public async Task ValidateCredentialsAsync(CancellationToken cancellationToken = default)
     {
         Credentials.ValidateCredentials();
     }
@@ -85,6 +89,11 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
         return BaseUrl;
     }
 
+    public string GetBaseUrlForFile()
+    {
+        return GetBaseUrl();
+    }
+
     /// <summary>
     /// Constructs a URL for a specific AI model and task by appending the model ID and task
     /// to the base URL and API version.
@@ -112,6 +121,11 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
     /// This version determines the API endpoint to which requests are directed.
     /// <return>The API version string.</return>
     public string GetApiVersion()
+    {
+        return ApiVersion;
+    }
+
+    public object GetApiVersionForFile()
     {
         return ApiVersion;
     }
