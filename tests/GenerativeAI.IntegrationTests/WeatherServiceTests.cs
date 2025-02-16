@@ -1,3 +1,4 @@
+using GenerativeAI.Tests;
 using GenerativeAI.Tools;
 using Xunit.Abstractions;
 

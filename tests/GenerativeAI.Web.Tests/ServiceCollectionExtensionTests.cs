@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 using Shouldly;
 
 namespace GenerativeAI.Web.Tests;
-[Explicit]
+
 public class ServiceCollectionExtensionTests
 {
     [Fact]
