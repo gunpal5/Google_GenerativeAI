@@ -54,5 +54,24 @@ public class Part
     /// Result of executing the <see cref="ExecutableCode">ExecutableCode</see>.
     /// </summary>
     [JsonPropertyName("codeExecutionResult")]
-    public CodeExecutionResult? CodeExecutionResult { get; set; } 
+    public CodeExecutionResult? CodeExecutionResult { get; set; }
+
+    /// <summary>
+    /// Represents a structured part of content that can include various types of data,
+    /// such as plain text, inline data, function calls, or code execution details.
+    /// </summary>
+    public Part()
+    {
+        
+    }
+
+    /// <summary>
+    /// Represents a component of a multi-part message in content processing. A Part includes media
+    /// or data of various forms such as text, binary data, function invocation, or code execution details.
+    /// Each Part is associated with a specific data type.
+    /// </summary>
+    public Part(string text)
+    {
+        this.Text = text;
+    }
 }

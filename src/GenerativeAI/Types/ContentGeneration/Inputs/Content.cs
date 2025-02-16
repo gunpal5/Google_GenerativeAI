@@ -20,6 +20,12 @@ public sealed class Content
         this.Role = role;
     }
 
+    public Content(string prompt, string? role)
+    {
+        this.Parts = new List<Part> { new Part(){Text = prompt} };
+        this.Role = role;
+    }
+
     /// <summary>
     /// Ordered <see cref="Part">Parts</see> that constitute a single message. Parts may have different MIME types.
     /// </summary>

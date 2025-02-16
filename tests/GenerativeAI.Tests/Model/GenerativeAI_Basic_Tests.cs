@@ -18,7 +18,7 @@ namespace GenerativeAI.Tests.Model
         ordererAssemblyName: "GenerativeAI.Tests")]
     public class GenerativeModel_Tests : TestBase
     {
-        private const string DefaultTestModelName = GoogleAIModels.DefaultGeminiModel;
+        private const string DefaultTestModelName = GoogleAIModels.Gemini2Flash;
 
         public GenerativeModel_Tests(ITestOutputHelper helper) : base(helper)
         {

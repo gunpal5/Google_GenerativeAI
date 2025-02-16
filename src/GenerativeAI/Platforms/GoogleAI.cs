@@ -18,8 +18,8 @@ public class GoogleAi : GenAI,IGenerativeAI
     /// Provides configuration and methods for managing credentials, setting API versions, creating task URLs,
     /// and authorizing requests for secure access to Google's AI APIs.
     /// </summary>
-    public GoogleAi(string apiKey, string? accessToken = null, HttpClient? client = null, ILogger? logger = null) :
-        this(new GoogleAIPlatformAdapter(apiKey, accessToken), client, logger)
+    public GoogleAi(string? apiKey =null, string? accessToken = null, HttpClient? client = null, ILogger? logger = null) :
+        this(new GoogleAIPlatformAdapter(apiKey, accessToken:accessToken), client, logger)
     {
     }
 
