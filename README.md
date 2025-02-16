@@ -23,7 +23,7 @@
   - [Streaming](#streaming)
   - [4. Coming Soon:](#4-coming-soon) 
   - [Credits](#credits)
-  - [Explore the Wiki](#explore-the-wiki)
+  - [Explore the Wiki](https://github.com/gunpal5/Google_GenerativeAI/wiki)
   - [API Reference](https://gunpal5.github.io/generative-ai/)
 
 <!-- /code_chunk_output -->

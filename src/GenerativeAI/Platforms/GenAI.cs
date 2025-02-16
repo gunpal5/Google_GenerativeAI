@@ -35,6 +35,8 @@ public abstract class GenAI
     /// operations such as retrieving and listing AI models.
     /// </summary>
     public ModelClient ModelClient { get; }
+    
+  
    
     protected GenAI(IPlatformAdapter platformAdapter, HttpClient? client = null, ILogger? logger = null)
     {
