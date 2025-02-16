@@ -8,6 +8,10 @@ public class GenerativeAIChatClient : IChatClient
 {
     public GenerativeModel model { get; }
 
+    public GenerativeAIChatClient(string apiKey,string modelName = GoogleAIModels.DefaultGeminiModel)
+    {
+        model = new GenerativeModel(apiKey, modelName);
+    }
     public GenerativeAIChatClient(IPlatformAdapter adapter, string modelName = GoogleAIModels.DefaultGeminiModel)
     {
         model = new GenerativeModel(adapter, modelName);

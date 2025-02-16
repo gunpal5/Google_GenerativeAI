@@ -7,6 +7,7 @@ namespace GenerativeAI.Core;
 /// A tool is a component that can perform external actions or provide additional functionality
 /// beyond the intrinsic scope of the model.
 /// </summary>
+/// <seealso href="">
 public interface IFunctionTool
 {
     /// <summary>

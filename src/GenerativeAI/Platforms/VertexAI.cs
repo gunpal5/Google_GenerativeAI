@@ -17,7 +17,8 @@ public class VertexAI:GenAI,IGenerativeAI
         string? apiKey = null,
         string apiVersion= ApiVersions.v1Beta1, 
         HttpClient? httpClient =null, 
-        ILogger? logger =null):this(new VertextPlatformAdapter(projectId,region,expressMode,apiKey,accessToken,apiVersion),httpClient,logger)
+        IGoogleAuthenticator? authenticator = null,
+        ILogger? logger =null):this(new VertextPlatformAdapter(projectId,region,expressMode,apiKey,accessToken,apiVersion,authenticator:authenticator),httpClient,logger)
     {
         
     }
