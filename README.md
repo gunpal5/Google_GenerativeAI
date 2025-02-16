@@ -128,7 +128,7 @@ Below are two common ways to initialize and use the SDK. For a full list of supp
 3. **Obtain a GenerativeModel**  
    Just like with GoogleAI, choose a model name and create the generative model:
    ```csharp
-   var vertexModel = vertexAI.CreateGenerativeModel("models/chat-bison-001");
+   var vertexModel = vertexAI.CreateGenerativeModel("models/gemini-1.5-flash");
    ```
 
 4. **Generate Content**  
@@ -141,7 +141,7 @@ Below are two common ways to initialize and use the SDK. For a full list of supp
 5. **Full code at a Glance**
    ```csharp
    var vertexAI = new VertexAI(); //usage Google Cloud CLI's ADC to get the Access token
-   var vertexModel = vertexAI.CreateGenerativeModel("models/chat-bison-001");
+   var vertexModel = vertexAI.CreateGenerativeModel("models/gemini-1.5-flash");
    var vertexResponse = await vertexModel.GenerateContentAsync("Hello from Vertex AI!");
    Console.WriteLine("Vertex AI Response:");
    Console.WriteLine(vertexResponse.Text());
