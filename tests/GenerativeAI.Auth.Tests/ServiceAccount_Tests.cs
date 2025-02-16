@@ -1,0 +1,68 @@
+﻿using GenerativeAI.Authenticators;
+using GenerativeAI.Core;
+using GenerativeAI.GoogleAuth;
+using GenerativeAI.Tests;
+using Humanizer;
+using Shouldly;
+using Xunit.Abstractions;
+
+namespace GenerativeAI.Auth;
+
+public class ServiceAccount_Tests:TestBase
+{
+    public ServiceAccount_Tests(ITestOutputHelper helper) : base(helper)
+    {
+        
+    }
+
+    [Fact]
+    public async Task ShouldWorkWithServiceAccount()
+    {
+        var authenticator = CreateAuthenticatorWithKey();
+        var token = await authenticator.GetAccessTokenAsync();
+
+        token.AccessToken.ShouldNotBeNull();
+    }
+
+    private GoogleServiceAccountAuthenticator CreateAuthenticatorWithKey()
+    {
+        var email = Environment.GetEnvironmentVariable("Google_Service_Account_Email", EnvironmentVariableTarget.User);
+        var key = Environment.GetEnvironmentVariable("Google_Service_Account_Key", EnvironmentVariableTarget.User);
+        var password = Environment.GetEnvironmentVariable("Google_key_password", EnvironmentVariableTarget.User);
+
+        return new GoogleServiceAccountAuthenticator(email, key, password);
+
+    }
+
+    [Fact]
+    public async Task ShouldWorkWithServiceAccount_GenerateContent()
+    {
+        var authenticator = CreateAuthenticatorWithKey();
+        
+        var vertexAi = new VertexAIModel(authenticator:authenticator);
+        var response = await vertexAi.GenerateContentAsync("write a poem about the sun");
+        response.ShouldNotBeNull();
+        var text = response.Text();
+        text.ShouldNotBeNullOrWhiteSpace();
+        Console.WriteLine(text);
+    }
+    
+    [Fact]
+    public async Task ShouldWorkWithServiceAccount_Json_GenerateContent()
+    {
+        var authenticator = CreateAuthenticatorWithJsonFile();
+        
+        var vertexAi = new VertexAIModel(authenticator:authenticator);
+        var response = await vertexAi.GenerateContentAsync("write a poem about the sun");
+        response.ShouldNotBeNull();
+        var text = response.Text();
+        text.ShouldNotBeNullOrWhiteSpace();
+        Console.WriteLine(text);
+    }
+
+    private IGoogleAuthenticator? CreateAuthenticatorWithJsonFile()
+    {
+        var file = Environment.GetEnvironmentVariable("Google_Service_Account_Json", EnvironmentVariableTarget.User);
+        return new GoogleServiceAccountAuthenticator(file);
+    }
+}

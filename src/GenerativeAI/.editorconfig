@@ -1,0 +1,14 @@
+﻿[*.cs]
+dotnet_naming_rule.enum_members_with_underscores.symbols  = enum_fields
+dotnet_naming_rule.enum_members_with_underscores.style    = all_upper_underscore_style
+dotnet_naming_rule.enum_members_with_underscores.severity = warning
+
+dotnet_naming_symbols.enum_fields.applicable_kinds   = field
+dotnet_naming_symbols.enum_fields.required_modifiers = const
+
+dotnet_naming_style.all_upper_underscore_style.capitalization = all_upper
+dotnet_naming_style.all_upper_underscore_style.required_prefix =
+dotnet_naming_style.all_upper_underscore_style.required_suffix =
+
+
+

@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFrameworks>net6.0;net7.0;net8.0;netstandard2.0;net5.0;net9.0;net462</TargetFrameworks>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
+        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+        <PackageId>Google_$(AssemblyName)</PackageId>
+        <Title>Microsoft.Extensions.AI Integration with Google_GenerativeAI SDK for .NET Applications</Title>
+        <Authors>Gunpal Jain</Authors>
+        <Company/>
+        <Description>This library provides Microsoft.Extensions.AI integration with Google_GenerativeAI SDK for .NET applications.</Description>
+
+
+        <PackageProjectUrl>https://github.com/gunpal5/Google_GenerativeAI</PackageProjectUrl>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <RepositoryUrl>https://github.com/gunpal5/Google_GenerativeAI</RepositoryUrl>
+        <PackageTags>GenerativeAI,Google,Gemini,Tools,SDK,GoogleGemini.Net,Google,Gemini,Gemini.Net</PackageTags>
+        <Version>2.0.0</Version>
+        <AssemblyVersion>2.0.0</AssemblyVersion>
+        <FileVersion>2.0.0</FileVersion>
+        <SignAssembly>True</SignAssembly>
+        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    </PropertyGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\GenerativeAI\GenerativeAI.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.AI" Version="9.1.0-preview.1.25064.3" />
+    </ItemGroup>
+
+</Project>

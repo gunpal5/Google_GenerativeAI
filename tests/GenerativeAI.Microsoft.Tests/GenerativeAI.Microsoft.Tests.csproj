@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.0-preview-25107-01" />
+        <PackageReference Include="MSTest" Version="3.8.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\GenerativeAI.Microsoft\GenerativeAI.Microsoft.csproj" />
+      <ProjectReference Include="..\GenerativeAI.TestBase\GenerativeAI.TestBase.csproj" />
+      <ProjectReference Include="..\GenerativeAI.Tests\GenerativeAI.Tests.csproj" />
+    </ItemGroup>
+
+</Project>

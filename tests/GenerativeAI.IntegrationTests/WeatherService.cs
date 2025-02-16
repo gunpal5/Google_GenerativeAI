@@ -1,4 +1,5 @@
-﻿using DescriptionAttribute = System.ComponentModel.DescriptionAttribute;
+﻿using CSharpToJsonSchema;
+using DescriptionAttribute = System.ComponentModel.DescriptionAttribute;
 
 namespace GenerativeAI.IntegrationTests
 {
@@ -17,7 +18,7 @@ namespace GenerativeAI.IntegrationTests
         public string Description { get; set; } = string.Empty;
     }
 
-    [GenerativeAIFunctions]
+    [GenerateJsonSchema()]
     public interface IWeatherFunctions
     {
         [Description("Get the current weather in a given location")]
