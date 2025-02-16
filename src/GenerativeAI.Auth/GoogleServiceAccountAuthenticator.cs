@@ -1,10 +1,9 @@
 ﻿using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
-using GenerativeAI.Authenticators;
 using GenerativeAI.Core;
 using Google.Apis.Auth.OAuth2;
 
-namespace GenerativeAI.GoogleAuth;
+namespace GenerativeAI.Authenticators;
 
 public class GoogleServiceAccountAuthenticator : BaseAuthenticator
 {

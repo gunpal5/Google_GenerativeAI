@@ -1,11 +1,10 @@
 ﻿using System.Security.Authentication;
-using GenerativeAI.Authenticators;
 using GenerativeAI.Core;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Util.Store;
 using ClientSecrets = Google.Apis.Auth.OAuth2.ClientSecrets;
 
-namespace GenerativeAI.GoogleAuth;
+namespace GenerativeAI.Authenticators;
 
 public class GoogleOAuthAuthenticator:BaseAuthenticator
 {

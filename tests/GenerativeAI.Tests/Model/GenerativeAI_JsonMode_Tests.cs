@@ -145,6 +145,7 @@ namespace GenerativeAI.Tests.Model
                 child.Values.ShouldNotBeNull();
                 child.Values.ShouldNotBeEmpty();
             });
+            
             //obj.OptionalField.ShouldBeNull();
             Console.WriteLine("GenerateContentAsync<T> with various data types returned a valid response.");
         }

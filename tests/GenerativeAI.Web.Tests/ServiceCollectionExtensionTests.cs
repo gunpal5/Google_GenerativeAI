@@ -1,5 +1,4 @@
 ﻿using GenerativeAI.Authenticators;
-using GenerativeAI.GoogleAuth;
 using GenerativeAI.Tests;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

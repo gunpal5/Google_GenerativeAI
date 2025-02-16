@@ -1,6 +1,6 @@
 # Google_GenerativeAI.Tools
 
-[![NuGet](https://img.shields.io/nuget/v/GenerativeAI.Tools.svg)](https://www.nuget.org/packages/GenerativeAI.Tools) [![License: MIT](https://img.shields.io/github/license/gunpal5/Google_GenerativeAI)](https://github.com/tryAGI/OpenAI/blob/main/LICENSE.txt)
+[![NuGet](https://img.shields.io/nuget/v/GenerativeAI.Tools.svg)](https://www.nuget.org/packages/Google_GenerativeAI.Tools) [![License: MIT](https://img.shields.io/github/license/gunpal5/Google_GenerativeAI)](https://github.com/tryAGI/OpenAI/blob/main/LICENSE.txt)
 
 `Google_GenerativeAI.Tools` is a library that provides concrete implementations of function tools for use with the Google Generative AI SDK (specifically the unofficial C# SDK [Google_GenerativeAI](https://github.com/gunpal5/Google_GenerativeAI)). It simplifies the process of integrating function calling capabilities (similar to OpenAI's function calling) into your Gemini-powered applications. This project extends the functionality of the `IFunctionTool` interface defined in the main SDK.
 

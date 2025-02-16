@@ -1,4 +1,4 @@
-﻿namespace GenerativeAI.GoogleAuth;
+﻿namespace GenerativeAI.Authenticators;
 
 internal static class ScopesConstants
 {

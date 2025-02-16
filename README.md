@@ -44,10 +44,10 @@ Highlights of this release include:
 
 | **Package**                | **Version**                                                                                                          | **Description**                                                                                                                                                     |
 |----------------------------|----------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| GenerativeAI.Tools         | [![NuGet version](https://img.shields.io/nuget/vpre/GenerativeAI.Tools)](https://www.nuget.org/packages/Google_GenerativeAI.Tools)             | Provides function tooling and code generation using tryAgi CSharpToJsonSchema. Ideal for scenarios where you need to define functions and automate their JSON schema generation. |
-| GenerativeAI.Auth          | [![NuGet version](https://img.shields.io/nuget/vpre/GenerativeAI.Auth)](https://www.nuget.org/packages/Google_GenerativeAI.Auth)                | Offers various Google authentication mechanisms, including OAuth, Service Account, and Application Default Credentials (ADC). Streamlines credential management.     |
-| GenerativeAI.Microsoft     | [![NuGet version](https://img.shields.io/nuget/vpre/GenerativeAI.Microsoft)](https://www.nuget.org/packages/Google_GenerativeAI.Microsoft)      | Implements the IChatClient interface from Microsoft.Extensions.AI, enabling seamless integration with Microsoft’s AI ecosystem and services.                       |
-| GenerativeAI.Web           | [![NuGet version](https://img.shields.io/nuget/vpre/GenerativeAI.Web)](https://www.nuget.org/packages/Google_GenerativeAI.Web)                  | Contains extension methods to integrate GenerativeAI into .NET web applications, simplifying setup for web projects that utilize Gemini models.                     |
+| GenerativeAI.Tools         | [![NuGet version](https://img.shields.io/nuget/vpre/Google_GenerativeAI.Tools)](https://www.nuget.org/packages/Google_GenerativeAI.Tools)             | Provides function tooling and code generation using tryAgi CSharpToJsonSchema. Ideal for scenarios where you need to define functions and automate their JSON schema generation. |
+| GenerativeAI.Auth          | [![NuGet version](https://img.shields.io/nuget/vpre/Google_GenerativeAI.Auth)](https://www.nuget.org/packages/Google_GenerativeAI.Auth)                | Offers various Google authentication mechanisms, including OAuth, Service Account, and Application Default Credentials (ADC). Streamlines credential management.     |
+| GenerativeAI.Microsoft     | [![NuGet version](https://img.shields.io/nuget/vpre/Google_GenerativeAI.Microsoft)](https://www.nuget.org/packages/Google_GenerativeAI.Microsoft)      | Implements the IChatClient interface from Microsoft.Extensions.AI, enabling seamless integration with Microsoft’s AI ecosystem and services.                       |
+| GenerativeAI.Web           | [![NuGet version](https://img.shields.io/nuget/vpre/Google_GenerativeAI.Web)](https://www.nuget.org/packages/Google_GenerativeAI.Web)                  | Contains extension methods to integrate GenerativeAI into .NET web applications, simplifying setup for web projects that utilize Gemini models.                     |
 
 By merging the best of the old version with these new capabilities, the SDK provides a smoother developer experience and a wide range of features to leverage Google Gemini.
 
@@ -281,10 +281,11 @@ The GenerativeAI SDK makes it simple to work with JSON data from Gemini. You hav
         var myObject = await model.GenerateObjectAsync<SampleJsonClass>(request);
         ```
 
+
  *   Use `GenerateContentAsync` and then `ToObject<T>` to deserialize the response:
 
         ```csharp
-        var response = await model.GenerateContentAsync(request);
+        var response = await model.GenerateContentAsync<SampleJsonClass>(request);
         var myObject = response.ToObject<SampleJsonClass>();
         ```
 
@@ -296,6 +297,8 @@ The GenerativeAI SDK makes it simple to work with JSON data from Gemini. You hav
     request.UseJsonMode<SampleJsonClass>();
     request.AddText("Give me a really good response.");
     ```
+    
+ 
 
    
 **2. Manual JSON Parsing:**
@@ -305,6 +308,16 @@ The GenerativeAI SDK makes it simple to work with JSON data from Gemini. You hav
     ```csharp
     var request = new GenerateContentRequest();
     request.AddText("Give me some JSON.");
+    ```
+    or
+    ```csharp
+    var request = new GenerateContentRequest();
+    request.GenerationConfig = new GenerationConfig()
+            {
+                ResponseMimeType = "application/json",
+                ResponseSchema = new SampleJsonClass()
+            }
+    request.AddText("Give me a really good response.");
     ```
 
 *   Response: Use  `ExtractJsonBlocks()` to get the raw JSON blocks from the response, and then use `ToObject<T>` to deserialize them.
@@ -328,7 +341,7 @@ The GenerativeAI SDK provides built-in tools to enhance Gemini's capabilities, i
 You can easily enable or disable these tools by setting the corresponding properties on the `GenerativeModel`:
 
 *   `UseGoogleSearch`: Enables or disables the Google Search tool.
-*   `UseGrounding`: Enables or disables the Google Search Retrieval tool (often used for grounding responses in factual information).  *Note:  The original prompt used "UseGrounding", which is likely referring to retrieval.  It's important to use the correct property name from the SDK.*
+*   `UseGrounding`: Enables or disables the Google Search Retrieval tool (often used for grounding responses in factual information).  
 *  `UseCodeExecutionTool`: Enables or disables the Code Execution tool.
 
 ```csharp
