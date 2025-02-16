@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html ><html lang="en-US"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><link rel="shortcut icon" href="../icons/favicon.ico" /><link rel="stylesheet" href="../css/bulma.css" /><link rel="stylesheet" href="../css/font-awesome.min.css" /><link rel="stylesheet" href="../css/presentationStyle.css" /><link rel="stylesheet" href="../css/vs.min.css" /><script src="../scripts/jquery-3.5.1.min.js"></script><script src="../scripts/clipboard.min.js"></script><script src="../scripts/highlight.min.js"></script><script src="../scripts/presentationStyle.js"></script><title>TaskType Enumeration</title><meta name="Title" content="TaskType" /><meta name="Help.Id" content="T:GenerativeAI.Types.TaskType" /><meta name="Help.ContentType" content="Reference" /><meta name="container" content="GenerativeAI.Types" /><meta name="guid" content="7d2d8c22-2ab4-901e-3706-b76ac8295faa" /><meta name="Description" content="Specifies the type of task for which the embedding will be used." /><meta name="tocFile" content="../toc/IDJA.xml" /></head><body><div class="fixedLayout"><div id="Header" class="fixedHeader"><div class="pageHeader level mb-0 py-2 px-4"><div id="TitleContainer" class="level-left"><div id="DocumentationTitle" class="level-item">Google Generative AI SDK</div></div><div id="LangFilterSearchContainer" class="level-right"><div class="level-item"><div class="dropdown is-hoverable"><div class="dropdown-trigger"><button class="button" aria-haspopup="true" aria-controls="dropdown-menu"><span id="CurrentLanguage"></span><span class="icon is-small"><i class="fa fa-angle-down" aria-hidden="true"></i></span></button></div><div class="dropdown-menu" role="menu"><div id="LanguageSelections" class="dropdown-content"><a class="dropdown-item languageFilterItem" data-languageId="cs">C#</a></div></div></div></div><div class="level-item"><form id="SearchForm" action="#" onsubmit="TransferToSearchPage(); return false;"><div class="field"><div class="control has-icons-left"><input id="SearchTerms" class="input" type="text" maxlength="200" placeholder="Search" /><span class="icon is-small is-left"><i class="fa fa-search"></i></span><button id="SearchButton" type="submit" class="is-hidden"></button></div></div></form></div></div></div></div><div class="fixedContent"><nav class="breadcrumb my-1 px-2 border-bottom" role="navigation"><ul id="TopicBreadcrumbs" /></nav><div id="ContentContainer" class="columns pl-5 pr-5 fixedContent"><div id="ShowHideTOCColumn" class="column is-hidden-tablet"><a id="ShowHideTOC">Show/Hide TOC</a></div><div id="TOCColumn" class="column is-hidden-mobile"><nav class="toc"><ul id="TableOfContents" class="toc-menu" /></nav></div><div id="Resizer" class="is-hidden"></div><div id="TopicContent" class="column content is-7"><h1>Task<wbr />Type Enumeration</h1><div class="summary">
+            Specifies the type of task for which the embedding will be used.
+            </div><h2 class="quickLinkHeader"><span class="icon toggleSection" tabindex="0"><i class="fa fa-angle-down"></i></span>Definition</h2><div id="IDBSection"><strong>Namespace:</strong> <a href="71a5a8de-3847-31f0-4295-05a6eac0ac65.htm">GenerativeAI.Types</a><br /><strong>Assembly:</strong> GenerativeAI (in GenerativeAI.dll) Version: 1.0.1+df1bccec67c39303fa8219761453fbf82e945176<div class="codeSnippet"><div class="codeHeader"><span class="codeHeaderTitle">C#</span><span class="buttons"><button class="button is-small is-light copyCode" title="Copy"><span class="icon is-small"><i class="fa fa-copy"></i></span><span>Copy</span></button></span></div><div class="codePanel hljs"><pre xml:space="preserve"><code class="language-cs"><span class="keyword">public</span> <span class="keyword">enum</span> <span class="identifier">TaskType</span></code></pre></div></div></div><h2 class="quickLinkHeader"><span class="icon toggleSection" tabindex="0"><i class="fa fa-angle-down"></i></span>Members</h2><div id="IDADASection"><table id="enumMemberList" class="table is-hoverable"><tr><td>TASK_TYPE_UNSPECIFIED</td><td>0</td><td>
+            Unset value, which will default to one of the other enum values.
+            </td></tr><tr><td>RETRIEVAL_QUERY</td><td>1</td><td>
+            Specifies the given text is a query in a search/retrieval setting.
+            </td></tr><tr><td>RETRIEVAL_DOCUMENT</td><td>2</td><td>
+            Specifies the given text is a document from the corpus being searched.
+            </td></tr><tr><td>SEMANTIC_SIMILARITY</td><td>3</td><td>
+            Specifies the given text will be used for STS (Semantic Text Similarity).
+            </td></tr><tr><td>CLASSIFICATION</td><td>4</td><td>
+            Specifies that the given text will be classified.
+            </td></tr><tr><td>CLUSTERING</td><td>5</td><td>
+            Specifies that the embeddings will be used for clustering.
+            </td></tr><tr><td>QUESTION_ANSWERING</td><td>6</td><td>
+            Specifies that the given text will be used for question answering.
+            </td></tr><tr><td>FACT_VERIFICATION</td><td>7</td><td>
+            Specifies that the given text will be used for fact verification.
+            </td></tr></table></div><h2 class="quickLinkHeader"><span class="icon toggleSection" tabindex="0"><i class="fa fa-angle-down"></i></span>See Also</h2><div id="seeAlsoSection"><h4 class="quickLinkHeader">Reference</h4><div><a href="71a5a8de-3847-31f0-4295-05a6eac0ac65.htm">GenerativeAI.Types Namespace</a></div><h4 class="quickLinkHeader">Other Resources</h4><div><a href="https://ai.google.dev/api/embeddings#tasktype" target="_blank" rel="noopener noreferrer">See Official API Documentation</a></div></div></div><div id="InThisArticleColumn" class="column is-hidden-mobile"><nav class="menu sticky is-hidden"><p class="menu-label"><strong>In This Article</strong></p><ul id="InThisArticleMenu" class="menu-list"><li><a class="quickLink">Definition</a></li><li><a class="quickLink">Members</a></li><li><a class="quickLink">See Also</a><ul class="menu"><li><a class="quickLink">Reference</a></li><li><a class="quickLink">Other Resources</a></li></ul></li></ul></nav></div></div></div></div><script>$(function(){
+SetDefaultLanguage("cs");
+LoadTocFile(null, null);
+InitializeQuickLinks();
+
+$(".toggleSection" ).click(function () {
+    SectionExpandCollapse(this);
+});
+
+$(".toggleSection").keypress(function () {
+    SectionExpandCollapseCheckKey(this, event)
+});
+hljs.highlightAll();
+});</script></body></html>

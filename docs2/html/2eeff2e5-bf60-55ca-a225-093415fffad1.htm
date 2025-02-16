@@ -1,0 +1,104 @@
+﻿<!DOCTYPE html ><html lang="en-US"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><link rel="shortcut icon" href="../icons/favicon.ico" /><link rel="stylesheet" href="../css/bulma.css" /><link rel="stylesheet" href="../css/font-awesome.min.css" /><link rel="stylesheet" href="../css/presentationStyle.css" /><link rel="stylesheet" href="../css/vs.min.css" /><script src="../scripts/jquery-3.5.1.min.js"></script><script src="../scripts/clipboard.min.js"></script><script src="../scripts/highlight.min.js"></script><script src="../scripts/presentationStyle.js"></script><title>GenerationConfig Properties</title><meta name="Title" content="Properties" /><meta name="Help.Id" content="Properties.T:GenerativeAI.Types.GenerationConfig" /><meta name="Help.ContentType" content="Reference" /><meta name="container" content="GenerativeAI.Types" /><meta name="guid" content="2eeff2e5-bf60-55ca-a225-093415fffad1" /><meta name="tocFile" content="../toc/ID0TB0JA.xml" /></head><body><div class="fixedLayout"><div id="Header" class="fixedHeader"><div class="pageHeader level mb-0 py-2 px-4"><div id="TitleContainer" class="level-left"><div id="DocumentationTitle" class="level-item">Google Generative AI SDK</div></div><div id="LangFilterSearchContainer" class="level-right"><div class="level-item"><div class="dropdown is-hoverable"><div class="dropdown-trigger"><button class="button" aria-haspopup="true" aria-controls="dropdown-menu"><span id="CurrentLanguage"></span><span class="icon is-small"><i class="fa fa-angle-down" aria-hidden="true"></i></span></button></div><div class="dropdown-menu" role="menu"><div id="LanguageSelections" class="dropdown-content"><a class="dropdown-item languageFilterItem" data-languageId="cs">C#</a></div></div></div></div><div class="level-item"><form id="SearchForm" action="#" onsubmit="TransferToSearchPage(); return false;"><div class="field"><div class="control has-icons-left"><input id="SearchTerms" class="input" type="text" maxlength="200" placeholder="Search" /><span class="icon is-small is-left"><i class="fa fa-search"></i></span><button id="SearchButton" type="submit" class="is-hidden"></button></div></div></form></div></div></div></div><div class="fixedContent"><nav class="breadcrumb my-1 px-2 border-bottom" role="navigation"><ul id="TopicBreadcrumbs" /></nav><div id="ContentContainer" class="columns pl-5 pr-5 fixedContent"><div id="ShowHideTOCColumn" class="column is-hidden-tablet"><a id="ShowHideTOC">Show/Hide TOC</a></div><div id="TOCColumn" class="column is-hidden-mobile"><nav class="toc"><ul id="TableOfContents" class="toc-menu" /></nav></div><div id="Resizer" class="is-hidden"></div><div id="TopicContent" class="column content is-7"><h1>Generation<wbr />Config Properties</h1><h2 class="quickLinkHeader"><span class="icon toggleSection" tabindex="0"><i class="fa fa-angle-down"></i></span>Properties</h2><div id="IDADASection"><table id="PropertyList" class="table is-hoverable"><tr><td><a href="9800c33c-a951-3439-2b9b-cd5158e6fa42.htm">CandidateCount</a></td><td>
+            Optional. Number of generated responses to return.
+            Currently, this value can only be set to 1. If unset, this will default to 1.
+            </td></tr><tr><td><a href="93015a1a-1cad-2afa-7b82-9bf152e828ae.htm">EnableEnhancedCivicAnswers</a></td><td>
+            Optional. Enables enhanced civic answers. It may not be available for all models.
+            </td></tr><tr><td><a href="05c6f366-d9d2-3a76-aaf0-aeda6eb0fb8a.htm">FrequencyPenalty</a></td><td>
+            Optional. Frequency penalty applied to the next token's logprobs, multiplied by the
+            number of times each token has been seen in the response so far.
+            A positive penalty will discourage the use of tokens that have already been used,
+            proportional to the number of times the token has been used: The more a token is used,
+            the more difficult it is for the model to use that token again, increasing the
+            vocabulary of responses.
+            Caution: A *negative* penalty will encourage the model to reuse tokens proportional
+            to the number of times the token has been used. Small negative values will reduce the
+            vocabulary of a response. Larger negative values will cause the model to start repeating
+            a common token until it hits the <a href="db47d215-f6b3-12fd-d776-23cf25035fa0.htm">MaxOutputTokens</a> limit.
+            </td></tr><tr><td><a href="0865b77d-9483-8207-45f7-32aa07f310ba.htm">Logprobs</a></td><td>
+            Optional. Only valid if <a href="9efeeeee-da49-9047-937a-f2155214a01d.htm">ResponseLogprobs</a> is True. This sets the
+            number of top logprobs to return at each decoding step in the
+            <a href="f5adddd7-1994-e821-6c17-d3dc276e0333.htm">LogprobsResult</a>.
+            </td></tr><tr><td><a href="db47d215-f6b3-12fd-d776-23cf25035fa0.htm">MaxOutputTokens</a></td><td>
+            Optional. The maximum number of tokens to include in a response candidate.
+            Note: The default value varies by model, see the <span class="code">Model.output_token_limit</span>
+            attribute of the <a href="bb7ce997-5b20-c707-c840-17f07ac10afc.htm">Model</a> returned from the <span class="code">getModel</span> function.
+            </td></tr><tr><td><a href="5449dbc5-eb63-f7b9-22ef-2ce442300bf8.htm">PresencePenalty</a></td><td>
+            Optional. Presence penalty applied to the next token's logprobs if the token has
+            already been seen in the response.
+            This penalty is binary on/off and not dependant on the number of times the token
+            is used (after the first). Use <a href="05c6f366-d9d2-3a76-aaf0-aeda6eb0fb8a.htm">FrequencyPenalty</a> for a penalty
+            that increases with each use.
+            A positive penalty will discourage the use of tokens that have already been used
+            in the response, increasing the vocabulary.
+            A negative penalty will encourage the use of tokens that have already been used
+            in the response, decreasing the vocabulary.
+            </td></tr><tr><td><a href="9efeeeee-da49-9047-937a-f2155214a01d.htm">ResponseLogprobs</a></td><td>
+            Optional. If true, export the logprobs results in response.
+            </td></tr><tr><td><a href="48ba0d0d-ff90-38f8-301a-cfe17c215cf1.htm">ResponseMimeType</a></td><td>
+            Optional. MIME type of the generated candidate text. Supported MIME types are:
+            <span class="code">text/plain</span>: (default) Text output.
+            <span class="code">application/json</span>: JSON response in the response candidates.
+            <span class="code">text/x.enum</span>: ENUM as a string response in the response candidates.
+            Refer to the <a href="https://ai.google.dev/gemini-api/docs/prompting_with_media#plain_text_formats" target="_blank" rel="noopener noreferrer">docs</a>
+            for a list of all supported text MIME types.
+            </td></tr><tr><td><a href="bbcde9c2-e112-0e53-1b66-7de18aa8fb41.htm">ResponseModalities</a></td><td>
+            Optional. The requested modalities of the response. Represents the set of modalities
+            that the model can return, and should be expected in the response. This is an exact
+            match to the modalities of the response.
+            A model may have multiple combinations of supported modalities. If the requested modalities
+            do not match any of the supported combinations, an error will be returned.
+            An empty list is equivalent to requesting only text.
+            </td></tr><tr><td><a href="9078b335-51b7-c625-329c-8b4bf3677d8d.htm">ResponseSchema</a></td><td>
+            Optional. Output schema of the generated candidate text. Schemas must be a subset of the
+            <a href="https://spec.openapis.org/oas/v3.0.3#schema" target="_blank" rel="noopener noreferrer">OpenAPI schema</a> and can be
+            objects, primitives or arrays.
+            If set, a compatible <a href="48ba0d0d-ff90-38f8-301a-cfe17c215cf1.htm">ResponseMimeType</a> must also be set. Compatible MIME types:
+            <span class="code">application/json</span>: Schema for JSON response. Refer to the
+            <a href="https://ai.google.dev/gemini-api/docs/json-mode" target="_blank" rel="noopener noreferrer">JSON text generation guide</a>
+            for more details.
+            </td></tr><tr><td><a href="fb2eb6a5-f091-753a-c884-17cf28f55d36.htm">Seed</a></td><td>
+            Optional. Seed used in decoding. If not set, the request uses a randomly generated seed.
+            </td></tr><tr><td><a href="b3f2269b-8e24-cb13-5afc-57e12fb576b2.htm">SpeechConfig</a></td><td>
+            Optional. The speech generation config.
+            </td></tr><tr><td><a href="c4bb2c9f-aae6-9d7c-ad95-fdc61c785f7c.htm">StopSequences</a></td><td>
+            Optional. The set of character sequences (up to 5) that will stop output generation.
+            If specified, the API will stop at the first appearance of a <span class="code">stop_sequence</span>.
+            The stop sequence will not be included as part of the response.
+            </td></tr><tr><td><a href="c83a8851-1104-db97-7ec1-37f70f1ef5d2.htm">Temperature</a></td><td>
+            Optional. Controls the randomness of the output.
+            Note: The default value varies by model, see the <a href="d851772a-5515-e119-d390-47915d3b8651.htm">Model.Temperature</a> attribute
+            of the <a href="bb7ce997-5b20-c707-c840-17f07ac10afc.htm">Model</a> returned from the <span class="code">getModel</span> function.
+            Values can range from.
+            </td></tr><tr><td><a href="13164850-57b9-36a3-434b-91ba604866b3.htm">TopK</a></td><td>
+            Optional. The maximum number of tokens to consider when sampling.
+            Gemini models use Top-p (nucleus) sampling or a combination of Top-k and nucleus
+            sampling. Top-k sampling considers the set of <a href="13164850-57b9-36a3-434b-91ba604866b3.htm">TopK</a> most probable tokens.
+            Models running with nucleus sampling don't allow TopK setting.
+            Note: The default value varies by <a href="bb7ce997-5b20-c707-c840-17f07ac10afc.htm">Model</a> and is specified by the
+            <a href="7bfbad22-27d0-c7c3-74c4-f72ed7247f22.htm">TopP</a> attribute returned from the <span class="noLink">[!:getModel]</span> function.
+            An empty <a href="13164850-57b9-36a3-434b-91ba604866b3.htm">TopK</a> attribute indicates that the model doesn't apply top-k sampling
+            and doesn't allow setting <a href="13164850-57b9-36a3-434b-91ba604866b3.htm">TopK</a> on requests.
+            </td></tr><tr><td><a href="d9fbcefb-ab13-65fe-4083-a6399e2bd616.htm">TopP</a></td><td>
+            Optional. The maximum cumulative probability of tokens to consider when sampling.
+            The model uses combined Top-k and Top-p (nucleus) sampling.
+            Tokens are sorted based on their assigned probabilities so that only the most
+            likely tokens are considered. Top-k sampling directly limits the maximum number of
+            tokens to consider, while Nucleus sampling limits the number of tokens based on
+            the cumulative probability.
+            Note: The default value varies by <a href="bb7ce997-5b20-c707-c840-17f07ac10afc.htm">Model</a> and is specified by the
+            <a href="7bfbad22-27d0-c7c3-74c4-f72ed7247f22.htm">TopP</a> attribute returned from the <span class="noLink">[!:getModel]</span> function.
+            An empty <a href="13164850-57b9-36a3-434b-91ba604866b3.htm">TopK</a> attribute indicates that the model doesn't apply top-k sampling
+            and doesn't allow setting <a href="13164850-57b9-36a3-434b-91ba604866b3.htm">TopK</a> on requests.
+            </td></tr></table></div><h2 class="quickLinkHeader"><span class="icon toggleSection" tabindex="0"><i class="fa fa-angle-down"></i></span>See Also</h2><div id="seeAlsoSection"><h4>Reference</h4><div><a href="47ce1244-ac21-fe3f-d603-3eccd0b791b5.htm">GenerationConfig Class</a></div><div><a href="71a5a8de-3847-31f0-4295-05a6eac0ac65.htm">GenerativeAI.Types Namespace</a></div></div></div><div id="InThisArticleColumn" class="column is-hidden-mobile"><nav class="menu sticky is-hidden"><p class="menu-label"><strong>In This Article</strong></p><ul id="InThisArticleMenu" class="menu-list"><li><a class="quickLink">Properties</a></li><li><a class="quickLink">See Also</a></li></ul></nav></div></div></div></div><script>$(function(){
+SetDefaultLanguage("cs");
+LoadTocFile(null, null);
+InitializeQuickLinks();
+
+$(".toggleSection" ).click(function () {
+    SectionExpandCollapse(this);
+});
+
+$(".toggleSection").keypress(function () {
+    SectionExpandCollapseCheckKey(this, event)
+});
+});</script></body></html>
