@@ -4,25 +4,31 @@ using Microsoft.Extensions.AI;
 
 namespace GenerativeAI.Microsoft;
 
+
+/// <inheritdoc/>
 public class GenerativeAIChatClient : IChatClient
 {
     public GenerativeModel model { get; }
 
+    /// <inheritdoc/>
     public GenerativeAIChatClient(string apiKey,string modelName = GoogleAIModels.DefaultGeminiModel)
     {
         model = new GenerativeModel(apiKey, modelName);
     }
+
+    /// <inheritdoc/>
     public GenerativeAIChatClient(IPlatformAdapter adapter, string modelName = GoogleAIModels.DefaultGeminiModel)
     {
         model = new GenerativeModel(adapter, modelName);
     }
 
-
+    /// <inheritdoc/>
     public void Dispose()
     {
         
     }
 
+    /// <inheritdoc/>
     public async Task<ChatCompletion> CompleteAsync(IList<ChatMessage> chatMessages, ChatOptions? options = null,
         CancellationToken cancellationToken = default)
     {
@@ -32,7 +38,7 @@ public class GenerativeAIChatClient : IChatClient
         var response = await model.GenerateContentAsync(request, cancellationToken);
         return response.ToChatCompletion() ?? throw new Exception("Failed to generate content");
     }
-
+    /// <inheritdoc/>
     public async IAsyncEnumerable<StreamingChatCompletionUpdate> CompleteStreamingAsync(IList<ChatMessage> chatMessages,
         ChatOptions? options = null,
         CancellationToken cancellationToken = new CancellationToken())
@@ -45,15 +51,15 @@ public class GenerativeAIChatClient : IChatClient
             yield return response.ToStreamingChatCompletionUpdate();
         }
     }
-
+    /// <inheritdoc/>
     public object? GetService(Type serviceType, object? serviceKey = null)
     {
-        if (serviceKey == null && (serviceType is GenerativeAIChatClient))
+        if (serviceKey == null && (bool)serviceType?.IsInstanceOfType(this))
         {
             return this;
         }
         else return null;
     }
-
+    /// <inheritdoc/>
     public ChatClientMetadata Metadata { get; }
 }

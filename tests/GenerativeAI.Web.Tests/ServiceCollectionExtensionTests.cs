@@ -13,6 +13,7 @@ public class ServiceCollectionExtensionTests
     public void ShouldConfigureServices()
     {
         var services = new ServiceCollection();
+        Environment.SetEnvironmentVariable("GOOGLE_API_KEY", "ASDKLFHLKHASDFHDLF",EnvironmentVariableTarget.Process);
         services.AddGenerativeAI();
         var provider = services.BuildServiceProvider();
         var service = provider.GetRequiredService<IGenerativeAiService>();
@@ -44,6 +45,7 @@ public class ServiceCollectionExtensionTests
         // Arrange
         var services = new ServiceCollection();
 
+        Environment.SetEnvironmentVariable("GOOGLE_API_KEY", "ASDKLFHLKHASDFHDLF",EnvironmentVariableTarget.Process);
         // Act
         services.AddGenerativeAI();
         var provider = services.BuildServiceProvider();
@@ -78,6 +80,7 @@ public class ServiceCollectionExtensionTests
         var configBuilder = new ConfigurationBuilder();
         configBuilder.AddInMemoryCollection(new[]
         {
+            new KeyValuePair<string, string>("Credentials:ApiKey", "asdfasdfasdfsadf"),
             new KeyValuePair<string, string>("Region", "us-east1"),
             new KeyValuePair<string, string>("ProjectId", "MyProject")
         });
@@ -144,6 +147,7 @@ public class ServiceCollectionExtensionTests
         var configBuilder = new ConfigurationBuilder();
         configBuilder.AddInMemoryCollection(new[]
         {
+            new KeyValuePair<string, string>("GenerativeAI:Credentials:ApiKey", "asdfasdfasdfsadf"),
             new KeyValuePair<string, string>("GenerativeAI:ApiVersion", "v2"),
             new KeyValuePair<string, string>("GenerativeAI:ExpressMode", "true")
         });
@@ -281,6 +285,7 @@ public class ServiceCollectionExtensionTests
         {
             options.ApiVersion = "v3";
             options.ProjectId = "TestProject";
+            options.Credentials = new GoogleAICredentials("hlkadhflkdashfl");
         });
         var provider = services.BuildServiceProvider();
 

@@ -13,7 +13,7 @@ public class GoogleAICredentials : ICredentials
     /// The API Key provides an easy way to access public resources or perform
     /// authorized operations without requiring OAuth2 tokens.
     /// </summary>
-    public string ApiKey { get; }
+    public string ApiKey { get; set; }
 
     /// <summary>
     /// Gets the Access Token for authenticating with Google AI APIs.
@@ -33,6 +33,10 @@ public class GoogleAICredentials : ICredentials
             this.AuthToken = new AuthTokens(accessToken, expiryTime:expiry);
     }
 
+    public GoogleAICredentials()
+    {
+        
+    }
     /// <summary>
     /// Validates the API credentials for the GoogleAICredentials instance.
     /// Ensures that either an API Key or an Access Token is provided.

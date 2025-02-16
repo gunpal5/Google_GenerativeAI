@@ -51,7 +51,7 @@ public class VertexAI_Tests:TestBase
 
     }
     
-    [Fact]
+    [RunnableInDebugOnly]
     public async Task InitializeFromEnvironmentVariables()
     {
         var platform = new VertextPlatformAdapter();

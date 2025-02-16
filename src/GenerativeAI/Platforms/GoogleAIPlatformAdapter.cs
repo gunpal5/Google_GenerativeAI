@@ -208,7 +208,7 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
     public string GetBaseUrl(bool appendVesion = true)
     {
         if (appendVesion)
-            return $"{BaseUrl}/{ApiVersion}";
+            return $"{BaseUrl}/{GetApiVersion()}";
         return BaseUrl;
     }
 
@@ -245,6 +245,8 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
     /// <return>The API version string.</return>
     public string GetApiVersion()
     {
+        if(string.IsNullOrEmpty(ApiVersion))
+            ApiVersion = ApiVersions.v1Beta;
         return ApiVersion;
     }
 

@@ -88,15 +88,16 @@ public class VertextPlatformAdapter : IPlatformAdapter
             if (string.IsNullOrEmpty(apiKey))
                 throw new Exception("API Key is required for Vertex AI Express.");
         }
-        else if (string.IsNullOrEmpty(accessToken))
+
+        if (authenticator == null)
         {
-            if (authenticator == null)
+            if(string.IsNullOrEmpty(accessToken))
                 this.Authenticator = new GoogleCloudAdcAuthenticator(credentialsFile, logger);
-            else this.Authenticator = authenticator;
-            
-            
         }
-        else
+            
+        else this.Authenticator = authenticator;
+        
+        if (!string.IsNullOrEmpty(accessToken))
         {
             this.Credentials = new GoogleAICredentials(apiKey, accessToken);
         }

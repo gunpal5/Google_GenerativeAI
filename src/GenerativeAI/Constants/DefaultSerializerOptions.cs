@@ -5,11 +5,14 @@ namespace GenerativeAI;
 
 internal class DefaultSerializerOptions
 {
-    internal static readonly JsonSerializerOptions Options = new JsonSerializerOptions
+    internal static JsonSerializerOptions Options
     {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase, 
-        PropertyNameCaseInsensitive = true,
-        Converters = { new JsonStringEnumConverter() },
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-    };
+        get => new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            PropertyNameCaseInsensitive = true,
+            Converters = { new JsonStringEnumConverter() },
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        };
+    }
 }

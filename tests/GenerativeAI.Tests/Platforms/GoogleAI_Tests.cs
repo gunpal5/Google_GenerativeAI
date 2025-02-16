@@ -17,14 +17,19 @@ public class GoogleAI_Tests:TestBase
     public async Task ShouldThrowException_WhenProjectIdsAreInvalid()
     {
         var apiKey = Environment.GetEnvironmentVariable("Gemini_Api_Key",EnvironmentVariableTarget.User);
-        var googleAi = new GoogleAi();
-        var model = googleAi.CreateGenerativeModel(GoogleAIModels.Gemini15Flash);
-        var response = await model.GenerateContentAsync("write a poem about the sun");
 
-        response.ShouldNotBeNull();
-        var text = response.Text();
-        text.ShouldNotBeNullOrWhiteSpace();
-        Console.WriteLine(text);
+        Should.Throw<Exception>(() =>
+        {
+            var googleAi = new GoogleAi();
+        });
+        
+        // var model = googleAi.CreateGenerativeModel(GoogleAIModels.Gemini15Flash);
+        // var response = await model.GenerateContentAsync("write a poem about the sun");
+        //
+        // response.ShouldNotBeNull();
+        // var text = response.Text();
+        // text.ShouldNotBeNullOrWhiteSpace();
+        // Console.WriteLine(text);
     }
     
     // [Fact]

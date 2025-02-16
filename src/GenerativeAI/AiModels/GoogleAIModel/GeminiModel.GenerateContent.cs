@@ -54,7 +54,7 @@ public partial class GeminiModel
         var request = new GenerateContentRequest();
 
         request.AddContent(new Content() { Role = Roles.User });
-        var uri = new Uri(filePath);
+        
         await AppendFile(filePath, request, cancellationToken);
         
 

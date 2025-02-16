@@ -1,4 +1,5 @@
-﻿using GenerativeAI.Core;
+﻿using System.Text;
+using GenerativeAI.Core;
 using GenerativeAI.Types;
 
 namespace GenerativeAI;
@@ -15,7 +16,21 @@ public static class GenerateContentResponseExtensions
     /// <returns>The text if found; otherwise null.</returns>
     public static string? Text(this GenerateContentResponse response)
     {
-        return response?.Candidates?[0].Content?.Parts?[0].Text;
+
+        StringBuilder sb = new StringBuilder();
+        foreach (var candidate in response?.Candidates)
+        {
+            if(candidate.Content==null)
+                continue;
+            foreach (var p in candidate.Content?.Parts)
+            {
+                sb.AppendLine(p.Text);
+            }
+        }
+        var text = sb.ToString();
+        if (string.IsNullOrEmpty(text))
+            return null;
+        else return text;
     }
 
     /// <summary>
