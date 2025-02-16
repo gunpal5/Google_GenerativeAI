@@ -157,7 +157,7 @@ For multi-turn, conversational use cases, you can start a chat session by callin
 
 1. Create a `GenerativeModel` instance (e.g., via `googleAI.CreateGenerativeModel(...)` or `vertexAI.CreateGenerativeModel(...)`).  
 2. Call `StartChat()` on the generated model to initialize a conversation.  
-3. Use `SendAsync(...)` to exchange messages in the conversation.
+3. Use `GenerateContentAsync(...)` to exchange messages in the conversation.
 
 Below is an example using the model name "gemini-1.5-flash":
 
@@ -174,11 +174,11 @@ var generativeModel = googleAI.CreateGenerativeModel("models/gemini-1.5-flash");
 var chatSession = generativeModel.StartChat();
 
 // 4) Send and receive messages
-var firstResponse = await chatSession.SendAsync("Welcome to the Gemini 1.5 Flash chat!");
+var firstResponse = await chatSession.GenerateContentAsync("Welcome to the Gemini 1.5 Flash chat!");
 Console.WriteLine("First response: " + firstResponse.Text());
 
 // Continue the conversation
-var secondResponse = await chatSession.SendAsync("How can you help me with my AI development?");
+var secondResponse = await chatSession.GenerateContentAsync("How can you help me with my AI development?");
 Console.WriteLine("Second response: " + secondResponse.Text());
 ```
 
@@ -196,7 +196,7 @@ var generativeModel = vertexAI.CreateGenerativeModel("models/gemini-1.5-flash");
 var chatSession = generativeModel.StartChat();
 
 // 4) Send a chat message and read the response
-var response = await chatSession.SendAsync("Hello from Vertex AI Chat using Gemini 1.5 Flash!");
+var response = await chatSession.GenerateContentAsync("Hello from Vertex AI Chat using Gemini 1.5 Flash!");
 Console.WriteLine(response.Text());
 ```
 
@@ -250,10 +250,8 @@ For granular control, you can create a `GenerateContentRequest`, set a prompt, a
 
 ```csharp
 // Create a request with a text prompt
-var request = new GenerateContentRequest
-{
-    Prompt = "Describe what's in this document"
-};
+var request = new GenerateContentRequest();
+request.AddText("Describe what's in this document");
 
 // Attach a local file
 request.AddInlineFile(@"C:\files\example.png");

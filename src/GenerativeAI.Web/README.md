@@ -239,7 +239,7 @@ app.Run();
 
 ### Dependencies
 
-- [**Google_GenerativeAI**](https://github.com/Google_GenerativeAI) (Unofficial C# Google Generative AI SDK)
+- [**Google_GenerativeAI**](https://github.com/gunpal5/Google_GenerativeAI) (Unofficial C# Google Generative AI SDK)
 
 ### Contributing
 
