@@ -1,4 +1,5 @@
-﻿using GenerativeAI.Core;
+﻿using GenerativeAI.Authenticators;
+using GenerativeAI.Core;
 using GenerativeAI.Tests;
 using Shouldly;
 using Xunit.Abstractions;
