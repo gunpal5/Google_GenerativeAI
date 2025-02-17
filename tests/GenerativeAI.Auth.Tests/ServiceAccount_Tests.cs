@@ -13,7 +13,7 @@ public class ServiceAccount_Tests:TestBase
         
     }
 
-    [Fact()]
+    [RunnableInDebugOnly]
     
     public async Task ShouldWorkWithServiceAccount()
     { 
