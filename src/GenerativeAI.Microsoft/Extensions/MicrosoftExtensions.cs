@@ -134,25 +134,25 @@ public static class AbstractionMapper
     }
 
     /// <summary>
-    /// Transforms a <see cref="GenerateContentResponse"/> into a <see cref="ChatCompletion"/>.
+    /// Transforms a <see cref="GenerateContentResponse"/> into a <see cref="ChatResponse"/>.
     /// </summary>
     /// <param name="response">The response to process.</param>
     /// <returns>A <see cref="ChatCompletion"/> object, or null if the response is invalid.</returns>
-    public static ChatCompletion? ToChatCompletion(this GenerateContentResponse? response)
+    public static ChatResponse? ToChatCompletion(this GenerateContentResponse? response)
     {
         if (response is null) return null;
 
         var chatMessage = ToChatMessage(response);
 
-        return new ChatCompletion(chatMessage)
+        return new ChatResponse(chatMessage)
         {
             FinishReason = ToFinishReason(response.Candidates?.FirstOrDefault()?.FinishReason),
             AdditionalProperties = null,
             Choices = new[] {chatMessage}.ToList(),
-            CompletionId = null,
             CreatedAt = null,
             ModelId = null,
             RawRepresentation = response,
+            ResponseId = null,
             Usage = ParseContentResponseUsage(response)
         };
     }
@@ -162,11 +162,10 @@ public static class AbstractionMapper
     /// </summary>
     /// <param name="response">The response to convert.</param>
     /// <returns>A configured <see cref="StreamingChatCompletionUpdate"/>.</returns>
-    public static StreamingChatCompletionUpdate ToStreamingChatCompletionUpdate(this GenerateContentResponse? response)
+    public static ChatResponseUpdate ToStreamingChatCompletionUpdate(this GenerateContentResponse? response)
     {
-        return new StreamingChatCompletionUpdate
+        return new ChatResponseUpdate
         {
-            CompletionId = null,
             ChoiceIndex = 0, // Default to 0 as GenerativeAI doesn't support multiple choices
             CreatedAt = null,
             AdditionalProperties = null,
@@ -174,8 +173,9 @@ public static class AbstractionMapper
                 ? ChatFinishReason.Stop
                 : null,
             RawRepresentation = response,
+            ResponseId = null,
+            Role = ToAbstractionRole(response?.Candidates?.FirstOrDefault()?.Content?.Role),
             Text = response?.Text(),
-            Role = ToAbstractionRole(response?.Candidates?.FirstOrDefault()?.Content?.Role)
         };
     }
 
