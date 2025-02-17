@@ -49,7 +49,7 @@ public class GenerativeAI_Tools_Tests:TestBase
 
         var text = response.Text();
         text.ShouldNotBeNullOrEmpty();
-        text.ShouldContain("lasagne");
+        text.ShouldContain("lasagna");
         Console.WriteLine(text);
     }
     

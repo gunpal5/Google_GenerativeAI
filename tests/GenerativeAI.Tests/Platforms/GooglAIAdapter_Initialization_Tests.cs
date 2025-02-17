@@ -16,6 +16,7 @@ using Xunit;
             var ex = Should.Throw<Exception>(() =>
             {
                 // Passing null for the API key (and environment variable checks are skipped here)
+                
                 _ = new GoogleAIPlatformAdapter(null!);
             });
 

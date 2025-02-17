@@ -10,8 +10,6 @@
         <Authors>Gunpal Jain</Authors>
         <Company/>
         <Description>This library is part of the Google_GenerativeAI SDK and provides various API authentication implementations for seamless usage of the Google_GenerativeAI SDK.</Description>
-
-
         <PackageProjectUrl>https://github.com/gunpal5/Google_GenerativeAI</PackageProjectUrl>
         <PackageReadmeFile>./README.md</PackageReadmeFile>
         <RepositoryUrl>https://github.com/gunpal5/Google_GenerativeAI</RepositoryUrl>

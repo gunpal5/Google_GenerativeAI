@@ -74,7 +74,7 @@ public class FileClient_Tests : TestBase
         string tempFilePath = Path.Combine(Path.GetTempPath(), "test-upload-file.txt");
 
         // Create a temporary file to simulate upload
-        await File.WriteAllTextAsync(tempFilePath, "This is a test file for upload.");
+        File.WriteAllText(tempFilePath, "This is a test file for upload.");
 
         try
         {

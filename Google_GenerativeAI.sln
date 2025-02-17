@@ -36,6 +36,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{61CC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JavascriptCodeExecutor", "samples\JavascriptCodeExecutor\JavascriptCodeExecutor.csproj", "{9772284A-DE44-4D36-AA65-E1D83F6C1F4D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebIntegration", "samples\WebAppIntegration\WebIntegration\WebIntegration.csproj", "{451AD350-4318-4623-AEAF-8646B709A66F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -90,6 +92,10 @@ Global
 		{9772284A-DE44-4D36-AA65-E1D83F6C1F4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9772284A-DE44-4D36-AA65-E1D83F6C1F4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9772284A-DE44-4D36-AA65-E1D83F6C1F4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{451AD350-4318-4623-AEAF-8646B709A66F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{451AD350-4318-4623-AEAF-8646B709A66F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{451AD350-4318-4623-AEAF-8646B709A66F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{451AD350-4318-4623-AEAF-8646B709A66F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -107,6 +113,7 @@ Global
 		{880BE84E-AFAD-4F0E-A33B-59050A9FFC3B} = {AC161F1D-EC76-48D2-86A3-B52584618D49}
 		{F2E94138-56F4-408A-84CB-AB2F6503EFAF} = {FCCDE15A-B121-4D6C-BD56-D1B043A26F18}
 		{9772284A-DE44-4D36-AA65-E1D83F6C1F4D} = {61CC49B3-1325-40EB-95DF-89E18A0D041B}
+		{451AD350-4318-4623-AEAF-8646B709A66F} = {61CC49B3-1325-40EB-95DF-89E18A0D041B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FFF3E8BB-BACD-4376-8E33-55D6E8A30BE0}
