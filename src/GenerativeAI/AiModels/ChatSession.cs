@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using GenerativeAI.Core;
+using GenerativeAI.Exceptions;
 using GenerativeAI.Types;
 using Microsoft.Extensions.Logging;
 
@@ -97,6 +98,29 @@ public class ChatSession : GenerativeModel
         UpdateHistory(request, response);
         return response;
     }
+
+    protected override List<Content> BeforeRegenration(GenerateContentRequest originalRequest, GenerateContentResponse response)
+    {
+        var contents = new List<Content>();
+        if (originalRequest.Contents != null)
+        {
+            foreach (var content in originalRequest.Contents)
+            {
+                if (History.Contains(content))
+                    continue;
+                contents.Add(content);
+            }
+        }
+        // Add the AI's function-call message
+        if (response.Candidates.Length > 0)
+        {
+            contents.Add(new Content(response.Candidates[0].Content.Parts, response.Candidates[0].Content.Role));
+        }
+
+        UpdateHistory(originalRequest, response);
+        return contents;
+    }
+
     /// <inheritdoc />
     public override async IAsyncEnumerable<GenerateContentResponse> StreamContentAsync(GenerateContentRequest request, CancellationToken cancellationToken = default)
     {
@@ -118,6 +142,11 @@ public class ChatSession : GenerativeModel
 
     private void UpdateHistory(GenerateContentRequest request, GenerateContentResponse response)
     {
+        var functionCall = response.GetFunction();
+        if (functionCall != null)
+            return;
+        if (IsFunctionResponse(request))
+            return;
         if (response.Candidates is { Length: > 0 } && response.Candidates[0].Content != null)
         {
             var lastRequestContent = request.Contents.Last();
@@ -129,6 +158,20 @@ public class ChatSession : GenerativeModel
         }
        
     }
+
+    private bool IsFunctionResponse(GenerateContentRequest request)
+    {
+        foreach (var requestContent in request.Contents)
+        {
+            foreach (var requestContentPart in requestContent.Parts)
+            {
+                if(requestContentPart.FunctionResponse!=null)
+                    return true;
+            }
+        }
+        return false;
+    }
+
     private void UpdateHistory(Content lastRequestContent, Content lastResponseContent)
     {
         lastRequestContent.Role ??= Roles.User;

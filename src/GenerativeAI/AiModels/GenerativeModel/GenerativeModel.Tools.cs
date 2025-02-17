@@ -133,7 +133,7 @@ public partial class GenerativeModel
     /// Handles invoking a function if the response requests one
     /// and optionally feeding the response back into the model
     /// </summary>
-    private async Task<GenerateContentResponse> CallFunctionAsync(
+    protected virtual async Task<GenerateContentResponse> CallFunctionAsync(
         GenerateContentRequest originalRequest,
         GenerateContentResponse response,
         CancellationToken cancellationToken)
@@ -180,27 +180,34 @@ public partial class GenerativeModel
         {
             var content = functionResponse.ToFunctionCallContent();
 
-            var contents = new List<Content>();
-            if (originalRequest.Contents != null)
-            {
-                contents.AddRange(originalRequest.Contents);
-            }
-
-            // Add the AI's function-call message
-            if (response.Candidates.Length > 0)
-            {
-                contents.Add(new Content(response.Candidates[0].Content.Parts, response.Candidates[0].Content.Role));
-            }
-
+            var contents = BeforeRegenration(originalRequest, response);
+            
             // Add our function result
             contents.Add(content);
 
             // Re-call the model with appended result
             var nextReq = new GenerateContentRequest { Contents = contents };
+
+            
             response = await GenerateContentAsync(nextReq, cancellationToken).ConfigureAwait(false);
         }
 
         return response;
+    }
+
+    protected virtual List<Content> BeforeRegenration(GenerateContentRequest originalRequest, GenerateContentResponse response)
+    {
+        var contents = new List<Content>();
+        if (originalRequest.Contents != null)
+        {
+            contents.AddRange(originalRequest.Contents);
+        }
+        // Add the AI's function-call message
+        if (response.Candidates.Length > 0)
+        {
+            contents.Add(new Content(response.Candidates[0].Content.Parts, response.Candidates[0].Content.Role));
+        }
+        return contents;
     }
 
     #endregion
