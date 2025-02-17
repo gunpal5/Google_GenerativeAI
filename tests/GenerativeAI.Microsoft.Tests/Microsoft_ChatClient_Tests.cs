@@ -21,11 +21,11 @@ namespace GenerativeAI.Tests.Microsoft;
 [TestCaseOrderer(
     ordererTypeName: "GenerativeAI.Tests.Base.PriorityOrderer",
     ordererAssemblyName: "GenerativeAI.Tests")]
-public class GenerativeAIChatClient_Tests : TestBase
+public class Microsoft_ChatClient_Tests : TestBase
 {
     private const string DefaultTestModelName = GoogleAIModels.DefaultGeminiModel;
 
-    public GenerativeAIChatClient_Tests(ITestOutputHelper helper) : base(helper)
+    public Microsoft_ChatClient_Tests(ITestOutputHelper helper) : base(helper)
     {
     }
 
@@ -107,7 +107,7 @@ public class GenerativeAIChatClient_Tests : TestBase
         // We can simulate some ChatMessage list for testing:
         var messages = new List<ChatMessage>
         {
-            new ChatMessage(ChatRole.User, "Hello! How are you?")
+            new ChatMessage(ChatRole.User, "What's wrong with hitler?")
         };
 
         // We’ll stub out the model’s behavior by providing a minimal response
@@ -158,7 +158,7 @@ public class GenerativeAIChatClient_Tests : TestBase
 
         var messages = new List<ChatMessage>
         {
-            new ChatMessage(ChatRole.User, "Stream test")
+            new ChatMessage(ChatRole.User, "write a poem")
         };
 
         // Act

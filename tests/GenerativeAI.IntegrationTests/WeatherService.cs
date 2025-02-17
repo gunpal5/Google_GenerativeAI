@@ -35,8 +35,10 @@ namespace GenerativeAI.IntegrationTests
             CancellationToken cancellationToken = default);
     }
 
+    [Description("Weather Functions")]
     public class WeatherService : IWeatherFunctions
     {
+        [Description("Get the current weather in a given location")]
         public Weather GetCurrentWeather(string location, Unit unit = Unit.Celsius)
         {
             return new Weather

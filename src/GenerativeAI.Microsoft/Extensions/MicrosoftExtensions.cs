@@ -1,63 +1,131 @@
 ﻿using GenerativeAI.Types;
 using Microsoft.Extensions.AI;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 namespace GenerativeAI.Microsoft.Extensions;
 
 /// <summary>
-/// Provides extension methods to transform between Google_GenerativeAI and Microsoft.Extensions.AI models.
+/// Provides extension methods for interoperability between
+/// Google_GenerativeAI and Microsoft.Extensions.AI models.
 /// </summary>
 public static class MicrosoftExtensions
 {
     /// <summary>
-    /// Transforms a single <see cref="ChatMessage"/> into a <see cref="GenerateContentRequest"/>.
+    /// Converts a collection of <see cref="ChatMessage"/> objects into a <see cref="GenerateContentRequest"/> instance.
     /// </summary>
-    /// <param name="message">The chat message to be transformed.</param>
-    /// <param name="options">Optional settings for generation.</param>
-    /// <returns>A <see cref="GenerateContentRequest"/> object.</returns>
-    public static GenerateContentRequest ToContentRequest(this ChatMessage message, ChatOptions? options = null)
-    {
-        return CreateContentRequest(new[] { message }, options);
-    }
-
-    /// <summary>
-    /// Turns a group of <see cref="ChatMessage"/> objects into a <see cref="GenerateContentRequest"/>.
-    /// </summary>
-    /// <param name="messages">The set of chat messages to convert.</param>
-    /// <param name="options">Optional settings for the generation process.</param>
-    /// <returns>A <see cref="GenerateContentRequest"/> object.</returns>
-    public static GenerateContentRequest ToContentRequest(this IEnumerable<ChatMessage> messages,
+    /// <param name="chatMessages">The collection of chat messages to transform.</param>
+    /// <param name="options">Optional settings to customize the generation process.</param>
+    /// <returns>A <see cref="GenerateContentRequest"/> instance derived from the provided chat messages.</returns>
+    public static GenerateContentRequest ToGenerateContentRequest(this IEnumerable<ChatMessage> chatMessages,
         ChatOptions? options = null)
     {
-        return CreateContentRequest(messages, options);
-    }
-
-    /// <summary>
-    /// Constructs a <see cref="GenerateContentRequest"/> using a set of chat messages and optional configuration.
-    /// </summary>
-    /// <param name="messages">The input chat messages.</param>
-    /// <param name="options">Optional parameters to configure the generation process.</param>
-    /// <returns>A configured <see cref="GenerateContentRequest"/> object.</returns>
-    private static GenerateContentRequest CreateContentRequest(IEnumerable<ChatMessage> messages,
-        ChatOptions? options)
-    {
-        var request = new GenerateContentRequest { GenerationConfig = MapGenerationConfig(options) };
-
-        foreach (var message in messages)
+        GenerateContentRequest request = new()
         {
-            var content = new Content { Role = MapRole(message.Role) };
-            content.Parts.AddRange(message.Contents.Select(MapContentPart));
-            request.Contents.Add(content);
+            GenerationConfig = options.ToGenerationConfig()
+        };
+
+        Part[] systemParts = (from m in chatMessages
+            where m.Role == ChatRole.System
+            from c in m.Contents
+            let p = c.ToPart()
+            where p is not null
+            select p).ToArray();
+        if (systemParts.Length > 0)
+        {
+            request.SystemInstruction = new Content(systemParts, Roles.System);
         }
+
+        request.Contents = (from m in chatMessages
+            where m.Role != ChatRole.System
+            select new Content((from c in m.Contents
+                let p = c.ToPart()
+                where p is not null
+                select p).ToArray(), m.Role == ChatRole.Assistant ? Roles.Model : Roles.User)).ToList();
+
+        request.Tools = options?.Tools?.OfType<AIFunction>().Select(f => new Tool()
+        {
+
+            FunctionDeclarations = new()
+            {
+                new FunctionDeclaration()
+                {
+                    Name = f.Name,
+                    Description = f.Description,
+                    Parameters = f.JsonSchema.ToSchema(),
+                }
+            }
+        }).ToList()!;
 
         return request;
     }
+
+
+    /// <summary>
+    /// Converts a <see cref="JsonElement"/> instance into a <see cref="Schema"/> object.
+    /// </summary>
+    /// <param name="schema">The JSON schema represented as a <see cref="JsonElement"/>.</param>
+    /// <returns>A <see cref="Schema"/> object constructed from the provided JSON schema, or null if deserialization fails.</returns>
+    public static Schema? ToSchema(this JsonElement schema)
+    {
+        var serialized = JsonSerializer.Serialize(schema, new JsonSerializerOptions()
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        });
+        return JsonSerializer.Deserialize<Schema?>(serialized);
+    }
+
+    /// <summary>
+    /// Converts an <see cref="AIContent"/> instance into a <see cref="Part"/> object.
+    /// </summary>
+    /// <param name="content">The AI content to transform into a part object.</param>
+    /// <returns>A <see cref="Part"/> object representing the given AI content, or null if the content type is unsupported.</returns>
+    public static Part? ToPart(this AIContent content)
+    {
+        return content switch
+        {
+            TextContent text => new Part { Text = text.Text },
+            DataContent image when image.Data != null => new Part
+            {
+                InlineData = new Blob()
+                {
+                    MimeType = image.MediaType,
+                    Data = Convert.ToBase64String(image.Data!.Value.ToArray()),
+                }
+            },
+            FunctionCallContent fcc => new Part
+            {
+                FunctionCall = new FunctionCall()
+                {
+                    Name = fcc.Name,
+                    Args = fcc.Arguments!,
+                }
+            },
+            FunctionResultContent frc => new Part
+            {
+                FunctionResponse = new FunctionResponse()
+                {
+                    Name = frc.CallId, 
+                    Response = new
+                    {
+                        Name = frc.CallId,
+                        Content = JsonSerializer.SerializeToNode(frc.Result)!,
+                    }
+                }
+            },
+            _ => null,
+        };
+    }
+
+    
 
     /// <summary>
     /// Maps <see cref="ChatOptions"/> into a <see cref="GenerationConfig"/> object used by GenerativeAI.
     /// </summary>
     /// <param name="options">The chat options defining parameters for content generation.</param>
     /// <returns>A <see cref="GenerationConfig"/> instance or null, depending on the input.</returns>
-    private static GenerationConfig? MapGenerationConfig(this ChatOptions? options)
+    private static GenerationConfig? ToGenerationConfig(this ChatOptions? options)
     {
         if (options?.AdditionalProperties == null)
         {
@@ -65,64 +133,27 @@ public static class MicrosoftExtensions
         }
 
         var config = new GenerationConfig();
-        TryAddOption<double?>(options, "Temperature", v => config.Temperature = v);
-        TryAddOption<double?>(options, "TopP", v => config.TopP = v);
-        TryAddOption<int?>(options, "TopK", v => config.TopK = v);
-        TryAddOption<int>(options, "MaxOutputTokens", v => config.MaxOutputTokens = v);
-        TryAddOption<string>(options, "ResponseMimeType", v => config.ResponseMimeType = v);
-        TryAddOption<double>(options, "PresencePenalty", v => config.PresencePenalty = v);
-        TryAddOption<double>(options, "FrequencyPenalty", v => config.FrequencyPenalty = v);
-        TryAddOption<bool?>(options, "ResponseLogprobs", v => config.ResponseLogprobs = v);
-        TryAddOption<int?>(options, "Logprobs", v => config.Logprobs = v);
+        config.Temperature = options.Temperature;
+        config.TopP = options.TopP;
+        config.TopK = options.TopK;
+        config.MaxOutputTokens = options.MaxOutputTokens;
+        config.ResponseMimeType = options.ResponseFormat == ChatResponseFormat.Json ? "applicatino/json" : null;
+        config.PresencePenalty = options.PresencePenalty;
+        config.FrequencyPenalty = options.FrequencyPenalty;
+
+        if (options.AdditionalProperties.TryGetValue("ResponseLogprobs", out bool? responseProbs))
+            config.ResponseLogprobs = responseProbs;
+        if (options.AdditionalProperties.TryGetValue("Logprobs", out bool? logProbs))
+            config.ResponseLogprobs = logProbs;
         return config;
     }
 
     /// <summary>
-    /// Converts an <see cref="AIContent"/> object to a <see cref="Part"/> specifically formulated for GenerativeAI.
+    /// Converts a collection of strings and optional embedding generation settings into an <see cref="EmbedContentRequest"/>.
     /// </summary>
-    /// <param name="content">The content to be converted.</param>
-    /// <returns>A <see cref="Part"/> representative object.</returns>
-    /// <exception cref="NotSupportedException">If the content type is unsupported.</exception>
-    private static Part MapContentPart(AIContent content)
-    {
-        if (content is TextContent text)
-        {
-            return new Part { Text = text.Text };
-        }
-
-        throw new NotSupportedException($"Unsupported AIContent type: {content.GetType()}");
-    }
-
-    /// <summary>
-    /// Maps a <see cref="ChatRole"/> from Microsoft.Extensions.AI to a GenerativeAI role string.
-    /// </summary>
-    /// <param name="role">The source role to convert.</param>
-    /// <returns>A string representing the equivalent GenerativeAI role.</returns>
-    private static string MapRole(ChatRole role)
-    {
-        switch (role.Value)
-        {
-            case "user" :
-                return Roles.User;
-            case "assistant":
-                return Roles.Model;
-            case "system":
-                return Roles.System;
-            case "tool":
-                return Roles.Function;
-            default:
-                return role.ToString();
-        }
-    }
-
-    
-
-    /// <summary>
-    /// Converts strings and embedding options into an <see cref="EmbedContentRequest"/>.
-    /// </summary>
-    /// <param name="values">The strings to embed.</param>
-    /// <param name="options">Optional properties for generation settings.</param>
-    /// <returns>An <see cref="EmbedContentRequest"/> object populated with the inputs.</returns>
+    /// <param name="values">The collection of strings to be embedded.</param>
+    /// <param name="options">Optional embedding generation settings, such as model identification.</param>
+    /// <returns>An <see cref="EmbedContentRequest"/> instance created from the provided values and options.</returns>
     public static EmbedContentRequest ToGeminiEmbedContentRequest(IEnumerable<string> values,
         EmbeddingGenerationOptions? options)
     {
@@ -136,8 +167,8 @@ public static class MicrosoftExtensions
     /// <summary>
     /// Transforms a <see cref="GenerateContentResponse"/> into a <see cref="ChatResponse"/>.
     /// </summary>
-    /// <param name="response">The response to process.</param>
-    /// <returns>A <see cref="ChatResponse"/> object, or null if the response is invalid.</returns>
+    /// <param name="response">The <see cref="GenerateContentResponse"/> instance to convert.</param>
+    /// <returns>A <see cref="ChatResponse"/> object if the transformation is successful; otherwise, null.</returns>
     public static ChatResponse? ToChatResponse(this GenerateContentResponse? response)
     {
         if (response is null) return null;
@@ -148,7 +179,7 @@ public static class MicrosoftExtensions
         {
             FinishReason = ToFinishReason(response.Candidates?.FirstOrDefault()?.FinishReason),
             AdditionalProperties = null,
-            Choices = new[] {chatMessage}.ToList(),
+            Choices = new[] { chatMessage }.ToList(),
             CreatedAt = null,
             ModelId = null,
             RawRepresentation = response,
@@ -158,15 +189,15 @@ public static class MicrosoftExtensions
     }
 
     /// <summary>
-    /// Converts a <see cref="GenerateContentResponse"/> into a <see cref="StreamingChatCompletionUpdate"/>.
+    /// Converts a <see cref="GenerateContentResponse"/> instance into a <see cref="ChatResponseUpdate"/> object.
     /// </summary>
-    /// <param name="response">The response to convert.</param>
-    /// <returns>A configured <see cref="ChatResponseUpdate"/>.</returns>
+    /// <param name="response">The input <see cref="GenerateContentResponse"/> to transform into a chat response update.</param>
+    /// <returns>A new <see cref="ChatResponseUpdate"/> object reflecting the data in the provided <see cref="GenerateContentResponse"/>.</returns>
     public static ChatResponseUpdate ToChatResponseUpdate(this GenerateContentResponse? response)
     {
         return new ChatResponseUpdate
         {
-            ChoiceIndex = 0, // Default to 0 as GenerativeAI doesn't support multiple choices
+            ChoiceIndex = 0,
             CreatedAt = null,
             AdditionalProperties = null,
             FinishReason = response?.Candidates?.FirstOrDefault()?.FinishReason == FinishReason.OTHER
@@ -174,11 +205,18 @@ public static class MicrosoftExtensions
                 : null,
             RawRepresentation = response,
             ResponseId = null,
-            Role = ToAbstractionRole(response?.Candidates?.FirstOrDefault()?.Content?.Role),
+            Role = ToChatRole(response?.Candidates?.FirstOrDefault()?.Content?.Role),
             Text = response?.Text(),
         };
     }
 
+    /// <summary>
+    /// Converts an <see cref="EmbedContentRequest"/> and an <see cref="EmbedContentResponse"/>
+    /// into a <see cref="GeneratedEmbeddings{T}"/> instance containing embeddings of type <see cref="Embedding{float}"/>.
+    /// </summary>
+    /// <param name="request">The request containing the embedding parameters and metadata.</param>
+    /// <param name="response">The response containing the embedding result.</param>
+    /// <returns>A <see cref="GeneratedEmbeddings{T}"/> instance containing the generated embeddings and associated metadata.</returns>
     public static GeneratedEmbeddings<Embedding<float>> ToGeneratedEmbeddings(EmbedContentRequest request,
         EmbedContentResponse response)
     {
@@ -202,20 +240,37 @@ public static class MicrosoftExtensions
     }
 
     /// <summary>
-    /// Creates a <see cref="ChatMessage"/> from a <see cref="GenerateContentResponse"/>.
+    /// Converts a <see cref="GenerateContentResponse"/> instance into a <see cref="ChatMessage"/>.
     /// </summary>
-    /// <param name="response">The source response.</param>
-    /// <returns>A <see cref="ChatMessage"/> derived from the response.</returns>
+    /// <param name="response">The <see cref="GenerateContentResponse"/> to be transformed into a <see cref="ChatMessage"/>.</param>
+    /// <returns>A <see cref="ChatMessage"/> representing the data contained in the <see cref="GenerateContentResponse"/>.</returns>
     private static ChatMessage ToChatMessage(GenerateContentResponse response)
     {
-        var contents = new List<AIContent>();
-        if (response.Text()?.Length > 0)
-            contents.Insert(0, new TextContent(response.Text()));
-
-        return new ChatMessage(ToAbstractionRole(response.Candidates?.FirstOrDefault()?.Content?.Role), contents)
+        var generatedContent = response.Candidates?.FirstOrDefault().Content;
+        var contents = generatedContent.Parts.ToAiContents();
+        
+        return new ChatMessage(ToChatRole(generatedContent.Role), contents)
         {
             RawRepresentation = response
         };
+    }
+    
+    /// <summary>
+    /// Converts a <see cref="GenerateContentResponse"/> instance into a <see cref="ChatMessage"/>.
+    /// </summary>
+    /// <param name="response">The <see cref="GenerateContentResponse"/> to be transformed into a <see cref="ChatMessage"/>.</param>
+    /// <returns>A <see cref="ChatMessage"/> representing the data contained in the <see cref="GenerateContentResponse"/>.</returns>
+    public static IEnumerable<ChatMessage> ToChatMessages(this List<Content>? contents)
+    {
+        List<ChatMessage>? chatMessages = new List<ChatMessage>();
+        foreach (var content in contents)
+        {
+            var aiContents = content.Parts.ToAiContents();
+            chatMessages.Add(new ChatMessage(ToChatRole(content.Role), aiContents));
+            
+        }
+
+        return chatMessages;
     }
 
     /// <summary>
@@ -223,7 +278,7 @@ public static class MicrosoftExtensions
     /// </summary>
     /// <param name="role">The string representing the role.</param>
     /// <returns>The equivalent <see cref="ChatRole"/>.</returns>
-    private static ChatRole ToAbstractionRole(string? role)
+    private static ChatRole ToChatRole(string? role)
     {
         if (string.IsNullOrEmpty(role)) return new ChatRole("unknown");
 
@@ -238,10 +293,10 @@ public static class MicrosoftExtensions
     }
 
     /// <summary>
-    /// Converts a <see cref="FinishReason"/> from GenerativeAI into a <see cref="ChatFinishReason"/>.
+    /// Converts a <see cref="FinishReason"/> value into a corresponding <see cref="ChatFinishReason"/> instance.
     /// </summary>
-    /// <param name="finishReason">The finish reason to be mapped.</param>
-    /// <returns>A <see cref="ChatFinishReason"/>, or null if it cannot be mapped.</returns>
+    /// <param name="finishReason">The <see cref="FinishReason"/> value to convert.</param>
+    /// <returns>A corresponding <see cref="ChatFinishReason"/> instance, or null if the mapping cannot be performed.</returns>
     private static ChatFinishReason? ToFinishReason(FinishReason? finishReason)
     {
         return finishReason switch
@@ -277,15 +332,65 @@ public static class MicrosoftExtensions
     }
 
     /// <summary>
-    /// Tries to retrieve GenerativeAI options from additional properties in <see cref="ChatOptions"/> and set them.
+    /// Transforms a list of <see cref="Part"/> objects into a collection of <see cref="AIContent"/> instances.
     /// </summary>
-    /// <typeparam name="T">The type of the option value.</typeparam>
-    /// <param name="chatOptions">The options containing additional configuration properties.</param>
-    /// <param name="option">The name of the option to retrieve.</param>
-    /// <param name="optionSetter">The action to set the retrieved option value.</param>
-    private static void TryAddOption<T>(ChatOptions chatOptions, string option, Action<T> optionSetter)
+    /// <param name="parts">The list of <see cref="Part"/> objects to be converted.</param>
+    /// <returns>A collection of <see cref="AIContent"/> instances derived from the provided <see cref="Part"/> objects, or null if the input list is null.</returns>
+    public static IList<AIContent> ToAiContents(this List<Part>? parts)
     {
-        if (chatOptions.AdditionalProperties?.TryGetValue(option, out var value) ?? false)
-            optionSetter((T)value);
+        List<AIContent>? contents = null;
+        if (parts is not null)
+        {
+            foreach (Part part in parts)
+            {
+                if (part.Text is not null)
+                {
+                    (contents ??= new()).Add(new TextContent(part.Text));
+                }
+
+                if (part.FunctionCall is not null)
+                {
+                    (contents ??= new()).Add(new FunctionCallContent(part.FunctionCall.Name, part.FunctionCall.Name, ConvertFunctionCallArg(part.FunctionCall.Args)));
+                }
+
+                if (part.FunctionResponse is not null)
+                {
+                    (contents ??= new()).Add(new FunctionResultContent(part.FunctionResponse.Name, (object?) part.FunctionResponse.Response));
+                }
+
+                if (part.InlineData is not null)
+                {
+                    byte[] data = Convert.FromBase64String(part.InlineData.Data!);
+                    (contents ??= new()).Add(new DataContent(data, part.InlineData.MimeType));
+                }
+            }
+        }
+
+        return contents;
+    }
+
+    /// <summary>
+    /// Converts the arguments of a function call into a dictionary representation.
+    /// </summary>
+    /// <param name="functionCallArgs">The arguments of the function call, potentially in a serialized JSON format.</param>
+    /// <returns>A dictionary where the keys represent argument names and values represent their corresponding data, or null if conversion is not possible.</returns>
+    private static IDictionary<string, object?>? ConvertFunctionCallArg(object? functionCallArgs)
+    {
+        if (functionCallArgs is JsonElement jsonElement)
+        {
+            if (jsonElement.ValueKind == JsonValueKind.Object)
+            {
+                var obj = JsonObject.Create(jsonElement);
+                return obj?.ToDictionary(s=>s.Key,s=>(object?)s.Value);
+            }
+        }
+
+        return null;
+    }
+
+    public static FunctionCallContent? GetFunction(this ChatResponse response)
+    {
+        var aiFunction = (FunctionCallContent?) response.Choices.SelectMany(s=>s.Contents).FirstOrDefault(s=>s is FunctionCallContent);
+        return aiFunction;
     }
 }
