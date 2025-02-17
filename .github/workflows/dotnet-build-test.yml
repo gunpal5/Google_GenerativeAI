@@ -25,4 +25,4 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore    
     - name: Test
-      run: dotnet test --configuration Release --no-build --verbosity Minimal 
+      run: dotnet test --configuration Release --verbosity Minimal 
