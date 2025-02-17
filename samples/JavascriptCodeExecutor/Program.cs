@@ -7,7 +7,7 @@ using GenerativeAI.Tools;
 
 var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY", EnvironmentVariableTarget.User);
 restart:
-var model = new GenerativeModel(apiKey, GoogleAIModels.Gemini15Pro);
+var model = new GenerativeModel(apiKey, GoogleAIModels.Gemini2Flash);
 
 var javascripExecutor = new CodeExecutor.JavascriptCodeExecutor();
 var javascriptTool = new GenericFunctionTool(javascripExecutor.AsTools(), javascripExecutor.AsCalls());

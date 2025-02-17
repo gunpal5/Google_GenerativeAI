@@ -100,7 +100,7 @@ public static class ServiceCollectionExtension
     /// Configures the Google ADC (Application Default Credentials) authentication for Generative AI services.
     /// </summary>
     /// <param name="services">The <see cref="IServiceCollection" /> to configure the authentication for.</param>
-    public static void WithGoogleAdcAuthentication(this IServiceCollection services)
+    public static void WithAdc(this IServiceCollection services)
     {
         services.Configure<GenerativeAIOptions>(s =>
         {
@@ -113,7 +113,7 @@ public static class ServiceCollectionExtension
     /// </summary>
     /// <param name="services">The <see cref="IServiceCollection" /> to add the authentication configuration to.</param>
     /// <param name="jsonFilePath">The file path to the JSON credential file for Google Service Account authentication.</param>
-    public static void WithGoogleServiceAuthentication(this IServiceCollection services, string jsonFilePath)
+    public static void WithServiceAccount(this IServiceCollection services, string jsonFilePath)
     {
         services.Configure<GenerativeAIOptions>(s =>
         {
@@ -128,7 +128,7 @@ public static class ServiceCollectionExtension
     /// <param name="serviceAccountEmail">The email address associated with the Google Service Account.</param>
     /// <param name="certificateFilePath">The file path to the service account's certificate.</param>
     /// <param name="passPhrase">The passphrase for the certificate file.</param>
-    public static void WithGoogleServiceAuthentication(this IServiceCollection services, string serviceAccountEmail, string certificateFilePath, string passPhrase)
+    public static void WithServiceAccount(this IServiceCollection services, string serviceAccountEmail, string certificateFilePath, string passPhrase)
     {
         services.Configure<GenerativeAIOptions>(s =>
         {
@@ -142,7 +142,7 @@ public static class ServiceCollectionExtension
     /// </summary>
     /// <param name="services">The <see cref="IServiceCollection" /> to configure.</param>
     /// <param name="clientSecretFilePath">The file path to the client secret JSON file used for Google OAuth authentication.</param>
-    public static void WithGoogleOAuthAuthentication(this IServiceCollection services, string clientSecretFilePath)
+    public static void WithOAuth(this IServiceCollection services, string clientSecretFilePath)
     {
         services.Configure<GenerativeAIOptions>(s =>
         {

@@ -177,7 +177,7 @@ public class ServiceCollectionExtensionTests
         services.AddGenerativeAI();
 
         // Act
-        services.WithGoogleAdcAuthentication();
+        services.WithAdc();
         var provider = services.BuildServiceProvider();
 
         // Assert
@@ -195,7 +195,7 @@ public class ServiceCollectionExtensionTests
         services.AddGenerativeAI();
 
         // Act
-        services.WithGoogleServiceAuthentication(Environment.GetEnvironmentVariable("Google_Service_Account_Json",EnvironmentVariableTarget.User));
+        services.WithServiceAccount(Environment.GetEnvironmentVariable("Google_Service_Account_Json",EnvironmentVariableTarget.User));
         var provider = services.BuildServiceProvider();
 
         // Assert
@@ -212,7 +212,7 @@ public class ServiceCollectionExtensionTests
         services.AddGenerativeAI();
 
         // Act
-        services.WithGoogleServiceAuthentication("service@account.com", Environment.GetEnvironmentVariable("Google_Service_Account_Key",EnvironmentVariableTarget.User), Environment.GetEnvironmentVariable("Google_key_password",EnvironmentVariableTarget.User));
+        services.WithServiceAccount("service@account.com", Environment.GetEnvironmentVariable("Google_Service_Account_Key",EnvironmentVariableTarget.User), Environment.GetEnvironmentVariable("Google_key_password",EnvironmentVariableTarget.User));
         var provider = services.BuildServiceProvider();
 
         // Assert
@@ -229,7 +229,7 @@ public class ServiceCollectionExtensionTests
         services.AddGenerativeAI();
 
         // Act
-        services.WithGoogleOAuthAuthentication(Environment.GetEnvironmentVariable("Google_Client_Secret",EnvironmentVariableTarget.User));
+        services.WithOAuth(Environment.GetEnvironmentVariable("Google_Client_Secret",EnvironmentVariableTarget.User));
         var provider = services.BuildServiceProvider();
 
         // Assert
