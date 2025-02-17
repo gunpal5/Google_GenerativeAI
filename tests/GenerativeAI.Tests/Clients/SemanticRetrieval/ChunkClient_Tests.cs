@@ -3,18 +3,18 @@ using GenerativeAI.Clients;
 using GenerativeAI.Tests.Base;
 using GenerativeAI.Types;
 using Shouldly;
-using Xunit.Abstractions;
 
 namespace GenerativeAI.Tests.Clients.SemanticRetrieval;
 
-[TestCaseOrderer(
-    ordererTypeName: "GenerativeAI.Tests.Base.PriorityOrderer",
-    ordererAssemblyName: "GenerativeAI.Tests")]
+[TestCaseOrderer(typeof(PriorityOrderer))]
+    
 public class ChunkClient_Tests : TestBase
 {
+    
     public ChunkClient_Tests(ITestOutputHelper output) : base(output)
     {
-        Assert.Skip()
+        Assert.SkipWhen(GitHubEnvironment(), "Github Environment");
+        Assert.SkipUnless(IsSemanticTestsEnabled, SemanticTestsDisabledMessage);
     }
 
     [Fact, TestPriority(1)]

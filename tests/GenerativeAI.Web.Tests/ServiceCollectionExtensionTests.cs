@@ -187,7 +187,7 @@ public class ServiceCollectionExtensionTests
     }
 
    
-    [RunnableInDebugOnly]
+    [Fact]
     public void WithGoogleServiceAuthentication_ShouldSetJsonFileAuthenticator()
     {
         // Arrange
@@ -204,7 +204,7 @@ public class ServiceCollectionExtensionTests
         options.Authenticator.ShouldBeOfType<GoogleServiceAccountAuthenticator>();
     }
 
-    [RunnableInDebugOnlyAttribute]
+    
     public void WithGoogleServiceAuthentication_ShouldSetServiceAccountAuthenticatorWithCertPath()
     {
         // Arrange
@@ -229,7 +229,7 @@ public class ServiceCollectionExtensionTests
         services.AddGenerativeAI();
 
         // Act
-        services.WithOAuth(Environment.GetEnvironmentVariable("Google_Client_Secret",EnvironmentVariableTarget.User));
+        services.WithOAuth(Environment.GetEnvironmentVariable("Google_Client_Secret"));
         var provider = services.BuildServiceProvider();
 
         // Assert

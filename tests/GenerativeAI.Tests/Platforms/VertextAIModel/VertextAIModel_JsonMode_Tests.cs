@@ -2,7 +2,6 @@
 using GenerativeAI.Tests.Base;
 using GenerativeAI.Types;
 using Shouldly;
-using Xunit.Abstractions;
 
 namespace GenerativeAI.Tests.Platforms.VertextAIModel;
 
@@ -10,6 +9,7 @@ public class VertextAIModel_JsonMode_Tests : TestBase
 {
     public VertextAIModel_JsonMode_Tests(ITestOutputHelper helper) : base(helper)
     {
+        Assert.SkipWhen(SkipVertexAITests,VertextTestSkipMesaage);
     }
 
     private const string DefaultTestModelName = GoogleAIModels.DefaultGeminiModel;

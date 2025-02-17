@@ -1,6 +1,5 @@
 using GenerativeAI.Tests;
 using GenerativeAI.Tools;
-using Xunit.Abstractions;
 
 namespace GenerativeAI.IntegrationTests
 {
@@ -35,7 +34,7 @@ namespace GenerativeAI.IntegrationTests
             // var functions = service.AsGoogleFunctions();
             // var calls = service.AsGoogleCalls();
             //
-            // var apiKey = Environment.GetEnvironmentVariable("Gemini_API_Key", EnvironmentVariableTarget.User);
+            // var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
             //
             // var model = new GenerativeModel(apiKey);
             // model.AddGlobalFunctions(functions,calls);

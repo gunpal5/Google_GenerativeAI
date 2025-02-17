@@ -1,13 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using GenerativeAI;
-using GenerativeAI.Core;
-using GenerativeAI.Types;
+﻿using GenerativeAI.Types;
 using Shouldly;
-using Xunit;
-using Xunit.Abstractions;
 
-namespace GenerativeAI.Tests
+namespace GenerativeAI.Tests.Extensions
 {
     public class GenerateContentRequestExtensions_Tests:TestBase
     {

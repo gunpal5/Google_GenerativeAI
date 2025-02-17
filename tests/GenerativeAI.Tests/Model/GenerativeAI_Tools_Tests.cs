@@ -1,5 +1,4 @@
 ﻿using Shouldly;
-using Xunit.Abstractions;
 
 namespace GenerativeAI.Tests.Model;
 
@@ -15,6 +14,8 @@ public class GenerativeAI_Tools_Tests:TestBase
         bool useGrounding = false,
         bool useCodeExecutionTool = false)
     {
+        Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+
         return new GenerativeModel(
             platform: GetTestGooglePlatform()!,
             model: GoogleAIModels.Gemini2Flash

@@ -2,7 +2,6 @@
 using GenerativeAI.Core;
 using GenerativeAI.Tests;
 using Shouldly;
-using Xunit.Abstractions;
 
 namespace GenerativeAI.Auth;
 

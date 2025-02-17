@@ -1,12 +1,10 @@
 ﻿using GenerativeAI.Clients;
 using GenerativeAI.Tests.Base;
 using Shouldly;
-using Xunit.Abstractions;
 
 namespace GenerativeAI.Tests.Clients;
 [TestCaseOrderer(
-    ordererTypeName: "GenerativeAI.Tests.Base.PriorityOrderer",
-    ordererAssemblyName: "GenerativeAI.Tests")]
+    typeof(PriorityOrderer))]
 public class FileClient_Tests : TestBase
 {
     public FileClient_Tests(ITestOutputHelper helper) : base(helper)
@@ -16,7 +14,7 @@ public class FileClient_Tests : TestBase
     [Fact,TestPriority(3)]
     public async Task ShouldGetFileMetadata()
     {
-        var client = new FileClient(GetTestGooglePlatform());
+         var client = CreateClient();
 
         var files = await client.ListFilesAsync();
         var fileX = files.Files.FirstOrDefault();
@@ -42,7 +40,7 @@ public class FileClient_Tests : TestBase
     [Fact,TestPriority(2)]
     public async Task ShouldListFiles()
     {
-        var client = new FileClient(GetTestGooglePlatform());
+         var client = CreateClient();
 
         var result = await client.ListFilesAsync(pageSize: 5); // Example: Fetch a maximum of 5 files.
 
@@ -69,7 +67,7 @@ public class FileClient_Tests : TestBase
     public async Task ShouldUploadFileAsync()
     {
         // Arrange
-        var client = new FileClient(GetTestGooglePlatform());
+         var client = CreateClient();
         
         string tempFilePath = Path.Combine(Path.GetTempPath(), "test-upload-file.txt");
 
@@ -109,7 +107,7 @@ public class FileClient_Tests : TestBase
     [Fact,TestPriority(4)]
     public async Task ShouldDeleteFile()
     {
-        var client = new FileClient(GetTestGooglePlatform());
+         var client = CreateClient();
 
         var files = await client.ListFilesAsync();
         var fileX = files.Files.FirstOrDefault(s=>s.DisplayName.Contains("test-upload-file"));
@@ -123,7 +121,7 @@ public class FileClient_Tests : TestBase
     [Fact,TestPriority(6)]
     public async Task ShouldHandleInvalidFileForRetrieve()
     {
-        var client = new FileClient(GetTestGooglePlatform());
+         var client = CreateClient();
 
         var invalidFileName = "files/invalid-id"; // Simulating a bad file ID.
 
@@ -136,7 +134,7 @@ public class FileClient_Tests : TestBase
     [Fact,TestPriority(6)]
     public async Task ShouldHandleInvalidFileForDelete()
     {
-        var client = new FileClient(GetTestGooglePlatform());
+         var client = CreateClient();
 
         var invalidFileName = "files/invalid-id"; // Simulating a bad file ID.
 
@@ -150,7 +148,7 @@ public class FileClient_Tests : TestBase
     public async Task ShouldUploadStream()
     {
         // Arrange
-        var client = new FileClient(GetTestGooglePlatform());
+         var client = CreateClient();
 
         // Create a simulated stream (e.g., a memory stream)
         var fileContent = "This is a test file content for stream upload.";
@@ -176,5 +174,11 @@ public class FileClient_Tests : TestBase
         progressReported.ShouldBeGreaterThan(0);           // Ensure progress callback was invoked
 
         Console.WriteLine($"Stream uploaded successfully: {result.Name}, Display Name: {result.DisplayName}");
+    }
+    
+    public FileClient CreateClient()
+    {
+        Assert.SkipUnless(IsGeminiApiKeySet, GeminiTestSkipMessage);
+        return new FileClient(GetTestGooglePlatform());
     }
 }

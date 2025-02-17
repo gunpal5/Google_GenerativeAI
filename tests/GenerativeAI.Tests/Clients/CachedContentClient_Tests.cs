@@ -4,18 +4,17 @@ using GenerativeAI.Tests.Base;
 using GenerativeAI.Types;
 using Shouldly;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace GenerativeAI.Tests.Clients;
 
 [TestCaseOrderer(
-    ordererTypeName: "GenerativeAI.Tests.Base.PriorityOrderer",
-    ordererAssemblyName: "GenerativeAI.Tests")]
+    typeof(PriorityOrderer))]
 
 public class CachingClient_Tests : TestBase
 {
     public CachingClient_Tests(ITestOutputHelper helper) : base(helper)
     {
+        Assert.SkipWhen(GitHubEnvironment(), "Github");
     }
 
     [Fact,TestPriority(1)]
@@ -24,7 +23,7 @@ public class CachingClient_Tests : TestBase
         // Arrange
         var httpClient = new WebClient();
         var file = httpClient.DownloadString("https://storage.googleapis.com/generativeai-downloads/data/a11.txt");
-        var client = new CachingClient(GetTestGooglePlatform());
+         var client = CreateCachingClient();
         var cachedContent = new CachedContent
         {
             DisplayName = "Test Cached Content",
@@ -53,7 +52,7 @@ public class CachingClient_Tests : TestBase
     {
         // Arrange
         
-        var client = new CachingClient(GetTestGooglePlatform());
+         var client = CreateCachingClient();
         var cachedItems = await client.ListCachedContentsAsync();
         var testItem = cachedItems.CachedContents.FirstOrDefault();
         string cachedContentName = testItem.Name; // Replace with a valid test name
@@ -77,7 +76,7 @@ public class CachingClient_Tests : TestBase
     public async Task ShouldListCachedContentsAsync()
     {
         // Arrange
-        var client = new CachingClient(GetTestGooglePlatform());
+         var client = CreateCachingClient();
         const int pageSize = 5;
 
         // Act
@@ -103,7 +102,7 @@ public class CachingClient_Tests : TestBase
     public async Task ShouldUpdateCachedContentAsync()
     {
         // Arrange
-        var client = new CachingClient(GetTestGooglePlatform());
+         var client = CreateCachingClient();
         var cachedItems = await client.ListCachedContentsAsync();
         var testItem = cachedItems.CachedContents.FirstOrDefault();
         var updatedContent = new CachedContent
@@ -130,7 +129,7 @@ public class CachingClient_Tests : TestBase
     public async Task ShouldDeleteCachedContentAsync()
     {
         // Arrange
-        var client = new CachingClient(GetTestGooglePlatform());
+         var client = CreateCachingClient();
         var cachedItems = await client.ListCachedContentsAsync();
         var testItem = cachedItems.CachedContents.FirstOrDefault();
 
@@ -146,7 +145,7 @@ public class CachingClient_Tests : TestBase
     public async Task ShouldHandleInvalidCachedContentForRetrieveAsync()
     {
         // Arrange
-        var client = new CachingClient(GetTestGooglePlatform());
+         var client = CreateCachingClient();
         const string invalidName = "cachedContents/invalid-id";
 
         // Act
@@ -161,7 +160,7 @@ public class CachingClient_Tests : TestBase
     public async Task ShouldHandleInvalidCachedContentForDeleteAsync()
     {
         // Arrange
-        var client = new CachingClient(GetTestGooglePlatform());
+         var client = CreateCachingClient();
         const string invalidName = "cachedContents/invalid-id";
 
         // Act
@@ -171,5 +170,11 @@ public class CachingClient_Tests : TestBase
         // Assert
         exception.Message.ShouldNotBeNullOrEmpty();
         Console.WriteLine($"Handled exception while deleting Cached Content: {exception.Message}");
+    }
+
+    public CachingClient CreateCachingClient()
+    {
+        Assert.SkipUnless(IsGeminiApiKeySet, GeminiTestSkipMessage);
+        return new CachingClient(GetTestGooglePlatform());
     }
 }

@@ -3,14 +3,12 @@ using GenerativeAI.Clients;
 using GenerativeAI.Tests.Base;
 using GenerativeAI.Types;
 using Shouldly;
-using Xunit.Abstractions;
 
 namespace GenerativeAI.Tests.Clients.SemanticRetrieval
 {
-   
+
     [TestCaseOrderer(
-        ordererTypeName: "GenerativeAI.Tests.Base.PriorityOrderer",
-        ordererAssemblyName: "GenerativeAI.Tests")]
+        typeof(PriorityOrderer))]
     public class CorpusPermissionClient_Tests : TestBase
     {
         private const string TestCorpus = "corpora/test-corpus-id";
@@ -18,6 +16,8 @@ namespace GenerativeAI.Tests.Clients.SemanticRetrieval
         
         public CorpusPermissionClient_Tests(ITestOutputHelper output) : base(output)
         {
+            Assert.SkipWhen(GitHubEnvironment(), "Github");
+            Assert.SkipUnless(IsSemanticTestsEnabled, SemanticTestsDisabledMessage);
         }
 
         [Fact, TestPriority(1)]

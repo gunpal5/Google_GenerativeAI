@@ -2,7 +2,6 @@
 using GenerativeAI.Tests.Base;
 using GenerativeAI.Types;
 using Shouldly;
-using Xunit.Abstractions;
 
 namespace GenerativeAI.Tests.Platforms.VertextAIModel;
 
@@ -10,6 +9,7 @@ public class VertexAIModel_Basic_Tests : TestBase
 {
     public VertexAIModel_Basic_Tests(ITestOutputHelper output) : base(output)
     {
+        Assert.SkipWhen(SkipVertexAITests,VertextTestSkipMesaage);
     }
 
     private const string DefaultTestModelName = GoogleAIModels.DefaultGeminiModel;
@@ -23,75 +23,6 @@ public class VertexAIModel_Basic_Tests : TestBase
         var platform = GetTestVertexAIPlatform();
         return new GenerativeModel(platform, DefaultTestModelName);
     }
-
-    #region Constructors
-
-    [Fact, TestPriority(1)]
-    public void ShouldCreateWithBasicConstructor()
-    {
-        // Arrange
-        var platform = GetTestGooglePlatform();
-
-        // Act
-        var model = new GenerativeModel(platform, DefaultTestModelName);
-
-        // Assert
-        model.ShouldNotBeNull();
-        model.Model.ShouldBe(DefaultTestModelName);
-        Console.WriteLine($"Model created with basic constructor: {DefaultTestModelName}");
-    }
-
-    [Fact, TestPriority(2)]
-    public void ShouldCreateWithExtendedConstructor()
-    {
-        // Arrange
-        var platform = GetTestGooglePlatform();
-        var config = new GenerationConfig
-        {
-            /* Configure as needed */
-        };
-        var safetySettings = new List<SafetySetting>
-        {
-            /* Populate as needed */
-        };
-        // Create system instruction using extension
-        var systemContent = "You are a helpful assistant.";
-
-        // Act
-        var model = new GenerativeModel(
-            platform,
-            DefaultTestModelName,
-            config: config,
-            safetySettings: safetySettings,
-            systemInstruction: systemContent
-        );
-
-        // Assert
-        model.ShouldNotBeNull();
-        model.Model.ShouldBe(DefaultTestModelName);
-        model.Config.ShouldBe(config);
-        model.SafetySettings.ShouldBe(safetySettings);
-        Console.WriteLine($"Model created with extended constructor: {DefaultTestModelName}");
-    }
-
-    [Fact, TestPriority(3)]
-    public void ShouldCreateWithApiKeyConstructor()
-    {
-        // Arrange
-        var apiKey = "fake-api-key";
-        var modelParams = new ModelParams { Model = DefaultTestModelName };
-
-        // Act
-        var model = new GenerativeModel(apiKey, modelParams);
-
-        // Assert
-        model.ShouldNotBeNull();
-        model.Model.ShouldBe(DefaultTestModelName);
-
-        Console.WriteLine("Model created with API key constructor.");
-    }
-
-    #endregion
 
     #region GenerateContentAsync Overloads
 

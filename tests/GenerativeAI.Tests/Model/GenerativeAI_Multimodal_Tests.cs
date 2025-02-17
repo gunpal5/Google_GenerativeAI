@@ -1,6 +1,5 @@
 ﻿using GenerativeAI.Types;
 using Shouldly;
-using Xunit.Abstractions;
 
 namespace GenerativeAI.Tests.Model
 {
@@ -16,6 +15,8 @@ namespace GenerativeAI.Tests.Model
 
         private GeminiModel CreateInitializedModel()
         {
+            Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+
             return new GeminiModel(GetTestGooglePlatform(), TestModel);
         }
 

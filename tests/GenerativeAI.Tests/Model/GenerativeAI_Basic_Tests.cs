@@ -9,13 +9,11 @@ using GenerativeAI.Tests.Base;
 using GenerativeAI.Types;
 using Shouldly;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace GenerativeAI.Tests.Model
 {
     [TestCaseOrderer(
-        ordererTypeName: "GenerativeAI.Tests.Base.PriorityOrderer",
-        ordererAssemblyName: "GenerativeAI.Tests")]
+        typeof(PriorityOrderer))]
     public class GenerativeModel_Tests : TestBase
     {
         private const string DefaultTestModelName = GoogleAIModels.Gemini2Flash;
@@ -29,6 +27,7 @@ namespace GenerativeAI.Tests.Model
         /// </summary>
         private GenerativeModel CreateInitializedModel()
         {
+            Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
             var platform = GetTestGooglePlatform();
             return new GenerativeModel(platform, DefaultTestModelName);
         }

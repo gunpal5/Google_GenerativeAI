@@ -2,8 +2,6 @@
 using GenerativeAI.Authenticators;
 using GenerativeAI.Core;
 using Shouldly;
-using Xunit.Abstractions;
-
 namespace GenerativeAI.Tests.Platforms;
 
 public class GoogleAI_Tests:TestBase
@@ -14,10 +12,10 @@ public class GoogleAI_Tests:TestBase
     }
 
     [Fact]
+    
     public async Task ShouldThrowException_WhenProjectIdsAreInvalid()
     {
-        var apiKey = Environment.GetEnvironmentVariable("Gemini_Api_Key",EnvironmentVariableTarget.User);
-
+        Assert.SkipWhen(IsGoogleApiKeySet,"GOOGLE_API_KEY is set in environment variables. this test is not valid."); 
         Should.Throw<Exception>(() =>
         {
             var googleAi = new GoogleAi();

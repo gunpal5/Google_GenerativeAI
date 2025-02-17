@@ -1,6 +1,5 @@
 ﻿using GenerativeAI.Clients;
 using Shouldly;
-using Xunit.Abstractions;
 
 namespace GenerativeAI.Tests.Clients
 {
@@ -13,7 +12,7 @@ namespace GenerativeAI.Tests.Clients
         [Fact]
         public async Task ShouldGetListOfModels()
         {
-            var client = new ModelClient(GetTestGooglePlatform());
+             var client = CreateClient();
 
             var response = await client.ListModelsAsync();
             
@@ -46,7 +45,7 @@ namespace GenerativeAI.Tests.Clients
         [Fact]
         public async Task GetModelInfo()
         {
-            var client = new ModelClient(GetTestGooglePlatform());
+             var client = CreateClient();
 
             var modelInfo = await client.GetModelAsync(GoogleAIModels.DefaultGeminiModel);
             modelInfo.Name.ShouldNotBeNullOrEmpty();
@@ -66,6 +65,12 @@ namespace GenerativeAI.Tests.Clients
             Console.WriteLine(modelInfo.DisplayName);
             Console.WriteLine(modelInfo.Description);
             Console.WriteLine("");
+        }
+        
+        public ModelClient CreateClient()
+        {
+            Assert.SkipUnless(IsGeminiApiKeySet, GeminiTestSkipMessage);
+            return new ModelClient(GetTestGooglePlatform());
         }
     }
 }

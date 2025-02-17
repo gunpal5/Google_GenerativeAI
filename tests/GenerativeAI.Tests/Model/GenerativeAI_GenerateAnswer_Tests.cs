@@ -1,6 +1,5 @@
 ﻿using GenerativeAI.Types;
 using Shouldly;
-using Xunit.Abstractions;
 
 namespace GenerativeAI.Tests.Model;
 
@@ -8,10 +7,12 @@ public class GenerativeAI_GenerateAnswer_Tests:TestBase
 {
     public GenerativeAI_GenerateAnswer_Tests(ITestOutputHelper helper) : base(helper)
     {
-        
+        Assert.SkipUnless(IsSemanticTestsEnabled, SemanticTestsDisabledMessage);
     }
     private GenerativeModel CreateInitializedModel()
     {
+        Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+
         return new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.DefaultGeminiModel);
     }
 

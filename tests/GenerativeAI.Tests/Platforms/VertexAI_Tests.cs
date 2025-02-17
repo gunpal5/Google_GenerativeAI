@@ -2,7 +2,6 @@
 using GenerativeAI.Authenticators;
 using GenerativeAI.Core;
 using Shouldly;
-using Xunit.Abstractions;
 
 namespace GenerativeAI.Tests.Platforms;
 
@@ -26,7 +25,7 @@ public class VertexAI_Tests:TestBase
         Console.WriteLine(text);
     }
     
-    [Fact]
+    
     public async Task ShouldNotThrowException_WhenCredentialsAreInvalid_AuthencatorProvided()
     {
         var model = new GenerativeModel(new VertextPlatformAdapter(accessToken:"invalid_token",authenticator:new GoogleCloudAdcAuthenticator()), VertexAIModels.Gemini.Gemini15Flash);

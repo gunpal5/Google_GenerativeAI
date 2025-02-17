@@ -12,7 +12,7 @@
 //         [Fact]
 //         public async Task ChatSession_Run()
 //         {
-//             var apiKey = Environment.GetEnvironmentVariable("Gemini_API_Key", EnvironmentVariableTarget.User);
+//             var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
 //
 //             var model = new GenerativeModel(apiKey);
 //
@@ -30,7 +30,7 @@
 //         [Fact]
 //         public async Task ShouldChatWithStreaming()
 //         {
-//             var apiKey = Environment.GetEnvironmentVariable("Gemini_API_Key", EnvironmentVariableTarget.User);
+//             var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
 //
 //             var model = new GenerativeModel(apiKey);
 //
@@ -70,7 +70,7 @@
 //             var parts = new[] { textPart, imagePart };
 //             //var content = new Content(new[] { textPart, imagePart }, Roles.User);
 //
-//             var apiKey = Environment.GetEnvironmentVariable("Gemini_API_Key", EnvironmentVariableTarget.User);
+//             var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
 //
 //             var visionModel = new GeminiProVision(apiKey);
 //

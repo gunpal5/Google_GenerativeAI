@@ -9,7 +9,6 @@ using GenerativeAI.Tests.Base;
 using Microsoft.Extensions.AI;
 using Shouldly;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace GenerativeAI.Tests.Microsoft;
 
@@ -19,8 +18,7 @@ namespace GenerativeAI.Tests.Microsoft;
 /// using xUnit and Shouldly for assertions.
 /// </summary>
 [TestCaseOrderer(
-    ordererTypeName: "GenerativeAI.Tests.Base.PriorityOrderer",
-    ordererAssemblyName: "GenerativeAI.Tests")]
+    typeof(TestPriorityAttribute))]
 public class Microsoft_ChatClient_Tests : TestBase
 {
     private const string DefaultTestModelName = GoogleAIModels.DefaultGeminiModel;

@@ -3,7 +3,6 @@ using GenerativeAI.Core;
 using GenerativeAI.Tests;
 using Humanizer;
 using Shouldly;
-using Xunit.Abstractions;
 
 namespace GenerativeAI.Auth;
 
@@ -14,7 +13,8 @@ public class ServiceAccount_Tests:TestBase
         
     }
 
-    [Fact]
+    [Fact()]
+    
     public async Task ShouldWorkWithServiceAccount()
     {
         var authenticator = CreateAuthenticatorWithKey();

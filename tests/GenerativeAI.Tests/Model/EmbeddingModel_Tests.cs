@@ -8,19 +8,24 @@ using GenerativeAI.Tests.Base;
 using GenerativeAI.Types;
 using Shouldly;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace GenerativeAI.Tests.Model
 {
     [TestCaseOrderer(
-        ordererTypeName: "GenerativeAI.Tests.Base.PriorityOrderer",
-        ordererAssemblyName: "GenerativeAI.Tests")]
+        typeof(PriorityOrderer))]
     public class GenerativeModelEmbedding_Tests : TestBase
     {
         private const string DefaultTestModelName = GoogleAIModels.TextEmbedding;
 
         public GenerativeModelEmbedding_Tests(ITestOutputHelper helper) : base(helper)
         {
+        }
+
+        protected override IPlatformAdapter GetTestGooglePlatform()
+        {
+            Assert.SkipWhen(!IsGeminiApiKeySet,GeminiTestSkipMessage); 
+
+            return base.GetTestGooglePlatform();
         }
 
         /// <summary>
