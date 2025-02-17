@@ -13,8 +13,7 @@ licensed under the BSD 2-Clause License. You can review the specifics in the `LI
    can integrate the functionality with just a few lines of code, avoiding boilerplate and repetitive tasks.
 
 2. **Advanced Code Generation**: Harness Gemini's generative AI capabilities to produce contextual, efficient, and
-   optimized code snippets tailored to specific tasks. The contextual awareness ensures that generated code aligns
-   closely with the current project's requirements.
+   optimized code snippets tailored to specific tasks. 
 
 3. **Function Call Capabilities**: With built-in support for dynamic function invocation, developers can easily
    trigger backend logic or other custom operations without writing extensive glue code. This reduces the time spent
