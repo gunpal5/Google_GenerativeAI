@@ -12,10 +12,7 @@ licensed under the BSD 2-Clause License. You can review the specifics in the `LI
    faster integration into existing or new projects. Whether building small-scale features or complex workflows, developers
    can integrate the functionality with just a few lines of code, avoiding boilerplate and repetitive tasks.
 
-2. **Advanced Code Generation**: Harness Gemini's generative AI capabilities to produce contextual, efficient, and
-   optimized code snippets tailored to specific tasks. 
-
-3. **Function Call Capabilities**: With built-in support for dynamic function invocation, developers can easily
+2. **Function Call Capabilities**: With built-in support for dynamic function invocation, developers can easily
    trigger backend logic or other custom operations without writing extensive glue code. This reduces the time spent
    on handling manual wiring and repetitive validations, increasing productivity and simplifying application logic.
 
