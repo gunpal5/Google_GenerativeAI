@@ -6,7 +6,7 @@ namespace GenerativeAI.Microsoft.Extensions;
 /// <summary>
 /// Provides extension methods to transform between Google_GenerativeAI and Microsoft.Extensions.AI models.
 /// </summary>
-public static class AbstractionMapper
+public static class MicrosoftExtensions
 {
     /// <summary>
     /// Transforms a single <see cref="ChatMessage"/> into a <see cref="GenerateContentRequest"/>.
@@ -137,8 +137,8 @@ public static class AbstractionMapper
     /// Transforms a <see cref="GenerateContentResponse"/> into a <see cref="ChatResponse"/>.
     /// </summary>
     /// <param name="response">The response to process.</param>
-    /// <returns>A <see cref="ChatCompletion"/> object, or null if the response is invalid.</returns>
-    public static ChatResponse? ToChatCompletion(this GenerateContentResponse? response)
+    /// <returns>A <see cref="ChatResponse"/> object, or null if the response is invalid.</returns>
+    public static ChatResponse? ToChatResponse(this GenerateContentResponse? response)
     {
         if (response is null) return null;
 
@@ -161,8 +161,8 @@ public static class AbstractionMapper
     /// Converts a <see cref="GenerateContentResponse"/> into a <see cref="StreamingChatCompletionUpdate"/>.
     /// </summary>
     /// <param name="response">The response to convert.</param>
-    /// <returns>A configured <see cref="StreamingChatCompletionUpdate"/>.</returns>
-    public static ChatResponseUpdate ToStreamingChatCompletionUpdate(this GenerateContentResponse? response)
+    /// <returns>A configured <see cref="ChatResponseUpdate"/>.</returns>
+    public static ChatResponseUpdate ToChatResponseUpdate(this GenerateContentResponse? response)
     {
         return new ChatResponseUpdate
         {

@@ -36,7 +36,7 @@ public class GenerativeAIChatClient : IChatClient
             throw new ArgumentNullException(nameof(chatMessages));
         var request = chatMessages.ToContentRequest(options);
         var response = await model.GenerateContentAsync(request, cancellationToken);
-        return response.ToChatCompletion() ?? throw new Exception("Failed to generate content");
+        return response.ToChatResponse() ?? throw new Exception("Failed to generate content");
     }
     /// <inheritdoc/>
     public async IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponseAsync(IList<ChatMessage> chatMessages,
@@ -48,7 +48,7 @@ public class GenerativeAIChatClient : IChatClient
         var request = chatMessages.ToContentRequest(options);
         await foreach (var response in model.StreamContentAsync(request, cancellationToken))
         {
-            yield return response.ToStreamingChatCompletionUpdate();
+            yield return response.ToChatResponseUpdate();
         }
     }
     /// <inheritdoc/>
