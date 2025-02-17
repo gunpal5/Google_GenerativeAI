@@ -16,7 +16,8 @@ public class ServiceAccount_Tests:TestBase
     [Fact()]
     
     public async Task ShouldWorkWithServiceAccount()
-    {
+    { 
+        Assert.SkipWhen(SkipVertexAITests,VertextTestSkipMesaage);
         var authenticator = CreateAuthenticatorWithKey();
         var token = await authenticator.GetAccessTokenAsync();
 
