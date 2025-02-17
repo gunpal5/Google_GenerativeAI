@@ -3,7 +3,7 @@ Google Gemini Code Generation Demonstration
 This is a demonstration of how to utilize the capabilities of Google Gemini for code generation and function calling.
 The `Google_GenerativeAI` SDK offers a simple and efficient way to integrate AI-powered features into your projects.
 
-Additionally, this SDK leverages the [JINT](https://github.com/sebastienros/jint) JavaScript interpreter, which is
+Additionally, this Sample leverages the [JINT](https://github.com/sebastienros/jint) JavaScript interpreter, which is
 licensed under the BSD 2-Clause License. You can review the specifics in the `LICENSE.md` file of the project.
 
 ## Key Features of Google_GenerativeAI SDK:
