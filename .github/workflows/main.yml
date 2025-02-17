@@ -1,9 +1,13 @@
 name: Build, test and publish
 on: [ workflow_dispatch ]
 
-jobs:
-  build-test-publish:
+jobs:  
+  build-test-publish:   
     name: Build, test and publish
     uses: HavenDV/workflows/.github/workflows/dotnet_build-test-publish.yml@main
     secrets:
       nuget-key: ${{ secrets.NUGET_KEY }}
+    with:
+      generate-build-number: true
+      create-release: true
+      
