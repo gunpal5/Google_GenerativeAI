@@ -58,7 +58,10 @@ public class GenericFunctionTool:IFunctionTool
 
             var node = JsonNode.Parse(response);
 
-            return new FunctionResponse() { Id = functionCall.Id, Name = functionCall.Name, Response = node };
+            return new FunctionResponse() { Id = functionCall.Id, Name = functionCall.Name, Response = new {
+                Name = functionCall.Name,
+                Content = node,
+            } };
         }
         return null;
     }

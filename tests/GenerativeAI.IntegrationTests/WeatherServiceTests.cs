@@ -43,5 +43,16 @@ namespace GenerativeAI.IntegrationTests
             //
             // Console.WriteLine(result);
         }
+        
+        [Fact]
+        public async Task ShouldWorkWith_BookStoreService()
+        {
+            var service = new BookStoreService();
+            var tool = new GenericFunctionTool(service.AsTools(), service.AsCalls());
+            var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.DefaultGeminiModel);
+            model.AddFunctionTool(tool);
+            var result = await model.GenerateContentAsync("what is written on page 35 in the book 'abracadabra'");
+            Console.WriteLine(result.Text());
+        }
     }
 }
