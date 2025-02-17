@@ -27,7 +27,7 @@ public class Vertex_AI_Constructor_Tests:TestBase
     public void ShouldCreateWithBasicConstructor()
     {
         // Arrange
-        var platform = GetTestGooglePlatform();
+        var platform = new GoogleAIPlatformAdapter("SLDKHFLKSDAHFLKH");
 
         // Act
         var model = new GenerativeModel(platform, DefaultTestModelName);
@@ -42,7 +42,7 @@ public class Vertex_AI_Constructor_Tests:TestBase
     public void ShouldCreateWithExtendedConstructor()
     {
         // Arrange
-        var platform = GetTestGooglePlatform();
+        var platform = new GoogleAIPlatformAdapter("SLDKHFLKSDAHFLKH");
         var config = new GenerationConfig
         {
             /* Configure as needed */

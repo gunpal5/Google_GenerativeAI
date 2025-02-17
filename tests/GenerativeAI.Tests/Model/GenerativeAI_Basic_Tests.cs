@@ -38,7 +38,7 @@ namespace GenerativeAI.Tests.Model
         public void ShouldCreateWithBasicConstructor()
         {
             // Arrange
-            var platform = GetTestGooglePlatform();
+            var platform = new GoogleAIPlatformAdapter("aldkfhlakjd");
 
             // Act
             var model = new GenerativeModel(platform, DefaultTestModelName);
@@ -53,7 +53,7 @@ namespace GenerativeAI.Tests.Model
         public void ShouldCreateWithExtendedConstructor()
         {
             // Arrange
-            var platform = GetTestGooglePlatform();
+            var platform = new GoogleAIPlatformAdapter("aldkfhlakjd");
             var config = new GenerationConfig
             {
                 /* Configure as needed */
@@ -363,7 +363,11 @@ namespace GenerativeAI.Tests.Model
         
       
         #endregion
-       
-        
+
+        protected override IPlatformAdapter GetTestGooglePlatform()
+        {
+            Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+            return base.GetTestGooglePlatform();
+        }
     }
 }

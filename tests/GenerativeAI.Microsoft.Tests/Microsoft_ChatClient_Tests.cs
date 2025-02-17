@@ -35,9 +35,8 @@ public class Microsoft_ChatClient_Tests : TestBase
     /// </summary>
     private IPlatformAdapter CreateTestPlatformAdapter()
     {
-        // Return anything that implements IPlatformAdapter.
-        // For illustration, we return a placeholder or a fake:
-        return GetTestGooglePlatform();
+
+        return new GoogleAIPlatformAdapter("ldkfhkldsa hfhls");
     }
 
     
@@ -98,8 +97,9 @@ public class Microsoft_ChatClient_Tests : TestBase
     [Fact, TestPriority(4)]
     public async Task ShouldReturnChatCompletionOnValidInput()
     {
+        Assert.SkipWhen(!IsGeminiApiKeySet,GeminiTestSkipMessage);
         // Arrange
-        var adapter = CreateTestPlatformAdapter();
+        var adapter = GetTestGooglePlatform();
         var client = new GenerativeAIChatClient(adapter);
 
         // We can simulate some ChatMessage list for testing:
@@ -151,7 +151,7 @@ public class Microsoft_ChatClient_Tests : TestBase
     public async Task ShouldReturnStreamOfMessagesOnValidInput()
     {
         // Arrange
-        var adapter = CreateTestPlatformAdapter();
+        var adapter = GetTestGooglePlatform();
         var client = new GenerativeAIChatClient(adapter);
 
         var messages = new List<ChatMessage>
@@ -197,7 +197,7 @@ public class Microsoft_ChatClient_Tests : TestBase
     public void ShouldReturnNullFromGetServiceIfTypeDoesNotMatch()
     {
         // Arrange
-        var adapter = CreateTestPlatformAdapter();
+        var adapter = GetTestGooglePlatform();
         var client = new GenerativeAIChatClient(adapter);
 
         // Act
@@ -226,5 +226,9 @@ public class Microsoft_ChatClient_Tests : TestBase
 
     #endregion
 
-    
+    protected override IPlatformAdapter GetTestGooglePlatform()
+    {
+        Assert.SkipWhen(!IsGeminiApiKeySet,GeminiTestSkipMessage);
+        return new GoogleAIPlatformAdapter("sldakfhklash fklasdhklf");
+    }
 }

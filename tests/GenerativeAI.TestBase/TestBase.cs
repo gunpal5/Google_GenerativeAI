@@ -88,7 +88,7 @@ public static bool SkipVertexAITests
 {
     get
     {
-        return Environment.GetEnvironmentVariable("VERTEXT_AI_TESTS_ENABLED")?.ToLower()!="true" && !IsAdcConfigured;
+        return Environment.GetEnvironmentVariable("VERTEXT_AI_TESTS_ENABLED")?.ToLower()!="true" || !IsAdcConfigured;
     }
 }
 

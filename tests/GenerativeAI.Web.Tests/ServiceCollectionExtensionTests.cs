@@ -13,8 +13,11 @@ public class ServiceCollectionExtensionTests
     public void ShouldConfigureServices()
     {
         var services = new ServiceCollection();
-        Environment.SetEnvironmentVariable("GOOGLE_API_KEY", "ASDKLFHLKHASDFHDLF",EnvironmentVariableTarget.Process);
-        services.AddGenerativeAI();
+        
+        services.AddGenerativeAI(new GenerativeAIOptions()
+        {
+            Credentials = new GoogleAICredentials("lakdhflksdahlkf")
+        });
         var provider = services.BuildServiceProvider();
         var service = provider.GetRequiredService<IGenerativeAiService>();
         service.Platform.ShouldNotBeNull();
@@ -45,9 +48,11 @@ public class ServiceCollectionExtensionTests
         // Arrange
         var services = new ServiceCollection();
 
-        Environment.SetEnvironmentVariable("GOOGLE_API_KEY", "ASDKLFHLKHASDFHDLF",EnvironmentVariableTarget.Process);
-        // Act
-        services.AddGenerativeAI();
+         // Act
+        services.AddGenerativeAI(new GenerativeAIOptions()
+        {
+            Credentials = new GoogleAICredentials("lakdhflksdahlkf")
+        });
         var provider = services.BuildServiceProvider();
 
         // Assert

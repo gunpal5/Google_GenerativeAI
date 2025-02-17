@@ -6,6 +6,7 @@ using GenerativeAI.Microsoft;
 
 using ChatOptions = Microsoft.Extensions.AI.ChatOptions;
 using GenerativeAI.Microsoft.Extensions;
+using GenerativeAI.Tests;
 using Json.More;
 using Microsoft.Extensions.AI;
 using Newtonsoft.Json;
@@ -15,12 +16,13 @@ using AITool = Microsoft.Extensions.AI.AITool;
 
 namespace GenerativeAI.IntegrationTests;
 
-public class Microsoft_AIFunction_Tests
+public class Microsoft_AIFunction_Tests:TestBase
 {
     [Fact]
     public async Task ShouldWorkWithTools()
     {
-        var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY", EnvironmentVariableTarget.User);
+        Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+        var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
         var chatClient = new GenerativeAIChatClient(apiKey);
         var chatOptions = new ChatOptions();
         
@@ -35,7 +37,8 @@ public class Microsoft_AIFunction_Tests
     [Fact]
     public async Task ShouldWorkWith_BookStoreService()
     {
-        var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY", EnvironmentVariableTarget.User);
+        Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+        var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
         var chatClient = new GenerativeAIChatClient(apiKey);
         var chatOptions = new ChatOptions();
         

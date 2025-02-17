@@ -12,6 +12,7 @@ namespace GenerativeAI.IntegrationTests
         [Fact]
         public async Task ShouldInvokeWetherService()
         {
+            Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
             WeatherService service = new WeatherService();
             var tools = service.AsTools();
             var calls = service.AsCalls();
@@ -46,6 +47,7 @@ namespace GenerativeAI.IntegrationTests
         [Fact]
         public async Task ShouldWorkWith_BookStoreService()
         {
+            Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
             var service = new BookStoreService();
             var tool = new GenericFunctionTool(service.AsTools(), service.AsCalls());
             var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.DefaultGeminiModel);
