@@ -1,10 +1,10 @@
-name: Build, test and publish
+name: Build and Publish To Nuget
 on: [ workflow_dispatch ]
 
 jobs:  
   build-test-publish:   
     name: Build, test and publish
-    uses: HavenDV/workflows/.github/workflows/dotnet_build-test-publish.yml@main
+    uses: gunpal5/workflows/.github/workflows/dotnet_build-test-publish.yml@main
     secrets:
       nuget-key: ${{ secrets.NUGET_KEY }}
     with:
