@@ -193,7 +193,7 @@ public class ServiceCollectionExtensionTests
     }
 
    
-    [Fact]
+    [Fact(Skip = "This test requires a service account to be configured in the environment.",Explicit = true)]
     public void WithGoogleServiceAuthentication_ShouldSetJsonFileAuthenticator()
     {
         // Arrange
@@ -210,7 +210,8 @@ public class ServiceCollectionExtensionTests
         options.Authenticator.ShouldBeOfType<GoogleServiceAccountAuthenticator>();
     }
 
-    
+    [Fact(Skip = "This test requires a service account to be configured in the environment.",Explicit = true)]
+
     public void WithGoogleServiceAuthentication_ShouldSetServiceAccountAuthenticatorWithCertPath()
     {
         // Arrange
