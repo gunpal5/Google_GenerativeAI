@@ -5,15 +5,12 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <RootNamespace>GenerativeAI.Samples.CodeExecutor</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Google_GenerativeAI.Tools" Version="2.0.5" />
     <PackageReference Include="Jint" Version="4.2.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\GenerativeAI.Tools\GenerativeAI.Tools.csproj" />
-    <ProjectReference Include="..\..\src\GenerativeAI\GenerativeAI.csproj" />
   </ItemGroup>
 
 </Project>

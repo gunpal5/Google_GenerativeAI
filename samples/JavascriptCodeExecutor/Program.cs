@@ -9,7 +9,7 @@ var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY", EnvironmentVar
 
 var model = new GenerativeModel(apiKey, GoogleAIModels.Gemini2Flash);
 
-var javascripExecutor = new JavascriptCodeExecutor();
+var javascripExecutor = new CodeExecutor.JavascriptCodeExecutor();
 var javascriptTool = new GenericFunctionTool(javascripExecutor.AsTools(), javascripExecutor.AsCalls());
 
 var chat = model.StartChat();
@@ -30,6 +30,7 @@ while (true)
     var input = Console.ReadLine();
     var prompt =
         $"\r\nExecute the javascript code for this task:\r\n\r\n{input}\r\n\r\n";
+    
     var result = await chat.GenerateContentAsync(prompt);
     Console.WriteLine();
     Console.Write("Result from Gemini:\r\n");
