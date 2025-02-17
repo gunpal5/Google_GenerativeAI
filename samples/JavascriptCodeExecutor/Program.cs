@@ -6,8 +6,8 @@ using GenerativeAI.Tools;
 
 
 var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY", EnvironmentVariableTarget.User);
-
-var model = new GenerativeModel(apiKey, GoogleAIModels.Gemini2Flash);
+restart:
+var model = new GenerativeModel(apiKey, GoogleAIModels.Gemini15Pro);
 
 var javascripExecutor = new CodeExecutor.JavascriptCodeExecutor();
 var javascriptTool = new GenericFunctionTool(javascripExecutor.AsTools(), javascripExecutor.AsCalls());
@@ -22,12 +22,15 @@ Console.WriteLine("Print fibonacci numbers up to 100");
 Console.WriteLine("Print the first 100 prime numbers in reverse order");
 Console.WriteLine("calculate the 4th power of 67th prime number");
 Console.WriteLine("calculate the acceleration due to gravity on mars");
+Console.WriteLine("** Note: If I start to hallucinate or get confused. Just type restart and press enter!");
 
 while (true)
 {
     Console.WriteLine();
     Console.WriteLine("Input: ");
     var input = Console.ReadLine();
+    if(input == "restart")
+        goto restart;
     var prompt =
         $"\r\nExecute the javascript code for this task:\r\n\r\n{input}\r\n\r\n";
     
