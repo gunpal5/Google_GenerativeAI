@@ -41,7 +41,7 @@ public class GenerativeAIChatClient : IChatClient
     /// <inheritdoc/>
     public async IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponseAsync(IList<ChatMessage> chatMessages,
         ChatOptions? options = null,
-        CancellationToken cancellationToken = new CancellationToken())
+        CancellationToken cancellationToken = default)
     {
         if (chatMessages == null)
             throw new ArgumentNullException(nameof(chatMessages));

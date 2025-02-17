@@ -1,6 +1,6 @@
 # Google_GenerativeAI.Auth
 
-[![NuGet](https://img.shields.io/nuget/v/Google_GenerativeAI.Auth.svg)](https://www.nuget.org/packages/Google_GenerativeAI.Auth)  [![License: MIT](https://img.shields.io/github/license/gunpal5/Google_GenerativeAI)](https://github.com/tryAGI/OpenAI/blob/main/LICENSE.txt)
+[![NuGet](https://img.shields.io/nuget/v/Google_GenerativeAI.Auth.svg)](https://www.nuget.org/packages/Google_GenerativeAI.Auth)  [![License: MIT](https://img.shields.io/github/license/gunpal5/Google_GenerativeAI)](https://github.com/gunpal5/Google_GenerativeAI/blob/main/LICENSE)
 
 `Google_GenerativeAI.Auth` is a helper library for the [Unofficial C# Google Generative AI SDK (Google Gemini)](https://github.com/gunpal5/Google_GenerativeAI) that simplifies authentication using OAuth and Service Accounts. It provides concrete implementations for the `IGoogleAuthenticator` interface, making it easy to integrate authentication into your applications using the SDK. This library handles the complexities of obtaining access tokens, so you can focus on building generative AI applications.
 

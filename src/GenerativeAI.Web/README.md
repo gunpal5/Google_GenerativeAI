@@ -1,6 +1,6 @@
 # Google_GenerativeAI.Web
 
-[![NuGet](https://img.shields.io/nuget/v/Google_GenerativeAI.Web.svg)](https://www.nuget.org/packages/Google_GenerativeAI.Web) [![License: MIT](https://img.shields.io/github/license/gunpal5/Google_GenerativeAI)](https://github.com/tryAGI/OpenAI/blob/main/LICENSE.txt)
+[![NuGet](https://img.shields.io/nuget/v/Google_GenerativeAI.Web.svg)](https://www.nuget.org/packages/Google_GenerativeAI.Web) [![License: MIT](https://img.shields.io/github/license/gunpal5/Google_GenerativeAI)](https://github.com/gunpal5/Google_GenerativeAI/blob/main/LICENSE)
 
 `Google_GenerativeAI.Web` simplifies integrating Google Generative AI (Gemini and Vertex AI) into .NET web applications (ASP.NET Core, Minimal APIs, etc.). It provides convenient extensions for `IServiceCollection` to configure and inject `IGenerativeAiService`, making it easy to use Google's generative models in your controllers, services, or other components.
 

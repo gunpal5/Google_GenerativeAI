@@ -1,6 +1,6 @@
 # Google_GenerativeAI.Microsoft
 
-[![NuGet](https://img.shields.io/nuget/v/Google_GenerativeAI.Microsoft.svg)](https://www.nuget.org/packages/Google_GenerativeAI.Microsoft) [![License: MIT](https://img.shields.io/github/license/gunpal5/Google_GenerativeAI)](https://github.com/tryAGI/OpenAI/blob/main/LICENSE.txt)
+[![NuGet](https://img.shields.io/nuget/v/Google_GenerativeAI.Microsoft.svg)](https://www.nuget.org/packages/Google_GenerativeAI.Microsoft) [![License: MIT](https://img.shields.io/github/license/gunpal5/Google_GenerativeAI)](https://github.com/gunpal5/Google_GenerativeAI/blob/main/LICENSE)
 
 `Google_GenerativeAI.Microsoft` provides an `IChatClient` implementation (from `Microsoft.Extensions.AI`) for the Google Generative AI SDK (C# [Google_GenerativeAI](https://github.com/gunpal5/Google_GenerativeAI)). It lets you use Google's Gemini models in apps built with Microsoft's AI abstractions.
 
