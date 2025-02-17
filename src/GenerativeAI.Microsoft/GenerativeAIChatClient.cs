@@ -29,7 +29,7 @@ public class GenerativeAIChatClient : IChatClient
     }
 
     /// <inheritdoc/>
-    public async Task<ChatCompletion> CompleteAsync(IList<ChatMessage> chatMessages, ChatOptions? options = null,
+    public async Task<ChatResponse> GetResponseAsync(IList<ChatMessage> chatMessages, ChatOptions? options = null,
         CancellationToken cancellationToken = default)
     {
         if (chatMessages == null)
@@ -39,7 +39,7 @@ public class GenerativeAIChatClient : IChatClient
         return response.ToChatCompletion() ?? throw new Exception("Failed to generate content");
     }
     /// <inheritdoc/>
-    public async IAsyncEnumerable<StreamingChatCompletionUpdate> CompleteStreamingAsync(IList<ChatMessage> chatMessages,
+    public async IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponseAsync(IList<ChatMessage> chatMessages,
         ChatOptions? options = null,
         CancellationToken cancellationToken = new CancellationToken())
     {
@@ -60,6 +60,4 @@ public class GenerativeAIChatClient : IChatClient
         }
         else return null;
     }
-    /// <inheritdoc/>
-    public ChatClientMetadata Metadata { get; }
 }

@@ -93,7 +93,7 @@ public class GenerativeAIChatClient_Tests : TestBase
         var client = new GenerativeAIChatClient(adapter);
 
         // Act & Assert
-        await Should.ThrowAsync<ArgumentNullException>(async () => { await client.CompleteAsync(null!); });
+        await Should.ThrowAsync<ArgumentNullException>(async () => { await client.GetResponseAsync((string)null!); });
         Console.WriteLine("CompleteAsync threw ArgumentNullException as expected when chatMessages was null.");
     }
 
@@ -115,7 +115,7 @@ public class GenerativeAIChatClient_Tests : TestBase
         // For demonstration, we assume GenerateContentAsync(...) works.
 
         // Act
-        var result = await client.CompleteAsync(messages);
+        var result = await client.GetResponseAsync(messages);
 
         // Assert
         result.ShouldNotBeNull();
@@ -140,7 +140,7 @@ public class GenerativeAIChatClient_Tests : TestBase
         // Act & Assert
         await Should.ThrowAsync<ArgumentNullException>(async () =>
         {
-            await foreach (var _ in client.CompleteStreamingAsync(null!))
+            await foreach (var _ in client.GetStreamingResponseAsync((string)null!))
             {
                 // Should never get here
                 Console.WriteLine(_.Text ?? "null");
@@ -162,8 +162,8 @@ public class GenerativeAIChatClient_Tests : TestBase
         };
 
         // Act
-        var updates = new List<StreamingChatCompletionUpdate>();
-        await foreach (var update in client.CompleteStreamingAsync(messages))
+        var updates = new List<ChatResponseUpdate>();
+        await foreach (var update in client.GetStreamingResponseAsync(messages))
         {
             updates.Add(update);
             Console.WriteLine(update.Text ?? "null");
@@ -222,8 +222,8 @@ public class GenerativeAIChatClient_Tests : TestBase
         var client = new GenerativeAIChatClient(adapter);
 
         // Assert
-        client.Metadata.ShouldBeNull();
-        Console.WriteLine("By default, Metadata is null in GenerativeAIChatClient.");
+        client.GetService<ChatClientMetadata>().ShouldBeNull();
+        Console.WriteLine("By default, metadata is null in GenerativeAIChatClient.");
     }
 
     #endregion
