@@ -36,6 +36,7 @@ public class ServiceAccount_Tests:TestBase
     [Fact]
     public async Task ShouldWorkWithServiceAccount_GenerateContent()
     {
+        Assert.SkipWhen(SkipVertexAITests,VertextTestSkipMesaage);
         var authenticator = CreateAuthenticatorWithKey();
         
         var vertexAi = new VertexAIModel(authenticator:authenticator);
@@ -49,6 +50,7 @@ public class ServiceAccount_Tests:TestBase
     [Fact]
     public async Task ShouldWorkWithServiceAccount_Json_GenerateContent()
     {
+        Assert.SkipWhen(SkipVertexAITests,VertextTestSkipMesaage);
         var authenticator = CreateAuthenticatorWithJsonFile();
         
         var vertexAi = new VertexAIModel(authenticator:authenticator);

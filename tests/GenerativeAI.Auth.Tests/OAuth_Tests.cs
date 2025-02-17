@@ -15,6 +15,7 @@ public class OAuth_Tests:TestBase
     [Fact]
     public async Task ShouldWorkWithOAuth_Json_GenerateContent()
     {
+        Assert.SkipWhen(SkipVertexAITests,VertextTestSkipMesaage);
         var authenticator = CreateAuthenticatorWithJsonFile();
         
         var vertexAi = new VertexAIModel(authenticator:authenticator);

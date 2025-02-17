@@ -15,14 +15,17 @@ public class VertexAI_Tests:TestBase
     [Fact]
     public async Task ShouldThrowException_WhenProjectIdsAreInvalid()
     {
-        var model = new VertexAIModel();
+        await Should.ThrowAsync<Exception>(async () =>
+        {
+            var model = new VertexAIModel();
 
-        var response = await model.GenerateContentAsync("write a poem about the sun");
+            var response = await model.GenerateContentAsync("write a poem about the sun");
 
-        response.ShouldNotBeNull();
-        var text = response.Text();
-        text.ShouldNotBeNullOrWhiteSpace();
-        Console.WriteLine(text);
+            response.ShouldNotBeNull();
+            var text = response.Text();
+            text.ShouldNotBeNullOrWhiteSpace();
+            Console.WriteLine(text);
+        });
     }
     
     
@@ -41,7 +44,7 @@ public class VertexAI_Tests:TestBase
     [Fact]
     public async Task ShouldThrowException_WhenCredentialsAreInvalid_NoAuthencatorProvided()
     {
-        var model = new GenerativeModel(new VertextPlatformAdapter(accessToken:"invalid"), VertexAIModels.Gemini.Gemini15Flash);
+        var model = new GenerativeModel(new VertextPlatformAdapter(accessToken:"invalid", projectId:"lashkfdkl",region:"dlakfhkl"), VertexAIModels.Gemini.Gemini15Flash);
 
         await Should.ThrowAsync<AuthenticationException>(async () =>
         {

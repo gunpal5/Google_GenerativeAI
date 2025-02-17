@@ -127,6 +127,7 @@ public class ServiceCollectionExtensionTests
         var services = new ServiceCollection();
         var customOptions = new GenerativeAIOptions
         {
+            ProjectId = "ladkfhlkh",
             Region = "us-west2",
             IsVertex = true
         };
