@@ -24,7 +24,7 @@ jobs:
         with:
           file: |
             "**/*.csproj", "**/*.nuspec", "**/AssemblyInfo.cs"
-          version: ${{ github.event.inputs.version }}
+          version: bump-minor
 
       - run: |
           git config user.name "Gunpal Jain"
