@@ -58,7 +58,7 @@ internal static partial class ApiBaseLogMessages
     /// <param name="payload">The payload data sent as part of the request body.</param>
     [LoggerMessage(EventId = 5, Level = LogLevel.Debug,
         Message = "Sending {HttpMethod} request to URL: {Url} with payload: {Payload}")]
-    public static partial void LogHttpRequest(this ILogger logger, string httpMethod, string url, object payload);
+    public static partial void LogHttpRequest(this ILogger logger, string httpMethod, string url, object? payload);
 
     /// <summary>
     /// Logs an informational message when an HTTP request completes successfully.
@@ -67,7 +67,7 @@ internal static partial class ApiBaseLogMessages
     /// <param name="url">The URL of the API endpoint that responded successfully.</param>
     /// <param name="content">The content of the response returned by the API.</param>
     [LoggerMessage(EventId = 6, Level = LogLevel.Debug, Message = "Successful response from {Url}: {Content}")]
-    public static partial void LogSuccessfulHttpResponse(this ILogger logger, string url, string content);
+    public static partial void LogSuccessfulHttpResponse(this ILogger logger, string url, string? content);
 
     /// <summary>
     /// Logs a warning message when an HTTP request (e.g., POST, PUT, or PATCH) is canceled.

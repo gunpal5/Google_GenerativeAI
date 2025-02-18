@@ -251,7 +251,7 @@ public class VertextPlatformAdapter : IPlatformAdapter
             {
                 var adcAuthenticator = new GoogleCloudAdcAuthenticator();
                 var token = await adcAuthenticator.ValidateAccessTokenAsync(Credentials.AuthToken.AccessToken, true, cancellationToken);
-                this.Credentials.AuthToken.ExpiryTime = token.ExpiryTime;
+                this.Credentials.AuthToken.ExpiryTime = token?.ExpiryTime;
             }
             else
             {
@@ -273,7 +273,8 @@ public class VertextPlatformAdapter : IPlatformAdapter
             }
         }
 
-        if (!this.Credentials.AuthToken.Validate())
+        var credentialsAuthToken = this.Credentials.AuthToken;
+        if (credentialsAuthToken != null && !credentialsAuthToken.Validate())
         {
             throw new UnauthorizedAccessException("Access token is invalid.");
         }

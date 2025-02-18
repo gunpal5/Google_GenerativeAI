@@ -29,7 +29,7 @@ public class EmbedContentRequest
     public TaskType? TaskType { get; set; }
 
     /// <summary>
-    /// Gets or sets an optional title for the text when the task type is <see cref="TaskType.RetrievalDocument"/>.
+    /// Gets or sets an optional title for the text when the task type is <see cref="TaskType.RETRIEVAL_DOCUMENT"/>.
     /// Specifying a title provides better quality embeddings for retrieval.
     /// </summary>
     [JsonPropertyName("title")]

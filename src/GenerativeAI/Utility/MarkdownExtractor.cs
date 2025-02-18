@@ -95,7 +95,17 @@ public class MarkdownExtractor
     {
         return filter == "*" || string.Equals(language, filter, StringComparison.OrdinalIgnoreCase);
     }
-   public static List<JsonBlock> ExtractJsonBlocks(string text)
+
+    /// <summary>
+    /// Extracts JSON blocks (objects or arrays) from a given text. This method identifies JSON objects
+    /// and arrays, including those spanning multiple lines, and extracts them along with their metadata.
+    /// </summary>
+    /// <param name="text">The text content from which JSON blocks will be extracted.</param>
+    /// <returns>
+    /// A list of <see cref="JsonBlock">JsonBlock</see> objects, each representing a JSON object or array,
+    /// including its content, starting line number, and whether it is an array.
+    /// </returns>
+    public static List<JsonBlock> ExtractJsonBlocks(string text)
     {
         List<JsonBlock> extractedJsonObjectsAndArrays = new List<JsonBlock>();
         string[] lines = text.Split('\n');

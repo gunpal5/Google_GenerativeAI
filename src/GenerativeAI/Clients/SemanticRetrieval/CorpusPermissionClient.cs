@@ -10,6 +10,9 @@ namespace GenerativeAI.Clients;
 /// <seealso href="https://ai.google.dev/api/rest/v1beta/corpora.permissions">See Official API Documentation</seealso>
 public class CorpusPermissionClient : BaseClient
 {
+    /// <summary>
+    /// Provides operations for managing permissions in a corpus using the Corpus Permissions API.
+    /// </summary>
     public CorpusPermissionClient(IPlatformAdapter platform, HttpClient? httpClient = null, ILogger? logger = null) : base(platform, httpClient, logger)
     {
     }
@@ -105,7 +108,7 @@ public class CorpusPermissionClient : BaseClient
         var url = $"{baseUrl}/{name}";
         await DeleteAsync(url);
     }
-
+    ///<inheritdoc/>
     protected override Task AddAuthorizationHeader(HttpRequestMessage request, bool requiredAccessToken = false,
         CancellationToken cancellationToken = default)
     {

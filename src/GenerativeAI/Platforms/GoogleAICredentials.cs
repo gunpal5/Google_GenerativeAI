@@ -51,7 +51,7 @@ public class GoogleAICredentials : ICredentials
     /// </exception>
     public void ValidateCredentials()
     {
-        if(string.IsNullOrEmpty(ApiKey) && this.AuthToken ==null && this.AuthToken.Validate())
+        if(string.IsNullOrEmpty(ApiKey) && this.AuthToken !=null && this.AuthToken.Validate())
             throw new Exception("API Key or Access Token is required to call the API.");
     }
 }

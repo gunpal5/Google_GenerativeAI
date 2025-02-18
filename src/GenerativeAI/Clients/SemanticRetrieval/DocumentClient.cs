@@ -10,6 +10,14 @@ namespace GenerativeAI.Clients;
 /// <seealso href="https://ai.google.dev/api/semantic-retrieval/documents">See Official API Documentation</seealso>
 public class DocumentsClient : BaseClient
 {
+    /// <summary>
+    /// A client for interacting with the Documents API.
+    /// Provides methods to create, query, list, retrieve, update, and delete document resources.
+    /// </summary>
+    /// <remarks>
+    /// This client simplifies interaction with the backend endpoint handling document-related operations.
+    /// </remarks>
+    /// <seealso href="https://ai.google.dev/api/semantic-retrieval/documents">See Official API Documentation</seealso>
     public DocumentsClient(IPlatformAdapter platform, HttpClient? httpClient = null, ILogger? logger = null) : base(platform, httpClient, logger)
     {
     }

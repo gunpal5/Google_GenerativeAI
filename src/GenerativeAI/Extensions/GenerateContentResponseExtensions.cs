@@ -16,17 +16,24 @@ public static class GenerateContentResponseExtensions
     /// <returns>The text if found; otherwise null.</returns>
     public static string? Text(this GenerateContentResponse response)
     {
-
+        if(response == null)
+            throw new ArgumentNullException(nameof(response));
+        
         StringBuilder sb = new StringBuilder();
-        foreach (var candidate in response?.Candidates)
+        if (response?.Candidates != null)
         {
-            if(candidate.Content==null)
-                continue;
-            foreach (var p in candidate.Content?.Parts)
+            foreach (var candidate in response.Candidates)
             {
-                sb.AppendLine(p.Text);
+                if (candidate.Content == null) continue;
+                if (candidate.Content?.Parts == null) continue;
+
+                foreach (var p in candidate.Content.Parts)
+                {
+                    sb.AppendLine(p.Text);
+                }
             }
         }
+
         var text = sb.ToString();
         if (string.IsNullOrEmpty(text))
             return null;
@@ -63,6 +70,7 @@ public static class GenerateContentResponseExtensions
                 }
             }
         }
+
         return codeBlocks;
     }
 
@@ -86,9 +94,10 @@ public static class GenerateContentResponseExtensions
                 }
             }
         }
+
         return jsonBlocks;
     }
-    
+
     /// <summary>
     /// Extracts all JSON blocks from the provided GenerateContentResponse.
     /// </summary>
@@ -103,7 +112,7 @@ public static class GenerateContentResponseExtensions
             if (obj != null)
                 return obj;
         }
-        
+
         return null;
     }
 
@@ -123,7 +132,7 @@ public static class GenerateContentResponseExtensions
             if (obj != null)
                 objects.Add(obj);
         }
-        
+
         return objects;
     }
 }

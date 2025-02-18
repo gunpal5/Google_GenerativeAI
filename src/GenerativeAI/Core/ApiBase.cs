@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Headers;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using GenerativeAI.Exceptions;
@@ -48,8 +49,9 @@ namespace GenerativeAI.Core
         /// Override this method in derived classes to dynamically add authorization headers.
         /// By default, this implementation does nothing.
         /// </remarks>
-        protected virtual async Task AddAuthorizationHeader(HttpRequestMessage request, bool requireAccessToken = false, CancellationToken cancellationToken = default)
+        protected virtual Task AddAuthorizationHeader(HttpRequestMessage request, bool requireAccessToken = false, CancellationToken cancellationToken = default)
         {
+            return Task.CompletedTask;
             // No action in the base class; override in derived classes to add specific headers.
         }
 
@@ -192,7 +194,7 @@ namespace GenerativeAI.Core
         /// Deserializes a JSON string into an object of the specified type.
         /// </summary>
         /// <typeparam name="T">The type of object to deserialize into.</typeparam>
-        /// <param name="json">The JSON string to deserialize.</param>
+        /// <param name="response">The response to deserialize.</param>
         /// <returns>The deserialized object of type T, or null if deserialization fails.</returns>
         protected async Task<T?> Deserialize<T>(HttpResponseMessage response)
         {
@@ -283,7 +285,7 @@ namespace GenerativeAI.Core
         /// <param name="cancellationToken">Optional. A token to cancel the file upload operation.</param>
         /// <returns>A task that represents the asynchronous upload operation. The task result contains the response string from the server.</returns>
         protected async Task<string> UploadFileWithProgressAsync(Stream stream,
-            string fileName,
+            string filePath,
             string mimeType,
             string url,
             Action<double> progress,
@@ -294,7 +296,7 @@ namespace GenerativeAI.Core
 
             using var form = new MultipartFormDataContent();
             content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-            form.Add(content, "file", fileName);
+            form.Add(content, "file", filePath);
 
             if (additionalHeaders != null)
             {
@@ -354,7 +356,7 @@ namespace GenerativeAI.Core
         protected async IAsyncEnumerable<TResponse> StreamAsync<TRequest, TResponse>(
             string url,
             TRequest payload,
-            CancellationToken cancellationToken = default)
+            [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             // Serialize the request payload into a MemoryStream
             using var ms = new MemoryStream();

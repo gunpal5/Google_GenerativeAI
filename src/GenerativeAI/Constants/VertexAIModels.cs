@@ -12,7 +12,7 @@ public static class VertexAIModels
     /// <summary>
     /// Provides constants for Gemini model variations.
     /// </summary>
-    public static class Gemini
+    public class Gemini
     {
         /// <summary>
         /// Gemini 2.0 Flash model name.
@@ -85,14 +85,30 @@ public static class VertexAIModels
         /// Embeddings for text model names.
         /// </summary>
         public const string TextEmbeddingGecko001 = "textembedding-gecko@001";
+
+        /// <summary>
+        /// Text Embedding Gecko 2.0 model name.
+        /// </summary>
         public const string TextEmbeddingGecko002 = "textembedding-gecko@002";
+
+        /// <summary>
+        /// Text Embedding Gecko model version 003.
+        /// </summary>
         public const string TextEmbeddingGecko003 = "textembedding-gecko@003";
+
+        /// <summary>
+        /// Text Embedding model version 004.
+        /// </summary>
         public const string TextEmbedding004 = "text-embedding-004";
 
         /// <summary>
         /// Embeddings for text multilingual model names.
         /// </summary>
         public const string TextEmbeddingGeckoMultilingual001 = "textembedding-gecko-multilingual@001";
+
+        /// <summary>
+        /// Text Multilingual Embedding model version 002.
+        /// </summary>
         public const string TextMultilingualEmbedding002 = "text-multilingual-embedding-002";
 
         /// <summary>

@@ -15,6 +15,12 @@ namespace GenerativeAI.Clients;
 /// <seealso href="https://ai.google.dev/api/files">See Official API Documentation</seealso>
 public class FileClient : BaseClient
 {
+    /// <summary>
+    /// A client for interacting with the Gemini API Files endpoint.
+    /// </summary>
+    /// <remarks>
+    /// Provides methods for uploading, retrieving, listing, and deleting files, as well as awaiting file state changes.
+    /// </remarks>
     public FileClient(IPlatformAdapter platform, HttpClient? httpClient = null, ILogger? logger = null) : base(platform,
         httpClient, logger)
     {
@@ -67,7 +73,7 @@ public class FileClient : BaseClient
         await CheckAndHandleErrors(response, url);
 
         var fileResponse = await Deserialize<UploadFileResponse>(response);
-        return fileResponse.File;
+        return fileResponse?.File;
     }
 
     /// <summary>
@@ -121,7 +127,7 @@ public class FileClient : BaseClient
         await CheckAndHandleErrors(response, url).ConfigureAwait(true);
 
         var fileResponse = await Deserialize<UploadFileResponse>(response).ConfigureAwait(true);
-        return fileResponse.File;
+        return fileResponse?.File;
     }
 
     private void ValidateStream(Stream stream, string mimeType)
@@ -219,6 +225,14 @@ public class FileClient : BaseClient
         await DeleteAsync(url);
     }
 
+    /// <summary>
+    /// Awaits until a file reaches the "ACTIVE" state or times out after the specified duration.
+    /// </summary>
+    /// <param name="file">The file to monitor for the state transition.</param>
+    /// <param name="maxSeconds">The maximum time, in seconds, to wait for the file to become active.</param>
+    /// <param name="cancellationToken">A token to cancel the waiting operation.</param>
+    /// <exception cref="GenerativeAIException">Thrown when the file encounters a processing error.</exception>
+    /// <returns>An awaitable task that completes when the file reaches the "ACTIVE" state.</returns>
     public async Task AwaitForFileStateActiveAsync(RemoteFile file, int maxSeconds, CancellationToken cancellationToken)
     {
         Stopwatch sw = new Stopwatch();

@@ -11,6 +11,8 @@ internal class ResponseHelper
     /// <returns></returns>
     internal static string FormatBlockErrorMessage(GenerateContentResponse response)
     {
+        if (response == null)
+            throw new ArgumentNullException(nameof(response));
         var message = "";
         if (response.Candidates == null || response.Candidates.Length == 0 && response.PromptFeedback!=null && response.PromptFeedback.BlockReason >0)
         {

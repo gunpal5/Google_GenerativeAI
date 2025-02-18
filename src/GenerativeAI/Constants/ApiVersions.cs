@@ -5,7 +5,7 @@
 /// These versions are to be used across the application for interacting with services
 /// or constructing API request URLs where versioning is required.
 /// </summary>
-public class ApiVersions
+public static class ApiVersions
 {
     /// <summary>
     /// Represents the version string "v1", which can be used to specify the first stable version

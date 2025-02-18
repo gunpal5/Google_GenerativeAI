@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Runtime.CompilerServices;
+using System.Text;
 using GenerativeAI.Core;
 using GenerativeAI.Exceptions;
 using GenerativeAI.Types;
@@ -60,7 +61,7 @@ public class ChatSession : GenerativeModel
     #region Constructors
 
     /// Represents a session for chat interactions using a generative model.
-    public ChatSession(List<Content>? history, IPlatformAdapter platform, string model, GenerationConfig config = null,
+    public ChatSession(List<Content>? history, IPlatformAdapter platform, string model, GenerationConfig? config = null,
         ICollection<SafetySetting>? safetySettings = null, string? systemInstruction = null,
         HttpClient? httpClient = null, ILogger? logger = null) : base(platform, model, config, safetySettings,
         systemInstruction, httpClient, logger)
@@ -78,7 +79,7 @@ public class ChatSession : GenerativeModel
     }
 
     /// Represents a conversational session leveraging a generative model to handle chat-based interactions and maintain context through message history.
-    public ChatSession(List<Content>? history, string apiKey, string model, GenerationConfig config = null,
+    public ChatSession(List<Content>? history, string apiKey, string model, GenerationConfig? config = null,
         ICollection<SafetySetting>? safetySettings = null, string? systemInstruction = null,
         HttpClient? httpClient = null, ILogger? logger = null) : base(apiKey, model, config, safetySettings,
         systemInstruction, httpClient, logger)
@@ -133,7 +134,7 @@ public class ChatSession : GenerativeModel
     }
 
     /// <inheritdoc />
-    public override async IAsyncEnumerable<GenerateContentResponse> StreamContentAsync(GenerateContentRequest request, CancellationToken cancellationToken = default)
+    public override async IAsyncEnumerable<GenerateContentResponse> StreamContentAsync(GenerateContentRequest request, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var sb = new StringBuilder();
         await foreach (var response in base.StreamContentAsync(request,cancellationToken))

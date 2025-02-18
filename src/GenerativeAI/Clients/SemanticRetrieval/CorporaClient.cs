@@ -10,6 +10,14 @@ namespace GenerativeAI.Clients;
 /// <seealso href="https://ai.google.dev/api/semantic-retrieval/corpora">See Official API Documentation</seealso>
 public class CorporaClient : BaseClient
 {
+    /// <summary>
+    /// A client for interacting with the Gemini API Corpora endpoint.
+    /// </summary>
+    /// <param name="platform">The platform adapter that provides platform-specific operations.</param>
+    /// <param name="httpClient">An optional <see cref="HttpClient"/> instance for making HTTP requests.</param>
+    /// <param name="logger">An optional <see cref="ILogger"/> instance for logging.</param>
+    /// <seealso cref="BaseClient"/>
+    /// <seealso href="https://ai.google.dev/api/semantic-retrieval/corpora">See Official API Documentation</seealso>
     public CorporaClient(IPlatformAdapter platform, HttpClient? httpClient = null, ILogger? logger = null) : base(platform, httpClient, logger)
     {
     }
@@ -127,6 +135,7 @@ public class CorporaClient : BaseClient
         await DeleteAsync(url + queryString);
     }
 
+    ///<inheritdoc/>
     protected override Task AddAuthorizationHeader(HttpRequestMessage request, bool requiredAccessToken = false,
         CancellationToken cancellationToken = default)
     {

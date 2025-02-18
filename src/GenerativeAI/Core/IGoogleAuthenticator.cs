@@ -10,7 +10,7 @@ public interface IGoogleAuthenticator
     /// </summary>
     /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
     /// <returns>A task representing the asynchronous operation, containing the authentication tokens.</returns>
-    Task<AuthTokens> GetAccessTokenAsync(CancellationToken cancellationToken = default);
+    Task<AuthTokens?> GetAccessTokenAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Asynchronously refreshes the access token using the provided token information.
@@ -18,7 +18,7 @@ public interface IGoogleAuthenticator
     /// <param name="token">The existing authentication token to be refreshed.</param>
     /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
     /// <returns>A task representing the asynchronous operation, containing the refreshed authentication tokens.</returns>
-    Task<AuthTokens> RefreshAccessTokenAsync(AuthTokens token, CancellationToken cancellationToken = default);
+    Task<AuthTokens?> RefreshAccessTokenAsync(AuthTokens token, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Asynchronously validates the provided access token.

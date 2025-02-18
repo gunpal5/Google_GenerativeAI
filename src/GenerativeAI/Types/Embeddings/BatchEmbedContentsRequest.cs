@@ -9,7 +9,7 @@ namespace GenerativeAI.Types;
 public class BatchEmbedContentRequest
 {
     /// <summary>
-    /// Required. Embed requests for the batch. The model in each of these requests must match the model specified in <see cref="BatchedEmbedContentRequest"/>.
+    /// Required. Embed requests for the batch. The model in each of these requests must match the model specified in <see cref="BatchEmbedContentRequest"/>.
     /// </summary>
     [JsonPropertyName("requests")]
     public List<EmbedContentRequest>? Requests { get; set; }

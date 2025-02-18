@@ -156,16 +156,16 @@ public static class ServiceCollectionExtension
     }
 
     /// <summary>
-    /// Adds the Google Generative AI features to the <see cref="IServiceCollection" />.
+    /// Adds the Google Generative AI features to the <see cref="IServiceCollection" /> with optional configuration.
     /// </summary>
     /// <param name="services">The <see cref="IServiceCollection" /> to add the services to.</param>
+    /// <param name="setupAction">An optional action to configure the <see cref="GenerativeAIOptions" />.</param>
     /// <returns>The updated <see cref="IServiceCollection" /> for chaining additional calls.</returns>
     public static IServiceCollection AddGenerativeAI(this IServiceCollection services,
-        Action<GenerativeAIOptions> setupAction = null)
+        Action<GenerativeAIOptions> setupAction)
     {
         if (services == null) throw new ArgumentNullException(nameof(services));
-        if (setupAction == null) throw new ArgumentNullException(nameof(setupAction));
-
+      
         services.AddGenerativeAI();
         services.ConfigureGenerativeAI(setupAction);
 

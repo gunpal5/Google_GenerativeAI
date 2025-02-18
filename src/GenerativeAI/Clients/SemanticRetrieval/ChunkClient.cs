@@ -10,6 +10,13 @@ namespace GenerativeAI.Clients;
 /// <seealso href="https://ai.google.dev/api/rest/v1beta/corpora.documents.chunks">See Official API Documentation</seealso>
 public class ChunkClient : BaseClient
 {
+    /// <summary>
+    /// A client for managing and interacting with chunks in the Generative AI API.
+    /// </summary>
+    /// <param name="platform">The platform adapter for handling platform-specific operations.</param>
+    /// <param name="httpClient">Optional HTTP client for sending requests. Defaults to null.</param>
+    /// <param name="logger">Optional logger for logging purposes. Defaults to null.</param>
+    /// <seealso href="https://ai.google.dev/api/rest/v1beta/corpora.documents.chunks">See Official API Documentation</seealso>
     public ChunkClient(IPlatformAdapter platform, HttpClient? httpClient = null, ILogger? logger = null) : base(platform, httpClient, logger)
     {
     }

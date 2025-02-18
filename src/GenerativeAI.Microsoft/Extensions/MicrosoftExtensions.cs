@@ -256,7 +256,7 @@ public static class MicrosoftExtensions
     /// <summary>
     /// Converts a <see cref="GenerateContentResponse"/> instance into a <see cref="ChatMessage"/>.
     /// </summary>
-    /// <param name="response">The <see cref="GenerateContentResponse"/> to be transformed into a <see cref="ChatMessage"/>.</param>
+    /// <param name="contents">The <see cref="Content"/> to be transformed into a <see cref="ChatMessage"/>.</param>
     /// <returns>A <see cref="ChatMessage"/> representing the data contained in the <see cref="GenerateContentResponse"/>.</returns>
     public static IEnumerable<ChatMessage> ToChatMessages(this List<Content>? contents)
     {

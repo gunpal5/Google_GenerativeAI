@@ -9,7 +9,7 @@
 /// The constants in this class represent specific actions that can be performed using generative AI models.
 /// They are typically utilized in constructing API endpoints or specifying desired operations.
 /// </remarks>
-public class GenerativeModelTasks
+public static class GenerativeModelTasks
 {
     /// <summary>
     /// Task used to generate content using a generative AI model.

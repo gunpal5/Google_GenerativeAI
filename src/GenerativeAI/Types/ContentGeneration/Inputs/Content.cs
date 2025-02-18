@@ -10,16 +10,33 @@ namespace GenerativeAI.Types;
 /// <seealso href="https://ai.google.dev/api/caching#Content"/>
 public sealed class Content
 {
+    /// <summary>
+    /// Represents a piece of content, including parts and an optional role.
+    /// </summary>
     public Content()
     {
         
     }
+
+    /// <summary>
+    /// Represents the structured multi-part content of a message, including the role of the producer.
+    /// This type is utilized for handling and managing the content within message exchanges.
+    /// </summary>
     public Content(IEnumerable<Part> parts, string? role)
     {
         this.Parts = parts.ToList();
         this.Role = role;
     }
 
+    /// <summary>
+    /// Represents the content of a message with multiple parts and a specific role.
+    /// </summary>
+    /// <remarks>
+    /// This class encapsulates a multi-part message structure. Each piece of the message content is encapsulated
+    /// within the <see cref="Parts"/> property as a collection of <see cref="Part"/> objects. The <see cref="Role"/>
+    /// property designates the entity responsible for producing the content of the message. This content may include
+    /// plain text, execution results, file data, and more.
+    /// </remarks>
     public Content(string prompt, string? role)
     {
         this.Parts = new List<Part> { new Part(){Text = prompt} };

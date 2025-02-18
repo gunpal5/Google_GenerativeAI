@@ -165,7 +165,7 @@ public interface IGenerativeModel
     /// <summary>
     /// Streams content generation based on a GenerateContentRequest asynchronously.
     /// </summary>
-    /// <param name="request">The GenerateContentRequest containing input parameters for the content generation process.</param>
+    /// <param name="parts">The Parts containing input parameters for the content generation process.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>An asynchronous stream of GenerateContentResponse objects representing the generated content.</returns>
     IAsyncEnumerable<GenerateContentResponse> StreamContentAsync(
@@ -175,7 +175,7 @@ public interface IGenerativeModel
     /// <summary>
     /// Streams generated content as an asynchronous enumerable based on the provided request.
     /// </summary>
-    /// <param name="request">The GenerateContentRequest containing the parameters for content generation.</param>
+    /// <param name="contents">The contents containing the parameters for content generation.</param>
     /// <param name="cancellationToken">Optional token to cancel the streaming operation.</param>
     /// <returns>An asynchronous enumerable of GenerateContentResponse objects.</returns>
     IAsyncEnumerable<GenerateContentResponse> StreamContentAsync(

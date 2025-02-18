@@ -5,7 +5,7 @@
 /// Google AI services. These variables store information such as project ID, region, API keys,
 /// and authentication credentials. Default values are used for certain variables if they are not set.
 /// </summary>
-public class EnvironmentVariables
+public static class EnvironmentVariables
 {
     /// <summary>
     /// Represents the Google Cloud Project ID for the application.

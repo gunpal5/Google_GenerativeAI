@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using GenerativeAI.Types;
 
 namespace GenerativeAI;
@@ -110,7 +111,7 @@ public partial class GenerativeModel
 
     public virtual async IAsyncEnumerable<GenerateContentResponse> StreamContentAsync(
         GenerateContentRequest request,
-        CancellationToken cancellationToken = default)
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         PrepareRequest(request);
 
@@ -133,7 +134,7 @@ public partial class GenerativeModel
     /// <seealso href="https://ai.google.dev/gemini-api/docs/text-generation?lang=rest#generate-a-text-stream">See Official API Documentation</seealso>
     public async IAsyncEnumerable<GenerateContentResponse> StreamContentAsync(
         string prompt,
-        CancellationToken cancellationToken = default)
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var request = new GenerateContentRequest(RequestExtensions.FormatGenerateContentInput(prompt));
 
@@ -161,7 +162,7 @@ public partial class GenerativeModel
         string prompt,
         string fileUri,
         string mimeType,
-        CancellationToken cancellationToken = default)
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var request = new GenerateContentRequest();
 
@@ -183,12 +184,12 @@ public partial class GenerativeModel
     /// <summary>
     /// Streams content generation based on a GenerateContentRequest asynchronously.
     /// </summary>
-    /// <param name="request">The GenerateContentRequest containing input parameters for the content generation process.</param>
+    /// <param name="parts">The Parts containing input parameters for the content generation process.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>An asynchronous stream of GenerateContentResponse objects representing the generated content.</returns>
     public async IAsyncEnumerable<GenerateContentResponse> StreamContentAsync(
         IEnumerable<Part> parts,
-        CancellationToken cancellationToken = default)
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var request = new GenerateContentRequest(RequestExtensions.FormatGenerateContentInput(parts));
 
@@ -205,12 +206,12 @@ public partial class GenerativeModel
     /// <summary>
     /// Streams generated content as an asynchronous enumerable based on the provided request.
     /// </summary>
-    /// <param name="request">The GenerateContentRequest containing the parameters for content generation.</param>
+    /// <param name="contents">The Contents containing the parameters for content generation.</param>
     /// <param name="cancellationToken">Optional token to cancel the streaming operation.</param>
     /// <returns>An asynchronous enumerable of GenerateContentResponse objects.</returns>
     public async IAsyncEnumerable<GenerateContentResponse> StreamContentAsync(
         IEnumerable<Content> contents,
-        CancellationToken cancellationToken = default)
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var request = new GenerateContentRequest(contents.ToList());
 

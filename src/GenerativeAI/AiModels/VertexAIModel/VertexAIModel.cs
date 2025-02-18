@@ -26,11 +26,14 @@ public class VertexAIModel:GenerativeModel
     /// Represents a model within the Vertex AI ecosystem designed to perform generative AI tasks.
     /// This class extends the base GenerativeModel and provides functionality to connect with
     /// Vertex AI services using various configurations and parameters.
-    public VertexAIModel(IPlatformAdapter platform, string model, GenerationConfig config = null, ICollection<SafetySetting>? safetySettings = null, string? systemInstruction = null, HttpClient? httpClient = null, ILogger? logger = null) : base(platform, model, config, safetySettings, systemInstruction, httpClient, logger)
+    public VertexAIModel(IPlatformAdapter platform, string model, GenerationConfig? config = null, ICollection<SafetySetting>? safetySettings = null, string? systemInstruction = null, HttpClient? httpClient = null, ILogger? logger = null) : base(platform, model, config, safetySettings, systemInstruction, httpClient, logger)
     {
     }
 
-    public VertexAIModel(string? model = null, string? projectId = null, string? region = null, string? accessToken = null, GenerationConfig config = null, ICollection<SafetySetting>? safetySettings = null, string? systemInstruction = null,  bool expressMode = false, string? apiKey=null, IGoogleAuthenticator? authenticator =null, HttpClient? httpClient=null, ILogger? logger =null):this(new VertextPlatformAdapter(projectId,region,expressMode,apiKey,accessToken,authenticator:authenticator,logger:logger),model??EnvironmentVariables.GOOGLE_AI_MODEL??GoogleAIModels.DefaultGeminiModel,config,safetySettings,systemInstruction,httpClient,logger)
+    /// Represents a model within the Vertex AI ecosystem for performing advanced generative AI tasks.
+    /// This class extends the GenerativeModel base class and facilitates communication with the Vertex AI platform
+    /// by leveraging various configuration, safety, and platform-specific options.
+    public VertexAIModel(string? model = null, string? projectId = null, string? region = null, string? accessToken = null, GenerationConfig? config = null, ICollection<SafetySetting>? safetySettings = null, string? systemInstruction = null,  bool expressMode = false, string? apiKey=null, IGoogleAuthenticator? authenticator =null, HttpClient? httpClient=null, ILogger? logger =null):this(new VertextPlatformAdapter(projectId,region,expressMode,apiKey,accessToken,authenticator:authenticator,logger:logger),model??EnvironmentVariables.GOOGLE_AI_MODEL??GoogleAIModels.DefaultGeminiModel,config,safetySettings,systemInstruction,httpClient,logger)
     {
         
     }

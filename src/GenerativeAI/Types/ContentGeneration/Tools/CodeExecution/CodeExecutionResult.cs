@@ -4,7 +4,7 @@ namespace GenerativeAI.Types;
 
 /// <summary>
 /// Result of executing the <see cref="ExecutableCode"/>.
-/// Only generated when using the <see cref="CodeExecution"/>, and always follows a <see cref="Part"/>
+/// Only generated when using the <see cref="CodeExecutionTool"/>, and always follows a <see cref="Part"/>
 /// containing the <see cref="ExecutableCode"/>.
 /// </summary>
 /// <seealso href="https://ai.google.dev/api/caching#CodeExecutionResult">See Official API Documentation</seealso>

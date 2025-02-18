@@ -5,7 +5,7 @@
 /// This class contains static members that define the foundational endpoints required for API calls
 /// in services implementing generative and AI capabilities.
 /// </summary>
-public class BaseUrls
+public static class BaseUrls
 {
     /// <summary>
     /// Represents the base URL for accessing the Vertex AI platform's API.

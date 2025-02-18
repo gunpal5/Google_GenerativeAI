@@ -1,4 +1,5 @@
-﻿using GenerativeAI.Types;
+﻿using System.Runtime.CompilerServices;
+using GenerativeAI.Types;
 
 namespace GenerativeAI;
 
@@ -49,7 +50,7 @@ public partial class GeminiModel
     public async IAsyncEnumerable<GenerateContentResponse> StreamContentAsync(
         string prompt,
         string filePath,
-        CancellationToken cancellationToken = default)
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var request = new GenerateContentRequest();
 

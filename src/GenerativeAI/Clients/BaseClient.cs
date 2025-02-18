@@ -10,6 +10,9 @@ namespace GenerativeAI.Clients;
 /// </summary>
 public class BaseClient : ApiBase
 {
+    /// <summary>
+    /// 
+    /// </summary>
     protected readonly IPlatformAdapter _platform;
 
     /// <summary>
@@ -21,7 +24,7 @@ public class BaseClient : ApiBase
     /// The platform is initialized when the client is instantiated and can be used by derived classes
     /// to interact with underlying platform APIs.
     /// </remarks>
-    protected IPlatformAdapter Platform => _platform;
+    public IPlatformAdapter Platform => _platform;
 
     /// <summary>
     /// Represents the base client class that provides foundational functionality for API clients.

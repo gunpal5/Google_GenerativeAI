@@ -136,7 +136,7 @@ namespace GenerativeAI
         }
 
 
-        private void Initialize(IPlatformAdapter platformAdapter, string model, GenerationConfig config,
+        private void Initialize(IPlatformAdapter platformAdapter, string model, GenerationConfig? config,
             ICollection<SafetySetting>? safetySettings, string? systemInstruction)
         {
             Model = model;
@@ -262,13 +262,17 @@ namespace GenerativeAI
         #endregion
         
         #region Public Methods
+
         /// <summary>
-        /// Start a Chat Session
+        /// Starts a new chat session with the given parameters and configuration.
         /// </summary>
-        /// <param name="startSessionParams">Session Params with Chat History</param>
-        /// <returns>ChatSession Object</returns>
+        /// <param name="history">Optional chat history to be included in the new session.</param>
+        /// <param name="config">Optional configuration for text generation, including parameters such as temperature and maximum tokens.</param>
+        /// <param name="safetySettings">Optional collection of safety settings to ensure the chat session adheres to defined guidelines.</param>
+        /// <param name="systemInstruction">Optional instruction defining the system's behavior or context for the chat session.</param>
+        /// <returns>A new instance of the ChatSession class representing the initiated chat session.</returns>
         public virtual ChatSession StartChat(List<Content>? history = null,
-            GenerationConfig config = null,
+            GenerationConfig? config = null,
             ICollection<SafetySetting>? safetySettings = null,
             string? systemInstruction = null)
         {

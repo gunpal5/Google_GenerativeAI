@@ -1,4 +1,5 @@
-﻿using GenerativeAI.Core;
+﻿using System.Runtime.CompilerServices;
+using GenerativeAI.Core;
 using GenerativeAI.Exceptions;
 using GenerativeAI.Microsoft.Extensions;
 using GenerativeAI.Types;
@@ -95,7 +96,7 @@ public class GenerativeAIChatClient : IChatClient
     /// <inheritdoc/>
     public async IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponseAsync(IList<ChatMessage> chatMessages,
         ChatOptions? options = null,
-        CancellationToken cancellationToken = default)
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         if (chatMessages == null)
             throw new ArgumentNullException(nameof(chatMessages));

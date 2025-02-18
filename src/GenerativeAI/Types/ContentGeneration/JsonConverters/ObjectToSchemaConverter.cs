@@ -6,26 +6,6 @@ using Json.Schema.Generation;
 using Json.Schema.Generation.Intents;
 using System.Text.Json.Nodes;
 
-#if NET8_0_OR_GREATER || NET462_OR_GREATER
-using System.Text.Json.Nodes;
-#endif
-
-#if NET7_0
-using Json.More;
-using Json.Schema;
-using Json.Schema.Generation;
-using Json.Schema.Generation.Intents;
-using System.Text.Json.Nodes;
-#endif
-
-#if NET6_0
-using Json.More;
-using Json.Schema;
-using Json.Schema.Generation;
-using Json.Schema.Generation.Intents;
-using System.Text.Json.Nodes;
-#endif
-
 namespace GenerativeAI.Types;
 
 /// <summary>
@@ -149,9 +129,9 @@ PropertyNameResolver = propertyResolver,
                 foreach (JsonValue r in array)
                 {
 #if NET6_0_OR_GREATER
-                    var val = r.GetValue<string>();
+                    var val = r?.GetValue<string>();
 #else
-                    var val = r.GetValue<string>();
+                    var val = r?.GetValue<string>();
 #endif
                     if (val == "null")
                         continue;

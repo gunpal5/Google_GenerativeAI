@@ -95,9 +95,9 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
 
             await this.ValidateCredentialsAsync(true, cancellationToken).ConfigureAwait(true);
 
-            if (!string.IsNullOrEmpty(Credentials.ApiKey))
+            if (!string.IsNullOrEmpty(Credentials?.ApiKey))
                 request.Headers.Add("x-goog-api-key", Credentials.ApiKey);
-            if (this.Credentials.AuthToken != null && !string.IsNullOrEmpty(Credentials.AuthToken.AccessToken))
+            if (this.Credentials?.AuthToken != null && !string.IsNullOrEmpty(Credentials.AuthToken.AccessToken))
                 request.Headers.Add("Authorization", "Bearer " + Credentials.AuthToken.AccessToken);
         }
     }
@@ -128,7 +128,7 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
                     var token = await adcAuthenticator.ValidateAccessTokenAsync(Credentials.AuthToken.AccessToken, true,
                         cancellationToken).ConfigureAwait(true);
                     // this.Credentials.AuthToken.AccessToken = token.AccessToken;
-                    this.Credentials.AuthToken.ExpiryTime = token.ExpiryTime;
+                    this.Credentials.AuthToken.ExpiryTime = token?.ExpiryTime;
                 }
                 else
                 {
@@ -152,7 +152,8 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
                 }
             }
 
-            if (!this.Credentials.AuthToken.Validate())
+            var credentialsAuthToken = this.Credentials.AuthToken;
+            if (credentialsAuthToken != null && !credentialsAuthToken.Validate())
             {
                 throw new UnauthorizedAccessException("Access token is invalid.");
             }

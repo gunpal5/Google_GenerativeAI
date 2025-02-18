@@ -4,7 +4,7 @@
 /// Contains constants and configurations for inline file handling, 
 /// including file size limitations and allowed MIME types.
 /// </summary>
-public class InlineMimeTypes
+public static class InlineMimeTypes
 {
     /// <summary>
     /// Maximum size (in bytes) for inline files (20 MB).

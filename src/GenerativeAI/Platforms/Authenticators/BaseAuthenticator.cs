@@ -14,7 +14,7 @@ public abstract class BaseAuthenticator : IGoogleAuthenticator
     /// </summary>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>An instance of <see cref="AuthTokens"/> representing the access token.</returns>
-    public virtual Task<AuthTokens> GetAccessTokenAsync(CancellationToken cancellationToken = default)
+    public virtual Task<AuthTokens?> GetAccessTokenAsync(CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }
@@ -25,7 +25,7 @@ public abstract class BaseAuthenticator : IGoogleAuthenticator
     /// <param name="token">The expired <see cref="AuthTokens"/> instance.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>An instance of <see cref="AuthTokens"/> representing the refreshed access token.</returns>
-    public virtual Task<AuthTokens> RefreshAccessTokenAsync(AuthTokens token,
+    public virtual Task<AuthTokens?> RefreshAccessTokenAsync(AuthTokens token,
         CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();

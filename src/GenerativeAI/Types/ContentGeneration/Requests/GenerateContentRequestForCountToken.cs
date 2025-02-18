@@ -18,7 +18,7 @@ public class GenerateContentRequestForCountToken: GenerateContentRequest
     /// <summary>
     /// Initializes a new instance of <see cref="GenerateContentRequestForCountToken"/> with the provided model and base request.
     /// </summary>
-    /// <param name="model">The name of the model to use.</param>
+    /// <param name="modelName">The name of the model to use.</param>
     /// <param name="baseRequest">The base <see cref="GenerateContentRequest"/>.</param>
     /// <exception cref="ArgumentException">Thrown when the <paramref name="model"/> is null or empty.</exception>
     public GenerateContentRequestForCountToken(string modelName, GenerateContentRequest baseRequest)

@@ -41,7 +41,7 @@ public class GoogleCloudAdcAuthenticator : BaseAuthenticator
 
  
    /// <inheritdoc/>
-    public override async Task<AuthTokens> GetAccessTokenAsync(CancellationToken cancellationToken = default)
+    public override async Task<AuthTokens?> GetAccessTokenAsync(CancellationToken cancellationToken = default)
     {
         try
         {
@@ -50,7 +50,7 @@ public class GoogleCloudAdcAuthenticator : BaseAuthenticator
             var token = AcquireGcpAccessToken();
 
             var tokenInfo = await GetTokenInfo(token);
-
+            
             logger?.LogAuthenticationEndedSuccessfully();
             return tokenInfo;
         }
@@ -62,7 +62,7 @@ public class GoogleCloudAdcAuthenticator : BaseAuthenticator
         }
     }
     /// <inheritdoc/>
-    public override async Task<AuthTokens> RefreshAccessTokenAsync(AuthTokens token,
+    public override async Task<AuthTokens?> RefreshAccessTokenAsync(AuthTokens token,
         CancellationToken cancellationToken = default)
     {
         return await GetAccessTokenAsync(cancellationToken);
