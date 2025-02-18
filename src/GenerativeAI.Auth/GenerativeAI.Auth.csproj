@@ -14,9 +14,9 @@
         <PackageReadmeFile>./README.md</PackageReadmeFile>
         <RepositoryUrl>https://github.com/gunpal5/Google_GenerativeAI</RepositoryUrl>
         <PackageTags>GenerativeAI,Google,Gemini,Tools,SDK,GoogleGemini.Net,Google,Gemini,Gemini.Net</PackageTags>
-        <Version>2.0.9</Version>
-        <AssemblyVersion>2.0.9</AssemblyVersion>
-        <FileVersion>2.0.9</FileVersion>
+        <Version>2.0.10</Version>
+        <AssemblyVersion>2.0.10</AssemblyVersion>
+        <FileVersion>2.0.10</FileVersion>
         <SignAssembly>True</SignAssembly>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
         <RootNamespace>GenerativeAI.Authenticators</RootNamespace>
