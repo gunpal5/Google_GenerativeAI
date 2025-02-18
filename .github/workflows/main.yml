@@ -1,15 +1,33 @@
-name: Build and Publish To Nuget
-on: [ workflow_dispatch ]
-permissions:
-  contents: write
-  pull-requests: write
-jobs:  
-  build-test-publish:   
-    name: Publishing
-    uses: gunpal5/workflows/.github/workflows/dotnet_build-test-publish.yml@main    
-    secrets:
-      nuget-key: ${{ secrets.NUGET_KEY }}
-    with:
-      generate-build-number: true
-      create-release: false
+name: Publish Nuget Packages
+on: 
+  workflow_dispatch:
+    inputs:
+          version:
+            description: "New version for all projects"
+            required: true 
+            type: string   
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    name: Updating Version
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set project versions
+        id: update
+        uses: vers-one/dotnet-project-version-updater@v1.7
+        with:
+          file: |
+            "**/*.csproj", "**/*.nuspec", "**/AssemblyInfo.cs"
+          version: ${{ github.event.inputs.version }}
+
+      - run: |
+          git config user.name "Gunpal Jain"
+          git config user.email "gunpal5@gmail.com"
+          git add .
+          git commit -m "feat: Update project versions to ${{ steps.update.outputs.newVersion }}"
+          git push
+ 
       
