@@ -6,7 +6,7 @@ permissions:
 jobs:  
   build-test-publish:   
     name: Publishing
-    uses: gunpal5/workflows/.github/workflows/dotnet_build-test-publish.yml@main
+    uses: gunpal5/workflows/blob/main/.github/workflows/dotnet_build-test-publish@main
     secrets:
       nuget-key: ${{ secrets.NUGET_KEY }}
     with:
