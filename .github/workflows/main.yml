@@ -6,6 +6,8 @@ on:
 jobs:
   update:
     runs-on: ubuntu-latest
+    outputs:
+      new_version: ${{ steps.update.outputs.newVersion }}
     permissions:                      
         contents: write           
         pull-requests: write   
@@ -34,12 +36,13 @@ jobs:
             branch: ${{ github.ref }}
   build-test-publish:   
     name: Publishing
+    needs: [update]
     uses: gunpal5/workflows/.github/workflows/dotnet_build-test-publish.yml@main    
     secrets:
       nuget-key: ${{ secrets.NUGET_KEY }}
     with:
       generate-build-number: true
       create-release: false
-      project-version: ${{ steps.update.outputs.newVersion }}
+      project-version: ${{ needs.update.outputs.new_version }}
  
       
