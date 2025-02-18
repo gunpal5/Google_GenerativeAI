@@ -41,7 +41,7 @@ jobs:
     secrets:
       nuget-key: ${{ secrets.NUGET_KEY }}
     with:
-      generate-build-number: true
+      generate-build-number: false
       create-release: false
       project-version: ${{ needs.update.outputs.new_version }}
  
