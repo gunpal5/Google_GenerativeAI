@@ -1,6 +1,6 @@
 name: Publish Nuget Packages
 on: 
-  workflow_dispatch:
+  workflow_dispatch:    
     inputs:
           version:
             description: "New version for all projects"
@@ -10,6 +10,9 @@ on:
 jobs:
   update:
     runs-on: ubuntu-latest
+    permissions:                      
+        contents: write           
+        pull-requests: write   
     name: Updating Version
     steps:
       - name: Checkout
@@ -28,6 +31,10 @@ jobs:
           git config user.email "gunpal5@gmail.com"
           git add .
           git commit -m "feat: Update project versions to ${{ steps.update.outputs.newVersion }}"
-          git push
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            branch: ${{ github.ref }}
  
       
