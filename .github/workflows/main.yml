@@ -30,11 +30,20 @@ jobs:
           git config user.name "Gunpal Jain"
           git config user.email "gunpal5@gmail.com"
           git add .
-          git commit -m "feat: Update project versions to ${{ steps.update.outputs.newVersion }}"
+          git commit -m "Bump version to v${{ steps.update.outputs.newVersion }}"
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
             github_token: ${{ secrets.GITHUB_TOKEN }}
             branch: ${{ github.ref }}
+  build-test-publish:   
+    name: Publishing
+    uses: gunpal5/workflows/.github/workflows/dotnet_build-test-publish.yml@main    
+    secrets:
+      nuget-key: ${{ secrets.NUGET_KEY }}
+    with:
+      generate-build-number: true
+      create-release: false
+      project-version: ${{ steps.update.outputs.newVersion }}
  
       
