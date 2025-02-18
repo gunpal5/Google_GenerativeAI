@@ -6,13 +6,35 @@ using Microsoft.Extensions.Logging;
 
 namespace GenerativeAI;
 
+/// <summary>
+/// The BaseModel class is an abstract representation of the model interactions in the GenerativeAI library.
+/// It serves as a foundational implementation that enables derived classes to interact with the GenerativeAI platform.
+/// This class inherits from BaseClient. It provides protected methods for use by derived classes,
+/// allowing them to handle content generation, token management, and content embedding functionalities.
+/// BaseModel is designed for flexible extension, enabling the development of specific AI model implementations.
+/// </summary>
 public abstract class BaseModel : BaseClient
 {
+    /// <summary>
+    /// Abstract base class for models that interact with generative AI functionalities, providing common implementation details
+    /// for generating content, embedding content, and token counting operations.
+    /// </summary>
+    /// <remarks>
+    /// This class extends <see cref="BaseClient"/> and serves as a foundational class for specific models like
+    /// embedding or generative models. It provides core functionality for handling requests to the generative AI
+    /// services, including streaming and non-streaming content generation, token counting, and content embedding.
+    /// </remarks>
     protected BaseModel(IPlatformAdapter platform, HttpClient? httpClient, ILogger? logger = null) : base(platform,
         httpClient, logger)
     {
     }
 
+    /// <summary>
+    /// Checks the response from the generative AI model to determine if the response is blocked or invalid and throws an exception if so.
+    /// </summary>
+    /// <param name="response">The <see cref="GenerateContentResponse"/> received from the generative AI model, which may contain content candidates.</param>
+    /// <param name="url">The URL of the request made to the generative AI model, used for error reporting.</param>
+    /// <exception cref="GenerativeAIException">Thrown if the response is blocked or invalid with details of the error.</exception>
     protected void CheckBlockedResponse(GenerateContentResponse? response, string url)
     {
         if (!(response.Candidates is { Length: > 0 }))

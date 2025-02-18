@@ -5,6 +5,10 @@ using Microsoft.Extensions.Logging;
 
 namespace GenerativeAI;
 
+/// <summary>
+/// Represents the base class for generative AI services. This class provides a framework for generative AI capabilities, including
+/// the management of AI models, creation of generative and embedding models, and interacting with generative AI infrastructure.
+/// </summary>
 public abstract class GenAI
 {
     /// <summary>

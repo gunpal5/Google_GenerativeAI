@@ -6,6 +6,12 @@ using GenerativeAI.Types;
 
 namespace GenerativeAI;
 
+/// <summary>
+/// Defines the contract for a generative AI model. This interface provides methods for generating
+/// answers and content, streaming content, and counting tokens within inputs or outputs.
+/// It also includes properties for configuring behavior related to grounding, external tools,
+/// and advanced options such as JSON mode or function calling.
+/// </summary>
 public interface IGenerativeModel
 {
     /// <summary>
@@ -28,6 +34,9 @@ public interface IGenerativeModel
     /// </summary>
     bool UseJsonMode { get; set; }
 
+    /// <summary>
+    /// Defines the behavior for function calling within the generative model.
+    /// </summary>
     public FunctionCallingBehaviour FunctionCallingBehaviour { get; set; }
 
     /// <summary>

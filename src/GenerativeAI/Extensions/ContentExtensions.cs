@@ -5,6 +5,10 @@ using GenerativeAI.Types;
 
 namespace GenerativeAI;
 
+/// <summary>
+/// Provides extension methods for the <see cref="Content"/> class, allowing operations such as
+/// adding parts, handling inline and remote files, adding text, and extracting code or JSON blocks.
+/// </summary>
 public static class ContentExtensions
 {
     /// <summary>

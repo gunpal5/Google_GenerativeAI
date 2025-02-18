@@ -11,6 +11,13 @@
 /// </example>
 public class GenerativeAIException : Exception
 {
+    /// <summary>
+    /// Gets detailed information about the error encountered during Generative AI operations.
+    /// </summary>
+    /// <remarks>
+    /// This property provides a description or context-specific details regarding the exception,
+    /// which can be useful for debugging or understanding the nature of the problem.
+    /// </remarks>
     public string Details { get; private set; }
 
     /// <summary>

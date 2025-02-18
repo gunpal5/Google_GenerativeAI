@@ -15,6 +15,11 @@ namespace GenerativeAI.Core
         private readonly HttpClient _httpClient;
         private readonly ILogger? _logger;
         protected ILogger? Logger => _logger;
+
+        /// <summary>
+        /// Provides an HTTP client for sending and receiving HTTP requests and responses.
+        /// This property is used to facilitate communication with APIs or services.
+        /// </summary>
         protected HttpClient HttpClient => _httpClient;
 
         /// <summary>
@@ -136,6 +141,17 @@ namespace GenerativeAI.Core
             }
         }
 
+        /// <summary>
+        /// Checks if the HTTP response indicates a successful status, and throws an exception with detailed error information otherwise.
+        /// </summary>
+        /// <param name="response">The HTTP response to evaluate.</param>
+        /// <param name="url">The URL associated with the HTTP request, used for logging or exception messages.</param>
+        /// <exception cref="ApiException">
+        /// Thrown when the API returns an error with a valid "error" object containing status, code, or message details.
+        /// </exception>
+        /// <exception cref="HttpRequestException">
+        /// Thrown when the HTTP response indicates a failure, but no detailed "error" object is present in the response body.
+        /// </exception>
         protected async Task CheckAndHandleErrors(HttpResponseMessage response, string url)
         {
             if (!response.IsSuccessStatusCode)
@@ -257,6 +273,15 @@ namespace GenerativeAI.Core
         }
 
 
+        /// <summary>
+        /// Uploads a file asynchronously to the specified URL with progress tracking.
+        /// </summary>
+        /// <param name="url">The destination URL to upload the file.</param>
+        /// <param name="filePath">The full path to the file to upload.</param>
+        /// <param name="progress">An action to report progress as a percentage between 0 and 100.</param>
+        /// <param name="additionalHeaders">Optional. A dictionary of additional headers to include with the upload request.</param>
+        /// <param name="cancellationToken">Optional. A token to cancel the file upload operation.</param>
+        /// <returns>A task that represents the asynchronous upload operation. The task result contains the response string from the server.</returns>
         protected async Task<string> UploadFileWithProgressAsync(Stream stream,
             string fileName,
             string mimeType,

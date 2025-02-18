@@ -4,6 +4,11 @@ using GenerativeAI.Types;
 
 namespace GenerativeAI;
 
+/// <summary>
+/// Represents an interface defining operations for generative AI systems, including
+/// initializing models, retrieving model details, listing available models, and accessing
+/// platform-specific adapters.
+/// </summary>
 public interface IGenerativeAI
 {
     /// <summary>

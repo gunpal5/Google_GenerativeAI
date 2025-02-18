@@ -42,10 +42,10 @@ public class GenericFunctionTool:IFunctionTool
         };
     }
 
-    private Schema ToSchema(object parameters)
+    private Schema? ToSchema(object parameters)
     {
         var param = JsonSerializer.Serialize(parameters);
-        return JsonSerializer.Deserialize<Schema>(param);
+        return JsonSerializer.Deserialize(param,SchemaSourceGenerationContext.Default.Schema);
     }
 
     /// <inheritdoc/>

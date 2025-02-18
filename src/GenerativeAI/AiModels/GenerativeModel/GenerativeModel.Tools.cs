@@ -6,6 +6,7 @@ using GenerativeAI.Types;
 
 namespace GenerativeAI;
 
+
 public partial class GenerativeModel
 {
     /// <summary>
@@ -39,6 +40,13 @@ public partial class GenerativeModel
     public bool UseCodeExecutionTool { get; set; } = false;
 
 
+    /// <summary>
+    /// Specifies the configuration settings for function calling behavior in the generative model.
+    /// </summary>
+    /// <remarks>
+    /// This property determines how the model interacts with functions, including enabling or disabling function calls,
+    /// automatically calling functions, replying to functions, and handling incorrect function calls.
+    /// </remarks>
     public FunctionCallingBehaviour FunctionCallingBehaviour { get; set; } = new FunctionCallingBehaviour()
     {
         AutoCallFunction = true,
@@ -47,8 +55,23 @@ public partial class GenerativeModel
         FunctionEnabled = true
     };
 
+    /// <summary>
+    /// Represents the default tool configured for search-related operations in the generative model.
+    /// By default, it utilizes a Google Search Tool for retrieving information to assist in content generation tasks.
+    /// </summary>
+    /// <remarks>
+    /// This tool is automatically added to the request tools if no other search tool is explicitly defined.
+    /// </remarks>
     public Tool DefaultSearchTool = new Tool() { GoogleSearch = new GoogleSearchTool() };
 
+    /// <summary>
+    /// Represents the default Google Search Retrieval tool configuration used within the generative model.
+    /// This tool leverages dynamic retrieval capabilities to fetch real-time data and enhance model responses.
+    /// </summary>
+    /// <remarks>
+    /// Configured with a dynamic retrieval mode and threshold. Primarily used when no specific retrieval tool
+    /// is provided in the request. Ensures the integration of up-to-date search results.
+    /// </remarks>
     public Tool DefaultGoogleSearchRetrieval = new Tool()
     {
         GoogleSearchRetrieval = new GoogleSearchRetrievalTool()
@@ -58,15 +81,44 @@ public partial class GenerativeModel
         }
     };
 
+    /// <summary>
+    /// Represents the default tool used for executing code in a generative AI context.
+    /// This tool allows for dynamic code execution as part of the generative model’s operations.
+    /// </summary>
+    /// <remarks>
+    /// The tool is automatically added to the available tools if no other code execution tool is specified.
+    /// </remarks>
     public Tool DefaultCodeExecutionTool = new Tool() { CodeExecution = new CodeExecutionTool() };
 
+    /// <summary>
+    /// Represents a collection of function tools that can be utilized within the generative model.
+    /// Function tools enable additional functionalities by allowing external or custom tools to be
+    /// integrated into the model's processing pipeline.
+    /// </summary>
+    /// <remarks>
+    /// The tools provided via this property are managed and invoked based on the specified configurations
+    /// and behaviours within the generative model. Tools are used during content generation to enhance
+    /// or extend the model's capabilities.
+    /// </remarks>
     public List<IFunctionTool> FunctionTools { get; set; } = new List<IFunctionTool>();
 
 
+    /// <summary>
+    /// Represents the configuration settings for a specific tool.
+    /// Provides options to define the behavior and setup of tools, such as
+    /// function calling configurations, to align with the requirements
+    /// of the generative model.
+    /// </summary>
     public ToolConfig? ToolConfig { get; set; }
     
     #region Public Methods Related to Tools
 
+    /// <summary>
+    /// Adds a new function tool to the list of available function tools.
+    /// </summary>
+    /// <param name="tool">The implementation of the IFunctionTool interface to be added.</param>
+    /// <param name="toolConfig">Optional configuration for the tool.</param>
+    /// <param name="functionCallingBehaviour">Optional behavior configuration for function calling.</param>
     public void AddFunctionTool(IFunctionTool tool, ToolConfig? toolConfig = null,FunctionCallingBehaviour? functionCallingBehaviour=null)
     {
         this.FunctionTools.Add(tool);
@@ -97,6 +149,10 @@ public partial class GenerativeModel
 
     #region Private Helpers
 
+    /// <summary>
+    /// Adds necessary tools to the provided GenerateContentRequest instance based on configuration settings.
+    /// </summary>
+    /// <param name="request">The GenerateContentRequest instance that will be updated with the appropriate tools.</param>
     private void AddTools(GenerateContentRequest request)
     {
         if (FunctionCallingBehaviour.FunctionEnabled && FunctionTools.Count > 0)
@@ -180,7 +236,7 @@ public partial class GenerativeModel
         {
             var content = functionResponse.ToFunctionCallContent();
 
-            var contents = BeforeRegenration(originalRequest, response);
+            var contents = BeforeRegeneration(originalRequest, response);
             
             // Add our function result
             contents.Add(content);
@@ -195,7 +251,13 @@ public partial class GenerativeModel
         return response;
     }
 
-    protected virtual List<Content> BeforeRegenration(GenerateContentRequest originalRequest, GenerateContentResponse response)
+    /// <summary>
+    /// Process the request before regenerating with a function call response
+    /// </summary>
+    /// <param name="originalRequest">The original content generation request containing existing contents.</param>
+    /// <param name="response">The content generation response containing candidates from the model.</param>
+    /// <returns>A list of contents combining the original request contents and updated content from the response.</returns>
+    protected virtual List<Content> BeforeRegeneration(GenerateContentRequest originalRequest, GenerateContentResponse response)
     {
         var contents = new List<Content>();
         if (originalRequest.Contents != null)

@@ -33,6 +33,10 @@ public class GoogleAICredentials : ICredentials
             this.AuthToken = new AuthTokens(accessToken, expiryTime:expiry);
     }
 
+    /// <summary>
+    /// Represents the credentials required to authenticate with Google AI Generative APIs.
+    /// Responsible for managing both the API key and optional access tokens to enable secure communication with Google's services.
+    /// </summary>
     public GoogleAICredentials()
     {
         

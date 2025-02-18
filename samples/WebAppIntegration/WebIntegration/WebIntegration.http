@@ -1,6 +1,6 @@
 @WebIntegration_HostAddress = http://localhost:5052
 
-GET {{WebIntegration_HostAddress}}/weatherforecast/
-Accept: application/json
+GET {{WebIntegration_HostAddress}}/gemini-test/generate?prompt=write a poem.
+Accept: text/plain
 
 ###

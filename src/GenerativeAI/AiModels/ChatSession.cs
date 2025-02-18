@@ -6,6 +6,8 @@ using Microsoft.Extensions.Logging;
 
 namespace GenerativeAI;
 
+/// Represents a chat-based session for interacting with a generative AI model.
+/// Provides mechanisms to manage chat history, send messages, and receive responses.
 public class ChatSession : GenerativeModel
 {
     #region Properties
@@ -57,6 +59,7 @@ public class ChatSession : GenerativeModel
     #endregion
     #region Constructors
 
+    /// Represents a session for chat interactions using a generative model.
     public ChatSession(List<Content>? history, IPlatformAdapter platform, string model, GenerationConfig config = null,
         ICollection<SafetySetting>? safetySettings = null, string? systemInstruction = null,
         HttpClient? httpClient = null, ILogger? logger = null) : base(platform, model, config, safetySettings,
@@ -65,12 +68,16 @@ public class ChatSession : GenerativeModel
         History = history ?? new();
     }
 
+    /// Encapsulates a session for chat-based interaction with a generative AI model.
+    /// Manages the exchange of messages, maintains a history of interactions, and supports generating and
+    /// streaming responses from the model.
     public ChatSession(List<Content>? history,string apiKey, ModelParams modelParams, HttpClient? client = null, ILogger? logger = null) :
         base(apiKey, modelParams, client, logger)
     {
         History = history ?? new();
     }
 
+    /// Represents a conversational session leveraging a generative model to handle chat-based interactions and maintain context through message history.
     public ChatSession(List<Content>? history, string apiKey, string model, GenerationConfig config = null,
         ICollection<SafetySetting>? safetySettings = null, string? systemInstruction = null,
         HttpClient? httpClient = null, ILogger? logger = null) : base(apiKey, model, config, safetySettings,
@@ -99,7 +106,11 @@ public class ChatSession : GenerativeModel
         return response;
     }
 
-    protected override List<Content> BeforeRegenration(GenerateContentRequest originalRequest, GenerateContentResponse response)
+    /// Processes the content prior to generating content through a function call
+    /// <param name="originalRequest">The request containing the original content to be processed.</param>
+    /// <param name="response">The response from which candidate content will be selected and added to the result.</param>
+    /// <returns>A list of content objects that includes filtered and updated content based on the original request and response.</returns>
+    protected override List<Content> BeforeRegeneration(GenerateContentRequest originalRequest, GenerateContentResponse response)
     {
         var contents = new List<Content>();
         if (originalRequest.Contents != null)

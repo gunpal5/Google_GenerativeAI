@@ -16,6 +16,13 @@ public class ProgressStreamContent : HttpContent
         _progressCallback = progressCallback ?? throw new ArgumentNullException(nameof(progressCallback));
     }
 
+    /// <summary>
+    /// Serializes the content of the stream to a target stream asynchronously
+    /// while tracking and reporting the upload progress.
+    /// </summary>
+    /// <param name="targetStream">The target stream where the content will be serialized.</param>
+    /// <param name="context">An optional transport context that provides additional information about the stream operation.</param>
+    /// <returns>A task representing the asynchronous operation of writing the content to the target stream.</returns>
     protected override async Task SerializeToStreamAsync(Stream targetStream, TransportContext? context)
     {
         var buffer = new byte[81920]; // 80 KB buffer size
@@ -39,14 +46,27 @@ public class ProgressStreamContent : HttpContent
             _progressCallback(progress);
         }
     }
-  
 
+
+    /// <summary>
+    /// Attempts to compute the length of the stream content.
+    /// </summary>
+    /// <param name="length">When this method returns, contains the computed length of the stream if it exists; otherwise, 0.</param>
+    /// <returns>true if the length of the stream can be determined; otherwise, false.</returns>
     protected override bool TryComputeLength(out long length)
     {
         length = _stream.Length;
         return true;
     }
 
+    /// <summary>
+    /// Releases the unmanaged resources used by the <see cref="ProgressStreamContent"/>
+    /// and optionally releases the managed resources.
+    /// </summary>
+    /// <param name="disposing">
+    /// true to release both managed and unmanaged resources;
+    /// false to release only unmanaged resources.
+    /// </param>
     protected override void Dispose(bool disposing)
     {
         if (disposing)

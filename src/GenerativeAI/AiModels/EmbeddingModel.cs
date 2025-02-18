@@ -4,13 +4,47 @@ using Microsoft.Extensions.Logging;
 
 namespace GenerativeAI;
 
+/// <summary>
+/// Represents a machine learning model for generating embeddings from input text or content.
+/// This model allows handling of single or batch embedding operations using various input types or formats.
+/// Inherits from the <see cref="BaseModel"/> class.
+/// </summary>
 public class EmbeddingModel : BaseModel
 {
-    string Model { get; set; }
+    /// <summary>
+    /// Gets or sets the name or identifier of the embedding model to be used for generating embeddings.
+    /// The model name typically represents a specific configuration or version of the machine learning model.
+    /// This property is utilized in embedding operations to define which model to apply for processing the input.
+    /// </summary>
+    public string Model { get; set; }
+
+    /// <summary>
+    /// A class that represents an embedding model used for generating vector embeddings
+    /// from input content such as text or files. This model supports both single and batch
+    /// operations for processing multiple inputs and generates high-dimensional embeddings
+    /// compatible with various downstream applications.
+    /// </summary>
+    /// <remarks>
+    /// This class provides multiple overloads of the `EmbedContentAsync` method to handle different
+    /// input types, including strings, content objects, and batch requests. It is designed to be flexible
+    /// for integration with machine learning workflows.
+    /// </remarks>
     public EmbeddingModel(IPlatformAdapter platform, string model, HttpClient? httpClient = null , ILogger? logger = null) : base(platform, httpClient, logger)
     {
         this.Model = model;
     }
+
+    /// <summary>
+    /// A class that represents an embedding model designed to generate vector representations (embeddings)
+    /// from input text or content. Supports operations for both single inputs and batch processing using
+    /// multiple input types.
+    /// </summary>
+    /// <remarks>
+    /// The class provides several overloads of the `EmbedContentAsync` method to allow flexibility in embedding
+    /// generation based on the input structure, such as individual strings, content objects, or collections.
+    /// It also supports batch operations through `BatchEmbedContentAsync` methods for efficiency in processing
+    /// multiple inputs simultaneously. This model integrates functionality inherited from the `BaseModel` class.
+    /// </remarks>
     public EmbeddingModel(string apiKey, string model, HttpClient? httpClient = null , ILogger? logger = null) : this(new GoogleAIPlatformAdapter(apiKey), model, httpClient, logger)
     {
     }

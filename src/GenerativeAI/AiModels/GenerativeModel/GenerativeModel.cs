@@ -76,7 +76,7 @@ namespace GenerativeAI
         public GenerativeModel(
             IPlatformAdapter platform,
             string? model,
-            GenerationConfig config = null,
+            GenerationConfig? config = null,
             ICollection<SafetySetting>? safetySettings = null,
             string? systemInstruction = null,
             HttpClient? httpClient = null,
@@ -91,52 +91,46 @@ namespace GenerativeAI
 
 
         /// <summary>
-        /// Represents a generative AI model designed to handle text generation tasks with configurable settings,
-        /// platform adapters, safety measures, and advanced functionalities such as function calling and content caching.
+        /// Represents a generative model designed for handling text generation tasks, offering a range of configurations
+        /// and functionalities including platform-specific integration, safety settings, and optional system instructions.
         /// </summary>
-        /// <param name="platform">The platform adapter facilitating the interaction with generative AI services.</param>
-        /// <param name="model">The specific model identifier or name to use for generation tasks.</param>
-        /// <param name="config">Optional configuration for text generation, including temperature and token limits.</param>
-        /// <param name="safetySettings">Optional safety settings to enforce content generation constraints.</param>
-        /// <param name="systemInstruction">Optional instruction guiding the system behavior or initial prompt.</param>
-        /// <param name="httpClient">Optional HTTP client for API communication.</param>
-        /// <param name="logger">Optional logger for tracking and debugging operations.</param>
+        /// <param name="apiKey">The API key required for authenticating requests with the target platform.</param>
+        /// <param name="modelParams">Model parameters to specify generation configuration, safety settings, and behavior customization.</param>
+        /// <param name="client">Optional HTTP client for managing communication with the generative AI platform.</param>
+        /// <param name="logger">Optional logger instance to facilitate diagnostic logging and debugging.</param>
         /// <remarks>
-        /// This class provides multiple constructors to support customization, enabling seamless integration with
-        /// platform-specific APIs, safety configurations, and logging utilities.
+        /// This constructor allows the creation of an instance with default or user-specified configurations, streamlined for
+        /// integration with external generative AI services. The underlying implementation leverages adapter-based architecture
+        /// for modularity and scalability.
         /// </remarks>
         public GenerativeModel(string apiKey, ModelParams modelParams, HttpClient? client = null,
             ILogger? logger = null) : this(new GoogleAIPlatformAdapter(apiKey),
-            modelParams.Model ?? EnvironmentVariables.GOOGLE_AI_MODEL ?? GoogleAIModels.DefaultGeminiModel, modelParams.GenerationConfig,
+            modelParams.Model ?? EnvironmentVariables.GOOGLE_AI_MODEL ?? GoogleAIModels.DefaultGeminiModel,
+            modelParams.GenerationConfig,
             modelParams.SafetySettings, modelParams.SystemInstruction, client, logger)
         {
         }
 
         /// <summary>
-        /// Represents a generative AI model designed for text generation and related tasks.
+        /// Represents a generative AI model, extending base functionalities and supporting text generation tasks.
         /// </summary>
+        /// <param name="apiKey">The API key used for authenticating requests to the generative AI platform.</param>
+        /// <param name="model">Optional identifier or name of the model to be used. Defaults to system environment variables or a platform-specific default model if not provided.</param>
+        /// <param name="config">Optional configuration for text generation to customize behavior, such as adjusting temperature or token limits.</param>
+        /// <param name="safetySettings">Optional collection of safety settings to enforce content generation rules and guidelines.</param>
+        /// <param name="systemInstruction">Optional instruction defining the system's behavior, providing an initial context or prompt.</param>
+        /// <param name="httpClient">Optional HTTP client used for executing API communication with the generative platform.</param>
+        /// <param name="logger">Optional logger instance for tracking or debugging the model operations and interactions.</param>
         /// <remarks>
-        /// The class provides constructors with various initialization parameters for customization, including platform integration, model configuration,
-        /// and safety settings. It supports additional features like function calling, automatic function management, and caching of generated content.
-        /// </remarks>
-        /// <param name="platform">The platform adapter integrating with the underlying generative AI service.</param>
-        /// <param name="model">The name or identifier of the AI model to be utilized.</param>
-        /// <param name="config">Optional configuration defining text generation parameters such as temperature and token limits.</param>
-        /// <param name="safetySettings">Optional collection of safety settings to ensure generated content adheres to specific guidelines.</param>
-        /// <param name="systemInstruction">Optional instruction specifying the initial guidance or context for the model's behavior.</param>
-        /// <param name="httpClient">Optional HTTP client for facilitating API communication with the AI platform.</param>
-        /// <param name="logger">Optional logger for capturing diagnostic messages and runtime events.</param>
-        /// <param name="apiKey">API key for authenticating with the AI platform when a specific adapter is not provided explicitly.</param>
-        /// <param name="modelParams">Object encompassing model settings including name, generation configuration, and safety settings.</param>
-        /// <remarks>
-        /// The class also includes methods to validate and prepare content generation requests, along with the ability to initialize a conversational chat session.
+        /// Initializes a GenerativeModel instance, leveraging the Google AI platform adapter and enabling advanced text generation capabilities with configurable parameters.
         /// </remarks>
         public GenerativeModel(string apiKey, string? model,
-            GenerationConfig config = null,
+            GenerationConfig? config = null,
             ICollection<SafetySetting>? safetySettings = null,
             string? systemInstruction = null,
             HttpClient? httpClient = null,
-            ILogger? logger = null) : this(new GoogleAIPlatformAdapter(apiKey), model??EnvironmentVariables.GOOGLE_AI_MODEL??GoogleAIModels.DefaultGeminiModel, config, safetySettings,
+            ILogger? logger = null) : this(new GoogleAIPlatformAdapter(apiKey),
+            model ?? EnvironmentVariables.GOOGLE_AI_MODEL ?? GoogleAIModels.DefaultGeminiModel, config, safetySettings,
             systemInstruction, httpClient, logger)
         {
         }
@@ -151,6 +145,12 @@ namespace GenerativeAI
             SystemInstruction = systemInstruction;
         }
 
+        /// <summary>
+        /// Initializes the necessary clients for the GenerativeModel instance.
+        /// </summary>
+        /// <param name="platform">The platform adapter used to communicate with the generative AI platform.</param>
+        /// <param name="httpClient">Optional HTTP client used for API communication.</param>
+        /// <param name="logger">Optional logger instance for logging diagnostic information.</param>
         private void InitializeClients(IPlatformAdapter platform, HttpClient? httpClient, ILogger? logger)
         {
             //Files = new FileClient(platform, httpClient, logger);
@@ -161,6 +161,15 @@ namespace GenerativeAI
 
         #region Protected and Private methods
 
+        /// <summary>
+        /// Validates the provided GenerateContentRequest to ensure compatibility with the current model configuration.
+        /// </summary>
+        /// <param name="request">The content generation request containing parameters such as generation configuration.</param>
+        /// <remarks>
+        /// This method ensures that specific features like grounding, Google Search, or code execution tools
+        /// are not used concurrently with incompatible modes such as JSON mode or cached content mode.
+        /// It also checks for consistency in the generation configuration, such as the specified response MIME type.
+        /// </remarks>
         protected virtual void ValidateGenerateContentRequest(GenerateContentRequest request)
         {
             if (UseJsonMode && (UseGrounding || UseGoogleSearch || UseCodeExecutionTool))
@@ -181,6 +190,15 @@ namespace GenerativeAI
             }
         }
 
+        /// <summary>
+        /// Prepares the <see cref="GenerateContentRequest"/> for content generation by populating global properties,
+        /// configuring JSON mode, adding tools, cached content, and validating the request.
+        /// </summary>
+        /// <param name="request">The content generation request to be prepared with required settings and validations.</param>
+        /// <remarks>
+        /// This method ensures that the request is appropriately configured with default global parameters,
+        /// tools, and any necessary system-level instructions before proceeding with content generation.
+        /// </remarks>
         protected virtual void PrepareRequest(GenerateContentRequest request)
         {
             //Add Global Properties
@@ -197,7 +215,16 @@ namespace GenerativeAI
             ValidateGenerateContentRequest(request);
         }
 
-        private void AddCachedContent(GenerateContentRequest request)
+        /// <summary>
+        /// Adds cached content to the generate content request, ensuring the model and request contents align with the cached data.
+        /// </summary>
+        /// <param name="request">The generate content request to which cached content is added.</param>
+        /// <remarks>
+        /// Cached content includes predefined responses or data related to the current model.
+        /// If cached content is present, it sets the cached contents and disables additional configurations related to tools or system instructions.
+        /// An exception is thrown if the cached content's model does not match the generative model.
+        /// </remarks>
+        protected void AddCachedContent(GenerateContentRequest request)
         {
             if (CachedContent != null)
             {
@@ -217,7 +244,11 @@ namespace GenerativeAI
             }
         }
 
-        private void AdjustJsonMode(GenerateContentRequest request)
+        /// <summary>
+        /// Adjusts the response mime type to JSON mode if enabled in the configuration.
+        /// </summary>
+        /// <param name="request">The generate content request being processed, which includes configuration and settings for content generation.</param>
+        protected void AdjustJsonMode(GenerateContentRequest request)
         {
             if (UseJsonMode)
             {

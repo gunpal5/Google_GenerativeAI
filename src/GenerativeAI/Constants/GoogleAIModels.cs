@@ -9,7 +9,9 @@
 /// </remarks>
 public static class GoogleAIModels
 {
-    
+    /// <summary>
+    /// Represents the default Gemini AI model identifier used by the Generative AI services.
+    /// </summary>
     public const string DefaultGeminiModel = Gemini15Flash;
     
     /// <summary>

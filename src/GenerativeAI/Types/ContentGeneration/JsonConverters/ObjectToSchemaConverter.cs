@@ -1,18 +1,36 @@
 ﻿using System.Text.Json;
-using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using Json.More;
 using Json.Schema;
 using Json.Schema.Generation;
 using Json.Schema.Generation.Intents;
+using System.Text.Json.Nodes;
+
+#if NET8_0_OR_GREATER || NET462_OR_GREATER
+using System.Text.Json.Nodes;
+#endif
+
+#if NET7_0
+using Json.More;
+using Json.Schema;
+using Json.Schema.Generation;
+using Json.Schema.Generation.Intents;
+using System.Text.Json.Nodes;
+#endif
+
+#if NET6_0
+using Json.More;
+using Json.Schema;
+using Json.Schema.Generation;
+using Json.Schema.Generation.Intents;
+using System.Text.Json.Nodes;
+#endif
 
 namespace GenerativeAI.Types;
 
 /// <summary>
 /// This converter interprets objects and writes them as JSON schema definitions.
 /// </summary>
-
-
 sealed class ObjectToJsonSchemaConverter : JsonConverter<object>
 {
     /// <summary>
@@ -43,8 +61,8 @@ sealed class ObjectToJsonSchemaConverter : JsonConverter<object>
         object valueToWrite,
         JsonSerializerOptions jsonOptions)
     {
-        var actualType = valueToWrite is Type type? type : valueToWrite.GetType();
-        
+        var actualType = valueToWrite is Type type ? type : valueToWrite.GetType();
+
         if (actualType == typeof(JsonDocument) ||
             actualType == typeof(JsonElement) ||
             actualType == typeof(JsonNode) ||
@@ -56,7 +74,9 @@ sealed class ObjectToJsonSchemaConverter : JsonConverter<object>
         }
         else
         {
-             var naming = jsonOptions.PropertyNamingPolicy ?? JsonNamingPolicy.CamelCase;
+            var naming = jsonOptions.PropertyNamingPolicy ?? JsonNamingPolicy.CamelCase;
+
+#if NET_6_0_OR_GREATER
              var propertyResolver = PropertyNameResolvers.CamelCase;
              if(naming == JsonNamingPolicy.CamelCase)
                  propertyResolver = PropertyNameResolvers.CamelCase;
@@ -76,26 +96,34 @@ sealed class ObjectToJsonSchemaConverter : JsonConverter<object>
              {
                  propertyResolver = PropertyNameResolvers.UpperSnakeCase;
              }
-            
-             var generatorConfig = new SchemaGeneratorConfiguration
+#endif
+#if NET_6_0_OR_GREATER
+var generatorConfig = new SchemaGeneratorConfiguration
              {
-                 PropertyNameResolver = propertyResolver,
+PropertyNameResolver = propertyResolver,
              };
-            
-             var builder = new JsonSchemaBuilder();
-            
-             var constructedSchema = builder
-                 .FromType(actualType, generatorConfig)
-                 .Build().ToJsonDocument();
-             //Work around to avoid type as array
-             var schema = ConvertToSchema(constructedSchema);
-            
+
+#else
+            var generatorConfig = new SchemaGeneratorConfiguration();
+#endif
+
+            var builder = new JsonSchemaBuilder();
+
+            var constructedSchema = builder
+                .FromType(actualType, generatorConfig)
+                .Build().ToJsonDocument();
+
+
+            //Work around to avoid type as array
+            var schema = ConvertToSchema(constructedSchema);
+
             JsonSerializer.Serialize(jsonWriter, schema, schema.GetType(), jsonOptions);
         }
     }
 
     private Schema ConvertToSchema(JsonDocument constructedSchema)
     {
+#if NET6_0_OR_GREATER
         var node = constructedSchema.RootElement.AsNode();
         ConvertNullableProperties(node);
 
@@ -104,6 +132,10 @@ sealed class ObjectToJsonSchemaConverter : JsonConverter<object>
         var x2 = JsonSerializer.Serialize(x1);
         var schema = JsonSerializer.Deserialize<Schema>(x2);
         return schema;
+#else
+        var schema = JsonSerializer.Deserialize<Schema>(constructedSchema.RootElement.GetRawText());
+        return schema;
+#endif
     }
 
     private static void ConvertNullableProperties(JsonNode? node)
@@ -116,15 +148,21 @@ sealed class ObjectToJsonSchemaConverter : JsonConverter<object>
             {
                 foreach (JsonValue r in array)
                 {
-                    if(r.GetString() == "null")
+#if NET6_0_OR_GREATER
+                    var val = r.GetValue<string>();
+#else
+                    var val = r.GetValue<string>();
+#endif
+                    if (val == "null")
                         continue;
-                    obj["type"] = r.GetString();
+                    obj["type"] = val;
                     break;
                 }
             }
 
             // Recursively convert any nested schema in "properties"
-            if (obj.TryGetPropertyValue("properties", out var propertiesNode) && propertiesNode is JsonObject propertiesObj)
+            if (obj.TryGetPropertyValue("properties", out var propertiesNode) &&
+                propertiesNode is JsonObject propertiesObj)
             {
                 foreach (var property in propertiesObj)
                 {
@@ -148,6 +186,4 @@ sealed class ObjectToJsonSchemaConverter : JsonConverter<object>
             }
         }
     }
-
-   
 }

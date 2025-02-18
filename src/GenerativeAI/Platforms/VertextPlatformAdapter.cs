@@ -1,34 +1,78 @@
 ﻿using System.Text.Json;
+using GenerativeAI;
 using GenerativeAI.Authenticators;
 using GenerativeAI.Core;
 using Microsoft.Extensions.Logging;
 
-namespace GenerativeAI;
-
+/// <summary>
+/// The VertextPlatformAdapter class provides authentication, configuration, and utility methods for interacting with Vertex AI.
+/// </summary>
 public class VertextPlatformAdapter : IPlatformAdapter
 {
+    /// <summary>
+    /// Base URL used for API requests.
+    /// </summary>
     private string BaseUrl { get; set; } = BaseUrls.VertexAI;
-    public string ProjectId { get; private set; }
+
+    /// <summary>
+    /// The Google Cloud Project ID.
+    /// </summary>
+    public string? ProjectId { get; private set; }
+
+    /// <summary>
+    /// The region in which the Vertex AI service is hosted.
+    /// </summary>
     public string Region { get; private set; }
+
+    /// <summary>
+    /// Indicates whether Express Mode is enabled.
+    /// </summary>
     public bool? ExpressMode { get; private set; }
+
+    /// <summary>
+    /// The API version to use when making requests.
+    /// </summary>
     public string ApiVersion { get; set; }
 
+    /// <summary>
+    /// Publisher information, defaulting to "google".
+    /// </summary>
     public string Publisher { get; set; } = "google";
 
+    /// <summary>
+    /// The path to the credentials file.
+    /// </summary>
     public string? CredentialFile { get; set; }
+
+    /// <summary>
+    /// The credentials object containing API key and access token.
+    /// </summary>
     public GoogleAICredentials? Credentials { get; set; }
+
+    /// <summary>
+    /// The authenticator interface responsible for obtaining access tokens.
+    /// </summary>
     private IGoogleAuthenticator? Authenticator { get; set; }
+
+    /// <summary>
+    /// Logger instance for diagnostic information.
+    /// </summary>
     private ILogger? Logger { get; set; }
 
-    bool ValidateAccessToken { get; set; } = true;
-    //Todo write a default constructor
+    /// <summary>
+    /// Determines if access token validation should be performed.
+    /// </summary>
+    private bool ValidateAccessToken { get; set; } = true;
 
-    // public VertextPlatformAdapter(string projectId, string region,
-    //     string apiVersion = ApiVersions.v1Beta1)
-    // {
-    //     this.Authenticator = new GoogleCloudAdcAuthenticator();
-    // }
-
+    /// <summary>
+    /// Constructor for setting mandatory fields for Vertex AI operations.
+    /// </summary>
+    /// <param name="projectId">The Google Cloud Project ID.</param>
+    /// <param name="region">The region for Vertex AI.</param>
+    /// <param name="authenticator">The authenticator to be used for authentication.</param>
+    /// <param name="apiVersion">The API version to use. Defaults to v1Beta1.</param>
+    /// <param name="validateAccessToken">Boolean flag for validating the access token.</param>
+    /// <param name="logger">Optional logger instance for diagnostics.</param>
     public VertextPlatformAdapter(string projectId, string region, IGoogleAuthenticator authenticator,
         string apiVersion = ApiVersions.v1Beta1,
         bool validateAccessToken = true,
@@ -42,19 +86,32 @@ public class VertextPlatformAdapter : IPlatformAdapter
         this.Authenticator = authenticator;
     }
 
+    /// <summary>
+    /// Constructor for initializing the adapter using environment variables or manual parameters.
+    /// </summary>
+    /// <param name="projectId">The Google Cloud Project ID.</param>
+    /// <param name="region">The region for Vertex AI.</param>
+    /// <param name="expressMode">Flag to denote if Express Mode should be used.</param>
+    /// <param name="apiKey">Optional API key for authentication.</param>
+    /// <param name="accessToken">Optional access token for authentication.</param>
+    /// <param name="apiVersion">The API version to use. Defaults to v1Beta1.</param>
+    /// <param name="authenticator">Optional authenticator instance for custom token management.</param>
+    /// <param name="credentialsFile">Path to the credentials file.</param>
+    /// <param name="validateAccessToken">Whether access tokens should be validated before use.</param>
+    /// <param name="logger">Optional logger instance for diagnostics.</param>
     public VertextPlatformAdapter(string? projectId = null, string? region = null, bool expressMode = false,
         string? apiKey = null,
         string? accessToken = null,
-        string ApiVersion = ApiVersions.v1Beta1,
+        string apiVersion = ApiVersions.v1Beta1,
         IGoogleAuthenticator? authenticator = null,
-        string credentialsFile = null,
+        string? credentialsFile = null,
         bool validateAccessToken = true,
         ILogger? logger = null)
     {
         this.ProjectId = projectId ?? EnvironmentVariables.GOOGLE_PROJECT_ID;
         this.Region = region ?? EnvironmentVariables.GOOGLE_REGION;
         this.ExpressMode = expressMode;
-        this.ApiVersion = ApiVersion;
+        this.ApiVersion = apiVersion;
         this.Authenticator = authenticator;
         accessToken = accessToken ?? EnvironmentVariables.GOOGLE_ACCESS_TOKEN;
         apiKey = apiKey ?? EnvironmentVariables.GOOGLE_API_KEY;
@@ -91,18 +148,23 @@ public class VertextPlatformAdapter : IPlatformAdapter
 
         if (authenticator == null)
         {
-            if(string.IsNullOrEmpty(accessToken))
+            if (string.IsNullOrEmpty(accessToken))
                 this.Authenticator = new GoogleCloudAdcAuthenticator(credentialsFile, logger);
         }
-            
+
         else this.Authenticator = authenticator;
-        
-        if (!string.IsNullOrEmpty(accessToken))
+
+        if (!string.IsNullOrEmpty(accessToken) || !string.IsNullOrEmpty(apiKey))
         {
             this.Credentials = new GoogleAICredentials(apiKey, accessToken);
         }
     }
 
+    /// <summary>
+    /// Retrieves credentials configuration from a file.
+    /// </summary>
+    /// <param name="credentialsFile">Path to the credentials file.</param>
+    /// <returns>A CredentialConfiguration object if successful, otherwise null.</returns>
     private CredentialConfiguration? GetCredentialsFromFile(string? credentialsFile)
     {
         if (string.IsNullOrEmpty(credentialsFile))
@@ -111,7 +173,11 @@ public class VertextPlatformAdapter : IPlatformAdapter
         if (File.Exists(credentialsFile))
         {
             var options = DefaultSerializerOptions.Options;
+            #if NET7_0_OR_GREATER
             options.PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower;
+            #elif NET6_0 || NET5_0
+            options.PropertyNamingPolicy = new JsonSnakeCaseLowerNamingPolicy();
+            #endif 
             var file = File.ReadAllText(credentialsFile);
             credentials = JsonSerializer.Deserialize<CredentialConfiguration>(file, options);
         }
@@ -119,6 +185,12 @@ public class VertextPlatformAdapter : IPlatformAdapter
         return credentials;
     }
 
+    /// <summary>
+    /// Adds authorization headers to an HTTP request.
+    /// </summary>
+    /// <param name="request">The HTTP request message to be modified.</param>
+    /// <param name="requireAccessToken">Indicates if an access token is required.</param>
+    /// <param name="cancellationToken">Optional cancellation token for task cancellation.</param>
     public async Task AddAuthorizationAsync(HttpRequestMessage request, bool requireAccessToken,
         CancellationToken cancellationToken = default)
     {
@@ -164,6 +236,10 @@ public class VertextPlatformAdapter : IPlatformAdapter
         }
     }
 
+    /// <summary>
+    /// Validates the credentials and refreshes the token if necessary.
+    /// </summary>
+    /// <param name="cancellationToken">Optional cancellation token for task cancellation.</param>
     public async Task ValidateCredentialsAsync(CancellationToken cancellationToken = default)
     {
         if (this.Credentials == null)
@@ -174,16 +250,14 @@ public class VertextPlatformAdapter : IPlatformAdapter
             if (this.Authenticator == null)
             {
                 var adcAuthenticator = new GoogleCloudAdcAuthenticator();
-                var token = await adcAuthenticator.ValidateAccessTokenAsync(Credentials.AuthToken.AccessToken, true,cancellationToken);
-                // this.Credentials.AuthToken.AccessToken = token.AccessToken;
+                var token = await adcAuthenticator.ValidateAccessTokenAsync(Credentials.AuthToken.AccessToken, true, cancellationToken);
                 this.Credentials.AuthToken.ExpiryTime = token.ExpiryTime;
             }
             else
             {
-                var token = await this.Authenticator.ValidateAccessTokenAsync(Credentials.AuthToken.AccessToken,false,cancellationToken);
+                var token = await this.Authenticator.ValidateAccessTokenAsync(Credentials.AuthToken.AccessToken, false, cancellationToken);
                 if (token != null)
                 {
-                    //this.Credentials.AuthToken.AccessToken = token.AccessToken;
                     this.Credentials.AuthToken.ExpiryTime = token.ExpiryTime;
                 }
                 else
@@ -205,13 +279,15 @@ public class VertextPlatformAdapter : IPlatformAdapter
         }
     }
 
+    /// <summary>
+    /// Authorizes the request by generating or refreshing the access token.
+    /// </summary>
+    /// <param name="cancellationToken">Optional cancellation token for task cancellation.</param>
     public async Task AuthorizeAsync(CancellationToken cancellationToken = default)
     {
-        //Authorize Through ADC
+        // Authorize Through ADC
         if (this.Authenticator == null)
             this.Authenticator = new GoogleCloudAdcAuthenticator();
-
-        var existingToken = this.Credentials?.AuthToken;
 
         var token = await Authenticator.GetAccessTokenAsync(cancellationToken);
 
@@ -229,13 +305,18 @@ public class VertextPlatformAdapter : IPlatformAdapter
         }
     }
 
+    /// <summary>
+    /// Constructs the base URL for API requests, optionally appending the version.
+    /// </summary>
+    /// <param name="appendVesion">Indicates whether to append the version to the URL.</param>
+    /// <returns>The constructed base URL string.</returns>
     public string GetBaseUrl(bool appendVesion = true)
     {
         if (ExpressMode == true)
         {
             return $"{BaseUrls.VertexAIExpress}/{ApiVersion}/publishers/{Publisher}";
         }
-#if NETSTANDARD2_0|| NET462_OR_GREATER
+#if NETSTANDARD2_0 || NET462_OR_GREATER
         var url = this.BaseUrl.Replace("{region}", Region)
             .Replace("{projectId}", ProjectId)
             .Replace("{version}", ApiVersion);
@@ -248,27 +329,51 @@ public class VertextPlatformAdapter : IPlatformAdapter
         return $"{url}/publishers/{Publisher}";
     }
 
+    /// <summary>
+    /// Gets the base URL specifically for file-related operations.
+    /// </summary>
+    /// <returns>The constructed base URL string for file operations.</returns>
     public string GetBaseUrlForFile()
     {
         return $"{BaseUrls.GoogleGenerativeAI}";
     }
 
+    /// <summary>
+    /// Generates the URL for a specific model and task.
+    /// </summary>
+    /// <param name="modelId">The model ID.</param>
+    /// <param name="task">The specific task to perform.</param>
+    /// <returns>The constructed URL as a string.</returns>
     public string CreateUrlForModel(string modelId, string task)
     {
         return $"{GetBaseUrl()}/{modelId.ToModelId()}:{task}";
     }
 
+    /// <summary>
+    /// Generates the URL for a specific tuned model and task.
+    /// </summary>
+    /// <param name="modelId">The tuned model ID.</param>
+    /// <param name="task">The specific task to perform.</param>
+    /// <returns>The constructed URL as a string.</returns>
     public string CreateUrlForTunedModel(string modelId, string task)
     {
         return $"{GetBaseUrl()}/{modelId.ToTunedModelId()}:{task}";
     }
 
+    /// <summary>
+    /// Retrieves the current API version being used.
+    /// </summary>
+    /// <returns>The API version as a string.</returns>
     public string GetApiVersion()
     {
         return this.ApiVersion;
     }
 
-    public object GetApiVersionForFile()
+    /// <summary>
+    /// Retrieves the API version specifically for file operations.
+    /// </summary>
+    /// <returns>The API version as an object (v1Beta by default).</returns>
+    public string GetApiVersionForFile()
     {
         return ApiVersions.v1Beta;
     }

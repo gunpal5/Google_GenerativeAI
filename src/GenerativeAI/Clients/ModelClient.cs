@@ -10,6 +10,18 @@ namespace GenerativeAI.Clients;
 /// <seealso href="https://ai.google.dev/api">See Official API Documentation</seealso>
 public class ModelClient : BaseClient
 {
+    /// <summary>
+    /// A client for interacting with the Gemini API Models endpoint, providing methods to retrieve and list
+    /// available models for use with the Generative AI platform.
+    /// </summary>
+    /// <param name="platform">The platform adapter used to manage API endpoints and authentication.</param>
+    /// <param name="httpClient">The HTTP client instance used for making API requests.</param>
+    /// <param name="logger">An optional logger instance for logging operations.</param>
+    /// <remarks>
+    /// The <see cref="ModelClient"/> serves as an abstraction to interact with the API's model-related
+    /// endpoints. It is responsible for retrieving model metadata and listing available models on the platform.
+    /// </remarks>
+    /// <seealso href="https://ai.google.dev/api">See Official API Documentation</seealso>
     public ModelClient(IPlatformAdapter platform, HttpClient? httpClient = null, ILogger? logger = null) : base(platform,
         httpClient, logger)
     {

@@ -57,7 +57,7 @@ internal static partial class ApiBaseLogMessages
     /// <param name="url">The URL of the API endpoint being requested.</param>
     /// <param name="payload">The payload data sent as part of the request body.</param>
     [LoggerMessage(EventId = 5, Level = LogLevel.Debug,
-        Message = "Sending {HttpMethod} request to URL: {Url} with payload: {@Payload}")]
+        Message = "Sending {HttpMethod} request to URL: {Url} with payload: {Payload}")]
     public static partial void LogHttpRequest(this ILogger logger, string httpMethod, string url, object payload);
 
     /// <summary>

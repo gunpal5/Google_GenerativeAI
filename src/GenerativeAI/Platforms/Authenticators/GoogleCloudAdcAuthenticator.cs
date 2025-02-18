@@ -8,11 +8,30 @@ using Microsoft.Extensions.Logging;
 
 namespace GenerativeAI.Authenticators;
 
+/// <summary>
+/// Provides a mechanism for authenticating with Google Cloud services using
+/// Application Default Credentials (ADC).
+/// </summary>
+/// <remarks>
+/// This class enables accessing Google Cloud resources by utilizing
+/// credentials specified in the environment or through a supplied
+/// credential file. It implements the BaseAuthenticator abstract class
+/// and provides methods to acquire and refresh access tokens.
+/// </remarks>
 public class GoogleCloudAdcAuthenticator : BaseAuthenticator
 {
     private ILogger? logger;
     private string? credentialFile;
 
+    /// <summary>
+    /// Represents an authenticator that uses Google Cloud Application Default Credentials (ADC)
+    /// to acquire access tokens for authentication in Google Cloud environments.
+    /// </summary>
+    /// <remarks>
+    /// This authenticator leverages the ADC mechanism, optionally utilizing a provided
+    /// credentials file, to handle authentication processes such as generating and refreshing
+    /// access tokens. It integrates with Google's authentication environment.
+    /// </remarks>
     public GoogleCloudAdcAuthenticator(string? credentialFile = null, ILogger? logger = null)
     {
         this.credentialFile = credentialFile;
@@ -20,6 +39,8 @@ public class GoogleCloudAdcAuthenticator : BaseAuthenticator
     }
 
 
+ 
+   /// <inheritdoc/>
     public override async Task<AuthTokens> GetAccessTokenAsync(CancellationToken cancellationToken = default)
     {
         try
@@ -40,7 +61,7 @@ public class GoogleCloudAdcAuthenticator : BaseAuthenticator
                 $"Error while authenticating with Application Default Credentials.\r\n\r\n{ex.Message}");
         }
     }
-
+    /// <inheritdoc/>
     public override async Task<AuthTokens> RefreshAccessTokenAsync(AuthTokens token,
         CancellationToken cancellationToken = default)
     {

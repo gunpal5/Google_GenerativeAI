@@ -41,6 +41,7 @@ public class AuthTokens
     /// </remarks>
     public DateTime? ExpiryTime { get; set; }
 
+    /// Represents authentication tokens, including an access token, refresh token, and an optional expiry time.
     public AuthTokens(string accessToken, string? refreshToken = null, DateTime? expiryTime = null)
     {
         this.AccessToken = accessToken;
@@ -48,6 +49,9 @@ public class AuthTokens
         this.ExpiryTime = expiryTime;
     }
 
+    /// Validates the authentication token by checking if the access token is present and,
+    /// if applicable, whether the token has expired.
+    /// <returns>True if the access token is valid, otherwise false.</returns>
     public bool Validate()
     {
         if(string.IsNullOrEmpty(AccessToken))

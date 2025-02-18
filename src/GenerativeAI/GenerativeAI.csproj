@@ -28,13 +28,42 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="JsonSchema.Net.Generation" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.1" />
-    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-    <PackageReference Include="System.Net.Http" Version="4.3.4" />
-    <PackageReference Include="System.Text.Json" Version="9.0.1" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0"/>
+        <PackageReference Include="System.Net.Http" Version="4.3.4"/>
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net9.0'">
+        <PackageReference Include="JsonSchema.Net.Generation" Version="5.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.1"/>
+        <PackageReference Include="System.Text.Json" Version="9.0.2"/>
+    </ItemGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0'">
+        <PackageReference Include="JsonSchema.Net.Generation" Version="5.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.1"/>
+        <PackageReference Include="System.Text.Json" Version="9.0.2"/>
+    </ItemGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0'">
+        <PackageReference Include="JsonSchema.Net.Generation" Version="3.5.1"/>
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.1"/>
+        <PackageReference Include="System.Text.Json" Version="8.0.5"/>
+    </ItemGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0'">
+         <PackageReference Include="JsonSchema.Net.Generation" Version="3.5.1"/>
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.1"/>
+        <PackageReference Include="System.Text.Json" Version="8.0.5"/>
+    </ItemGroup>
+    <!-- <ItemGroup Condition=" '$(TargetFramework)' == 'net5.0'">
+        <PackageReference Include="JsonSchema.Net.Generation" Version="2.2.1"/>
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.1"/>
+        <PackageReference Include="System.Text.Json" Version="6.0.2"/>
+    </ItemGroup> -->
+
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net462'">
+        <PackageReference Include="JsonSchema.Net.Generation" Version="5.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.1"/>
+        <PackageReference Include="System.Text.Json" Version="9.0.1"/>
+    </ItemGroup>
 
   <ItemGroup>
     

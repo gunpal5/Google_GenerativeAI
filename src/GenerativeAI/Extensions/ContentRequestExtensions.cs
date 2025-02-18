@@ -3,7 +3,10 @@ using GenerativeAI.Types;
 
 namespace GenerativeAI;
 
-public static class IContentRequest_Extensions
+/// <summary>
+/// Contains extension methods for working with objects implementing <see cref="IContentsRequest"/>.
+/// </summary>
+public static class ContentRequestExtensions
 {
     /// <summary>
     /// Adds a single text <see cref="Part"/> to the <see cref="IContentsRequest"/> with the specified role.

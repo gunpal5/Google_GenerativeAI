@@ -69,11 +69,9 @@ public static class MicrosoftExtensions
     /// <returns>A <see cref="Schema"/> object constructed from the provided JSON schema, or null if deserialization fails.</returns>
     public static Schema? ToSchema(this JsonElement schema)
     {
-        var serialized = JsonSerializer.Serialize(schema, new JsonSerializerOptions()
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-        });
-        return JsonSerializer.Deserialize<Schema?>(serialized);
+       
+        var serialized = JsonSerializer.Serialize(schema);
+        return JsonSerializer.Deserialize(serialized,SchemaSourceGenerationContext.Default.Schema);
     }
 
     /// <summary>

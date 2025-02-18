@@ -5,6 +5,17 @@
 /// </summary>
 public static class FilesConstants
 {
+    /// <summary>
+    /// Represents the maximum allowed file size, in bytes, for file uploads within the system.
+    /// Any file exceeding this size will result in an error or exception.
+    /// </summary>
+    /// <remarks>
+    /// This constant is utilized across various methods to validate the file size before processing or uploading.
+    /// It ensures compliance with API or system-imposed size limitations for handling file uploads.
+    /// </remarks>
+    /// <seealso cref="GenerativeAI.Clients.FileClient.ValidateFile"/>
+    /// <seealso cref="GenerativeAI.Clients.FileClient.ValidateStream"/>
+    /// <seealso cref="GenerativeAI.GeminiModel.AppendFile"/>
     public const long MaxUploadFileSize = 2147483648;
     /// <summary>
     /// Gets the collection of all supported MIME types.

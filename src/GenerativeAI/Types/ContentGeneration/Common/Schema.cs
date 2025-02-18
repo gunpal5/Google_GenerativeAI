@@ -86,3 +86,17 @@ public class Schema
     [JsonPropertyName("items")]
     public Schema? Items { get; set; }
 }
+
+/// <summary>
+/// The <see cref="SourceGenerationContext">SourceGenerationContext</see> class is a custom
+/// source generation context for improving the performance of JSON serialization and deserialization.
+/// This is achieved by leveraging the <see cref="System.Text.Json.Serialization.JsonSourceGenerationOptionsAttribute"/>
+/// to configure source generation options and define types for serialization at compile-time.
+/// </summary>
+/// <seealso cref="JsonSerializerContext"/>
+/// <seealso href="https://learn.microsoft.com/dotnet/standard/serialization/system-text-json-source-generation">See Official Documentation on JSON Source Generation</seealso>
+[JsonSourceGenerationOptions(WriteIndented = true)]
+[JsonSerializable(typeof(Schema))]
+public partial class SchemaSourceGenerationContext : JsonSerializerContext
+{
+}

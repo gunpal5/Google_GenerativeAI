@@ -102,7 +102,7 @@ public static bool IsGitHubEnvironment
         return Environment.GetEnvironmentVariable("IsGitHubEnvironment")?.ToLower() == "true";
     }
 }
-    protected ITestOutputHelper Console { get; }
+    protected ITestOutputHelper? Console { get; }
     protected TestBase()
     {
         

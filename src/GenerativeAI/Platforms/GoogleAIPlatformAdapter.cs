@@ -54,13 +54,7 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
         this.Logger = logger;
     }
 
-    /// <summary>
-    /// Adds the required authorization headers to the provided HTTP request message.
-    /// This includes both API key and OAuth2 Bearer token as applicable.
-    /// </summary>
-    /// <param name="request">The HTTP request message to which the authorization headers will be added.</param>
-    /// <param name="requireAccessToken"></param>
-    /// <param name="cancellationToken"></param>
+    /// <inheritdoc/>
     public async Task AddAuthorizationAsync(HttpRequestMessage request, bool requireAccessToken,
         CancellationToken cancellationToken = default)
     {
@@ -107,16 +101,14 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
                 request.Headers.Add("Authorization", "Bearer " + Credentials.AuthToken.AccessToken);
         }
     }
-
+    /// <inheritdoc/>
     public async Task ValidateCredentialsAsync(CancellationToken cancellationToken = default)
     {
         await ValidateCredentialsAsync(false, cancellationToken).ConfigureAwait(true);
         
     }
 
-    /// Validates the current credentials by ensuring that the API Key or
-    /// Access Token is present. If neither is available, an exception is thrown.
-    /// <param name="cancellationToken"></param>
+    /// <inheritdoc/>
     public async Task ValidateCredentialsAsync(bool requireAccessToken, CancellationToken cancellationToken = default)
     {
         if (!requireAccessToken)
@@ -167,14 +159,7 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
         }
     }
 
-    /// Asynchronously authorizes the adapter for interaction with the Google GenAI API.
-    /// This process ensures the platform adapter is ready to make API calls by setting up any necessary authentication mechanisms.
-    /// <param name="cancellationToken">
-    /// A token to monitor for cancellation requests. Defaults to CancellationToken.None.
-    /// </param>
-    /// <return>
-    /// A task representing the asynchronous operation.
-    /// </return>
+    /// <inheritdoc/>
     public async Task AuthorizeAsync(CancellationToken cancellationToken = default)
     {
         //Authorize Through ADC
@@ -199,50 +184,32 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
         }
     }
 
-    /// <summary>
-    /// Constructs and retrieves the base URL for the Google Generative AI platform,
-    /// optionally appending the API version to the URL.
-    /// </summary>
-    /// <param name="appendVesion">A boolean value indicating whether the API version should be appended to the base URL.</param>
-    /// <returns>The base URL for the Google Generative AI platform, with or without the API version appended, based on the parameter value.</returns>
+    /// <inheritdoc/>
     public string GetBaseUrl(bool appendVesion = true)
     {
         if (appendVesion)
             return $"{BaseUrl}/{GetApiVersion()}";
         return BaseUrl;
     }
-
+    /// <inheritdoc/>
     public string GetBaseUrlForFile()
     {
         return GetBaseUrl();
     }
 
-    /// <summary>
-    /// Constructs a URL for a specific AI model and task by appending the model ID and task
-    /// to the base URL and API version.
-    /// </summary>
-    /// <param name="modelId">The identifier of the model for which the URL is being constructed.</param>
-    /// <param name="task">The specific task associated with the model (e.g., generateText).</param>
-    /// <returns>A string representing the complete URL for the given model and task.</returns>
+    /// <inheritdoc/>
     public string CreateUrlForModel(string modelId, string task)
     {
         return $"{GetBaseUrl()}/{modelId.ToModelId()}:{task}";
     }
 
-    /// Constructs a URL for interacting with a tuned model on the Google Generative AI platform.
-    /// This method appends the base URL, model ID (transformed into a tuned model identifier),
-    /// and the specified task to form the complete endpoint.
-    /// <param name="modelId">The identifier of the model to be used.</param>
-    /// <param name="task">The specific task or operation to be performed on the model.</param>
-    /// <return>Returns the fully constructed URL string for the tuned model endpoint.</return>
+    /// <inheritdoc/>
     public string CreateUrlForTunedModel(string modelId, string task)
     {
         return $"{GetBaseUrl()}/{modelId.ToTunedModelId()}:{task}";
     }
 
-    /// Retrieves the current API version being used by the Google AI Platform Adapter.
-    /// This version determines the API endpoint to which requests are directed.
-    /// <return>The API version string.</return>
+    /// <inheritdoc/>
     public string GetApiVersion()
     {
         if(string.IsNullOrEmpty(ApiVersion))
@@ -250,7 +217,9 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
         return ApiVersion;
     }
 
-    public object GetApiVersionForFile()
+   
+    /// <inheritdoc/>
+    public string GetApiVersionForFile()
     {
         return ApiVersion;
     }
