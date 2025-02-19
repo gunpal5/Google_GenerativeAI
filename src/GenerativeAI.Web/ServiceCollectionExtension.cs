@@ -165,7 +165,8 @@ public static class ServiceCollectionExtension
         Action<GenerativeAIOptions> setupAction)
     {
         if (services == null) throw new ArgumentNullException(nameof(services));
-      
+        if (setupAction == null) throw new ArgumentNullException(nameof(setupAction));
+
         services.AddGenerativeAI();
         services.ConfigureGenerativeAI(setupAction);
 
