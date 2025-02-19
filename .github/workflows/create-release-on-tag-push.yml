@@ -1,4 +1,4 @@
-name: Publish Nuget Packages
+name: Create GitHub Release
 on: 
   workflow_dispatch:
      inputs:
