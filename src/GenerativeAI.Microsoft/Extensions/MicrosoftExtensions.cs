@@ -1,4 +1,4 @@
-﻿using GenerativeAI.Types;
+using GenerativeAI.Types;
 using Microsoft.Extensions.AI;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -135,7 +135,12 @@ public static class MicrosoftExtensions
         config.TopP = options.TopP;
         config.TopK = options.TopK;
         config.MaxOutputTokens = options.MaxOutputTokens;
-        config.ResponseMimeType = options.ResponseFormat == ChatResponseFormat.Json ? "application/json" : null;
+        config.ResponseMimeType = options.ResponseFormat is ChatResponseFormatJson ? "application/json" : null;
+        if (options.ResponseFormat is ChatResponseFormatJson jsonFormat)
+        {
+            config.ResponseSchema = jsonFormat.Schema;
+        }
+
         config.PresencePenalty = options.PresencePenalty;
         config.FrequencyPenalty = options.FrequencyPenalty;
 
