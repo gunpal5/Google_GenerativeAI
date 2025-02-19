@@ -12,7 +12,7 @@
     - [Quick Start 🚀](#quick-start-)
         - [1. Using Google AI 🌐](#1-using-google-ai-)
         - [2. Using Vertex AI 🌥️](#2-using-vertex-ai-)
-    - [Chat Mode Using `GenerativeModel` 💬](#chat-mode-using-generativemodel-example-gemini-15-flash-)
+    - [Chat Mode 💬](#chat-mode-)
     - [Multimodal Capabilities with Overloaded
       `GenerateContentAsync` Methods 🎨🎵](#multimodal-capabilities-with-overloaded-generatecontentasync-methods-)
         - [1. Generating Content with a Local File 🖼️](#1-generating-content-with-a-local-file-)
@@ -162,7 +162,7 @@ our [Wiki Page](https://github.com/gunpal5/Google_GenerativeAI/wiki) (replace wi
 
 ---
 
-## Chat Mode Using `GenerativeModel` 💬
+## Chat Mode 💬
 
 For multi-turn, conversational use cases, you can start a chat session by calling the `StartChat` method on an instance
 of `GenerativeModel`. You can use any of the previously mentioned initialization methods (environment variables, direct
