@@ -135,11 +135,8 @@ public class GoogleAIPlatformAdapterTests:TestBase
         var adapter = new GoogleAIPlatformAdapter("TEST_API_KEY", authenticator: mockAuthenticator.Object);
 
         // Assert
-        var authenticatorProperty = adapter.GetType().GetProperty("Authenticator",
-            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 
-        authenticatorProperty.ShouldNotBeNull("Authenticator property should exist.");
-        var actualAuthenticator = authenticatorProperty!.GetValue(adapter) as IGoogleAuthenticator;
+        var actualAuthenticator = adapter.Authenticator;
         actualAuthenticator.ShouldBe(mockAuthenticator.Object);
     }
 
