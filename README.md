@@ -22,6 +22,7 @@
     - [Gemini Tools and Function Calling 🧰](#gemini-tools-and-function-calling-)
         - [1. Inbuilt Tools (GoogleSearch, GoogleSearchRetrieval, and Code Execution) 🔍💡](#1-inbuilt-tools-googlesearch-googlesearchretrieval-and-code-execution-)
         - [2. Function Calling 🧑‍💻](#2-function-calling-)
+    - [Semantic Search Retrieval (RAG) with Google AQA 🔎](#semantic-search-retrieval-rag-with-google-aqa-)
     - [Streaming 🚦](#streaming-)
     - [Coming Soon: 🌟](#coming-soon)
     - [Credits 🙌](#credits-)
@@ -434,7 +435,19 @@ Console.WriteLine(result.Text);
 ```
 
 **For more details and options, see the [wiki](https://github.com/gunpal5/Google_GenerativeAI/wiki).**
+---
+## Semantic Search Retrieval (RAG) with Google AQA 🔎
 
+The `Google_GenerativeAI` library makes implementing **Retrieval-Augmented Generation (RAG)** incredibly easy. RAG combines the strengths of Large Language Models (LLMs) with the precision of information retrieval.  Instead of relying solely on the LLM's pre-trained knowledge, a RAG system first *retrieves* relevant information from a knowledge base (a "corpus" of documents) and then uses that information to *augment* the LLM's response. This allows the LLM to generate more accurate, factual, and context-aware answers.
+
+This library leverages **Google's Attributed Question Answering (AQA)** model, which is specifically designed for semantic search and question answering.  AQA excels at understanding the intent behind a question and finding the most relevant passages within a corpus to answer it. Key features include:
+
+*   **Semantic Understanding:** AQA goes beyond simple keyword matching. It understands the *meaning* of the query and the documents.
+*   **Attribution:** AQA provides an "Answerable Probability" score, indicating its confidence in the retrieved answer.
+*   **Easy Integration:** The `Google_GenerativeAI` library provides a simple API to create corpora, add documents, and perform semantic searches.
+
+**For a step-by-step tutorial on implementing Semantic Search Retrieval with Google AQA, see the [wiki page](https://github.com/gunpal5/Google_GenerativeAI/wiki/Semantic-Search-Retrieval-with-Google-AQA).**
+---
 ## Streaming 🌊
 
 The GenerativeAI SDK supports streaming responses, allowing you to receive and process parts of the model's output as
