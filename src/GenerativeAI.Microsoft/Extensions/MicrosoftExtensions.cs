@@ -135,7 +135,7 @@ public static class MicrosoftExtensions
         config.TopP = options.TopP;
         config.TopK = options.TopK;
         config.MaxOutputTokens = options.MaxOutputTokens;
-        config.ResponseMimeType = options.ResponseFormat == ChatResponseFormat.Json ? "applicatino/json" : null;
+        config.ResponseMimeType = options.ResponseFormat == ChatResponseFormat.Json ? "application/json" : null;
         config.PresencePenalty = options.PresencePenalty;
         config.FrequencyPenalty = options.FrequencyPenalty;
 
