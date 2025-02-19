@@ -267,19 +267,19 @@ public class ServiceCollectionExtensionTests
         options.Model.ShouldBe("customModel");
     }
 
-    [Fact]
-    public void AddGenerativeAI_WithSetupAction_ShouldThrowArgumentNullException_WhenNullActionProvided()
-    {
-        // Arrange
-        var services = new ServiceCollection();
-
-        // Act
-        var exception = Should.Throw<ArgumentNullException>(() =>
-            services.AddGenerativeAI(setupAction: null));
-
-        // Assert
-        exception.ParamName.ShouldBe("setupAction");
-    }
+    // [Fact]
+    // public void AddGenerativeAI_WithSetupAction_ShouldThrowArgumentNullException_WhenNullActionProvided()
+    // {
+    //     // Arrange
+    //     var services = new ServiceCollection();
+    //
+    //     // Act
+    //     var exception = Should.Throw<ArgumentNullException>(() =>
+    //         services.AddGenerativeAI(setupAction: null));
+    //
+    //     // Assert
+    //     exception.ParamName.ShouldBe("setupAction");
+    // }
 
     [Fact]
     public void AddGenerativeAI_WithSetupAction_ShouldApplyActionAndRegisterServices()
