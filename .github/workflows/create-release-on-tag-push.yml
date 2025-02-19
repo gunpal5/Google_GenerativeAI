@@ -5,10 +5,11 @@ on:
        version:
          required: true
          description: "Version Number"
-         default: v2.0.14
+         default: 2.0.14
 
 jobs:  
   build-test-publish:   
+    permissions: write-all
     name: Creating Github Release
     uses: gunpal5/workflows/.github/workflows/dotnet_build-test-publish.yml@main       
     with:
