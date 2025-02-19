@@ -6,6 +6,14 @@
 public interface IPlatformAdapter
 {
     /// <summary>
+    /// Gets or sets the authenticator responsible for managing authentication processes with Google services.
+    /// </summary>
+    /// <remarks>
+    /// This property is used to handle authentication tasks, such as obtaining
+    /// and refreshing access tokens, that are necessary to interact with Google APIs.
+    /// </remarks>
+    public IGoogleAuthenticator? Authenticator { get; set; }
+    /// <summary>
     /// Adds the necessary authorization headers to the given HTTP request.
     /// </summary>
     /// <param name="request">The HTTP request to which authorization headers will be added.</param>
@@ -68,4 +76,11 @@ public interface IPlatformAdapter
     /// </summary>
     /// <returns>The API version for file operations.</returns>
     string GetApiVersionForFile();
+
+
+    /// <summary>
+    /// Sets the Google authenticator responsible for managing authentication processes for Google services.
+    /// </summary>
+    /// <param name="authenticator">The Google authenticator to be used for handling authentication operations.</param>
+    void SetAuthenticator(IGoogleAuthenticator authenticator);
 }

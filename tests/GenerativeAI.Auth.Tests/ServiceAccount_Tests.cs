@@ -19,7 +19,7 @@ public class ServiceAccount_Tests:TestBase
     { 
         Assert.SkipWhen(SkipVertexAITests,VertextTestSkipMesaage);
         var authenticator = CreateAuthenticatorWithKey();
-        var token = await authenticator.GetAccessTokenAsync();
+        var token = await authenticator.GetAccessTokenAsync().ConfigureAwait(false);
 
         token.AccessToken.ShouldNotBeNull();
     }
@@ -41,7 +41,7 @@ public class ServiceAccount_Tests:TestBase
         var authenticator = CreateAuthenticatorWithKey();
         
         var vertexAi = new VertexAIModel(authenticator:authenticator);
-        var response = await vertexAi.GenerateContentAsync("write a poem about the sun");
+        var response = await vertexAi.GenerateContentAsync("write a poem about the sun").ConfigureAwait(false);
         response.ShouldNotBeNull();
         var text = response.Text();
         text.ShouldNotBeNullOrWhiteSpace();
@@ -55,7 +55,7 @@ public class ServiceAccount_Tests:TestBase
         var authenticator = CreateAuthenticatorWithJsonFile();
         
         var vertexAi = new VertexAIModel(authenticator:authenticator);
-        var response = await vertexAi.GenerateContentAsync("write a poem about the sun");
+        var response = await vertexAi.GenerateContentAsync("write a poem about the sun").ConfigureAwait(false);
         response.ShouldNotBeNull();
         var text = response.Text();
         text.ShouldNotBeNullOrWhiteSpace();
@@ -65,6 +65,7 @@ public class ServiceAccount_Tests:TestBase
     private IGoogleAuthenticator? CreateAuthenticatorWithJsonFile()
     {
         var file = Environment.GetEnvironmentVariable("Google_Service_Account_Json", EnvironmentVariableTarget.User);
+        Assert.SkipWhen(string.IsNullOrEmpty(file), "Please set the Google_Service_Account_Json environment variable to the path of the service account json file.");
         return new GoogleServiceAccountAuthenticator(file);
     }
 }

@@ -38,7 +38,7 @@ public class VertexAIModel_Basic_Tests : TestBase
         var request = new GenerateContentRequest(singleContent);
 
         // Act
-        var response = await model.GenerateContentAsync(request);
+        var response = await model.GenerateContentAsync(request).ConfigureAwait(false);
 
         // Assert
         response.ShouldNotBeNull();
@@ -60,7 +60,7 @@ public class VertexAIModel_Basic_Tests : TestBase
         var request = new GenerateContentRequest(new List<Content> { content1, content2 });
 
         // Act
-        var response = await model.GenerateContentAsync(request);
+        var response = await model.GenerateContentAsync(request).ConfigureAwait(false);
 
         // Assert
         response.ShouldNotBeNull();
@@ -75,7 +75,7 @@ public class VertexAIModel_Basic_Tests : TestBase
         var model = CreateInitializedModel();
 
         // Pass a raw string, model internally uses single-argument overload
-        var response = await model.GenerateContentAsync("Generate a poetic description of nature during autumn.");
+        var response = await model.GenerateContentAsync("Generate a poetic description of nature during autumn.").ConfigureAwait(false);
 
         // Assert
         response.ShouldNotBeNull();
@@ -95,7 +95,7 @@ public class VertexAIModel_Basic_Tests : TestBase
         };
 
         // Act
-        var response = await model.GenerateContentAsync(parts);
+        var response = await model.GenerateContentAsync(parts).ConfigureAwait(false);
 
         // Assert
         response.ShouldNotBeNull();
@@ -114,7 +114,7 @@ public class VertexAIModel_Basic_Tests : TestBase
 
         // Act
         var responses = new List<string>();
-        await foreach (var response in model.StreamContentAsync(request))
+        await foreach (var response in model.StreamContentAsync(request).ConfigureAwait(false))
         {
             response.ShouldNotBeNull();
             responses.Add(response.Text() ?? string.Empty);
@@ -139,7 +139,7 @@ public class VertexAIModel_Basic_Tests : TestBase
 
         // Act
         var responses = new List<string>();
-        await foreach (var response in model.StreamContentAsync(contents))
+        await foreach (var response in model.StreamContentAsync(contents).ConfigureAwait(false))
         {
             response.ShouldNotBeNull();
             responses.Add(response.Text() ?? string.Empty);
@@ -160,7 +160,7 @@ public class VertexAIModel_Basic_Tests : TestBase
 
         // Act
         var responses = new List<string>();
-        await foreach (var response in model.StreamContentAsync(input))
+        await foreach (var response in model.StreamContentAsync(input).ConfigureAwait(false))
         {
             response.ShouldNotBeNull();
             responses.Add(response.Text() ?? string.Empty);
@@ -186,7 +186,7 @@ public class VertexAIModel_Basic_Tests : TestBase
 
         // Act
         var responses = new List<string>();
-        await foreach (var response in model.StreamContentAsync(parts))
+        await foreach (var response in model.StreamContentAsync(parts).ConfigureAwait(false))
         {
             response.ShouldNotBeNull();
             responses.Add(response.Text() ?? string.Empty);
@@ -217,7 +217,7 @@ public class VertexAIModel_Basic_Tests : TestBase
         };
 
         // Act
-        var response = await model.CountTokensAsync(request);
+        var response = await model.CountTokensAsync(request).ConfigureAwait(false);
 
         // Assert
         response.ShouldNotBeNull();
@@ -239,7 +239,7 @@ public class VertexAIModel_Basic_Tests : TestBase
         var contents = new List<Content> { content1, content2 };
 
         // Act
-        var response = await model.CountTokensAsync(contents);
+        var response = await model.CountTokensAsync(contents).ConfigureAwait(false);
 
         // Assert
         response.ShouldNotBeNull();
@@ -269,7 +269,7 @@ public class VertexAIModel_Basic_Tests : TestBase
         };
 
         // Act
-        var response = await model.CountTokensAsync(parts);
+        var response = await model.CountTokensAsync(parts).ConfigureAwait(false);
 
         // Assert
         response.ShouldNotBeNull();

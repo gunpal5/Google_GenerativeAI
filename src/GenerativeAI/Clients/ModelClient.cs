@@ -40,7 +40,7 @@ public class ModelClient : BaseClient
         var baseUrl = _platform.GetBaseUrl();
 
         var url = $"{baseUrl}/{name.ToModelId()}";
-        return await GetAsync<Model>(url, cancellationToken);
+        return await GetAsync<Model>(url, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -69,6 +69,6 @@ public class ModelClient : BaseClient
         var queryString = queryParams.Count > 0 ? "?" + string.Join("&", queryParams) : string.Empty;
         var url = $"{_platform.GetBaseUrl()}/models{queryString}";
 
-        return await GetAsync<ListModelsResponse>(url,cancellationToken);
+        return await GetAsync<ListModelsResponse>(url,cancellationToken).ConfigureAwait(false);
     }
 }

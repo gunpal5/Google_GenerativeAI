@@ -38,7 +38,7 @@ public class VertextAIModel_JsonMode_Tests : TestBase
         request.AddText("Give me a really good message.", false);
 
         // Act
-        var response = await model.GenerateContentAsync<SampleJsonClass>(request);
+        var response = await model.GenerateContentAsync<SampleJsonClass>(request).ConfigureAwait(false);
 
         // Assert
         response.ShouldNotBeNull();
@@ -59,7 +59,7 @@ public class VertextAIModel_JsonMode_Tests : TestBase
         request.AddText("write a text message for my boss that I'm resigning from the job.", false);
 
         // Act
-        var result = await model.GenerateObjectAsync<SampleJsonClass>(request);
+        var result = await model.GenerateObjectAsync<SampleJsonClass>(request).ConfigureAwait(false);
 
         // Assert
         result.ShouldNotBeNull();
@@ -75,7 +75,7 @@ public class VertextAIModel_JsonMode_Tests : TestBase
         var prompt = "I need a birthday message for my wife.";
 
         // Act
-        var result = await model.GenerateObjectAsync<SampleJsonClass>(prompt);
+        var result = await model.GenerateObjectAsync<SampleJsonClass>(prompt).ConfigureAwait(false);
 
         // Assert
         result.ShouldNotBeNull();
@@ -97,7 +97,7 @@ public class VertextAIModel_JsonMode_Tests : TestBase
         };
 
         // Act
-        var result = await model.GenerateObjectAsync<SampleJsonClass>(parts);
+        var result = await model.GenerateObjectAsync<SampleJsonClass>(parts).ConfigureAwait(false);
 
         // Assert
         result.ShouldNotBeNull();
@@ -118,7 +118,7 @@ public class VertextAIModel_JsonMode_Tests : TestBase
             false);
 
         // Act
-        var response = await model.GenerateContentAsync<ComplexDataTypeClass>(request);
+        var response = await model.GenerateContentAsync<ComplexDataTypeClass>(request).ConfigureAwait(false);
 
         // Assert
         response.ShouldNotBeNull();
@@ -168,7 +168,7 @@ public class VertextAIModel_JsonMode_Tests : TestBase
         request.AddText("Generate a complex JSON object with nested properties.", false);
 
         // Act
-        var response = await model.GenerateContentAsync<ComplexJsonClass>(request);
+        var response = await model.GenerateContentAsync<ComplexJsonClass>(request).ConfigureAwait(false);
 
         // Assert
         response.ShouldNotBeNull();

@@ -48,7 +48,7 @@ namespace GenerativeAI.Tests.Model
             request.AddText("Give me a really good message.", false);
 
             // Act
-            var response = await model.GenerateContentAsync<SampleJsonClass>(request);
+            var response = await model.GenerateContentAsync<SampleJsonClass>(request).ConfigureAwait(false);
 
             // Assert
             response.ShouldNotBeNull();
@@ -69,7 +69,7 @@ namespace GenerativeAI.Tests.Model
             request.AddText("write a text message for my boss that I'm resigning from the job.", false);
 
             // Act
-            var result = await model.GenerateObjectAsync<SampleJsonClass>(request);
+            var result = await model.GenerateObjectAsync<SampleJsonClass>(request).ConfigureAwait(false);
 
             // Assert
             result.ShouldNotBeNull();
@@ -85,7 +85,7 @@ namespace GenerativeAI.Tests.Model
             var prompt = "I need a birthday message for my wife.";
 
             // Act
-            var result = await model.GenerateObjectAsync<SampleJsonClass>(prompt);
+            var result = await model.GenerateObjectAsync<SampleJsonClass>(prompt).ConfigureAwait(false);
 
             // Assert
             result.ShouldNotBeNull();
@@ -107,7 +107,7 @@ namespace GenerativeAI.Tests.Model
             };
 
             // Act
-            var result = await model.GenerateObjectAsync<SampleJsonClass>(parts);
+            var result = await model.GenerateObjectAsync<SampleJsonClass>(parts).ConfigureAwait(false);
 
             // Assert
             result.ShouldNotBeNull();
@@ -126,7 +126,7 @@ namespace GenerativeAI.Tests.Model
             request.AddText("Generate a structured object with various data types including dictionary, list, array, and nested objects.", false);
         
             // Act
-            var response = await model.GenerateContentAsync<ComplexDataTypeClass>(request);
+            var response = await model.GenerateContentAsync<ComplexDataTypeClass>(request).ConfigureAwait(false);
         
             // Assert
             response.ShouldNotBeNull();
@@ -178,7 +178,7 @@ namespace GenerativeAI.Tests.Model
             request.AddText("Generate a complex JSON object with nested properties.", false);
         
             // Act
-            var response = await model.GenerateContentAsync<ComplexJsonClass>(request);
+            var response = await model.GenerateContentAsync<ComplexJsonClass>(request).ConfigureAwait(false);
         
             // Assert
             response.ShouldNotBeNull();

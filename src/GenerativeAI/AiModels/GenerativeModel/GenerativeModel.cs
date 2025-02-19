@@ -32,7 +32,7 @@ namespace GenerativeAI
         /// that influence the behavior and output of the generative model. It serves as a central
         /// customization point for tailoring the content creation process.
         /// </summary>
-        public GenerationConfig Config { get; set; }
+        public GenerationConfig? Config { get; set; }
 
         /// <summary>
         /// Gets or sets the collection of safety settings that define constraints or limits

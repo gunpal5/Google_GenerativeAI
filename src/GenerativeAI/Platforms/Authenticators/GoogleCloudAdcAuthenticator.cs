@@ -49,7 +49,7 @@ public class GoogleCloudAdcAuthenticator : BaseAuthenticator
 
             var token = AcquireGcpAccessToken();
 
-            var tokenInfo = await GetTokenInfo(token);
+            var tokenInfo = await GetTokenInfo(token).ConfigureAwait(false);
             
             logger?.LogAuthenticationEndedSuccessfully();
             return tokenInfo;
@@ -65,7 +65,7 @@ public class GoogleCloudAdcAuthenticator : BaseAuthenticator
     public override async Task<AuthTokens?> RefreshAccessTokenAsync(AuthTokens token,
         CancellationToken cancellationToken = default)
     {
-        return await GetAccessTokenAsync(cancellationToken);
+        return await GetAccessTokenAsync(cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>

@@ -25,7 +25,7 @@ public class GenerativeAI_GenerateAnswer_Tests:TestBase
         request.AddText("What is the capital of France?");
 
         // Act
-        var response = await model.GenerateAnswerAsync(request);
+        var response = await model.GenerateAnswerAsync(request).ConfigureAwait(false);
 
         // Assert
         response.ShouldNotBeNull();
@@ -53,7 +53,7 @@ public class GenerativeAI_GenerateAnswer_Tests:TestBase
         var prompt = "Tell me a joke about technology.";
 
         // Act
-        var response = await model.GenerateAnswerAsync(prompt);
+        var response = await model.GenerateAnswerAsync(prompt).ConfigureAwait(false);
 
         // Assert
         response.ShouldNotBeNull();
@@ -75,7 +75,7 @@ public class GenerativeAI_GenerateAnswer_Tests:TestBase
         var style = AnswerStyle.VERBOSE; // Example style
 
         // Act
-        var response = await model.GenerateAnswerAsync(prompt, style);
+        var response = await model.GenerateAnswerAsync(prompt, style).ConfigureAwait(false);
 
         // Assert
         response.ShouldNotBeNull();
@@ -104,7 +104,7 @@ public class GenerativeAI_GenerateAnswer_Tests:TestBase
         var prompt = "Describe an edge-case scenario politely.";
 
         // Act
-        var response = await model.GenerateAnswerAsync(prompt, safetySettings: safetySettings);
+        var response = await model.GenerateAnswerAsync(prompt, safetySettings: safetySettings).ConfigureAwait(false);
 
         // Assert
         response.ShouldNotBeNull();
@@ -130,7 +130,7 @@ public class GenerativeAI_GenerateAnswer_Tests:TestBase
         // Act & Assert
         await Should.ThrowAsync<TaskCanceledException>(async () =>
         {
-            await model.GenerateAnswerAsync(request, cts.Token);
-        });
+            await model.GenerateAnswerAsync(request, cts.Token).ConfigureAwait(false);
+        }).ConfigureAwait(false);
     }
 }

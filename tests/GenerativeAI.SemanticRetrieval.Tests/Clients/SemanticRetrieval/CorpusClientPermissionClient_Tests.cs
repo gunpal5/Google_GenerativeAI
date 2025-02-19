@@ -1,15 +1,17 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using GenerativeAI.Clients;
+using GenerativeAI.SemanticRetrieval.Tests;
 using GenerativeAI.Tests.Base;
 using GenerativeAI.Types;
 using Shouldly;
+using Xunit;
 
 namespace GenerativeAI.Tests.Clients.SemanticRetrieval
 {
 
     [TestCaseOrderer(
         typeof(PriorityOrderer))]
-    public class CorpusPermissionClient_Tests : TestBase
+    public class CorpusPermissionClient_Tests : SemanticRetrieverTestBase
     {
         private const string TestCorpus = "corpora/test-corpus-id";
         private static string? _createdPermissionName;
@@ -33,7 +35,7 @@ namespace GenerativeAI.Tests.Clients.SemanticRetrieval
             };
 
             // Act
-            var result = await client.CreatePermissionAsync(TestCorpus, newPermission);
+            var result = await client.CreatePermissionAsync(TestCorpus, newPermission).ConfigureAwait(false);
 
             // Assert
             result.ShouldNotBeNull();
@@ -53,7 +55,7 @@ namespace GenerativeAI.Tests.Clients.SemanticRetrieval
             _createdPermissionName.ShouldNotBeNullOrEmpty();
 
             // Act
-            var result = await client.GetPermissionAsync(_createdPermissionName);
+            var result = await client.GetPermissionAsync(_createdPermissionName).ConfigureAwait(false);
 
             // Assert
             result.ShouldNotBeNull();
@@ -71,7 +73,7 @@ namespace GenerativeAI.Tests.Clients.SemanticRetrieval
             const int pageSize = 10;
 
             // Act
-            var result = await client.ListPermissionsAsync(TestCorpus, pageSize);
+            var result = await client.ListPermissionsAsync(TestCorpus, pageSize).ConfigureAwait(false);
 
             // Assert
             result.ShouldNotBeNull();
@@ -103,7 +105,7 @@ namespace GenerativeAI.Tests.Clients.SemanticRetrieval
             const string updateMask = "role"; // Example update mask
 
             // Act
-            var result = await client.UpdatePermissionAsync(_createdPermissionName, updatedPermission, updateMask);
+            var result = await client.UpdatePermissionAsync(_createdPermissionName, updatedPermission, updateMask).ConfigureAwait(false);
 
             // Assert
             result.ShouldNotBeNull();
@@ -121,10 +123,10 @@ namespace GenerativeAI.Tests.Clients.SemanticRetrieval
             _createdPermissionName.ShouldNotBeNullOrEmpty();
 
             // Act
-            await client.DeletePermissionAsync(_createdPermissionName);
+            await client.DeletePermissionAsync(_createdPermissionName).ConfigureAwait(false);
 
             // Assert - optionally confirm via retrieval
-            var getResult = await client.GetPermissionAsync(_createdPermissionName);
+            var getResult = await client.GetPermissionAsync(_createdPermissionName).ConfigureAwait(false);
             getResult.ShouldBeNull();
 
             Console.WriteLine($"Deleted Permission: Name={_createdPermissionName}");

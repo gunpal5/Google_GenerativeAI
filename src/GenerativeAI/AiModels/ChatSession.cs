@@ -101,7 +101,7 @@ public class ChatSession : GenerativeModel
     public override async Task<GenerateContentResponse> GenerateContentAsync(GenerateContentRequest request,
         CancellationToken cancellationToken = default)
     {
-        var response = await base.GenerateContentAsync(request, cancellationToken);
+        var response = await base.GenerateContentAsync(request, cancellationToken).ConfigureAwait(false);
 
         UpdateHistory(request, response);
         return response;
@@ -137,7 +137,7 @@ public class ChatSession : GenerativeModel
     public override async IAsyncEnumerable<GenerateContentResponse> StreamContentAsync(GenerateContentRequest request, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var sb = new StringBuilder();
-        await foreach (var response in base.StreamContentAsync(request,cancellationToken))
+        await foreach (var response in base.StreamContentAsync(request,cancellationToken).ConfigureAwait(false))
         {
             if (cancellationToken.IsCancellationRequested)
                 yield break;

@@ -37,7 +37,7 @@ public class GenerativeAI_Tools_Tests:TestBase
         
 
         // Act
-        var response = await model.GenerateContentAsync(prompt);
+        var response = await model.GenerateContentAsync(prompt).ConfigureAwait(false);
 
         // Assert
         response.Candidates.ShouldNotBeNull();
@@ -64,7 +64,7 @@ public class GenerativeAI_Tools_Tests:TestBase
         
 
         // Act
-        var response = await model.GenerateContentAsync(prompt);
+        var response = await model.GenerateContentAsync(prompt).ConfigureAwait(false);
 
         // Assert
         response.Candidates.ShouldNotBeNull();

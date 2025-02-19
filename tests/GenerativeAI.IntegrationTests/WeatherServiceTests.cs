@@ -23,7 +23,7 @@ namespace GenerativeAI.IntegrationTests
             model.AddFunctionTool(tool);
            
 
-            var result = await model.GenerateContentAsync("What is the weather in san francisco today?");
+            var result = await model.GenerateContentAsync("What is the weather in san francisco today?").ConfigureAwait(false);
             
             Console.WriteLine(result.Text());
         }
@@ -52,7 +52,7 @@ namespace GenerativeAI.IntegrationTests
             var tool = new GenericFunctionTool(service.AsTools(), service.AsCalls());
             var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.DefaultGeminiModel);
             model.AddFunctionTool(tool);
-            var result = await model.GenerateContentAsync("what is written on page 35 in the book 'abracadabra'");
+            var result = await model.GenerateContentAsync("what is written on page 35 in the book 'abracadabra'").ConfigureAwait(false);
             Console.WriteLine(result.Text());
         }
     }

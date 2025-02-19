@@ -19,7 +19,7 @@ public class GeminiTestController : Controller
     {
         var model = _generativeAiService.CreateInstance(GoogleAIModels.Gemini2Flash);
 
-        var response = await model.GenerateContentAsync(prompt);
+        var response = await model.GenerateContentAsync(prompt).ConfigureAwait(false);
         
         return response.Text();
     }

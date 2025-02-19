@@ -54,7 +54,7 @@ public class GenericFunctionTool:IFunctionTool
         if (this.Calls.TryGetValue(functionCall.Name, out var call))
         {
             var str = JsonSerializer.Serialize(functionCall.Args);
-            var response = await call(str, cancellationToken);
+            var response = await call(str, cancellationToken).ConfigureAwait(false);
 
             var node = JsonNode.Parse(response);
 

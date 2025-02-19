@@ -68,11 +68,11 @@ public class FileClient : BaseClient
             }
         });
         httpMessage.Content = multipart;
-        await _platform.AddAuthorizationAsync(httpMessage, false, cancellationToken).ConfigureAwait(true);
-        var response = await HttpClient.SendAsync(httpMessage,cancellationToken).ConfigureAwait(true);
-        await CheckAndHandleErrors(response, url);
+        await _platform.AddAuthorizationAsync(httpMessage, false, cancellationToken).ConfigureAwait(false);
+        var response = await HttpClient.SendAsync(httpMessage,cancellationToken).ConfigureAwait(false);
+        await CheckAndHandleErrors(response, url).ConfigureAwait(false);
 
-        var fileResponse = await Deserialize<UploadFileResponse>(response);
+        var fileResponse = await Deserialize<UploadFileResponse>(response).ConfigureAwait(false);
         return fileResponse?.File;
     }
 
@@ -122,11 +122,11 @@ public class FileClient : BaseClient
         };
         multipart.Add(content);
         httpMessage.Content = multipart;
-        await _platform.AddAuthorizationAsync(httpMessage, false, cancellationToken).ConfigureAwait(true);
-        var response = await HttpClient.SendAsync(httpMessage).ConfigureAwait(true);
-        await CheckAndHandleErrors(response, url).ConfigureAwait(true);
+        await _platform.AddAuthorizationAsync(httpMessage, false, cancellationToken).ConfigureAwait(false);
+        var response = await HttpClient.SendAsync(httpMessage).ConfigureAwait(false);
+        await CheckAndHandleErrors(response, url).ConfigureAwait(false);
 
-        var fileResponse = await Deserialize<UploadFileResponse>(response).ConfigureAwait(true);
+        var fileResponse = await Deserialize<UploadFileResponse>(response).ConfigureAwait(false);
         return fileResponse?.File;
     }
 
@@ -182,7 +182,7 @@ public class FileClient : BaseClient
         var baseUrl = _platform.GetBaseUrl();
 
         var url = $"{baseUrl}/{name.ToFileId()}";
-        return await GetAsync<RemoteFile>(url,cancellationToken);
+        return await GetAsync<RemoteFile>(url,cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -209,7 +209,7 @@ public class FileClient : BaseClient
         var queryString = queryParams.Count > 0 ? "?" + string.Join("&", queryParams) : string.Empty;
         var url = $"{_platform.GetBaseUrl()}/files{queryString}";
 
-        return await GetAsync<ListFilesResponse>(url);
+        return await GetAsync<ListFilesResponse>(url).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -222,7 +222,7 @@ public class FileClient : BaseClient
         var baseUrl = _platform.GetBaseUrl();
 
         var url = $"{baseUrl}/{name.ToFileId()}";
-        await DeleteAsync(url);
+        await DeleteAsync(url).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -239,7 +239,7 @@ public class FileClient : BaseClient
         sw.Start();
         while (sw.Elapsed.TotalSeconds < maxSeconds)
         {
-            var remoteFile = await GetFileAsync(file.Name, cancellationToken);
+            var remoteFile = await GetFileAsync(file.Name, cancellationToken).ConfigureAwait(false);
             if(remoteFile.State == FileState.ACTIVE)
             {
                 return;
@@ -249,7 +249,7 @@ public class FileClient : BaseClient
                 throw new GenerativeAIException("There was an error processing the file.", remoteFile.Error?.Message);
             }
             
-            await Task.Delay(1000, cancellationToken);
+            await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
         }
         sw.Stop();
     }

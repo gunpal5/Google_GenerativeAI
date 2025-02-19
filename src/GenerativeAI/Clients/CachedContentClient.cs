@@ -33,7 +33,7 @@ public class CachingClient : BaseClient
         CancellationToken cancellationToken = default)
     {
         var url = $"{_platform.GetBaseUrl()}/cachedContents";
-        return await SendAsync<CachedContent, CachedContent>(url, cachedContent, HttpMethod.Post, cancellationToken);
+        return await SendAsync<CachedContent, CachedContent>(url, cachedContent, HttpMethod.Post, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -62,7 +62,7 @@ public class CachingClient : BaseClient
         var queryString = queryParams.Count > 0 ? "?" + string.Join("&", queryParams) : string.Empty;
         var url = $"{_platform.GetBaseUrl()}/cachedContents{queryString}";
 
-        return await GetAsync<ListCachedContentsResponse>(url, cancellationToken);
+        return await GetAsync<ListCachedContentsResponse>(url, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -76,7 +76,7 @@ public class CachingClient : BaseClient
     {
         var baseUrl = _platform.GetBaseUrl();
         var url = $"{baseUrl}/{name.ToCachedContentId()}";
-        return await GetAsync<CachedContent>(url, cancellationToken);
+        return await GetAsync<CachedContent>(url, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -103,7 +103,7 @@ public class CachingClient : BaseClient
 
         var queryString = queryParams.Count > 0 ? "?" + string.Join("&", queryParams) : string.Empty;
 
-        return await SendAsync<CachedContent,CachedContent>(url + queryString, cachedContent, new HttpMethod("PATCH"),cancellationToken);
+        return await SendAsync<CachedContent,CachedContent>(url + queryString, cachedContent, new HttpMethod("PATCH"),cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -117,6 +117,6 @@ public class CachingClient : BaseClient
     {
         var baseUrl = _platform.GetBaseUrl();
         var url = $"{baseUrl}/{name.ToCachedContentId()}";
-        await DeleteAsync(url, cancellationToken);
+        await DeleteAsync(url, cancellationToken).ConfigureAwait(false);
     }
 }

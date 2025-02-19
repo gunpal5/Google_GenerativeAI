@@ -34,7 +34,7 @@ while (true)
     var prompt =
         $"\r\nExecute the javascript code for this task:\r\n\r\n{input}\r\n\r\n";
     
-    var result = await chat.GenerateContentAsync(prompt);
+    var result = await chat.GenerateContentAsync(prompt).ConfigureAwait(false);
     Console.WriteLine();
     Console.Write("Result from Gemini:\r\n");
     Console.WriteLine(result.Text());

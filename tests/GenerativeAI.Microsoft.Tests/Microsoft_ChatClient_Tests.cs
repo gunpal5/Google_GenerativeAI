@@ -90,7 +90,7 @@ public class Microsoft_ChatClient_Tests : TestBase
         var client = new GenerativeAIChatClient(adapter);
 
         // Act & Assert
-        await Should.ThrowAsync<ArgumentNullException>(async () => { await client.GetResponseAsync((string)null!); });
+        await Should.ThrowAsync<ArgumentNullException>(async () => { await client.GetResponseAsync((string)null!).ConfigureAwait(false); }).ConfigureAwait(false);
         Console.WriteLine("CompleteAsync threw ArgumentNullException as expected when chatMessages was null.");
     }
 
@@ -113,7 +113,7 @@ public class Microsoft_ChatClient_Tests : TestBase
         // For demonstration, we assume GenerateContentAsync(...) works.
 
         // Act
-        var result = await client.GetResponseAsync(messages);
+        var result = await client.GetResponseAsync(messages).ConfigureAwait(false);
 
         // Assert
         result.ShouldNotBeNull();
@@ -138,12 +138,12 @@ public class Microsoft_ChatClient_Tests : TestBase
         // Act & Assert
         await Should.ThrowAsync<ArgumentNullException>(async () =>
         {
-            await foreach (var _ in client.GetStreamingResponseAsync((string)null!))
+            await foreach (var _ in client.GetStreamingResponseAsync((string)null!).ConfigureAwait(false))
             {
                 // Should never get here
                 Console.WriteLine(_.Text ?? "null");
             }
-        });
+        }).ConfigureAwait(false);
         Console.WriteLine("CompleteStreamingAsync threw ArgumentNullException as expected when chatMessages was null.");
     }
 
@@ -161,7 +161,7 @@ public class Microsoft_ChatClient_Tests : TestBase
 
         // Act
         var updates = new List<ChatResponseUpdate>();
-        await foreach (var update in client.GetStreamingResponseAsync(messages))
+        await foreach (var update in client.GetStreamingResponseAsync(messages).ConfigureAwait(false))
         {
             updates.Add(update);
             Console.WriteLine(update.Text ?? "null");

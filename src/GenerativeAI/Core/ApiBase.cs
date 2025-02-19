@@ -72,12 +72,12 @@ namespace GenerativeAI.Core
 
                 var request = new HttpRequestMessage(HttpMethod.Get, new Uri(url));
 
-                await AddAuthorizationHeader(request);
+                await AddAuthorizationHeader(request).ConfigureAwait(false);
 
                 // Send GET request
                 var response = await _httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
-                await CheckAndHandleErrors(response, url);
+                await CheckAndHandleErrors(response, url).ConfigureAwait(false);
                 var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 _logger?.LogSuccessfulGetResponse(url, content);
 
@@ -123,12 +123,12 @@ namespace GenerativeAI.Core
                     Content = new StringContent(jsonPayload, System.Text.Encoding.UTF8, "application/json")
                 };
 
-                await AddAuthorizationHeader(request);
+                await AddAuthorizationHeader(request).ConfigureAwait(false);
 
                 // Send HTTP request
                 var response = await _httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
-                await CheckAndHandleErrors(response, url);
+                await CheckAndHandleErrors(response, url).ConfigureAwait(false);
                 return await Deserialize<TResponse>(response).ConfigureAwait(false);
             }
             catch (Exception ex) when (ex is TaskCanceledException or OperationCanceledException)
@@ -229,12 +229,12 @@ namespace GenerativeAI.Core
 
                 using var request = new HttpRequestMessage(HttpMethod.Delete, url);
 
-                await AddAuthorizationHeader(request);
+                await AddAuthorizationHeader(request).ConfigureAwait(false);
 
                 // Send DELETE request
                 var response = await _httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
-                await CheckAndHandleErrors(response, url);
+                await CheckAndHandleErrors(response, url).ConfigureAwait(false);
 
                 _logger?.LogSuccessfulHttpResponse(url, null);
                 return true; // DELETE requests typically do not return a response body
@@ -313,7 +313,7 @@ namespace GenerativeAI.Core
                     Content = form
                 };
 
-                await AddAuthorizationHeader(request);
+                await AddAuthorizationHeader(request).ConfigureAwait(false);
 
                 var response = await _httpClient
                     .SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken)
@@ -371,7 +371,7 @@ namespace GenerativeAI.Core
             using var requestContent = new StreamContent(ms);
             requestContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             request.Content = requestContent;
-            await AddAuthorizationHeader(request);
+            await AddAuthorizationHeader(request).ConfigureAwait(false);
             // Call your existing SendAsync method (assumed to handle HttpCompletionOption, etc.)
             using var response = await HttpClient
                 .SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
@@ -392,7 +392,7 @@ namespace GenerativeAI.Core
                 await foreach (var item in JsonSerializer.DeserializeAsyncEnumerable<TResponse>(
                                    stream,
                                    SerializerOptions,
-                                   cancellationToken)
+                                   cancellationToken).ConfigureAwait(false)
                               )
                 {
                     if (cancellationToken.IsCancellationRequested)

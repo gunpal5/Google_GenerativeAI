@@ -48,7 +48,7 @@ public class GenerativeAIChatClient : IChatClient
         var response = await model.GenerateContentAsync(request, cancellationToken).ConfigureAwait(false);
 
         return await CallFunctionAsync(request, response,
-            options, cancellationToken);
+            options, cancellationToken).ConfigureAwait(false);
     }
 
     private async Task<ChatResponse> CallFunctionAsync(GenerateContentRequest request,  GenerateContentResponse response, ChatOptions? options, CancellationToken cancellationToken)
@@ -63,7 +63,7 @@ public class GenerativeAIChatClient : IChatClient
         var tool = (AIFunction?) options.Tools.Where(s=>s is AIFunction).FirstOrDefault(s=>s.Name == functionCall.Name);
         if (tool != null)
         {
-            var result = await tool.InvokeAsync(functionCall.Arguments,cancellationToken);
+            var result = await tool.InvokeAsync(functionCall.Arguments,cancellationToken).ConfigureAwait(false);
             if (result != null)
             {
                 var contents = request.Contents;

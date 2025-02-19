@@ -23,7 +23,7 @@ public partial class GenerativeModel
     {
         PrepareRequest(request);
         // Use the base class method to get the raw response
-        var baseResponse = await base.GenerateContentAsync(Model, request);
+        var baseResponse = await base.GenerateContentAsync(Model, request).ConfigureAwait(false);
 
 
         // Attempt to call functions if instructed
@@ -51,15 +51,13 @@ public partial class GenerativeModel
     }
 
     /// <summary>
-    /// Generates content asynchronously based on the provided text prompt and an inline file path.
+    /// Generates content asynchronously based on the provided text prompt and a remote file URI.
     /// </summary>
-    /// <param name="prompt">The input text prompt used for generating content.</param>
-    /// <param name="fileUri">The URI to an file that should be included in the content generation request.</param>
+    /// <param name="prompt">The input text prompt used for content generation.</param>
+    /// <param name="fileUri">The URI of the file to be included in the content generation process.</param>
+    /// <param name="mimeType">The MIME type of the file referenced by the URI.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
-    /// <returns>A task that represents the asynchronous operation, containing the <see cref="GenerateContentResponse"/> or null if content generation fails.</returns>
-    /// <seealso href="https://ai.google.dev/gemini-api/docs/vision">See Official API Documentation For Vision Capabilities</seealso>
-    /// <seealso href="https://ai.google.dev/gemini-api/docs/audio">See Official API Documentation For Audio Understanding</seealso>
-   
+    /// <returns>A task that represents the asynchronous operation, containing the <see cref="GenerateContentResponse"/> object with the generated content.</returns>
     public async Task<GenerateContentResponse> GenerateContentAsync(
         string prompt,
         string fileUri,
@@ -68,11 +66,11 @@ public partial class GenerativeModel
     {
         var request = new GenerateContentRequest();
 
-        request.AddContent(new Content(){Role = Roles.User});
+        request.AddContent(new Content() { Role = Roles.User });
         //await AppendFile(filePath, request,cancellationToken);
         request.AddRemoteFile(fileUri, mimeType);
         request.AddText(prompt);
-        
+
 
         return await GenerateContentAsync(request, cancellationToken).ConfigureAwait(false);
     }
@@ -115,7 +113,7 @@ public partial class GenerativeModel
     {
         PrepareRequest(request);
 
-        await foreach (var streamedItem in base.GenerateContentStreamAsync(Model, request, cancellationToken))
+        await foreach (var streamedItem in base.GenerateContentStreamAsync(Model, request, cancellationToken).ConfigureAwait(false))
         {
             if (cancellationToken.IsCancellationRequested)
                 break;
@@ -138,7 +136,7 @@ public partial class GenerativeModel
     {
         var request = new GenerateContentRequest(RequestExtensions.FormatGenerateContentInput(prompt));
 
-        await foreach (var streamedItem in StreamContentAsync(request, cancellationToken))
+        await foreach (var streamedItem in StreamContentAsync(request, cancellationToken).ConfigureAwait(false))
         {
             if (cancellationToken.IsCancellationRequested)
                 break;
@@ -171,7 +169,7 @@ public partial class GenerativeModel
         request.AddRemoteFile(fileUri, mimeType);
         request.AddText(prompt);
 
-        await foreach (var streamedItem in StreamContentAsync(request, cancellationToken))
+        await foreach (var streamedItem in StreamContentAsync(request, cancellationToken).ConfigureAwait(false))
         {
             if (cancellationToken.IsCancellationRequested)
                 break;
@@ -193,7 +191,7 @@ public partial class GenerativeModel
     {
         var request = new GenerateContentRequest(RequestExtensions.FormatGenerateContentInput(parts));
 
-        await foreach (var streamedItem in StreamContentAsync(request, cancellationToken))
+        await foreach (var streamedItem in StreamContentAsync(request, cancellationToken).ConfigureAwait(false))
         {
             if (cancellationToken.IsCancellationRequested)
                 break;
@@ -215,7 +213,7 @@ public partial class GenerativeModel
     {
         var request = new GenerateContentRequest(contents.ToList());
 
-        await foreach (var streamedItem in StreamContentAsync(request, cancellationToken))
+        await foreach (var streamedItem in StreamContentAsync(request, cancellationToken).ConfigureAwait(false))
         {
             if (cancellationToken.IsCancellationRequested)
                 break;

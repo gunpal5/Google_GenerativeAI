@@ -47,7 +47,7 @@ public abstract class BaseAuthenticator : IGoogleAuthenticator
     {
         if (string.IsNullOrEmpty(accessToken))
             throw new ArgumentNullException(nameof(accessToken));
-        var token = await GetTokenInfo(accessToken);
+        var token = await GetTokenInfo(accessToken).ConfigureAwait(false);
         if (token != null)
             return token;
         else if (throwError)
@@ -65,11 +65,11 @@ public abstract class BaseAuthenticator : IGoogleAuthenticator
     protected async Task<AuthTokens?> GetTokenInfo(string token)
     {
         var client = new HttpClient();
-        var response = await client.GetAsync("https://oauth2.googleapis.com/tokeninfo?access_token=" + token);
+        var response = await client.GetAsync("https://oauth2.googleapis.com/tokeninfo?access_token=" + token).ConfigureAwait(false);
 
         if (response.IsSuccessStatusCode)
         {
-            var info = await response.Content.ReadAsStringAsync();
+            var info = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
 
             var doc = JsonDocument.Parse(info);

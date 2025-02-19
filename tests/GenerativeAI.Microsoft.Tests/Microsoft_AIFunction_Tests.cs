@@ -28,7 +28,7 @@ public class Microsoft_AIFunction_Tests:TestBase
         
         chatOptions.Tools = new List<AITool>{AIFunctionFactory.Create(GetCurrentWeather)};
         var message = new ChatMessage(ChatRole.User, "What is the weather in New York?");
-        var response = await chatClient.GetResponseAsync(message,options:chatOptions);
+        var response = await chatClient.GetResponseAsync(message,options:chatOptions).ConfigureAwait(false);
 
         response.Choices.LastOrDefault().Text.Contains("New York", StringComparison.InvariantCultureIgnoreCase)
             .ShouldBeTrue();
@@ -48,7 +48,7 @@ public class Microsoft_AIFunction_Tests:TestBase
             
         })};
         var message = new ChatMessage(ChatRole.User, "what is written on page 96 in the book 'damdamadum'");
-        var response = await chatClient.GetResponseAsync(message,options:chatOptions);
+        var response = await chatClient.GetResponseAsync(message,options:chatOptions).ConfigureAwait(false);
 
         response.Choices.LastOrDefault().Text.ShouldContain("damdamadum",Case.Insensitive);
     }

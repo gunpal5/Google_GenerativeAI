@@ -47,7 +47,7 @@ namespace GenerativeAI.Tests.Model
             var content = RequestExtensions.FormatGenerateContentInput("Embed this content", Roles.User);
             
             // Act
-            var response = await model.EmbedContentAsync(content);
+            var response = await model.EmbedContentAsync(content).ConfigureAwait(false);
 
             // Assert
             response.ShouldNotBeNull();
@@ -71,7 +71,7 @@ namespace GenerativeAI.Tests.Model
             };
 
             // Act
-            var response = await model.EmbedContentAsync(embedRequest);
+            var response = await model.EmbedContentAsync(embedRequest).ConfigureAwait(false);
 
             // Assert
             response.ShouldNotBeNull();
@@ -87,7 +87,7 @@ namespace GenerativeAI.Tests.Model
             var textToEmbed = "This is a string to embed";
 
             // Act
-            var response = await model.EmbedContentAsync(textToEmbed);
+            var response = await model.EmbedContentAsync(textToEmbed).ConfigureAwait(false);
 
             // Assert
             response.ShouldNotBeNull();
@@ -107,7 +107,7 @@ namespace GenerativeAI.Tests.Model
             };
 
             // Act
-            var response = await model.EmbedContentAsync(parts);
+            var response = await model.EmbedContentAsync(parts).ConfigureAwait(false);
 
             // Assert
             response.ShouldNotBeNull();
@@ -127,7 +127,7 @@ namespace GenerativeAI.Tests.Model
             };
 
             // Act
-            var response = await model.EmbedContentAsync(textsToEmbed);
+            var response = await model.EmbedContentAsync(textsToEmbed).ConfigureAwait(false);
 
             // Assert
             response.ShouldNotBeNull();
@@ -162,7 +162,7 @@ namespace GenerativeAI.Tests.Model
             };
 
             // Act
-            var response = await model.BatchEmbedContentAsync(requests);
+            var response = await model.BatchEmbedContentAsync(requests).ConfigureAwait(false);
 
             // Assert
             response.ShouldNotBeNull();
@@ -189,7 +189,7 @@ namespace GenerativeAI.Tests.Model
             };
 
             // Act
-            var response = await model.BatchEmbedContentAsync(contents);
+            var response = await model.BatchEmbedContentAsync(contents).ConfigureAwait(false);
 
             // Assert
             response.ShouldNotBeNull();

@@ -40,11 +40,11 @@ public class GoogleOAuthAuthenticator:BaseAuthenticator
 
     public override async Task<AuthTokens> GetAccessTokenAsync(CancellationToken cancellationToken = default)
     {
-        var token = await _credential.GetAccessTokenForRequestAsync(cancellationToken:cancellationToken).ConfigureAwait(true);
+        var token = await _credential.GetAccessTokenForRequestAsync(cancellationToken:cancellationToken).ConfigureAwait(false);
 
         if(string.IsNullOrEmpty(token))
             throw new AuthenticationException("Failed to get access token.");
-        var tokenInfo = await GetTokenInfo(token);
+        var tokenInfo = await GetTokenInfo(token).ConfigureAwait(false);
         if(tokenInfo == null)
             throw new AuthenticationException("Failed to get access token.");
         return tokenInfo;

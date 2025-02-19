@@ -31,7 +31,7 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
     /// </summary>
     public string ApiVersion { get; set; } = ApiVersions.v1Beta;
 
-    IGoogleAuthenticator? Authenticator { get; set; }
+    public IGoogleAuthenticator? Authenticator { get; set; }
     bool ValidateAccessToken { get; set; } = true;
     ILogger? Logger { get; set; }
 
@@ -60,7 +60,7 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
     {
         if (!requireAccessToken)
         {
-            await this.ValidateCredentialsAsync(cancellationToken).ConfigureAwait(true);
+            await this.ValidateCredentialsAsync(cancellationToken).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(Credentials.ApiKey))
                 request.Headers.Add("x-goog-api-key", Credentials.ApiKey);
             if (this.Credentials.AuthToken != null && this.Credentials.AuthToken.Validate())
@@ -70,7 +70,7 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
         {
             if (this.Credentials == null || this.Credentials.AuthToken == null)
             {
-                await this.AuthorizeAsync(cancellationToken).ConfigureAwait(true);
+                await this.AuthorizeAsync(cancellationToken).ConfigureAwait(false);
             }
 
             if (this.Credentials != null && this.Credentials.AuthToken != null &&
@@ -79,7 +79,7 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
                 if (this.Authenticator != null)
                 {
                     var newToken =
-                        await this.Authenticator.RefreshAccessTokenAsync(this.Credentials.AuthToken, cancellationToken).ConfigureAwait(true);
+                        await this.Authenticator.RefreshAccessTokenAsync(this.Credentials.AuthToken, cancellationToken).ConfigureAwait(false);
                     if (newToken != null)
                     {
                         this.Credentials.AuthToken.AccessToken = newToken.AccessToken;
@@ -93,7 +93,7 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
                 }
             }
 
-            await this.ValidateCredentialsAsync(true, cancellationToken).ConfigureAwait(true);
+            await this.ValidateCredentialsAsync(true, cancellationToken).ConfigureAwait(false);
 
             if (!string.IsNullOrEmpty(Credentials?.ApiKey))
                 request.Headers.Add("x-goog-api-key", Credentials.ApiKey);
@@ -104,7 +104,7 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
     /// <inheritdoc/>
     public async Task ValidateCredentialsAsync(CancellationToken cancellationToken = default)
     {
-        await ValidateCredentialsAsync(false, cancellationToken).ConfigureAwait(true);
+        await ValidateCredentialsAsync(false, cancellationToken).ConfigureAwait(false);
         
     }
 
@@ -126,14 +126,14 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
                 {
                     var adcAuthenticator = new GoogleCloudAdcAuthenticator();
                     var token = await adcAuthenticator.ValidateAccessTokenAsync(Credentials.AuthToken.AccessToken, true,
-                        cancellationToken).ConfigureAwait(true);
+                        cancellationToken).ConfigureAwait(false);
                     // this.Credentials.AuthToken.AccessToken = token.AccessToken;
                     this.Credentials.AuthToken.ExpiryTime = token?.ExpiryTime;
                 }
                 else
                 {
                     var token = await this.Authenticator.ValidateAccessTokenAsync(Credentials.AuthToken.AccessToken,
-                        false, cancellationToken).ConfigureAwait(true);
+                        false, cancellationToken).ConfigureAwait(false);
                     if (token != null)
                     {
                         //this.Credentials.AuthToken.AccessToken = token.AccessToken;
@@ -141,7 +141,7 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
                     }
                     else
                     {
-                        var newToken = await this.Authenticator.GetAccessTokenAsync(cancellationToken).ConfigureAwait(true);
+                        var newToken = await this.Authenticator.GetAccessTokenAsync(cancellationToken).ConfigureAwait(false);
                         if (newToken != null)
                         {
                             this.Credentials.AuthToken.AccessToken = newToken.AccessToken;
@@ -169,7 +169,7 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
 
         var existingToken = this.Credentials?.AuthToken;
 
-        var token = await Authenticator.GetAccessTokenAsync(cancellationToken);
+        var token = await Authenticator.GetAccessTokenAsync(cancellationToken).ConfigureAwait(false);
 
         if (this.Credentials == null)
             this.Credentials = new GoogleAICredentials("", token.AccessToken, token.ExpiryTime);
@@ -223,5 +223,12 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
     public string GetApiVersionForFile()
     {
         return ApiVersion;
+    }
+
+  
+    /// <inheritdoc />
+    public void SetAuthenticator(IGoogleAuthenticator authenticator)
+    {
+       this.Authenticator = authenticator;
     }
 }

@@ -25,7 +25,7 @@ public static class EnvironmentVariables
     /// If the environment variable is not set, the default value
     /// is "us-central1".
     /// </summary>
-    public static readonly string? GOOGLE_REGION = Environment.GetEnvironmentVariable("GOOGLE_REGION") ?? "us-central1";
+    public static readonly string GOOGLE_REGION = Environment.GetEnvironmentVariable("GOOGLE_REGION") ?? "us-central1";
 
     /// <summary>
     /// Represents the Google Access Token used for authenticating API requests to Google services.

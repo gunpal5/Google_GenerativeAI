@@ -228,7 +228,7 @@ public partial class GenerativeModel
         }
         else
         {
-            functionResponse = await tool.CallAsync(functionCall);
+            functionResponse = await tool.CallAsync(functionCall).ConfigureAwait(false);
         }
 
         // If enabled, pass the function result back into the model

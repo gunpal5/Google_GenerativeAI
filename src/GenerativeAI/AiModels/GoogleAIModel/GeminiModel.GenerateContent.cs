@@ -25,7 +25,7 @@ public partial class GeminiModel
         var request = new GenerateContentRequest();
 
         request.AddContent(new Content() { Role = Roles.User });
-        await AppendFile(filePath, request, cancellationToken);
+        await AppendFile(filePath, request, cancellationToken).ConfigureAwait(false);
 
         request.AddText(prompt);
 
@@ -56,12 +56,12 @@ public partial class GeminiModel
 
         request.AddContent(new Content() { Role = Roles.User });
         
-        await AppendFile(filePath, request, cancellationToken);
+        await AppendFile(filePath, request, cancellationToken).ConfigureAwait(false);
         
 
         request.AddText(prompt);
 
-        await foreach (var streamedItem in StreamContentAsync(request, cancellationToken))
+        await foreach (var streamedItem in StreamContentAsync(request, cancellationToken).ConfigureAwait(false))
         {
             if (cancellationToken.IsCancellationRequested)
                 break;

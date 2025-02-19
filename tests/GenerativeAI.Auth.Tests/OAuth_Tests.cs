@@ -19,7 +19,7 @@ public class OAuth_Tests:TestBase
         var authenticator = CreateAuthenticatorWithJsonFile();
         
         var vertexAi = new VertexAIModel(authenticator:authenticator);
-        var response = await vertexAi.GenerateContentAsync("write a poem about the sun");
+        var response = await vertexAi.GenerateContentAsync("write a poem about the sun").ConfigureAwait(false);
         response.ShouldNotBeNull();
         var text = response.Text();
         text.ShouldNotBeNullOrWhiteSpace();

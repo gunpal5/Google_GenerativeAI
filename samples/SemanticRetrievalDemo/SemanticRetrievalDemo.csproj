@@ -1,21 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net8.0;net9.0;net472;net6.0;net7.0</TargetFrameworks>
-        <LangVersion>latest</LangVersion>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
-         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
-
     </PropertyGroup>
 
     <ItemGroup>
-        
-        <PackageReference Include="xunit.v3.extensibility.core" Version="1.1.0" />
-    </ItemGroup>
-
-    <ItemGroup>
-       
+      <PackageReference Include="DocumentChunker" Version="1.0.0" />
     </ItemGroup>
 
     <ItemGroup>

@@ -52,7 +52,7 @@ public class VertextPlatformAdapter : IPlatformAdapter
     /// <summary>
     /// The authenticator interface responsible for obtaining access tokens.
     /// </summary>
-    private IGoogleAuthenticator? Authenticator { get; set; }
+    public IGoogleAuthenticator? Authenticator { get; set; }
 
     /// <summary>
     /// Logger instance for diagnostic information.
@@ -196,7 +196,7 @@ public class VertextPlatformAdapter : IPlatformAdapter
     {
         if (this.Credentials == null || this.Credentials.AuthToken == null)
         {
-            await this.AuthorizeAsync(cancellationToken);
+            await this.AuthorizeAsync(cancellationToken).ConfigureAwait(false);
         }
 
         if (ExpressMode != true && this.Credentials != null && this.Credentials.AuthToken != null &&
@@ -205,7 +205,7 @@ public class VertextPlatformAdapter : IPlatformAdapter
             if (this.Authenticator != null)
             {
                 var newToken =
-                    await this.Authenticator.RefreshAccessTokenAsync(this.Credentials.AuthToken, cancellationToken);
+                    await this.Authenticator.RefreshAccessTokenAsync(this.Credentials.AuthToken, cancellationToken).ConfigureAwait(false);
                 if (newToken != null)
                 {
                     this.Credentials.AuthToken.AccessToken = newToken.AccessToken;
@@ -219,7 +219,7 @@ public class VertextPlatformAdapter : IPlatformAdapter
             }
         }
 
-        await this.ValidateCredentialsAsync(cancellationToken);
+        await this.ValidateCredentialsAsync(cancellationToken).ConfigureAwait(false);
 
         if (!string.IsNullOrEmpty(Credentials.ApiKey))
             request.Headers.Add("x-goog-api-key", Credentials.ApiKey);
@@ -250,19 +250,19 @@ public class VertextPlatformAdapter : IPlatformAdapter
             if (this.Authenticator == null)
             {
                 var adcAuthenticator = new GoogleCloudAdcAuthenticator();
-                var token = await adcAuthenticator.ValidateAccessTokenAsync(Credentials.AuthToken.AccessToken, true, cancellationToken);
+                var token = await adcAuthenticator.ValidateAccessTokenAsync(Credentials.AuthToken.AccessToken, true, cancellationToken).ConfigureAwait(false);
                 this.Credentials.AuthToken.ExpiryTime = token?.ExpiryTime;
             }
             else
             {
-                var token = await this.Authenticator.ValidateAccessTokenAsync(Credentials.AuthToken.AccessToken, false, cancellationToken);
+                var token = await this.Authenticator.ValidateAccessTokenAsync(Credentials.AuthToken.AccessToken, false, cancellationToken).ConfigureAwait(false);
                 if (token != null)
                 {
                     this.Credentials.AuthToken.ExpiryTime = token.ExpiryTime;
                 }
                 else
                 {
-                    var newToken = await this.Authenticator.GetAccessTokenAsync(cancellationToken);
+                    var newToken = await this.Authenticator.GetAccessTokenAsync(cancellationToken).ConfigureAwait(false);
                     if (newToken != null)
                     {
                         this.Credentials.AuthToken.AccessToken = newToken.AccessToken;
@@ -290,7 +290,7 @@ public class VertextPlatformAdapter : IPlatformAdapter
         if (this.Authenticator == null)
             this.Authenticator = new GoogleCloudAdcAuthenticator();
 
-        var token = await Authenticator.GetAccessTokenAsync(cancellationToken);
+        var token = await Authenticator.GetAccessTokenAsync(cancellationToken).ConfigureAwait(false);
 
         if (this.Credentials == null)
             this.Credentials = new GoogleAICredentials("", token.AccessToken, token.ExpiryTime);
@@ -377,5 +377,10 @@ public class VertextPlatformAdapter : IPlatformAdapter
     public string GetApiVersionForFile()
     {
         return ApiVersions.v1Beta;
+    }
+
+    public void SetAuthenticator(IGoogleAuthenticator authenticator)
+    {
+        this.Authenticator = authenticator;
     }
 }

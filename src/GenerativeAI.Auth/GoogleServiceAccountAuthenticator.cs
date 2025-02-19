@@ -11,7 +11,7 @@ public class GoogleServiceAccountAuthenticator : BaseAuthenticator
     [
         "https://www.googleapis.com/auth/cloud-platform",
         "https://www.googleapis.com/auth/generative-language.retriever",
-        "https://www.googleapis.com/auth/generative-language.tuning"
+        "https://www.googleapis.com/auth/generative-language.tuning",
     ];
 
     private string _clientFile = "client_secret.json";
@@ -50,11 +50,11 @@ public class GoogleServiceAccountAuthenticator : BaseAuthenticator
 
     public override async Task<AuthTokens> GetAccessTokenAsync(CancellationToken cancellationToken = default)
     {
-        var token = await _credential.GetAccessTokenForRequestAsync(cancellationToken:cancellationToken).ConfigureAwait(true);
+        var token = await _credential.GetAccessTokenForRequestAsync(cancellationToken:cancellationToken).ConfigureAwait(false);
 
         if(string.IsNullOrEmpty(token))
             throw new AuthenticationException("Failed to get access token.");
-        var tokenInfo = await GetTokenInfo(token);
+        var tokenInfo = await GetTokenInfo(token).ConfigureAwait(false);
         if(tokenInfo == null)
             throw new AuthenticationException("Failed to get access token.");
         return tokenInfo;
@@ -62,6 +62,6 @@ public class GoogleServiceAccountAuthenticator : BaseAuthenticator
 
     public override async Task<AuthTokens> RefreshAccessTokenAsync(AuthTokens token, CancellationToken cancellationToken = default)
     {
-        return await GetAccessTokenAsync(cancellationToken:cancellationToken).ConfigureAwait(true);
+        return await GetAccessTokenAsync(cancellationToken:cancellationToken).ConfigureAwait(false);
     }
 }

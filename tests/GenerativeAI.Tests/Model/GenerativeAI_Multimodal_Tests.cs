@@ -30,7 +30,7 @@ namespace GenerativeAI.Tests.Model
             request.AddText("Identify objects in the image?");
 
             //Act
-            var result = await model.GenerateContentAsync(request);
+            var result = await model.GenerateContentAsync(request).ConfigureAwait(false);
 
             //Assert
             var text = result.Text();
@@ -48,7 +48,7 @@ namespace GenerativeAI.Tests.Model
             string prompt = "Identify objects in the image?";
 
             //Act
-            var result = await model.GenerateContentAsync(prompt, "image.png");
+            var result = await model.GenerateContentAsync(prompt, "image.png").ConfigureAwait(false);
 
             //Assert
             result.ShouldNotBeNull();
@@ -67,7 +67,7 @@ namespace GenerativeAI.Tests.Model
             string prompt = "Describe this video?";
 
             //Act
-            var result = await model.GenerateContentAsync(prompt, "TestData/testvideo.mp4");
+            var result = await model.GenerateContentAsync(prompt, "TestData/testvideo.mp4").ConfigureAwait(false);
 
             //Assert
             result.ShouldNotBeNull();
@@ -86,7 +86,7 @@ namespace GenerativeAI.Tests.Model
             string prompt = "Describe this audio?";
 
             //Act
-            var result = await model.GenerateContentAsync(prompt, "TestData/testaudio.mp3");
+            var result = await model.GenerateContentAsync(prompt, "TestData/testaudio.mp3").ConfigureAwait(false);
 
             //Assert
             result.ShouldNotBeNull();
@@ -108,7 +108,7 @@ namespace GenerativeAI.Tests.Model
             var model = CreateInitializedModel();
 
             var responses = new List<string>();
-            await foreach (var response in model.StreamContentAsync(prompt, imageFile))
+            await foreach (var response in model.StreamContentAsync(prompt, imageFile).ConfigureAwait(false))
             {
                 response.ShouldNotBeNull();
                 responses.Add(response.Text() ?? string.Empty);

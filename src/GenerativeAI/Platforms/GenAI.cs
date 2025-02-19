@@ -1,5 +1,6 @@
 ﻿using GenerativeAI.Clients;
 using GenerativeAI.Core;
+using GenerativeAI.Exceptions;
 using GenerativeAI.Types;
 using Microsoft.Extensions.Logging;
 
@@ -93,7 +94,7 @@ public abstract class GenAI
     public async Task<ListModelsResponse> ListModelsAsync(int? pageSize = null, string? pageToken = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.ModelClient.ListModelsAsync(pageSize, pageToken, cancellationToken);
+        return await this.ModelClient.ListModelsAsync(pageSize, pageToken, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -105,7 +106,7 @@ public abstract class GenAI
     public async Task<Model> GetModelAsync(string modelName,
         CancellationToken cancellationToken = default)
     {
-        return await this.ModelClient.GetModelAsync(modelName, cancellationToken);
+        return await this.ModelClient.GetModelAsync(modelName, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -117,5 +118,17 @@ public abstract class GenAI
     public IPlatformAdapter GetPlatformAdapter()
     {
         return this.Platform;
+    }
+
+    public CorporaManager CreateCorpusManager(IGoogleAuthenticator? authenticator = null)
+    {
+        if (this.Platform.Authenticator == null)
+        {
+            if(authenticator == null)
+                throw new GenerativeAIException("Google Authenticator is required to create a corpus manager","Google Authenticator is required to create a corpus manager");
+            this.Platform.SetAuthenticator(authenticator);
+        }
+        
+        return new CorporaManager(this.Platform, this.HttpClient, this.Logger);
     }
 }

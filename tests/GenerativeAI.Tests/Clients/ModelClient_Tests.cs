@@ -14,7 +14,7 @@ namespace GenerativeAI.Tests.Clients
         {
              var client = CreateClient();
 
-            var response = await client.ListModelsAsync();
+            var response = await client.ListModelsAsync().ConfigureAwait(false);
             
             var models = response.Models;
             models.ShouldNotBeNull();
@@ -47,7 +47,7 @@ namespace GenerativeAI.Tests.Clients
         {
              var client = CreateClient();
 
-            var modelInfo = await client.GetModelAsync(GoogleAIModels.DefaultGeminiModel);
+            var modelInfo = await client.GetModelAsync(GoogleAIModels.DefaultGeminiModel).ConfigureAwait(false);
             modelInfo.Name.ShouldNotBeNullOrEmpty();
             modelInfo.Description.ShouldNotBeNullOrEmpty();
             modelInfo.DisplayName.ShouldNotBeNullOrEmpty();

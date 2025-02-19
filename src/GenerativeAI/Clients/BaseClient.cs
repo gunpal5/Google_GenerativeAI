@@ -46,6 +46,6 @@ public class BaseClient : ApiBase
     protected override async Task AddAuthorizationHeader(HttpRequestMessage request, bool requiredAccessToken = false,
         CancellationToken cancellationToken = default)
     {
-        await _platform.AddAuthorizationAsync(request, requiredAccessToken, cancellationToken).ConfigureAwait(true);
+        await _platform.AddAuthorizationAsync(request, requiredAccessToken, cancellationToken).ConfigureAwait(false);
     }
 }
