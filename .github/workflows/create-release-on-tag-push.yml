@@ -1,43 +1,17 @@
-name: Create Release
+name: Publish Nuget Packages
+on: 
+  workflow_dispatch:
+     inputs:
+       version:
+         required: true
+         description: "Version Number"
+         default: v2.0.14
 
-
-
-on:
-
-  push:
-
-    tags: [ 'v*' ]
-
-
-
-jobs:
-
-  release:
-
-    runs-on: ubuntu-latest
-
-    steps:
-
-      - uses: actions/checkout@v3
-
-      - name: Create Release
-
-        uses: actions/create-release@v1
-
-        env:
-
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-        with:
-
-          tag_name: ${{ github.ref_name }}
-
-          release_name: ${{ github.ref_name }}
-
-          body: | 
-
-            Release notes for version ${{ github.ref_name }}
-
-          draft: false
-
-          prerelease: false
+jobs:  
+  build-test-publish:   
+    name: Creating Github Release
+    uses: gunpal5/workflows/.github/workflows/dotnet_build-test-publish.yml@main       
+    with:
+      generate-build-number: true
+      create-release: true
+      project-version: ${{ needs.update.outputs.new_version }}
