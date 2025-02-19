@@ -6,7 +6,7 @@
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
 <!-- code_chunk_output -->
 
-- [Google GenerativeAI (Gemini) 🌟](#google-generativeai-gemini-)
+- [Google GenerativeAI (Gemini) 🌟](#introduction-)
     - [Introduction 📖](#introduction-)
     - [Usage 💡](#usage-)
     - [Quick Start 🚀](#quick-start-)
@@ -23,7 +23,7 @@
         - [1. Inbuilt Tools (GoogleSearch, GoogleSearchRetrieval, and Code Execution) 🔍💡](#1-inbuilt-tools-googlesearch-googlesearchretrieval-and-code-execution-)
         - [2. Function Calling 🧑‍💻](#2-function-calling-)
     - [Streaming 🚦](#streaming-)
-    - [4. Coming Soon: 🌟](#4-coming-soon-)
+    - [Coming Soon: 🌟](#coming-soon)
     - [Credits 🙌](#credits-)
     - [Explore the Wiki 📚](https://github.com/gunpal5/Google_GenerativeAI/wiki)
     - [API Reference 🔗](https://gunpal5.github.io/generative-ai/)
@@ -461,7 +461,7 @@ Console.WriteLine(); // Newline after the complete response
 
 ---
 
-**4. Coming Soon:**
+## Coming Soon
 
 The following features are planned for future releases of the GenerativeAI SDK:
 
