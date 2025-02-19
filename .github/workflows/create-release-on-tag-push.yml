@@ -12,7 +12,7 @@ jobs:
     name: Creating Github Release
     uses: gunpal5/workflows/.github/workflows/dotnet_build-test-publish.yml@main       
     with:
-      generate-build-number: true
+      generate-build-number: false
       create-release: true
       publish: true
       project-version: ${{ inputs.version }}
