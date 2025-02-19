@@ -14,4 +14,5 @@ jobs:
     with:
       generate-build-number: true
       create-release: true
+      publish: true
       project-version: ${{ needs.update.outputs.new_version }}
