@@ -1,4 +1,5 @@
-﻿using GenerativeAI.Types;
+using GenerativeAI.Types;
+using Json.More;
 using Microsoft.Extensions.AI;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -125,7 +126,7 @@ public static class MicrosoftExtensions
     /// <returns>A <see cref="GenerationConfig"/> instance or null, depending on the input.</returns>
     private static GenerationConfig? ToGenerationConfig(this ChatOptions? options)
     {
-        if (options?.AdditionalProperties == null)
+        if (options is null)
         {
             return null;
         }
@@ -135,9 +136,25 @@ public static class MicrosoftExtensions
         config.TopP = options.TopP;
         config.TopK = options.TopK;
         config.MaxOutputTokens = options.MaxOutputTokens;
-        config.ResponseMimeType = options.ResponseFormat == ChatResponseFormat.Json ? "application/json" : null;
+        config.ResponseMimeType = options.ResponseFormat is ChatResponseFormatJson ? "application/json" : null;
+        if (options.ResponseFormat is ChatResponseFormatJson jsonFormat)
+        {
+            // see also: https://github.com/dotnet/extensions/blob/f775ed6bd07c0dd94ac422dc6098162eef0b48e5/src/Libraries/Microsoft.Extensions.AI/ChatCompletion/ChatClientStructuredOutputExtensions.cs#L186-L192
+            if (jsonFormat.Schema is JsonElement je && je.ValueKind == JsonValueKind.Object)
+            {
+                // Workaround to convert our real json schema to the format Google's api expects
+                var forGoogleApi = GoogleSchemaHelper.ConvertToCompatibleSchemaSubset(je.ToJsonDocument());
+                config.ResponseSchema = forGoogleApi;
+            }
+        }
+
         config.PresencePenalty = options.PresencePenalty;
         config.FrequencyPenalty = options.FrequencyPenalty;
+
+        if (options.AdditionalProperties is null)
+        {
+            return config;
+        }
 
         if (options.AdditionalProperties.TryGetValue("ResponseLogprobs", out bool? responseProbs))
             config.ResponseLogprobs = responseProbs;
