@@ -13,6 +13,7 @@
         - [1. Using Google AI 🌐](#1-using-google-ai-)
         - [2. Using Vertex AI 🌥️](#2-using-vertex-ai-)
     - [Chat Mode 💬](#chat-mode-)
+    - [Streaming 🚦](#streaming-)
     - [Multimodal Capabilities with Overloaded
       `GenerateContentAsync` Methods 🎨🎵](#multimodal-capabilities-with-overloaded-generatecontentasync-methods-)
         - [1. Generating Content with a Local File 🖼️](#1-generating-content-with-a-local-file-)
@@ -23,7 +24,6 @@
         - [1. Inbuilt Tools (GoogleSearch, GoogleSearchRetrieval, and Code Execution) 🔍💡](#1-inbuilt-tools-googlesearch-googlesearchretrieval-and-code-execution-)
         - [2. Function Calling 🧑‍💻](#2-function-calling-)
     - [Semantic Search Retrieval (RAG) with Google AQA 🔎](#semantic-search-retrieval-rag-with-google-aqa-)
-    - [Streaming 🚦](#streaming-)
     - [Coming Soon: 🌟](#coming-soon)
     - [Credits 🙌](#credits-)
     - [Explore the Wiki 📚](https://github.com/gunpal5/Google_GenerativeAI/wiki)
@@ -33,7 +33,7 @@
 
 ## Introduction 📖
 
-Unofficial C# SDK based on Google GenerativeAI (Gemini Pro) REST APIs.  
+Unofficial C# .Net SDK based on Google GenerativeAI (Gemini Pro) REST APIs.  
 This new version is a complete rewrite of the previous SDK, designed to improve performance, flexibility, and ease of
 use. It seamlessly integrates with [LangChain.net](https://github.com/tryAGI/LangChain), providing easy methods for
 JSON-based interactions and function calling with Google Gemini models.
@@ -73,7 +73,7 @@ and obtaining the necessary API key from your Google account.
 ## Quick Start 🚀
 
 Below are two common ways to initialize and use the SDK. For a full list of supported approaches, please refer to
-our [Wiki Page](https://github.com/gunpal5/Google_GenerativeAI/wiki) (replace with actual link).
+our [Wiki Page](https://github.com/gunpal5/Google_GenerativeAI/wiki/initialization)
 
 ---
 
@@ -217,7 +217,31 @@ Console.WriteLine(response.Text());
 ```
 
 Each conversation preserves the context from previous messages, making it ideal for multi-turn or multi-step reasoning
-tasks. For more details, please check our [Wiki](https://github.com/gunpal5/Google_GenerativeAI/wiki).
+tasks. For more details, please check our [Wiki](https://github.com/gunpal5/Google_GenerativeAI/wiki/Chat-Session).
+---
+## Streaming 🌊
+
+The GenerativeAI SDK supports streaming responses, allowing you to receive and process parts of the model's output as
+they become available, rather than waiting for the entire response to be generated. This is particularly useful for
+long-running generation tasks or for creating more responsive user interfaces.
+
+* **`StreamContentAsync()`:** Use this method for streaming text responses. It returns an
+  `IAsyncEnumerable<GenerateContentResponse>`, which you can iterate over using `await foreach`.
+
+**Example (`StreamContentAsync()`):**
+
+```csharp
+using GenerativeAI;
+
+// ... (Assume model is already initialized) ...
+
+var prompt = "Write a long story about a cat.";
+await foreach (var chunk in model.StreamContentAsync(prompt))
+{
+    Console.Write(chunk.Text); // Print each chunk as it arrives
+}
+Console.WriteLine(); // Newline after the complete response
+```
 
 ---
 
@@ -347,7 +371,7 @@ The GenerativeAI SDK makes it simple to work with JSON data from Gemini. You hav
 
 These options give you flexibility in how you handle JSON data with the GenerativeAI SDK.
 
-**Read the [wiki](https://github.com/gunpal5/Google_GenerativeAI/wiki) for more options.**
+**Read the [wiki](https://github.com/gunpal5/Google_GenerativeAI/wiki/Json-Mode) for more options.**
 
 ## Gemini Tools and Function Calling 🛠️
 
@@ -434,7 +458,7 @@ var result = await model.GenerateContentAsync("Weather in SF?");
 Console.WriteLine(result.Text);
 ```
 
-**For more details and options, see the [wiki](https://github.com/gunpal5/Google_GenerativeAI/wiki).**
+**For more details and options, see the [wiki](https://github.com/gunpal5/Google_GenerativeAI/wiki/Function-Calling).**
 ---
 ## Semantic Search Retrieval (RAG) with Google AQA 🔎
 
@@ -447,42 +471,17 @@ This library leverages **Google's Attributed Question Answering (AQA)** model, w
 *   **Easy Integration:** The `Google_GenerativeAI` library provides a simple API to create corpora, add documents, and perform semantic searches.
 
 **For a step-by-step tutorial on implementing Semantic Search Retrieval with Google AQA, see the [wiki page](https://github.com/gunpal5/Google_GenerativeAI/wiki/Semantic-Search-Retrieval-with-Google-AQA).**
----
-## Streaming 🌊
-
-The GenerativeAI SDK supports streaming responses, allowing you to receive and process parts of the model's output as
-they become available, rather than waiting for the entire response to be generated. This is particularly useful for
-long-running generation tasks or for creating more responsive user interfaces.
-
-* **`StreamContentAsync()`:** Use this method for streaming text responses. It returns an
-  `IAsyncEnumerable<GenerateContentResponse>`, which you can iterate over using `await foreach`.
-
-**Example (`StreamContentAsync()`):**
-
-```csharp
-using GenerativeAI;
-
-// ... (Assume model is already initialized) ...
-
-var prompt = "Write a long story about a cat.";
-await foreach (var chunk in model.StreamContentAsync(prompt))
-{
-    Console.Write(chunk.Text); // Print each chunk as it arrives
-}
-Console.WriteLine(); // Newline after the complete response
-```
-
----
 
 ## Coming Soon
 
 The following features are planned for future releases of the GenerativeAI SDK:
 
-*   [ ] **Model Tuning 🎛️:**  Customize Gemini models to better suit your specific needs and data. 
 *   [x] **Semantic Search Retrieval (RAG 🔎):**  Use Gemini as a Retrieval-Augmented Generation (RAG) system, allowing it
     to incorporate information from external sources into its responses. ***(Released on 20th Feb, 2025)***
 *   [ ] **Image Generation 🎨:** Generate images with imagen from text prompts, expanding Gemini's capabilities beyond
     text and code.
+*   [ ] **Multimodal Live API🎛️:**  Bidirectional Multimodal Live Chat with Gemini 2.0 Flash
+*   [ ] **Model Tuning 🎛️:**  Customize Gemini models to better suit your specific needs and data.
 
 ---
 
