@@ -1,4 +1,5 @@
 using GenerativeAI.Types;
+using Json.More;
 using Microsoft.Extensions.AI;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -138,7 +139,13 @@ public static class MicrosoftExtensions
         config.ResponseMimeType = options.ResponseFormat is ChatResponseFormatJson ? "application/json" : null;
         if (options.ResponseFormat is ChatResponseFormatJson jsonFormat)
         {
-            config.ResponseSchema = jsonFormat.Schema;
+            // see also: https://github.com/dotnet/extensions/blob/f775ed6bd07c0dd94ac422dc6098162eef0b48e5/src/Libraries/Microsoft.Extensions.AI/ChatCompletion/ChatClientStructuredOutputExtensions.cs#L186-L192
+            if (jsonFormat.Schema is JsonElement je && je.ValueKind == JsonValueKind.Object)
+            {
+                // Workaround to convert our real json schema to the format Google's api expects
+                var forGoogleApi = GoogleSchemaHelper.ConvertToCompatibleSchemaSubset(je.ToJsonDocument());
+                config.ResponseSchema = forGoogleApi;
+            }
         }
 
         config.PresencePenalty = options.PresencePenalty;

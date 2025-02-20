@@ -1,10 +1,9 @@
-﻿using System.Text.Json;
-using System.Text.Json.Serialization;
-using Json.More;
+﻿using Json.More;
 using Json.Schema;
 using Json.Schema.Generation;
-using Json.Schema.Generation.Intents;
+using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 namespace GenerativeAI.Types;
 
@@ -95,75 +94,9 @@ PropertyNameResolver = propertyResolver,
 
 
             //Work around to avoid type as array
-            var schema = ConvertToSchema(constructedSchema);
+            var schema = GoogleSchemaHelper.ConvertToCompatibleSchemaSubset(constructedSchema);
 
             JsonSerializer.Serialize(jsonWriter, schema, schema.GetType(), jsonOptions);
-        }
-    }
-
-    private Schema ConvertToSchema(JsonDocument constructedSchema)
-    {
-#if NET6_0_OR_GREATER
-        var node = constructedSchema.RootElement.AsNode();
-        ConvertNullableProperties(node);
-
-
-        var x1 = node;
-        var x2 = JsonSerializer.Serialize(x1);
-        var schema = JsonSerializer.Deserialize<Schema>(x2);
-        return schema;
-#else
-        var schema = JsonSerializer.Deserialize<Schema>(constructedSchema.RootElement.GetRawText());
-        return schema;
-#endif
-    }
-
-    private static void ConvertNullableProperties(JsonNode? node)
-    {
-        // If the node is an object, look for a "type" property or nested definitions
-        if (node is JsonObject obj)
-        {
-            // If "type" is an array, remove "null" and collapse if it leaves only one type
-            if (obj.TryGetPropertyValue("type", out var typeValue) && typeValue is JsonArray array)
-            {
-                foreach (JsonValue r in array)
-                {
-#if NET6_0_OR_GREATER
-                    var val = r?.GetValue<string>();
-#else
-                    var val = r?.GetValue<string>();
-#endif
-                    if (val == "null")
-                        continue;
-                    obj["type"] = val;
-                    break;
-                }
-            }
-
-            // Recursively convert any nested schema in "properties"
-            if (obj.TryGetPropertyValue("properties", out var propertiesNode) &&
-                propertiesNode is JsonObject propertiesObj)
-            {
-                foreach (var property in propertiesObj)
-                {
-                    ConvertNullableProperties(property.Value);
-                }
-            }
-
-            // Recursively convert any nested schema in "items"
-            if (obj.TryGetPropertyValue("items", out var itemsNode))
-            {
-                ConvertNullableProperties(itemsNode);
-            }
-        }
-
-        // If the node is an array, traverse each element
-        if (node is JsonArray arr)
-        {
-            foreach (var element in arr)
-            {
-                ConvertNullableProperties(element);
-            }
         }
     }
 }
