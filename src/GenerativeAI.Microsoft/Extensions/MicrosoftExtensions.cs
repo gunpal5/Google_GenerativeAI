@@ -125,7 +125,7 @@ public static class MicrosoftExtensions
     /// <returns>A <see cref="GenerationConfig"/> instance or null, depending on the input.</returns>
     private static GenerationConfig? ToGenerationConfig(this ChatOptions? options)
     {
-        if (options?.AdditionalProperties == null)
+        if (options is null)
         {
             return null;
         }
@@ -143,6 +143,11 @@ public static class MicrosoftExtensions
 
         config.PresencePenalty = options.PresencePenalty;
         config.FrequencyPenalty = options.FrequencyPenalty;
+
+        if (options.AdditionalProperties is null)
+        {
+            return config;
+        }
 
         if (options.AdditionalProperties.TryGetValue("ResponseLogprobs", out bool? responseProbs))
             config.ResponseLogprobs = responseProbs;
