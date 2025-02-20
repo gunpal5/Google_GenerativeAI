@@ -33,7 +33,7 @@
 
 ## Introduction 📖
 
-Unofficial C# .Net SDK based on Google GenerativeAI (Gemini Pro) REST APIs.  
+Unofficial C# .Net Google GenerativeAI (Gemini Pro) SDK based on REST APIs.  
 This new version is a complete rewrite of the previous SDK, designed to improve performance, flexibility, and ease of
 use. It seamlessly integrates with [LangChain.net](https://github.com/tryAGI/LangChain), providing easy methods for
 JSON-based interactions and function calling with Google Gemini models.
