@@ -231,4 +231,20 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
     {
        this.Authenticator = authenticator;
     }
+
+    public string GetMultiModalLiveUrl(string version = "v1alpha")
+    {
+        return $"{BaseUrls.GoogleMultiModalLive.Replace("{version}",version)}?key={this.Credentials.ApiKey}";
+    }
+    
+    /// <inheritdoc />
+    public async Task<AuthTokens?> GetAccessTokenAsync(CancellationToken cancellationToken = default)
+    {
+        return null;
+    }
+
+    public string? GetMultiModalLiveModalName(string modelName)
+    {
+        return modelName.ToModelId();
+    }
 }

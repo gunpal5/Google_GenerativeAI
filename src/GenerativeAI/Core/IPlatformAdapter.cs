@@ -83,4 +83,15 @@ public interface IPlatformAdapter
     /// </summary>
     /// <param name="authenticator">The Google authenticator to be used for handling authentication operations.</param>
     void SetAuthenticator(IGoogleAuthenticator authenticator);
+
+    string GetMultiModalLiveUrl(string version = "v1alpha");
+
+    /// <summary>
+    /// Retrieves the access token required for making authenticated API requests.
+    /// </summary>
+    /// <param name="cancellationToken">The cancellation token to cancel the operation if needed.</param>
+    /// <returns>A task that represents the asynchronous operation, containing the authentication tokens.</returns>
+    Task<AuthTokens?> GetAccessTokenAsync(CancellationToken cancellationToken = default);
+
+    string? GetMultiModalLiveModalName(string modelName);
 }

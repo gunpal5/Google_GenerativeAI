@@ -23,7 +23,7 @@ public static class GoogleSchemaHelper
 
         var x1 = node;
         var x2 = JsonSerializer.Serialize(x1);
-        var schema = JsonSerializer.Deserialize<Schema>(x2);
+        var schema = JsonSerializer.Deserialize(x2,SchemaSourceGenerationContext.Default.Schema);
         return schema;
 #else
         var schema = JsonSerializer.Deserialize<Schema>(constructedSchema.RootElement.GetRawText());

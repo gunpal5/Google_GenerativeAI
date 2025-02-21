@@ -57,7 +57,7 @@ public class AuthTokens
         if(string.IsNullOrEmpty(AccessToken))
             return false;
         
-        if(ExpiryTime.HasValue && ExpiryTime.Value.ToUniversalTime() < DateTime.UtcNow)
+        if(ExpiryTime.HasValue && ExpiryTime.Value < DateTime.UtcNow)
             return false;
         return true;
     }

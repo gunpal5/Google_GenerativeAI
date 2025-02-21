@@ -23,6 +23,7 @@
     - [Gemini Tools and Function Calling 🧰](#gemini-tools-and-function-calling-)
         - [1. Inbuilt Tools (GoogleSearch, GoogleSearchRetrieval, and Code Execution) 🔍💡](#1-inbuilt-tools-googlesearch-googlesearchretrieval-and-code-execution-)
         - [2. Function Calling 🧑‍💻](#2-function-calling-)
+    
     - [Semantic Search Retrieval (RAG) with Google AQA 🔎](#semantic-search-retrieval-rag-with-google-aqa-)
     - [Coming Soon: 🌟](#coming-soon)
     - [Credits 🙌](#credits-)

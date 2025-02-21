@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net9.0-windows</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UseWPF>true</UseWPF>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Google_GenerativeAI.Auth" Version="2.0.14" />
+      <PackageReference Include="MdXaml.Full" Version="1.27.0" />
+      <PackageReference Include="NAudio" Version="2.2.1" />
+      <PackageReference Include="PvRecorder" Version="1.2.10" />
+      <PackageReference Include="WPF-UI" Version="4.0.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\GenerativeAI.Live\GenerativeAI.Live.csproj" />
+    </ItemGroup>
+
+</Project>

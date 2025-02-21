@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <IsPackable>false</IsPackable>
+        <OutputType>Exe</OutputType>
+    </PropertyGroup>
+
+    <ItemGroup>
+<!--        <PackageReference Include="coverlet.collector" Version="6.0.2"/>-->
+<!--        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1"/>     -->
+<!--        <PackageReference Include="xunit.v3" Version="1.1.0" />-->
+    </ItemGroup>
+
+    <ItemGroup>
+<!--        <Using Include="Xunit"/>-->
+    </ItemGroup>
+
+    <ItemGroup>
+<!--      <ProjectReference Include="..\..\tests\GenerativeAI.TestBase\GenerativeAI.TestBase.csproj" />-->
+      <ProjectReference Include="..\..\src\GenerativeAI.Live\GenerativeAI.Live.csproj" />
+     </ItemGroup>
+
+</Project>

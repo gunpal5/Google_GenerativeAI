@@ -124,7 +124,7 @@ public static class MicrosoftExtensions
     /// </summary>
     /// <param name="options">The chat options defining parameters for content generation.</param>
     /// <returns>A <see cref="GenerationConfig"/> instance or null, depending on the input.</returns>
-    private static GenerationConfig? ToGenerationConfig(this ChatOptions? options)
+    public static GenerationConfig? ToGenerationConfig(this ChatOptions? options)
     {
         if (options is null)
         {
@@ -136,6 +136,8 @@ public static class MicrosoftExtensions
         config.TopP = options.TopP;
         config.TopK = options.TopK;
         config.MaxOutputTokens = options.MaxOutputTokens;
+        config.StopSequences = options.StopSequences?.ToList();
+        config.Seed = (int) options.Seed!;
         config.ResponseMimeType = options.ResponseFormat is ChatResponseFormatJson ? "application/json" : null;
         if (options.ResponseFormat is ChatResponseFormatJson jsonFormat)
         {
@@ -158,8 +160,8 @@ public static class MicrosoftExtensions
 
         if (options.AdditionalProperties.TryGetValue("ResponseLogprobs", out bool? responseProbs))
             config.ResponseLogprobs = responseProbs;
-        if (options.AdditionalProperties.TryGetValue("Logprobs", out bool? logProbs))
-            config.ResponseLogprobs = logProbs;
+        if (options.AdditionalProperties.TryGetValue("Logprobs", out int? logProbs))
+            config.Logprobs = logProbs;
         return config;
     }
 
@@ -210,18 +212,21 @@ public static class MicrosoftExtensions
     /// <returns>A new <see cref="ChatResponseUpdate"/> object reflecting the data in the provided <see cref="GenerateContentResponse"/>.</returns>
     public static ChatResponseUpdate ToChatResponseUpdate(this GenerateContentResponse? response)
     {
+        if(response == null) throw new ArgumentNullException(nameof(response));
+        
         return new ChatResponseUpdate
         {
+            Contents = response.Candidates.Select(s => s.Content).SelectMany(s => s.Parts).ToList().ToAiContents(),
             ChoiceIndex = 0,
-            CreatedAt = null,
             AdditionalProperties = null,
             FinishReason = response?.Candidates?.FirstOrDefault()?.FinishReason == FinishReason.OTHER
                 ? ChatFinishReason.Stop
                 : null,
             RawRepresentation = response,
-            ResponseId = null,
+            //ResponseId = response.id,
             Role = ToChatRole(response?.Candidates?.FirstOrDefault()?.Content?.Role),
-            Text = response?.Text(),
+            
+           // Text = response?.Candidates?.FirstOrDefault()?.Content?.Parts?.Select(p => p.Text).FirstOrDefault() // Assuming extracting text from parts
         };
     }
 
@@ -391,6 +396,10 @@ public static class MicrosoftExtensions
     /// <returns>A dictionary where the keys represent argument names and values represent their corresponding data, or null if conversion is not possible.</returns>
     private static IDictionary<string, object?>? ConvertFunctionCallArg(object? functionCallArgs)
     {
+        if (functionCallArgs != null && functionCallArgs is not JsonElement)
+        {
+            functionCallArgs = JsonSerializer.Deserialize<dynamic>(JsonSerializer.Serialize(functionCallArgs));
+        }
         if (functionCallArgs is JsonElement jsonElement)
         {
             if (jsonElement.ValueKind == JsonValueKind.Object)

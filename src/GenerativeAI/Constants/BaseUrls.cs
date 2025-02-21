@@ -28,4 +28,11 @@ public static class BaseUrls
     /// or project-specific details, facilitating more streamlined and general-purpose API interactions.
     /// </summary>
     public const string VertexAIExpress = "https://aiplatform.googleapis.com";
+
+    public const string GoogleMultiModalLive =
+        "wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.{version}.GenerativeService.BidiGenerateContent";
+    public const string VertexMultiModalLiveGlobal =
+        "wss://aiplatform.googleapis.com/ws/google.cloud.aiplatform.{version}.LlmBidiService/BidiGenerateContent";
+    public const string VertexMultiModalLive =
+        "wss://{location}-aiplatform.googleapis.com/ws/google.cloud.aiplatform.{version}.LlmBidiService/BidiGenerateContent";
 }

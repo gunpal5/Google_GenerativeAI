@@ -75,8 +75,6 @@ sealed class ObjectToJsonSchemaConverter : JsonConverter<object>
              {
                  propertyResolver = PropertyNameResolvers.UpperSnakeCase;
              }
-#endif
-#if NET_6_0_OR_GREATER
 var generatorConfig = new SchemaGeneratorConfiguration
              {
 PropertyNameResolver = propertyResolver,

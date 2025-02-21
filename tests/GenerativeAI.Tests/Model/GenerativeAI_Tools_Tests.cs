@@ -59,7 +59,7 @@ public class GenerativeAI_Tools_Tests:TestBase
     {
         // Arrange
         var model = InitializeModel(useGoogleSearch: true);
-
+        model.UseGoogleSearch = true;
         var prompt = "What is the current Google stock price?";
         
 

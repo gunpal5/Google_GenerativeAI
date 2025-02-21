@@ -383,4 +383,30 @@ public class VertextPlatformAdapter : IPlatformAdapter
     {
         this.Authenticator = authenticator;
     }
+
+    public string GetMultiModalLiveUrl(string version = "v1alpha")
+    {
+        return BaseUrls.VertexMultiModalLive.Replace("{version}", "v1beta1").Replace("{location}", Region).Replace("{projectId}",ProjectId);
+    }
+
+    
+    /// <inheritdoc />
+    public async Task<AuthTokens?> GetAccessTokenAsync(CancellationToken cancellationToken = default)
+    {
+        if(this.Credentials == null || this.Credentials.AuthToken == null)
+            await this.AuthorizeAsync(cancellationToken).ConfigureAwait(false);
+        if(this.Credentials.AuthToken != null && this.Credentials.AuthToken.Validate() == false)
+            throw new UnauthorizedAccessException("Unable to get access token. Please try again.");
+        return this.Credentials.AuthToken;
+    }
+
+    public string? GetMultiModalLiveModalName(string modelName)
+    {
+       var transformed = "projects/{project}/locations/{location}/publishers/google/{model}";
+//        var transformed = "publishers/google/{model}";
+        //var transformed = "{model}";
+        var id = transformed.Replace("{project}", ProjectId).Replace("{location}", Region).Replace("{model}", modelName.ToModelId());
+        return id;
+
+    }
 }

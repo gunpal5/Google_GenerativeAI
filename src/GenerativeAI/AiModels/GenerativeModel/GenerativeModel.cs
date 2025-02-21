@@ -278,6 +278,9 @@ namespace GenerativeAI
         {
             return new ChatSession(history,this.Platform,this.Model,config??this.Config,safetySettings??this.SafetySettings,systemInstruction??this.SystemInstruction,this.HttpClient,this.Logger);
         }
+
+        
+        
         #endregion
     }
 }

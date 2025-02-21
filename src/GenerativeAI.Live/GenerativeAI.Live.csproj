@@ -1,0 +1,52 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFrameworks>net6.0;net7.0;net8.0;net9.0;</TargetFrameworks>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
+        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+        <PackageId>Google_$(AssemblyName)</PackageId>
+        <Title>Google MultiModal Live API Module for Google Generative AI SDK</Title>
+        <Authors>Gunpal Jain</Authors>
+        <Company/>
+        <Description>Gemini MultiModal Live API module for Google Generative AI SDK</Description>
+        <PackageProjectUrl>https://github.com/gunpal5/Google_GenerativeAI</PackageProjectUrl>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <RepositoryUrl>https://github.com/gunpal5/Google_GenerativeAI</RepositoryUrl>
+        <PackageTags>Gemini,Google,GenerativeAI,GoogleGemini.Net,Google,Gemini,Gemini .Net,GoogleGemini,GenerativeAI .Net,Vertex AI,API,Module,MultiModal</PackageTags>
+        <Version>2.0.15</Version>
+        <AssemblyVersion>2.0.15</AssemblyVersion>
+        <FileVersion>2.0.15</FileVersion>
+        <SignAssembly>True</SignAssembly>
+        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    </PropertyGroup>
+
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net9.0'">
+
+    </ItemGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0'">
+
+    </ItemGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0'">
+
+    </ItemGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0'">
+
+    </ItemGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
+
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net462'">
+
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\GenerativeAI\GenerativeAI.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Websocket.Client" Version="5.1.2" />
+    </ItemGroup>
+
+</Project>

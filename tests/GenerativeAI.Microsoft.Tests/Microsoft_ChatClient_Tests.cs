@@ -35,15 +35,14 @@ public class Microsoft_ChatClient_Tests : TestBase
     /// </summary>
     private IPlatformAdapter CreateTestPlatformAdapter()
     {
-
         return new GoogleAIPlatformAdapter("ldkfhkldsa hfhls");
     }
-
-    
 
     #endregion
 
     #region Constructor Tests
+
+   
 
     [Fact, TestPriority(1)]
     public void ShouldCreateWithBasicConstructor()
@@ -90,14 +89,17 @@ public class Microsoft_ChatClient_Tests : TestBase
         var client = new GenerativeAIChatClient(adapter);
 
         // Act & Assert
-        await Should.ThrowAsync<ArgumentNullException>(async () => { await client.GetResponseAsync((string)null!).ConfigureAwait(false); }).ConfigureAwait(false);
+        await Should.ThrowAsync<ArgumentNullException>(async () =>
+        {
+            await client.GetResponseAsync((string)null!).ConfigureAwait(false);
+        }).ConfigureAwait(false);
         Console.WriteLine("CompleteAsync threw ArgumentNullException as expected when chatMessages was null.");
     }
 
     [Fact, TestPriority(4)]
     public async Task ShouldReturnChatCompletionOnValidInput()
     {
-        Assert.SkipWhen(!IsGeminiApiKeySet,GeminiTestSkipMessage);
+        Assert.SkipWhen(!IsGeminiApiKeySet, GeminiTestSkipMessage);
         // Arrange
         var adapter = GetTestGooglePlatform();
         var client = new GenerativeAIChatClient(adapter);
@@ -119,8 +121,8 @@ public class Microsoft_ChatClient_Tests : TestBase
         result.ShouldNotBeNull();
         result.Choices.ShouldNotBeNull();
         Console.WriteLine(result.Choices[0].Text);
-        
-        
+
+
         Console.WriteLine("CompleteAsync returned a valid ChatCompletion when given valid input.");
     }
 
@@ -228,7 +230,7 @@ public class Microsoft_ChatClient_Tests : TestBase
 
     protected override IPlatformAdapter GetTestGooglePlatform()
     {
-        Assert.SkipWhen(!IsGeminiApiKeySet,GeminiTestSkipMessage);
+        Assert.SkipWhen(!IsGeminiApiKeySet, GeminiTestSkipMessage);
         return new GoogleAIPlatformAdapter("sldakfhklash fklasdhklf");
     }
 }

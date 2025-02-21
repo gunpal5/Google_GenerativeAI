@@ -12,7 +12,7 @@ public class VertexAI_Tests:TestBase
         
     }
 
-    [Fact]
+    [Fact(Skip = "Skip until we have a valid project id")]
     public async Task ShouldThrowException_WhenProjectIdsAreInvalid()
     {
         await Should.ThrowAsync<Exception>(async () =>
