@@ -22,8 +22,8 @@
     - [Easy JSON Handling 🛠️](#easy-json-handling-)
     - [Gemini Tools and Function Calling 🧰](#gemini-tools-and-function-calling-)
         - [1. Inbuilt Tools (GoogleSearch, GoogleSearchRetrieval, and Code Execution) 🔍💡](#1-inbuilt-tools-googlesearch-googlesearchretrieval-and-code-execution-)
-        - [2. Function Calling 🧑‍💻](#2-function-calling-)
-    
+        - [2. Function Calling 🧑‍💻](#2-function-calling-)    
+    - [Multimodal Live API](#multimodal-live-api-)
     - [Semantic Search Retrieval (RAG) with Google AQA 🔎](#semantic-search-retrieval-rag-with-google-aqa-)
     - [Coming Soon: 🌟](#coming-soon)
     - [Credits 🙌](#credits-)
@@ -50,14 +50,17 @@ Highlights of this release include:
    operations with Google Gemini.
 6. **Vertex AI Support 🌥️** – Introducing direct support for Vertex AI, including multiple authentication methods such
    as OAuth, Service Account, and ADC (Application Default Credentials).
-7. **New Packages 📦** – Modularizes features to help you tailor the SDK to your needs:
+7. **Multimodal Live API** - Enables real-time interaction with multimodal content (text, images, audio) for dynamic and
+   responsive applications.
+8. **New Packages 📦** – Modularizes features to help you tailor the SDK to your needs:
 
-| **Package**            | **Version**                                                                                                                                       | **Description**                                                                                                                                                                  |
-|------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| GenerativeAI.Tools     | [![NuGet version](https://img.shields.io/nuget/vpre/Google_GenerativeAI.Tools)](https://www.nuget.org/packages/Google_GenerativeAI.Tools)         | Provides function tooling and code generation using tryAgi CSharpToJsonSchema. Ideal for scenarios where you need to define functions and automate their JSON schema generation. |
-| GenerativeAI.Auth      | [![NuGet version](https://img.shields.io/nuget/vpre/Google_GenerativeAI.Auth)](https://www.nuget.org/packages/Google_GenerativeAI.Auth)           | Offers various Google authentication mechanisms, including OAuth, Service Account, and Application Default Credentials (ADC). Streamlines credential management.                 |
-| GenerativeAI.Microsoft | [![NuGet version](https://img.shields.io/nuget/vpre/Google_GenerativeAI.Microsoft)](https://www.nuget.org/packages/Google_GenerativeAI.Microsoft) | Implements the IChatClient interface from Microsoft.Extensions.AI, enabling seamless integration with Microsoft’s AI ecosystem and services.                                     |
-| GenerativeAI.Web       | [![NuGet version](https://img.shields.io/nuget/vpre/Google_GenerativeAI.Web)](https://www.nuget.org/packages/Google_GenerativeAI.Web)             | Contains extension methods to integrate GenerativeAI into .NET web applications, simplifying setup for web projects that utilize Gemini models.                                  |
+| **Package**               | **Version**                                                                                                                                       | **Description**                                                                                                                                                                  |
+|---------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Google_GenerativeAI.Tools | [![NuGet version](https://img.shields.io/nuget/vpre/Google_GenerativeAI.Tools)](https://www.nuget.org/packages/Google_GenerativeAI.Tools)         | Provides function tooling and code generation using tryAgi CSharpToJsonSchema. Ideal for scenarios where you need to define functions and automate their JSON schema generation. |
+| Google_GenerativeAI.Auth         | [![NuGet version](https://img.shields.io/nuget/vpre/Google_GenerativeAI.Auth)](https://www.nuget.org/packages/Google_GenerativeAI.Auth)           | Offers various Google authentication mechanisms, including OAuth, Service Account, and Application Default Credentials (ADC). Streamlines credential management.                 |
+| Google_GenerativeAI.Microsoft    | [![NuGet version](https://img.shields.io/nuget/vpre/Google_GenerativeAI.Microsoft)](https://www.nuget.org/packages/Google_GenerativeAI.Microsoft) | Implements the IChatClient interface from Microsoft.Extensions.AI, enabling seamless integration with Microsoft’s AI ecosystem and services.                                     |
+| Google_GenerativeAI.Web          | [![NuGet version](https://img.shields.io/nuget/vpre/Google_GenerativeAI.Web)](https://www.nuget.org/packages/Google_GenerativeAI.Web)             | Contains extension methods to integrate GenerativeAI into .NET web applications, simplifying setup for web projects that utilize Gemini models.                                  |
+| Google_GenerativeAI.Live         | [![NuGet version](https://img.shields.io/nuget/vpre/Google_GenerativeAI.Live)](https://www.nuget.org/packages/Google_GenerativeAI.Live)           | Enables Google Multimodal Live API integration for advanced realtime communication in .NET applications. |
 
 By merging the best of the old version with these new capabilities, the SDK provides a smoother developer experience and
 a wide range of features to leverage Google Gemini.
@@ -461,6 +464,88 @@ Console.WriteLine(result.Text);
 
 **For more details and options, see the [wiki](https://github.com/gunpal5/Google_GenerativeAI/wiki/Function-Calling).**
 ---
+
+## Multimodal Live API 🎛️
+
+The **Google_GenerativeAI SDK** now conveniently supports the **Google Multimodal Live API** through the
+`Google_GenerativeAI.Live` package. This module enables real-time, interactive conversations with Gemini models by
+leveraging **WebSockets** for text and audio data exchange. It’s ideally suited for building live, multimodal
+experiences, such as chat or voice-enabled applications.
+
+### Key Features
+
+The `Google_GenerativeAI.Live` package provides a comprehensive implementation of the Multimodal Live API, offering:
+
+- **Real-time Communication:** Enables two-way transmission of text and audio data for live conversational experiences.
+- **Modality Support:** Allows model responses in multiple formats, including **text** and **audio**, depending on your
+  configuration.
+- **Asynchronous Operations:** Fully asynchronous API ensures non-blocking calls for data transmission and reception.
+- **Event-driven Design:** Exposes events for key stages of interaction, including connection status, message reception,
+  and audio streaming.
+- **Audio Handling:** Built-in support for streaming audio, with configurability for sample rates and headers.
+- **Custom Tool Integration:** Allows extending functionality by integrating custom tools directly into the interaction.
+- **Robust Error Handling:** Manages errors gracefully, along with reconnection support.
+- **Flexible Configuration:** Supports customizing generation configurations, safety settings, and system instructions
+  before establishing a connection.
+
+### How to Get Started
+
+To leverage the Multimodal Live API in your project, you’ll need to install the `Google_GenerativeAI.Live` NuGet package
+and create a `MultiModalLiveClient`. Here’s a quick overview:
+
+#### Installation
+
+Install the `Google_GenerativeAI.Live` package via NuGet:
+
+```bash
+Install-Package Google_GenerativeAI.Live
+```
+
+#### Example Usage
+
+With the `MultiModalLiveClient`, interacting with the Multimodal Live API is simple:
+
+```csharp
+using GenerativeAI.Live;
+
+public async Task RunLiveConversationAsync()
+{
+    var client = new MultiModalLiveClient(
+        platformAdapter: new GoogleAIPlatformAdapter(), 
+        modelName: "gemini-1.5-flash-exp", 
+        generationConfig: new GenerationConfig { ResponseModalities = { Modality.TEXT, Modality.AUDIO } }, 
+        safetySettings: null, 
+        systemInstruction: "You are a helpful assistant."
+    );
+
+    client.Connected += (s, e) => Console.WriteLine("Connected!");
+    client.TextChunkReceived += (s, e) => Console.WriteLine($"Text chunk: {e.TextChunk}");
+    client.AudioChunkReceived += (s, e) => Console.WriteLine($"Audio received: {e.Buffer.Length} bytes");
+    
+    await client.ConnectAsync();
+
+    await client.SentTextAsync("Hello, Gemini! What's the weather like?");
+    await client.SendAudioAsync(audioData: new byte[] { /* audio bytes */ }, audioContentType: "audio/pcm; rate=16000");
+
+    Console.ReadKey();
+    await client.DisconnectAsync();
+}
+```
+
+### Events
+
+The `MultiModalLiveClient` provides various events to plug into for real-time updates during interaction:
+
+- **Connected:** Triggered when the connection is successfully established.
+- **Disconnected:** Triggered when the connection ends gracefully or abruptly.
+- **MessageReceived:** Raised when any data (text or audio) is received.
+- **TextChunkReceived:** Triggered when chunks of text are received in real time.
+- **AudioChunkReceived:** Triggered when audio chunks are streamed from Gemini.
+- **AudioReceiveCompleted:** Triggered when a complete audio response is received.
+- **ErrorOccurred:** Raised when an error occurs during interaction or connection.
+
+For more details and examples, refer to the  [wiki](https://github.com/gunpal5/Google_GenerativeAI/wiki).
+---
 ## Semantic Search Retrieval (RAG) with Google AQA 🔎
 
 The `Google_GenerativeAI` library makes implementing **Retrieval-Augmented Generation (RAG)** incredibly easy. RAG combines the strengths of Large Language Models (LLMs) with the precision of information retrieval.  Instead of relying solely on the LLM's pre-trained knowledge, a RAG system first *retrieves* relevant information from a knowledge base (a "corpus" of documents) and then uses that information to *augment* the LLM's response. This allows the LLM to generate more accurate, factual, and context-aware answers.
@@ -481,7 +566,7 @@ The following features are planned for future releases of the GenerativeAI SDK:
     to incorporate information from external sources into its responses. ***(Released on 20th Feb, 2025)***
 *   [ ] **Image Generation 🎨:** Generate images with imagen from text prompts, expanding Gemini's capabilities beyond
     text and code.
-*   [ ] **Multimodal Live API🎛️:**  Bidirectional Multimodal Live Chat with Gemini 2.0 Flash
+*   [x] **Multimodal Live API🎛️:**  Bidirectional Multimodal Live Chat with Gemini 2.0 Flash (Added on 22nd Fed, 2025)
 *   [ ] **Model Tuning 🎛️:**  Customize Gemini models to better suit your specific needs and data.
 
 ---
