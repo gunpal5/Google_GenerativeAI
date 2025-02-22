@@ -399,7 +399,7 @@ public class MultiModalLiveClient : IDisposable
     {
         _logger?.LogConnectionAttempt();
 
-        var url = _platformAdapter.GetMultiModalLiveUrl("v1beta1");
+        var url = _platformAdapter.GetMultiModalLiveUrl();
         var socketClient = await GetClient();
         _client = socketClient.WithReconnect(url); // Use the factory and an extension method for clarity
 
