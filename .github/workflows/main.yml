@@ -37,13 +37,14 @@ jobs:
   build-test-publish:   
     name: Publishing
     needs: [update]
+    permissions: write-all
     uses: gunpal5/workflows/.github/workflows/dotnet_build-test-publish.yml@main    
     secrets:
       nuget-key: ${{ secrets.NUGET_KEY }}
     with:
       generate-build-number: false
       create-release: true
-      publish: false
+      publish: true
       project-version: ${{ needs.update.outputs.new_version }}
  
       
