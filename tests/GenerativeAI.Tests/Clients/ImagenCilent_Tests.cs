@@ -111,6 +111,7 @@ public class ImageModel_Tests:TestBase
     }
     protected override IPlatformAdapter GetTestVertexAIPlatform()
     {
+        Assert.SkipWhen(SkipVertexAITests, VertextTestSkipMesaage);
         var testServiceAccount = Environment.GetEnvironmentVariable("GOOGLE_SERVICE_ACCOUNT", EnvironmentVariableTarget.User);
         var file = Environment.GetEnvironmentVariable("Google_Service_Account_Json", EnvironmentVariableTarget.User);
         Assert.SkipWhen(string.IsNullOrEmpty(file), "Please set the Google_Service_Account_Json environment variable to the path of the service account json file.");
