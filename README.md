@@ -627,8 +627,8 @@ The following features are planned for future releases of the GenerativeAI SDK:
 
 *   [x] **Semantic Search Retrieval (RAG):**  Use Gemini as a Retrieval-Augmented Generation (RAG) system, allowing it
     to incorporate information from external sources into its responses. ***(Released on 20th Feb, 2025)***
-*   [ ] **Image Generation:** Generate images with imagen from text prompts, expanding Gemini's capabilities beyond
-    text and code.
+*   [x] **Image Generation:** Generate images with imagen from text prompts, expanding Gemini's capabilities beyond
+    text and code. ***(Added on 24th Feb, 2025)***
 *   [x] **Multimodal Live API:**  Bidirectional Multimodal Live Chat with Gemini 2.0 Flash (Added on 22nd Fed, 2025)
 *   [ ] **Model Tuning:**  Customize Gemini models to better suit your specific needs and data.
 
