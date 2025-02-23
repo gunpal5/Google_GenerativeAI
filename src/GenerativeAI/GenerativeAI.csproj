@@ -74,7 +74,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="AiModels\ImageGenerator\" />
+    <Folder Include="Clients\Imagen\" />
     <Folder Include="Types\Converters\" />
     <Folder Include="Types\Tuning\Permissions\" />
   </ItemGroup>

@@ -1,4 +1,5 @@
-﻿using GenerativeAI.Core;
+﻿using GenerativeAI.Clients;
+using GenerativeAI.Core;
 using Microsoft.Extensions.Logging;
 
 namespace GenerativeAI;
@@ -51,5 +52,14 @@ public class VertexAI : GenAI, IGenerativeAI
             httpClient, 
             logger)
     {
+    }
+
+    /// <summary>
+    /// Creates and returns a new instance of the <see cref="ImageTextModel"/> class initialized with the platform adapter, HTTP client, and logger available in the current <see cref="VertexAI"/> instance.
+    /// </summary>
+    /// <returns>An instance of <see cref="ImageTextModel"/> configured with the current platform adapter, HTTP client, and logger.</returns>
+    public ImageTextModel CreateImageTextModel()
+    {
+        return new ImageTextModel(this.Platform,this.HttpClient,this.Logger);
     }
 }

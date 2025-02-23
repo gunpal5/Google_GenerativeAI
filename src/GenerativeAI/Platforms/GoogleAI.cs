@@ -1,5 +1,6 @@
 ﻿using GenerativeAI.Clients;
 using GenerativeAI.Core;
+using GenerativeAI.Exceptions;
 using GenerativeAI.Types;
 using Microsoft.Extensions.Logging;
 
@@ -66,5 +67,48 @@ public class GoogleAi : GenAI,IGenerativeAI
     {
         return new GeminiModel(this.Platform, modelName, config, safetyRatings, systemInstruction, this.HttpClient,
             this.Logger);
+    }
+
+
+    /// <summary>
+    /// Creates and initializes a new instance of the <see cref="CorporaManager"/> class to manage corpus operations
+    /// using the currently configured platform and authentication mechanism.
+    /// </summary>
+    /// <param name="authenticator">An optional <see cref="IGoogleAuthenticator"/> instance used for authentication if the platform does not already have an authenticator configured.</param>
+    /// <returns>A fully initialized <see cref="CorporaManager"/> instance for managing corpora.</returns>
+    /// <exception cref="GenerativeAIException">Thrown when no authenticator is provided and the platform does not have an authenticator configured.</exception>
+    public CorporaManager CreateCorpusManager(IGoogleAuthenticator? authenticator = null)
+    {
+        if (this.Platform.Authenticator == null)
+        {
+            if(authenticator == null)
+                throw new GenerativeAIException("Google Authenticator is required to create a corpus manager","Google Authenticator is required to create a corpus manager");
+            this.Platform.SetAuthenticator(authenticator);
+        }
+        
+        return new CorporaManager(this.Platform, this.HttpClient, this.Logger);
+    }
+
+    /// <summary>
+    /// Creates and initializes an instance of the SemanticRetrieverModel. This model is designed to interact
+    /// with Google's semantic retrieval services. It requires a valid Google authenticator for secure access and
+    /// supports optional safety settings for content moderation.
+    /// </summary>
+    /// <param name="modelName">The name of the semantic retrieval model to use.</param>
+    /// <param name="safetyRatings">A collection of safety settings to apply for content moderation. Optional.</param>
+    /// <param name="authenticator">An optional Google authenticator instance. If not provided, the platform's existing authenticator must be set.</param>
+    /// <returns>A new instance of the SemanticRetrieverModel initialized with the specified parameters.</returns>
+    /// <exception cref="GenerativeAIException">
+    /// Thrown when no authenticator is provided, and the platform's authenticator is not set.
+    /// </exception>
+    public SemanticRetrieverModel CreatSemanticRetrieverModel(string modelName, ICollection<SafetySetting> safetyRatings = null, IGoogleAuthenticator? authenticator = null)
+    {
+        if (this.Platform.Authenticator == null)
+        {
+            if(authenticator == null)
+                throw new GenerativeAIException("Google Authenticator is required to create a semantic retrieval model","Google Authenticator is required to create a semantic retrieval model");
+            this.Platform.SetAuthenticator(authenticator);
+        }
+        return new SemanticRetrieverModel(this.Platform, modelName, safetyRatings, this.HttpClient, this.Logger);
     }
 }

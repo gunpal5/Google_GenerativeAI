@@ -40,9 +40,8 @@ public abstract class GenAI
     /// operations such as retrieving and listing AI models.
     /// </summary>
     public ModelClient ModelClient { get; }
-    
-  
-   
+
+
     protected GenAI(IPlatformAdapter platformAdapter, HttpClient? client = null, ILogger? logger = null)
     {
         this.Platform = platformAdapter;
@@ -50,7 +49,7 @@ public abstract class GenAI
         this.Logger = logger;
         this.ModelClient = new ModelClient(this.Platform, this.HttpClient, this.Logger);
     }
-    
+
     /// <summary>
     /// Creates and initializes a generative model for use with Google's generative AI platform.
     /// This method allows the specification of model configuration, safety settings,
@@ -120,15 +119,14 @@ public abstract class GenAI
         return this.Platform;
     }
 
-    public CorporaManager CreateCorpusManager(IGoogleAuthenticator? authenticator = null)
+    /// <summary>
+    /// Creates and initializes an image generation model for use with the Imagen image generation API.
+    /// This method configures the model to generate images based on provided prompts or inputs.
+    /// </summary>
+    /// <param name="modelName">The name of the image generation model to initialize.</param>
+    /// <returns>An instance of <see cref="ImagenModel"/> configured for generating images using the specified model name.</returns>
+    public ImagenModel CreateImageModel(string modelName)
     {
-        if (this.Platform.Authenticator == null)
-        {
-            if(authenticator == null)
-                throw new GenerativeAIException("Google Authenticator is required to create a corpus manager","Google Authenticator is required to create a corpus manager");
-            this.Platform.SetAuthenticator(authenticator);
-        }
-        
-        return new CorporaManager(this.Platform, this.HttpClient, this.Logger);
+        return new ImagenModel(this.Platform, modelName, this.HttpClient, this.Logger);
     }
 }

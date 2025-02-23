@@ -144,5 +144,31 @@ public static class GoogleAIModels
         public const string LearnLM15ProExp = "learnlm-1.5-pro-experimental";
     }
     
-    
+    /// <summary>
+    /// Provides constants for Imagen model variations.
+    /// </summary>
+    public static class Imagen
+    {
+        /// <summary>
+        /// Imagen 3 model names.
+        /// </summary>
+        public const string Imagen3Generate001 = "imagen-3.0-generate-001";
+        public const string Imagen3FastGenerate001 = "imagen-3.0-fast-generate-001";
+
+        /// <summary>
+        /// Imagen 2 model names.
+        /// </summary>
+        public const string ImageGeneration006 = "imagegeneration@006";
+        public const string ImageGeneration005 = "imagegeneration@005";
+
+        /// <summary>
+        /// Imagen model name.
+        /// </summary>
+        public const string ImageGeneration002 = "imagegeneration@002";
+
+        /// <summary>
+        /// Imagen 3 model name for editing and customization.
+        /// </summary>
+        public const string Imagen3Capability001 = "imagen-3.0-capability-001";
+    }
 }

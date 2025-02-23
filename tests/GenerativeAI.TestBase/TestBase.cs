@@ -118,7 +118,7 @@ public abstract class TestBase
         return new GoogleAIPlatformAdapter(apiKey);
     }
 
-    protected IPlatformAdapter GetTestVertexAIPlatform()
+    protected virtual IPlatformAdapter GetTestVertexAIPlatform()
     {
         var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY", EnvironmentVariableTarget.User);
         var projectId = Environment.GetEnvironmentVariable("GOOGLE_PROJECT_ID", EnvironmentVariableTarget.User);
