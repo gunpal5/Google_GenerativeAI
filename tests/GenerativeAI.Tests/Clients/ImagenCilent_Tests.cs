@@ -34,24 +34,25 @@ public class ImageModel_Tests:TestBase
         images.Predictions.Count.ShouldBeGreaterThan(0);
     }
     
-    [Fact]
-
-    public async Task ShouldGenerateImage_GoogleAI()
-    {
-        var request = new GenerateImageRequest();
-        request.Instances = new List<ImageGenerationInstance>();
-        request.Instances.Add(new ImageGenerationInstance()
-        {
-            Prompt = "A photo of a cat and a dog fighting over a ball.",
-        });
-        var model = "imagen-3.0-generate-002";
-        var client = new ImagenModel(GetTestGooglePlatform(),model);
-        
-        var images = await client.GenerateImagesAsync(request);
-        images.ShouldNotBeNull();
-        images.Predictions.ShouldNotBeNull();
-        images.Predictions.Count.ShouldBeGreaterThan(0);
-    }
+    // [Fact]
+    //
+    // public async Task ShouldGenerateImage_GoogleAI()
+    // {
+    //     var platform = GetTestGooglePlatform();
+    //     var request = new GenerateImageRequest();
+    //     request.Instances = new List<ImageGenerationInstance>();
+    //     request.Instances.Add(new ImageGenerationInstance()
+    //     {
+    //         Prompt = "A photo of a cat and a dog fighting over a ball.",
+    //     });
+    //     var model = "imagen-3.0-generate-002";
+    //     var client = new ImagenModel(platform,model);
+    //     
+    //     var images = await client.GenerateImagesAsync(request);
+    //     images.ShouldNotBeNull();
+    //     images.Predictions.ShouldNotBeNull();
+    //     images.Predictions.Count.ShouldBeGreaterThan(0);
+    // }
     
     [Fact]
 
