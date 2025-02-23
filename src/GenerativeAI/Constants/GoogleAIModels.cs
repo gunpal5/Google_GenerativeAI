@@ -155,6 +155,7 @@ public static class GoogleAIModels
         public const string Imagen3Generate001 = "imagen-3.0-generate-001";
         public const string Imagen3FastGenerate001 = "imagen-3.0-fast-generate-001";
 
+        public const string Imagen3Generate002 = "imagen-3.0-generate-002";
         /// <summary>
         /// Imagen 2 model names.
         /// </summary>

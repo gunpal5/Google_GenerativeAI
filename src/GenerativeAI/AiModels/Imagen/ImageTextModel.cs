@@ -4,8 +4,24 @@ using Microsoft.Extensions.Logging;
 
 namespace GenerativeAI.Clients;
 
+/// <summary>
+/// Provides functionality for image-to-text generative AI tasks including image captioning
+/// and visual question answering (VQA). Offers methods to interact with both local image files
+/// and images hosted on cloud storage.
+/// </summary>
+/// <remarks>
+/// This class integrates with the AI platform defined by <see cref="IPlatformAdapter"/> and
+/// provides access to the platform's image text processing capabilities.
+/// Inherited from <see cref="BaseClient"/>, it uses HTTP communication and logging mechanisms defined at a higher level.
+/// </remarks>
 public class ImageTextModel: BaseClient
 {
+    /// <summary>
+    /// Represents a client for interacting with image-to-text models, including functionality for image captioning and visual question answering.
+    /// </summary>
+    /// <remarks>
+    /// This class provides various methods to generate captions or answer questions about images from local files or cloud storage.
+    /// </remarks>
     public ImageTextModel(IPlatformAdapter platform, HttpClient? httpClient = null, ILogger? logger = null) : base(platform, httpClient, logger)
     {
     }

@@ -23,6 +23,7 @@
     - [Gemini Tools and Function Calling](#gemini-tools-and-function-calling-)
         - [1. Inbuilt Tools (GoogleSearch, GoogleSearchRetrieval, and Code Execution)](#1-inbuilt-tools-googlesearch-googlesearchretrieval-and-code-execution-)
         - [2. Function Calling](#2-function-calling-)
+    - [Image Generation and Captioning](#image-generation-and-captioning)
     - [Multimodal Live API](#multimodal-live-api-)
     - [Semantic Search Retrieval (RAG) with Google AQA](#semantic-search-retrieval-rag-with-google-aqa-)
     - [Coming Soon:](#coming-soon)
@@ -464,6 +465,49 @@ Console.WriteLine(result.Text);
 ```
 
 **For more details and options, see the [wiki](https://github.com/gunpal5/Google_GenerativeAI/wiki/Function-Calling).**
+---
+## Image Generation and Captioning
+
+Google_GenerativeAI SDK provides easy integration with Google Imagen image generator and Image Text Model for captioning and visual question answering. there are two Model Classes: 
+
+1. **ImagenModel** – For creating and generating entirely new images from text prompts.  
+2. **ImageTextModel** – For image captioning and visual question answering (VQA).
+
+### 2. Using Imagen
+
+Below is a snippet demonstrating how to initialize an image generation model and generate an image:
+
+```csharp
+// 1. Create a Google AI client 
+var googleAi = new GoogleAi(apiKey);
+
+// 2. Create the Imagen model instance with your chosen model name.
+var imageModel = googleAi.CreateImageModel("imagen-3.0-generate-002");
+
+// 3. Generate images by providing a text prompt.
+var response = await imageModel.GenerateImagesAsync("A peaceful forest clearing at sunrise");
+
+// The response contains the generated image(s).
+```
+
+### 3. Using ImageTextModel
+
+For captioning or visual QA tasks:
+
+```csharp
+
+// 1. Create a Vertex AI client (example shown here).
+var vertexAi = new VertexAI(projecId, region);
+
+// 2. Instantiate the ImageTextModel.
+var imageTextModel = vertexAi.CreateImageTextModel();
+
+// 3. Generate captions or perform visual QA.
+var captionResult = await imageTextModel.GenerateImageCaptionFromLocalFileAsync("path/to/local/image.jpg");
+var vqaResult = await imageTextModel.VisualQuestionAnsweringFromLocalFileAsync("What is in the picture?", "path/to/local/image.jpg");
+
+// Results now contain the model's captions or answers.
+```
 ---
 
 ## Multimodal Live API

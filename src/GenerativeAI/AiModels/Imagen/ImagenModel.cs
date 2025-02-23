@@ -11,7 +11,15 @@ namespace GenerativeAI.Clients;
 public class ImagenModel : BaseClient
 {
     string _modelName;
-    
+
+    /// <summary>
+    /// A client for interacting with the Imagen API to generate images.
+    /// </summary>
+    /// <param name="platform">The platform adapter providing platform-specific API operations.</param>
+    /// <param name="modelName">The name of the model to be employed for image generation.</param>
+    /// <param name="httpClient">Optional <see cref="HttpClient"/> instance for making HTTP requests.</param>
+    /// <param name="logger">Optional <see cref="ILogger"/> instance for logging operations.</param>
+    /// <seealso href="https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/imagen-api">See Official API Documentation</seealso>
     public ImagenModel(IPlatformAdapter platform, string modelName, HttpClient? httpClient = null, ILogger? logger = null) : base(platform, httpClient, logger)
     {
         this._modelName = modelName;
