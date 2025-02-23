@@ -468,7 +468,8 @@ Console.WriteLine(result.Text);
 ---
 ## Image Generation and Captioning
 
-Google_GenerativeAI SDK provides easy integration with Google Imagen image generator and Image Text Model for captioning and visual question answering. there are two Model Classes: 
+The Google_GenerativeAI SDK enables seamless integration with the Google Imagen image generator and the Image Text Model
+for tasks such as image captioning and visual question answering. It provides two model classes:
 
 1. **ImagenModel** – For creating and generating entirely new images from text prompts.  
 2. **ImageTextModel** – For image captioning and visual question answering (VQA).
