@@ -39,9 +39,10 @@ public interface IPlatformAdapter
     /// <summary>
     /// Retrieves the base URL of the platform's API.
     /// </summary>
-    /// <param name="appendVesion">Determines whether to append API version to the URL.</param>
+    /// <param name="appendVesion">Determines whether to append the API version to the URL.</param>
+    /// <param name="appendPublisher">Determines whether to append the publisher identifier to the URL.</param>
     /// <returns>The base URL as a string.</returns>
-    string GetBaseUrl(bool appendVesion = true);
+    string GetBaseUrl(bool appendVesion = true, bool appendPublisher = true);
 
     /// <summary>
     /// Retrieves the base URL for file-related API operations.

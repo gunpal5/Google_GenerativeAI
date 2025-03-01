@@ -3,6 +3,7 @@ using System.Text.Json.Nodes;
 using GenerativeAI.Core;
 using GenerativeAI.Exceptions;
 using GenerativeAI.Types;
+using GenerativeAI.Types.RagEngine;
 
 namespace GenerativeAI;
 
@@ -38,6 +39,8 @@ public partial class GenerativeModel
     /// This feature is incompatible with JSON mode or cached content mode.
     /// </remarks>
     public bool UseCodeExecutionTool { get; set; } = false;
+    
+    public Tool? RetrievalTool { get; private set; }
 
 
     /// <summary>
@@ -183,6 +186,12 @@ public partial class GenerativeModel
             if (request.Tools.All(s => s.CodeExecution == null))
                 request.Tools.Add(DefaultCodeExecutionTool);
         }
+
+        if (this.RetrievalTool != null)
+        {
+            request.Tools ??= new List<Tool>();
+            request.Tools.Add(this.RetrievalTool);
+        }
     }
 
     /// <summary>
@@ -273,4 +282,34 @@ public partial class GenerativeModel
     }
 
     #endregion
+
+    /// <summary>
+    /// Configures and assigns a Vertex Retrieval Tool with the specified corpus ID and retrieval configuration.
+    /// </summary>
+    /// <param name="corpusId">The identifier for the corpus to be associated with the Vertex Retrieval Tool.</param>
+    /// <param name="retrievalConfig">An optional retrieval configuration for customizing the behavior of the Vertex Retrieval Tool.</param>
+    /// <exception cref="NotSupportedException">Thrown when the platform does not support Retrieval Augmentation Generation on Vertex AI.</exception>
+    public void UseVertexRetrievalTool(string corpusId, RagRetrievalConfig? retrievalConfig = null)
+    {
+        if(!this._platform.GetBaseUrl().Contains("aiplatform"))
+            throw new NotSupportedException("Retrival Augmentation Generation is only supported on Vertex AI");
+
+        this.RetrievalTool = new Tool()
+        {
+            Retrieval = new VertexRetrievalTool()
+            {
+                VertexRagStore = new VertexRagStore()
+                {
+                    RagResources = new List<VertexRagStoreRagResource>([
+                        new VertexRagStoreRagResource()
+                        {
+                            RagCorpus = corpusId
+                        }
+                    ]),
+                    RagRetrievalConfig = retrievalConfig
+                }
+            }
+        };
+    }
+   
 }

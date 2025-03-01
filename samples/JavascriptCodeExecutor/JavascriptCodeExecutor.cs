@@ -11,7 +11,9 @@ namespace CodeExecutor;
 /// <summary>
 /// Provides functionality to execute JavaScript code using a JavaScript engine and return the result.
 /// </summary>
-public class JavascriptCodeExecutor : IJavascriptCodeExecutor
+public class 
+    
+    JavascriptCodeExecutor : IJavascriptCodeExecutor
 {
     public async Task<object?> ExecuteJavascriptCodeAsync(string code, CancellationToken cancellationToken = default)
     {

@@ -311,11 +311,13 @@ public class VertextPlatformAdapter : IPlatformAdapter
     /// </summary>
     /// <param name="appendVesion">Indicates whether to append the version to the URL.</param>
     /// <returns>The constructed base URL string.</returns>
-    public string GetBaseUrl(bool appendVesion = true)
+    public string GetBaseUrl(bool appendVesion = true, bool appendPublisher = true)
     {
         if (ExpressMode == true)
         {
-            return $"{BaseUrls.VertexAIExpress}/{ApiVersion}/publishers/{Publisher}";
+            if(appendPublisher)
+                return $"{BaseUrls.VertexAIExpress}/{ApiVersion}/publishers/{Publisher}";
+            else return $"{BaseUrls.VertexAIExpress}/{ApiVersion}";
         }
 #if NETSTANDARD2_0 || NET462_OR_GREATER
         var url = this.BaseUrl.Replace("{region}", Region)
@@ -327,7 +329,9 @@ public class VertextPlatformAdapter : IPlatformAdapter
             .Replace("{version}", ApiVersion, StringComparison.InvariantCultureIgnoreCase);
 #endif
 
-        return $"{url}/publishers/{Publisher}";
+        if(appendPublisher)
+            return $"{url}/publishers/{Publisher}";
+        else return url;
     }
 
     /// <summary>

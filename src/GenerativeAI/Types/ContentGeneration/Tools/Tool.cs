@@ -39,4 +39,10 @@ public class Tool
     /// </summary>
     [JsonPropertyName("googleSearch")]
     public GoogleSearchTool? GoogleSearch { get; set; }
+    
+    /// <summary>
+    /// Optional. Retrieval tool type. System will always execute the provided retrieval tool(s) to get external knowledge to answer the prompt. Retrieval results are presented to the model for generation.
+    /// </summary>
+    [JsonPropertyName("retrieval")]
+    public VertexRetrievalTool? Retrieval { get; set; }
 }

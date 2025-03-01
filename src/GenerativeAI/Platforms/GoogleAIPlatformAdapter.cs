@@ -186,7 +186,7 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
     }
 
     /// <inheritdoc/>
-    public string GetBaseUrl(bool appendVesion = true)
+    public string GetBaseUrl(bool appendVesion = true, bool appendPublisher = true)
     {
         if (appendVesion)
             return $"{BaseUrl}/{GetApiVersion()}";
