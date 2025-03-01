@@ -13,28 +13,29 @@
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
 <!-- code_chunk_output -->
 
-- [Google GenerativeAI (Gemini)](#introduction-)
-    - [Introduction](#introduction-)
-    - [Usage](#usage-)
-    - [Quick Start](#quick-start-)
-        - [1. Using Google AI](#1-using-google-ai-)
-        - [2. Using Vertex AI](#2-using-vertex-ai-)
-    - [Chat Mode](#chat-mode-)
-    - [Streaming](#streaming-)
-    - [Multimodal Capabilities with Overloaded
-      `GenerateContentAsync` Methods](#multimodal-capabilities-with-overloaded-generatecontentasync-methods-)
-        - [1. Generating Content with a Local File](#1-generating-content-with-a-local-file-)
-        - [2. Generating Content with a Remote File](#2-generating-content-with-a-remote-file-)
-        - [3. Initializing a Request and Attaching Files](#3-initializing-a-request-and-attaching-files-)
-    - [Easy JSON Handling](#easy-json-handling-)
-    - [Gemini Tools and Function Calling](#gemini-tools-and-function-calling-)
-        - [1. Inbuilt Tools (GoogleSearch, GoogleSearchRetrieval, and Code Execution)](#1-inbuilt-tools-googlesearch-googlesearchretrieval-and-code-execution-)
+- [Google GenerativeAI (Gemini)](#introduction)
+    - [Introduction](#introduction)
+    - [Usage](#usage)
+    - [Quick Start](#quick-start)
+        - [1. Using Google AI](#1-using-google-ai)
+        - [2. Using Vertex AI](#2-using-vertex-ai)
+    - [Chat Mode](#chat-mode)
+    - [Streaming](#streaming)
+    - [Multimodal Capabilities with Overloaded `GenerateContentAsync` Methods](#multimodal-capabilities-with-overloaded-generatecontentasync-methods-)
+        - [1. Generating Content with a Local File](#1-generating-content-with-a-local-file)
+        - [2. Generating Content with a Remote File](#2-generating-content-with-a-remote-file)
+        - [3. Initializing a Request and Attaching Files](#3-initializing-a-request-and-attaching-files)
+    - [Easy JSON Handling](#easy-json-handling)
+    - [Gemini Tools and Function Calling](#gemini-tools-and-function-calling)
+        - [1. Inbuilt Tools (GoogleSearch, GoogleSearchRetrieval, and Code Execution)](#1-inbuilt-tools-googlesearch-googlesearchretrieval-and-code-execution)
         - [2. Function Calling](#2-function-calling-)
     - [Image Generation and Captioning](#image-generation-and-captioning)
-    - [Multimodal Live API](#multimodal-live-api-)
-    - [Semantic Search Retrieval (RAG) with Google AQA](#semantic-search-retrieval-rag-with-google-aqa-)
+    - [Multimodal Live API](#multimodal-live-api)
+    - [Retrieval-Augmented Generation](#retrieval-augmented-generation)
+        - [Vertex RAG Engine](#vertex-rag-engine-support-grounded-and-contextual-ai)
+        - [Semantic Search Retrieval (RAG) with Google AQA](#semantic-search-retrieval-rag-with-google-aqa)        
     - [Coming Soon:](#coming-soon)
-    - [Credits](#credits-)
+    - [Credits](#credits)
     - [Explore the Wiki](https://github.com/gunpal5/Google_GenerativeAI/wiki)
     - [API Reference](https://gunpal5.github.io/generative-ai/)
 
@@ -60,7 +61,8 @@ Highlights of this release include:
    as OAuth, Service Account, and ADC (Application Default Credentials).
 7. **Multimodal Live API** - Enables real-time interaction with multimodal content (text, images, audio) for dynamic and
    responsive applications.
-8. **New Packages** – Modularizes features to help you tailor the SDK to your needs:
+8. **Build grounded AI:** Simple APIs for RAG with ***Vertex RAG Engine*** and ***Google AQA***.
+9. **New Packages** – Modularizes features to help you tailor the SDK to your needs:
 
 | **Package**                   | **Version**                                                                                                                                       | **Description**                                                                                                                                                                  |
 |-------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -599,8 +601,7 @@ The `MultiModalLiveClient` provides various events to plug into for real-time up
 
 For more details and examples, refer to the  [wiki](https://github.com/gunpal5/Google_GenerativeAI/wiki).
 ---
-
-## Semantic Search Retrieval (RAG) with Google AQA
+## Retrieval Augmented Generation
 
 The `Google_GenerativeAI` library makes implementing **Retrieval-Augmented Generation (RAG)** incredibly easy. RAG
 combines the strengths of Large Language Models (LLMs) with the precision of information retrieval. Instead of relying
@@ -608,18 +609,62 @@ solely on the LLM's pre-trained knowledge, a RAG system first *retrieves* releva
 a "corpus" of documents) and then uses that information to *augment* the LLM's response. This allows the LLM to generate
 more accurate, factual, and context-aware answers.
 
-This library leverages **Google's Attributed Question Answering (AQA)** model, which is specifically designed for
-semantic search and question answering. AQA excels at understanding the intent behind a question and finding the most
-relevant passages within a corpus to answer it. Key features include:
+### Vertex RAG Engine Support: Grounded and Contextual AI
 
-* **Semantic Understanding:** AQA goes beyond simple keyword matching. It understands the *meaning* of the query and the
-  documents.
-* **Attribution:** AQA provides an "Answerable Probability" score, indicating its confidence in the retrieved answer.
-* **Easy Integration:** The `Google_GenerativeAI` library provides a simple API to create corpora, add documents, and
-  perform semantic searches.
+Enhance your Gemini applications with the power of the Vertex RAG Engine. This integration enables your applications to provide more accurate and contextually relevant responses by leveraging your existing knowledge bases.
 
-**For a step-by-step tutorial on implementing Semantic Search Retrieval with Google AQA, see
-the [wiki page](https://github.com/gunpal5/Google_GenerativeAI/wiki/Semantic-Search-Retrieval-with-Google-AQA).**
+**Benefits:**
+
+* **Improved Accuracy:** Gemini can now access and utilize your corpora and vector databases for more grounded responses.
+* **Scalable Knowledge:** Supports various backends (Pinecone, Weaviate, etc.) and data sources (Slack, Drive, etc.) for flexible knowledge management.
+* **Simplified RAG Implementation:** Seamlessly integrate RAG capabilities into your Gemini workflows.
+
+**Code Example:**
+
+```csharp
+// Initialize VertexAI with your platform configuration.
+var vertexAi = new VertexAI(GetTestVertexAIPlatform());
+
+// Create an instance of the RAG manager for corpus operations.
+var ragManager = vertexAi.CreateRagManager();
+
+// Create a new corpus for your knowledge base.
+// Optional: Use overload methods to specify a vector database (Pinecone, Weaviate, etc.).
+// If no specific vector database is provided, a default one will be used.
+var corpus = await ragManager.CreateCorpusAsync("My New Corpus", "My description");
+
+// Import data into the corpus from a specified source.
+// Replace GcsSource with the appropriate source (Jira, Slack, SharePoint, etc.) and configure it.
+var fileSource = new GcsSource() { /* Configure your GcsSource here */ };
+await ragManager.ImportFilesAsync(corpus.Name, fileSource);
+
+// Create a Gemini generative model configured to use the created corpus for RAG.
+// The corpusIdForRag parameter links the model to your knowledge base.
+var model = vertexAi.CreateGenerativeModel(VertexAIModels.Gemini.Gemini2Flash, corpusIdForRag: corpus.Name);
+
+// Generate content by querying the model.
+// The model will retrieve relevant information from the corpus to provide a grounded response.
+var result = await model.GenerateContentAsync("query related to the corpus");
+```
+
+**Learn More:**
+
+For a deeper dive into using the Vertex RAG Engine with the Google_GenerativeAI SDK, please visit the [wiki page](https://github.com/gunpal5/Google_GenerativeAI/wiki/vertex-rag-engine).
+
+### Semantic Search Retrieval (RAG) with Google AQA
+
+This library integrates **Google's Attributed Question Answering (AQA)** model to enhance Retrieval-Augmented Generation (RAG) through powerful semantic search and question answering. AQA excels at understanding the intent behind a question and retrieving the most relevant passages from your corpus.
+
+**Key Features:**
+
+* **Deep Semantic Understanding:** AQA moves beyond keyword matching, capturing the nuanced meaning of queries and documents for more accurate retrieval.
+* **Answer Confidence with Attribution:** AQA provides an "Answerable Probability" score, giving you insight into the model's confidence in the retrieved answer.
+* **Simplified RAG Integration:** The `Google_GenerativeAI` library offers a straightforward API for corpus creation, document ingestion, and semantic search execution.
+
+**Get Started with Google AQA for RAG:**
+
+For a comprehensive guide on implementing semantic search retrieval with Google AQA, refer to the [wiki page](https://github.com/gunpal5/Google_GenerativeAI/wiki/Semantic-Search-Retrieval-with-Google-AQA).
+
 
 ## Coming Soon
 

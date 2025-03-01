@@ -15,7 +15,7 @@ public class VertexRagManager_Tests : SemanticRetrieverTestBase
     public VertexRagManager_Tests(ITestOutputHelper output) : base(output)
     {
         Assert.SkipWhen(SkipVertexAITests, VertextTestSkipMesaage);
-        //Assert.SkipUnless(IsSemanticTestsEnabled, SemanticTestsDisabledMessage);
+        Assert.SkipUnless(IsSemanticTestsEnabled, SemanticTestsDisabledMessage);
     }
 
     [Fact, TestPriority(1)]
