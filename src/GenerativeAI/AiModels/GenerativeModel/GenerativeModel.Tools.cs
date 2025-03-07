@@ -228,11 +228,12 @@ public partial class GenerativeModel
             }
 
             name = "InvalidName";
-            jsonResult = "{\"error\":\"Invalid function name or function doesn't exist.\"}";
+            var node = JsonNode.Parse("{\"error\":\"Invalid function name or function doesn't exist.\"}");
+            
             functionResponse = new FunctionResponse()
             {
                 Name = name,
-                Response = jsonResult
+                Response = node
             };
         }
         else

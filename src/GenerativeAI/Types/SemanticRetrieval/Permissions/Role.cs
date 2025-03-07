@@ -6,7 +6,7 @@ namespace GenerativeAI.Types;
 /// Defines the role granted by this permission.
 /// <seealso href="https://ai.google.dev/api/semantic-retrieval/permissions#Permission.Role">See Official API Documentation</seealso>
 /// </summary>
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter<Role>))]
 public enum Role
 {
     /// <summary>

@@ -17,6 +17,6 @@ public class GoogleDriveSourceResourceId
     /// Required. The type of the Google Drive resource.
     /// </summary>
     [JsonPropertyName("resourceType")]
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+ 
     public GoogleDriveSourceResourceIdResourceType? ResourceType { get; set; } 
 }

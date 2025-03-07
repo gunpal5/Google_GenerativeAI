@@ -21,6 +21,7 @@
         <FileVersion>2.3.1</FileVersion>
         <SignAssembly>True</SignAssembly>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+        <IsAotCompatible>true</IsAotCompatible>
     </PropertyGroup>
     <ItemGroup>
       <ProjectReference Include="..\GenerativeAI\GenerativeAI.csproj" />

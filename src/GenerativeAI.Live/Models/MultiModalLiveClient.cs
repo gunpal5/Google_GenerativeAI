@@ -4,6 +4,7 @@ using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 using GenerativeAI.Core;
 using GenerativeAI.Live.Helper;
 using GenerativeAI.Live.Logging;
@@ -183,11 +184,11 @@ public class MultiModalLiveClient : IDisposable
             BidiResponsePayload? responsePayload = null;
             if (msg.MessageType == WebSocketMessageType.Binary)
             {
-                responsePayload = JsonSerializer.Deserialize<BidiResponsePayload>(msg.Binary);
+                responsePayload = JsonSerializer.Deserialize(msg.Binary,(JsonTypeInfo<BidiResponsePayload>) DefaultSerializerOptions.Options.GetTypeInfo(typeof(BidiResponsePayload)));
             }
             else
             {
-                responsePayload = JsonSerializer.Deserialize<BidiResponsePayload>(msg.Text);
+                responsePayload = JsonSerializer.Deserialize(msg.Text,(JsonTypeInfo<BidiResponsePayload>) DefaultSerializerOptions.Options.GetTypeInfo(typeof(BidiResponsePayload)));
             }
 
             if (responsePayload == null)
@@ -228,7 +229,7 @@ public class MultiModalLiveClient : IDisposable
             {
                 if (part.Text != null)
                 {
-                    this.TextChunkReceived.Invoke(this,
+                    this.TextChunkReceived?.Invoke(this,
                         new TextChunkReceivedArgs(part.Text, responsePayload.ServerContent.TurnComplete == true));
                     _logger?.LogInformation("Text chunk received: {Text}", part.Text);
                 }
@@ -565,7 +566,7 @@ public class MultiModalLiveClient : IDisposable
 
         try
         {
-            var json = JsonSerializer.Serialize(payload,DefaultSerializerOptions.Options);
+            var json = JsonSerializer.Serialize(payload,DefaultSerializerOptions.Options.GetTypeInfo(typeof(BidiClientPayload)));
             _logger?.LogMessageSent(json);
 
             _client.Send(json);

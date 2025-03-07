@@ -6,7 +6,7 @@ namespace GenerativeAI.Types;
 /// Defines the reason why the model stopped generating tokens.
 /// </summary>
 /// <seealso href="https://ai.google.dev/api/generate-content#FinishReason">See Official API Documentation</seealso>
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter<FinishReason>))]
 public enum FinishReason
 {
     /// <summary>

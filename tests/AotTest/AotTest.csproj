@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <PublishAot>true</PublishAot>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Shouldly" Version="4.2.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\GenerativeAI.Auth\GenerativeAI.Auth.csproj" />
+      <ProjectReference Include="..\..\src\GenerativeAI.Live\GenerativeAI.Live.csproj" />
+      <ProjectReference Include="..\..\src\GenerativeAI.Microsoft\GenerativeAI.Microsoft.csproj" />
+      <ProjectReference Include="..\..\src\GenerativeAI.Tools\GenerativeAI.Tools.csproj" />
+      <ProjectReference Include="..\..\src\GenerativeAI.Web\GenerativeAI.Web.csproj" />
+      <ProjectReference Include="..\..\src\GenerativeAI\GenerativeAI.csproj" />
+    </ItemGroup>
+
+</Project>

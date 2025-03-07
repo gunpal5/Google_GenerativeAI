@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using Bogus;
 using GenerativeAI.IntegrationTests;
 using GenerativeAI.Microsoft.Extensions;
@@ -210,7 +211,7 @@ public class MicrosoftExtension_Tests
     public void ToAiContents_WithFunctionResponsePart_ReturnsFunctionResultContent()
     {
         // Arrange
-        var parts = new List<Part> { new Part { FunctionResponse = new FunctionResponse { Name = "myFunction", Response = new { result = "success" } } } };
+        var parts = new List<Part> { new Part { FunctionResponse = new FunctionResponse { Name = "myFunction", Response = JsonNode.Parse("{ \"result\": \"value\" }") } } };
 
         // Act
         var result = parts.ToAiContents();
@@ -286,7 +287,7 @@ public class MicrosoftExtension_Tests
                 if (f.Random.Bool(0.33f))
                 {
                     o.FunctionResponse = f.Random.Bool(0.5f)
-                        ? new FunctionResponse { Name = f.Internet.DomainName(), Response = new Faker<Microsoft_AIFunction_Tests.Weather>().Generate() }
+                        ? new FunctionResponse { Name = f.Internet.DomainName(), Response = JsonNode.Parse("{ \"result\": \"value\" }") }
                         : null;
                 }
 

@@ -1,5 +1,5 @@
 using GenerativeAI.Types;
-using Json.More;
+
 using Microsoft.Extensions.AI;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -106,19 +106,30 @@ public static class MicrosoftExtensions
                 FunctionResponse = new FunctionResponse()
                 {
                     Name = frc.CallId, 
-                    Response = new
-                    {
-                        Name = frc.CallId,
-                        Content = JsonSerializer.SerializeToNode(frc.Result)!,
-                    }
+                    Response = frc.ToJsonNodeResponse()
                 }
             },
             _ => null,
         };
     }
 
-    
 
+    public static JsonNode ToJsonNodeResponse(this object? response)
+    {
+        if (response is FunctionResultContent content)
+        {
+            if (content.Result is JsonObject obj)
+                return obj;
+            else if (content.Result is JsonNode arr)
+                return arr;
+        }
+        if(response is JsonNode node)
+        {
+            return node;
+        }
+        else throw new Exception("Response is not a json node");
+        
+    }
     /// <summary>
     /// Maps <see cref="ChatOptions"/> into a <see cref="GenerationConfig"/> object used by GenerativeAI.
     /// </summary>
@@ -137,7 +148,7 @@ public static class MicrosoftExtensions
         config.TopK = options.TopK;
         config.MaxOutputTokens = options.MaxOutputTokens;
         config.StopSequences = options.StopSequences?.ToList();
-        config.Seed = (int) options.Seed!;
+        config.Seed = (int?) options.Seed;
         config.ResponseMimeType = options.ResponseFormat is ChatResponseFormatJson ? "application/json" : null;
         if (options.ResponseFormat is ChatResponseFormatJson jsonFormat)
         {
@@ -145,7 +156,7 @@ public static class MicrosoftExtensions
             if (jsonFormat.Schema is JsonElement je && je.ValueKind == JsonValueKind.Object)
             {
                 // Workaround to convert our real json schema to the format Google's api expects
-                var forGoogleApi = GoogleSchemaHelper.ConvertToCompatibleSchemaSubset(je.ToJsonDocument());
+                var forGoogleApi = GoogleSchemaHelper.ConvertToCompatibleSchemaSubset(je.AsNode());
                 config.ResponseSchema = forGoogleApi;
             }
         }

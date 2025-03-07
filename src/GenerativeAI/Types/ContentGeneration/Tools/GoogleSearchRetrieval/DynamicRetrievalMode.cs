@@ -6,7 +6,7 @@ namespace GenerativeAI.Types;
 /// The mode of the predictor to be used in dynamic retrieval.
 /// </summary>
 /// <seealso href="https://ai.google.dev/api/caching#Mode">See Official API Documentation</seealso>
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter<DynamicRetrievalMode>))]
 public enum DynamicRetrievalMode  // Renamed to DynamicRetrievalMode
 {
     /// <summary>

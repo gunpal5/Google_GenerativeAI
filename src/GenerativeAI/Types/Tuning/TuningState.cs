@@ -6,7 +6,7 @@ namespace GenerativeAI.Types;
 /// The state of the tuned model.
 /// </summary>
 /// <seealso href="https://ai.google.dev/api/tuning#State">See Official API Documentation</seealso>
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter<TuningState>))]
 public enum TuningState
 {
     /// <summary>

@@ -6,7 +6,7 @@ namespace GenerativeAI.Types;
 /// Style for grounded answers.
 /// </summary>
 /// <seealso href="https://ai.google.dev/api/semantic-retrieval/question-answering#AnswerStyle">See Official API Documentation</seealso>
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter<AnswerStyle>))]
 public enum AnswerStyle
 {
     /// <summary>

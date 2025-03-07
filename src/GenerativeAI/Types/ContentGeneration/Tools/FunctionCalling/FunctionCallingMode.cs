@@ -7,7 +7,7 @@ namespace GenerativeAI.Types;
 /// Defines the execution behavior for function calling by defining the execution mode.
 /// </summary>
 /// <seealso href="https://ai.google.dev/api/caching#Mode_1">See Official API Documentation</seealso>
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter<FunctionCallingMode>))]
 public enum FunctionCallingMode // Renamed to FunctionCallingMode
 {
     /// <summary>

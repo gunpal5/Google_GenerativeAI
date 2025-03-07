@@ -7,7 +7,7 @@ using GenerativeAI.Microsoft;
 using ChatOptions = Microsoft.Extensions.AI.ChatOptions;
 using GenerativeAI.Microsoft.Extensions;
 using GenerativeAI.Tests;
-using Json.More;
+
 using Microsoft.Extensions.AI;
 using Newtonsoft.Json;
 using Shouldly;

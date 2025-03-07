@@ -38,8 +38,8 @@ public class GenerationConfig
     /// for more details.
     /// </summary>
     [JsonPropertyName("responseSchema")]
-    [JsonConverter(typeof(ObjectToJsonSchemaConverter))]
-    public object? ResponseSchema { get; set; }
+    //[JsonConverter(typeof(ObjectToJsonSchemaConverter))]
+    public Schema? ResponseSchema { get; set; }
 
     /// <summary>
     /// Optional. The requested modalities of the response. Represents the set of modalities

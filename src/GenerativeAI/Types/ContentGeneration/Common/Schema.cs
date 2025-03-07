@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace GenerativeAI.Types;
 
@@ -85,6 +86,17 @@ public class Schema
     /// </summary>
     [JsonPropertyName("items")]
     public Schema? Items { get; set; }
+
+    /// <summary>
+    /// Creates a <see cref="Schema"/> object representing the structure of the specified object type.
+    /// This method evaluates the properties and structure of the provided object
+    /// and generates a corresponding schema representation.
+    /// </summary>
+    /// <param name="value">The object from which to generate the schema.</param>
+    /// <param name="options">Optional JSON serializer options used for customization during schema generation.</param>
+    /// <returns>A <see cref="Schema"/> instance that represents the structure of the provided object.</returns>
+    public static Schema FromObject(object value, JsonSerializerOptions? options = null) =>
+        GoogleSchemaHelper.ConvertToSchema(value.GetType(), options);
 }
 
 /// <summary>

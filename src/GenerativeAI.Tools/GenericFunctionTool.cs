@@ -1,7 +1,9 @@
-﻿using System.Text.Json.Nodes;
+﻿using System.Text.Json;
+using System.Text.Json.Nodes;
 using CSharpToJsonSchema;
 using GenerativeAI.Core;
 using GenerativeAI.Types;
+
 using JsonSerializer = System.Text.Json.JsonSerializer;
 using Tool = GenerativeAI.Types.Tool;
 
@@ -44,7 +46,7 @@ public class GenericFunctionTool:IFunctionTool
 
     private Schema? ToSchema(object parameters)
     {
-        var param = JsonSerializer.Serialize(parameters);
+        var param = JsonSerializer.Serialize(parameters, OpenApiSchemaSourceGenerationContext.Default.OpenApiSchema);
         return JsonSerializer.Deserialize(param,SchemaSourceGenerationContext.Default.Schema);
     }
 
@@ -53,15 +55,26 @@ public class GenericFunctionTool:IFunctionTool
     {
         if (this.Calls.TryGetValue(functionCall.Name, out var call))
         {
-            var str = JsonSerializer.Serialize(functionCall.Args);
-            var response = await call(str, cancellationToken).ConfigureAwait(false);
+            string? args = null;
+            if (functionCall.Args is JsonElement jsonElement)
+            {
+                args = jsonElement.AsNode().ToJsonString();
+            }
+            else
+            {
+                args =  JsonSerializer.Serialize(functionCall.Args);
+            }
+            var response = await call(args, cancellationToken).ConfigureAwait(false);
 
             var node = JsonNode.Parse(response);
+            var responseNode = new JsonObject();
 
-            return new FunctionResponse() { Id = functionCall.Id, Name = functionCall.Name, Response = new {
-                Name = functionCall.Name,
-                Content = node,
-            } };
+            responseNode["name"] = functionCall.Name;
+            responseNode["content"] = node;
+            return new FunctionResponse() { Id = functionCall.Id, Name = functionCall.Name, 
+                
+                Response = responseNode,
+            };
         }
         return null;
     }

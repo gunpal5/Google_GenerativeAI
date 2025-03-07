@@ -17,6 +17,6 @@ public class CorpusStatus
     /// Output only. RagCorpus life state.
     /// </summary>
     [JsonPropertyName("state")]
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+   
     public CorpusStatusState? State { get; set; } 
 }

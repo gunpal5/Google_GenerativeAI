@@ -1,9 +1,12 @@
+using System.Text.Json.Serialization;
+
 namespace GenerativeAI.Types;
 
 /// <summary>
 /// Represents the safety filter level.
 /// </summary>
 /// <seealso href="https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/imagen-api">See Official API Documentation</seealso>
+[JsonConverter(typeof(JsonStringEnumConverter<ImageSafetySetting>))]
 public enum ImageSafetySetting
 {
     /// <summary>

@@ -1,7 +1,6 @@
 ﻿using GenerativeAI.Authenticators;
 using GenerativeAI.Core;
 using GenerativeAI.Tests;
-using Humanizer;
 using Shouldly;
 
 namespace GenerativeAI.Auth;

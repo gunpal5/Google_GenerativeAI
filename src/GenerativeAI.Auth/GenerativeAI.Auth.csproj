@@ -21,6 +21,7 @@
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
         <RootNamespace>GenerativeAI.Authenticators</RootNamespace>
         <AssemblyName>GenerativeAI.Authenticators</AssemblyName>
+       
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="..\GenerativeAI\GenerativeAI.csproj"/>

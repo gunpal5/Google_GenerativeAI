@@ -1,4 +1,5 @@
-﻿using GenerativeAI.Core;
+﻿using System.Text.Json;
+using GenerativeAI.Core;
 using GenerativeAI.Types;
 
 namespace GenerativeAI;
@@ -30,11 +31,12 @@ public static class GenerateContentRequestExtensions
     /// <typeparam name="T">The type that defines the response schema for the JSON.</typeparam>
     /// <param name="request">The <see cref="GenerateContentRequest"/> on which JSON mode will be applied.</param>
     /// <remarks>Some of the complex data types are not supported such as Dictionary. So make sure to avoid these.</remarks>
-    public static void UseJsonMode<T>(this GenerateContentRequest request) where T : class
+    public static void UseJsonMode<T>(this GenerateContentRequest request, JsonSerializerOptions? options = null) where T : class
     {
         if(request.GenerationConfig == null)
             request.GenerationConfig = new GenerationConfig();
         request.GenerationConfig.ResponseMimeType = "application/json";
-        request.GenerationConfig.ResponseSchema = typeof(T);
+        request.GenerationConfig.ResponseSchema =
+            GoogleSchemaHelper.ConvertToSchema<T>(options); //GoogleSchemaHelper.ConvertToSchema(typeof(T));
     }
 }

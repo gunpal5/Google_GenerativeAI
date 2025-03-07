@@ -6,7 +6,7 @@ namespace GenerativeAI.Types;
 /// Specifies the type of task for which the embedding will be used.
 /// </summary>
 /// <seealso href="https://ai.google.dev/api/embeddings#tasktype">See Official API Documentation</seealso>
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter<TaskType>))]
 public enum TaskType
 {
     /// <summary>

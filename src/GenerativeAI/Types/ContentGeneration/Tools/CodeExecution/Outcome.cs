@@ -6,7 +6,7 @@ namespace GenerativeAI.Types;
 /// Enumeration of possible outcomes of the code execution.
 /// </summary>
 /// <seealso href="https://ai.google.dev/api/rest/v1beta/Outcome">See Official API Documentation</seealso>
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter<Outcome>))]
 public enum Outcome
 {
     /// <summary>

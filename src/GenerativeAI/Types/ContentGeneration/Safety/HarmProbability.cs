@@ -8,7 +8,7 @@ namespace GenerativeAI.Types;
 /// This does not indicate the severity of harm for a piece of content.
 /// </summary>
 /// <seealso href="https://ai.google.dev/api/generate-content#HarmProbability">See Official API Documentation</seealso>
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter<HarmProbability>))]
 public enum HarmProbability
 {
     /// <summary>

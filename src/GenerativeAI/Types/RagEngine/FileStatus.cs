@@ -17,6 +17,6 @@ public class FileStatus
     /// Output only. RagFile state.
     /// </summary>
     [JsonPropertyName("state")]
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+   
     public FileStatusState? State { get; set; } 
 }

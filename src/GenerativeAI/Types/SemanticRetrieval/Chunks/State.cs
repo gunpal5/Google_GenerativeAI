@@ -6,7 +6,7 @@ namespace GenerativeAI.Types;
 /// States for the lifecycle of a <see cref="Chunk"/>.
 /// </summary>
 /// <seealso href="https://ai.google.dev/api/semantic-retrieval/chunks#State">See Official API Documentation</seealso>
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter<ChunkState>))]
 public enum ChunkState
 {
     /// <summary>

@@ -6,7 +6,7 @@ namespace GenerativeAI.Types;
 /// Content Part modality.
 /// </summary>
 /// <seealso href="https://ai.google.dev/api/generate-content#Modality">See Official API Documentation</seealso>
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter<Modality>))]
 public enum Modality
 {
     /// <summary>

@@ -7,7 +7,7 @@ namespace GenerativeAI.Types;
 /// <see href="https://spec.openapis.org/oas/v3.0.3#data-types">https://spec.openapis.org/oas/v3.0.3#data-types</see>.
 /// </summary>
 /// <seealso href="https://ai.google.dev/api/caching#Type">See Official API Documentation</seealso>
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter<SchemaType>))]
 public enum SchemaType
 {
     /// <summary>

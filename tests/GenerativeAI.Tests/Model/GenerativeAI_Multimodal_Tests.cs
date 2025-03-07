@@ -96,6 +96,34 @@ namespace GenerativeAI.Tests.Model
             //     text.ShouldContain("theological", Case.Insensitive);
             Console.WriteLine(result.Text());
         }
+        
+        // [Fact]
+        // public async Task ShouldProcessRemoteFile()
+        // {
+        //     //Arrange
+        //
+        //     var vertex = GetTestVertexAIPlatform();
+        //     //var model = CreateInitializedModel();
+        //
+        //     var model = new GeminiModel(vertex, TestModel);
+        //     string prompt = "what is this audio about?";
+        //     
+        //     var request = new GenerateContentRequest();
+        //     request.AddRemoteFile("https://storage.googleapis.com/cloud-samples-data/generative-ai/audio/pixel.mp3","audio/mp3");
+        //     
+        //     //request.AddRemoteFile("https://www.gutenberg.org/cache/epub/1184/pg1184.txt","text/plain");
+        //     request.AddText(prompt);
+        //     //Act
+        //     var result = await model.GenerateContentAsync(request).ConfigureAwait(false);
+        //
+        //     //Assert
+        //     result.ShouldNotBeNull();
+        //     var text = result.Text();
+        //     text.ShouldNotBeNull();
+        //     // if(!text.Contains("theological",StringComparison.InvariantCultureIgnoreCase) && !text.Contains("Friedrich",StringComparison.InvariantCultureIgnoreCase))
+        //     //     text.ShouldContain("theological", Case.Insensitive);
+        //     Console.WriteLine(result.Text());
+        // }
 
         [Fact]
         public async Task ShouldIdentifyImageWithWithStreaming()

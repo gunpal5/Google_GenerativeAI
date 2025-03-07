@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace GenerativeAI.Types;
 
@@ -35,5 +36,5 @@ public class Status
     /// Example: <c>{ "id": 1234, "@type": "types.example.com/standard/id" }</c>.
     /// </summary>
     [JsonPropertyName("details")]
-    public List<Dictionary<string, object>>? Details { get; set; }
+    public List<Dictionary<string, JsonElement>>? Details { get; set; }
 }
