@@ -192,7 +192,7 @@ public class MicrosoftExtension_Tests
     public void ToAiContents_WithFunctionCallPart_ReturnsFunctionCallContent()
     {
         // Arrange
-        var parts = new List<Part> { new Part { FunctionCall = new FunctionCall { Name = "myFunction", Args = null } } };
+        var parts = new List<Part> { new Part { FunctionCall = new FunctionCall { Name = "myFunction", Args = JsonNode.Parse(" { \"arg1\": \"value1\", \"arg2\": \"value2\" }") } } };
 
         // Act
         var result = parts.ToAiContents();
@@ -251,7 +251,7 @@ public class MicrosoftExtension_Tests
         var parts = new List<Part>
         {
             new Part { Text = "Hello, world!" },
-            new Part { FunctionCall = new FunctionCall { Name = "myFunction", Args = null } },
+            new Part { FunctionCall = new FunctionCall { Name = "myFunction", Args = JsonNode.Parse(" { \"arg1\": \"value1\", \"arg2\": \"value2\" }"") } },
             new Part { InlineData = new Blob { MimeType = "image/png", Data = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M/wHwAFAAH/8mdr1QAAAABJRU5ErkJggg==" } }
         };
 
@@ -280,7 +280,7 @@ public class MicrosoftExtension_Tests
                 else
                 {
                     o.FunctionCall = f.Random.Bool(0.5f)
-                        ? new FunctionCall { Name = f.Internet.DomainName(), Args = null }
+                        ? new FunctionCall { Name = f.Internet.DomainName(), Args = JsonNode.Parse(" { \"arg1\": \"value1\", \"arg2\": \"value2\" }") }
                         : null;
                 }
 
