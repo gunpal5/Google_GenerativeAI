@@ -62,7 +62,8 @@ Highlights of this release include:
 7. **Multimodal Live API** - Enables real-time interaction with multimodal content (text, images, audio) for dynamic and
    responsive applications.
 8. **Build grounded AI:** Simple APIs for RAG with ***Vertex RAG Engine*** and ***Google AQA***.
-9. **New Packages** – Modularizes features to help you tailor the SDK to your needs:
+9. **NativeAOT/Trimming** SDK is fully NativeAOT/Trimming Compatible since v2.4.0
+10. **New Packages** – Modularizes features to help you tailor the SDK to your needs:
 
 | **Package**                   | **Version**                                                                                                                                       | **Description**                                                                                                                                                                  |
 |-------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
