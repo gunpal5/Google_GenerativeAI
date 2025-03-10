@@ -1,4 +1,6 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 
 namespace GenerativeAI.Core;
 
@@ -49,11 +51,24 @@ public class JsonBlock
     /// </summary>
     /// <typeparam name="T">The target type to which the JSON data will be deserialized. Must be a class.</typeparam>
     /// <returns>An instance of type <typeparamref name="T"/> if deserialization is successful, or null if an error occurs.</returns>
-    public T? ToObject<T>() where T : class
+    public T? ToObject<T>(JsonSerializerOptions? options = null) where T : class
     {
         try
         {
-            return JsonSerializer.Deserialize<T>(Json, DefaultSerializerOptions.Options);
+            if(options == null && !JsonSerializer.IsReflectionEnabledByDefault)
+                throw new InvalidOperationException("JsonSerializerOptions must be provided when reflection is disabled for AOT and Trimming.");
+            if (options == null)
+                options = DefaultSerializerOptions.GenerateObjectJsonOptions;
+            var newOptions = new JsonSerializerOptions(options)
+            {
+                NumberHandling = JsonNumberHandling.AllowReadingFromString
+            };
+            
+            var typeInfo = newOptions.GetTypeInfo(typeof(T));
+            if (typeInfo == null)
+                throw new InvalidOperationException("Unable to get type information for type T.");
+            return JsonSerializer.Deserialize(Json, typeInfo) as T;
+            
         }
         catch (Exception ex)
         {

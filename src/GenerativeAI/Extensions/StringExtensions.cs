@@ -318,4 +318,29 @@ public static class StringExtensions
 
         return uriBuilder.ToString();
     }
+    
+    
+    /// <summary>
+    /// Converts a string into camel case format.
+    /// </summary>
+    /// <param name="input">The input string to be converted.</param>
+    /// <returns>
+    /// A camel case representation of the input string, or an empty string if the input is null or whitespace.
+    /// </returns>
+    public static string ToCamelCase(this string input)
+    {
+        if (string.IsNullOrWhiteSpace(input))
+        {
+            return string.Empty;
+        }
+
+        var words = input.Split(new[] { ' ', '_', '-' }, StringSplitOptions.RemoveEmptyEntries);
+
+        for (int i = 1; i < words.Length; i++)
+        {
+            words[i] = char.ToUpperInvariant(words[i][0]) + words[i].Substring(1);
+        }
+
+        return char.ToLowerInvariant(words[0][0]) + words[0].Substring(1) + string.Join(string.Empty, words.Skip(1));
+    }
 }

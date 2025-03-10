@@ -1,4 +1,6 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 namespace GenerativeAI.Types;
 
@@ -27,5 +29,5 @@ public class FunctionCall
     /// Optional. The function parameters and values in JSON object format.
     /// </summary>
     [JsonPropertyName("args")]
-    public object? Args { get; set; }  
+    public JsonNode? Args { get; set; }  
 }

@@ -1,5 +1,5 @@
 using GenerativeAI.Types;
-using Json.More;
+
 using Microsoft.Extensions.AI;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -70,8 +70,8 @@ public static class MicrosoftExtensions
     /// <returns>A <see cref="Schema"/> object constructed from the provided JSON schema, or null if deserialization fails.</returns>
     public static Schema? ToSchema(this JsonElement schema)
     {
-       
-        var serialized = JsonSerializer.Serialize(schema);
+       return GoogleSchemaHelper.ConvertToCompatibleSchemaSubset(schema.AsNode().AsObject());
+        var serialized = JsonSerializer.Serialize(schema, DefaultSerializerOptions.Options.GetTypeInfo(schema.GetType()));
         return JsonSerializer.Deserialize(serialized,SchemaSourceGenerationContext.Default.Schema);
     }
 
@@ -98,7 +98,7 @@ public static class MicrosoftExtensions
                 FunctionCall = new FunctionCall()
                 {
                     Name = fcc.Name,
-                    Args = fcc.Arguments!,
+                    Args = fcc.Arguments.ToJsonNode(),
                 }
             },
             FunctionResultContent frc => new Part
@@ -106,19 +106,61 @@ public static class MicrosoftExtensions
                 FunctionResponse = new FunctionResponse()
                 {
                     Name = frc.CallId, 
-                    Response = new
-                    {
-                        Name = frc.CallId,
-                        Content = JsonSerializer.SerializeToNode(frc.Result)!,
-                    }
+                    Response = frc.ToJsonNodeResponse()
                 }
             },
             _ => null,
         };
     }
 
-    
+    private static JsonNode ToJsonNode(this IDictionary<string, object?>? args)
+    {
+        var node = new JsonObject();
+        foreach (var arg in args!)
+        {
+            if (arg.Value is JsonNode nd)
+                node.Add(arg.Key, nd.DeepClone());
+            else
+            {
+                var p = arg.Value switch
+                {
+                    string s => s,
+                    int i => i,
+                    float f => f,
+                    double d => d,
+                    bool b => b,
+                    null => null,
+                    JsonElement e => e.AsNode()?.AsObject(),
+                    JsonNode n => n switch
+                    {
+                        JsonObject o => o,
+                        JsonArray a => a,
+                        JsonValue v => v.GetValue<JsonElement>().AsNode()
+                    },
+                    _ => throw new Exception("Unsupported argument type")
+                };
+                node.Add(arg.Key, p);
+            }
+        }
 
+        return node; //JsonSerializer.Deserialize(node.ToJsonString(), TypesSerializerContext.Default.JsonElement)!;
+    }
+    public static JsonNode ToJsonNodeResponse(this object? response)
+    {
+        if (response is FunctionResultContent content)
+        {
+            if (content.Result is JsonObject obj)
+                return obj;
+            else if (content.Result is JsonNode arr)
+                return arr;
+        }
+        if(response is JsonNode node)
+        {
+            return node;
+        }
+        else throw new Exception("Response is not a json node");
+        
+    }
     /// <summary>
     /// Maps <see cref="ChatOptions"/> into a <see cref="GenerationConfig"/> object used by GenerativeAI.
     /// </summary>
@@ -137,7 +179,7 @@ public static class MicrosoftExtensions
         config.TopK = options.TopK;
         config.MaxOutputTokens = options.MaxOutputTokens;
         config.StopSequences = options.StopSequences?.ToList();
-        config.Seed = (int) options.Seed!;
+        config.Seed = (int?) options.Seed;
         config.ResponseMimeType = options.ResponseFormat is ChatResponseFormatJson ? "application/json" : null;
         if (options.ResponseFormat is ChatResponseFormatJson jsonFormat)
         {
@@ -145,7 +187,7 @@ public static class MicrosoftExtensions
             if (jsonFormat.Schema is JsonElement je && je.ValueKind == JsonValueKind.Object)
             {
                 // Workaround to convert our real json schema to the format Google's api expects
-                var forGoogleApi = GoogleSchemaHelper.ConvertToCompatibleSchemaSubset(je.ToJsonDocument());
+                var forGoogleApi = GoogleSchemaHelper.ConvertToCompatibleSchemaSubset(je.AsNode());
                 config.ResponseSchema = forGoogleApi;
             }
         }
@@ -396,17 +438,23 @@ public static class MicrosoftExtensions
     /// <returns>A dictionary where the keys represent argument names and values represent their corresponding data, or null if conversion is not possible.</returns>
     private static IDictionary<string, object?>? ConvertFunctionCallArg(object? functionCallArgs)
     {
-        if (functionCallArgs != null && functionCallArgs is not JsonElement)
-        {
-            functionCallArgs = JsonSerializer.Deserialize<dynamic>(JsonSerializer.Serialize(functionCallArgs));
-        }
         if (functionCallArgs is JsonElement jsonElement)
         {
-            if (jsonElement.ValueKind == JsonValueKind.Object)
-            {
-                var obj = JsonObject.Create(jsonElement);
-                return obj?.ToDictionary(s=>s.Key,s=>(object?)s.Value);
-            }
+            var obj = jsonElement.AsNode().AsObject();
+            return obj?.ToDictionary(s=>s.Key,s=>(object?)s.Value?.DeepClone());
+
+        }
+        if (functionCallArgs is JsonNode jsonElement2)
+        {
+            var obj = jsonElement2.AsObject();
+            return obj?.ToDictionary(s=>s.Key,s=>(object?)s.Value?.DeepClone());
+        }
+        else if (functionCallArgs != null && functionCallArgs is not JsonNode)
+        {
+            throw new Exception("Unsupported function call argument type");
+            // #pragma warning disable IL2026, IL3050
+            // functionCallArgs = JsonSerializer.Deserialize<dynamic>(JsonSerializer.Serialize(functionCallArgs));
+            // #pragma warning restore IL2026, IL3050
         }
 
         return null;

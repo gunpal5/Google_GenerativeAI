@@ -132,6 +132,11 @@ public partial class GenerativeModel
         }
     }
 
+    public void AddFunctionTool(GoogleFunctionTool tool, ToolConfig? toolConfig = null,FunctionCallingBehaviour? functionCallingBehaviour=null)
+    {
+        AddFunctionTool((IFunctionTool)tool, toolConfig, functionCallingBehaviour);
+    }
+
     /// <summary>
     /// Disable Global Functions
     /// </summary>
@@ -228,11 +233,12 @@ public partial class GenerativeModel
             }
 
             name = "InvalidName";
-            jsonResult = "{\"error\":\"Invalid function name or function doesn't exist.\"}";
+            var node = JsonNode.Parse("{\"error\":\"Invalid function name or function doesn't exist.\"}");
+            
             functionResponse = new FunctionResponse()
             {
                 Name = name,
-                Response = jsonResult
+                Response = node
             };
         }
         else

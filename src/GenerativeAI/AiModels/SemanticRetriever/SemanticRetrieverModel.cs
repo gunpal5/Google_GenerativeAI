@@ -1,4 +1,3 @@
-using System.Diagnostics.Metrics;
 using GenerativeAI.Clients;
 using GenerativeAI.Core;
 using GenerativeAI.Exceptions;

@@ -48,6 +48,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwoWayAudioCommunicationWpf
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenerativeAI.Live.Tests", "tests\GenerativeAI.Live.Tests\GenerativeAI.Live.Tests.csproj", "{157399AE-E8D1-4306-8B59-0BDEB45AED03}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AotTest", "tests\AotTest\AotTest.csproj", "{5BF6737C-D3E4-4C46-ABBF-73ECAEE128AF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -126,6 +128,10 @@ Global
 		{157399AE-E8D1-4306-8B59-0BDEB45AED03}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{157399AE-E8D1-4306-8B59-0BDEB45AED03}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{157399AE-E8D1-4306-8B59-0BDEB45AED03}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BF6737C-D3E4-4C46-ABBF-73ECAEE128AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BF6737C-D3E4-4C46-ABBF-73ECAEE128AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BF6737C-D3E4-4C46-ABBF-73ECAEE128AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BF6737C-D3E4-4C46-ABBF-73ECAEE128AF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -149,6 +155,7 @@ Global
 		{ACB3E4E1-F967-45E7-81CD-70A4F7785AED} = {AC161F1D-EC76-48D2-86A3-B52584618D49}
 		{8DC0FF3E-8B46-41B0-B814-6049FD80C8C3} = {61CC49B3-1325-40EB-95DF-89E18A0D041B}
 		{157399AE-E8D1-4306-8B59-0BDEB45AED03} = {FCCDE15A-B121-4D6C-BD56-D1B043A26F18}
+		{5BF6737C-D3E4-4C46-ABBF-73ECAEE128AF} = {FCCDE15A-B121-4D6C-BD56-D1B043A26F18}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FFF3E8BB-BACD-4376-8E33-55D6E8A30BE0}

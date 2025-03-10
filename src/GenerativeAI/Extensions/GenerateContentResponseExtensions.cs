@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Text.Json;
 using GenerativeAI.Core;
 using GenerativeAI.Types;
 
@@ -103,12 +104,12 @@ public static class GenerateContentResponseExtensions
     /// </summary>
     /// <param name="response">The GenerateContentResponse containing potential JSON blocks.</param>
     /// <returns>A list of JsonBlock objects extracted from the response. Returns an empty list if no JSON blocks are found.</returns>
-    public static T? ToObject<T>(this GenerateContentResponse response) where T : class
+    public static T? ToObject<T>(this GenerateContentResponse response, JsonSerializerOptions? options = null) where T : class
     {
         var blocks = ExtractJsonBlocks(response);
         foreach (var block in blocks)
         {
-            T? obj = block.ToObject<T>();
+            T? obj = block.ToObject<T>(options);
             if (obj != null)
                 return obj;
         }
@@ -122,13 +123,13 @@ public static class GenerateContentResponseExtensions
     /// <param name="response">The GenerateContentResponse containing JSON blocks to convert.</param>
     /// <typeparam name="T">The type to which the JSON blocks are converted.</typeparam>
     /// <returns>A list of objects of type T. Returns an empty list if no JSON blocks are found or successfully converted.</returns>
-    public static List<T> ToObjects<T>(this GenerateContentResponse response) where T : class
+    public static List<T> ToObjects<T>(this GenerateContentResponse response, JsonSerializerOptions? options = null) where T : class
     {
         var blocks = ExtractJsonBlocks(response);
         List<T> objects = new List<T>();
         foreach (var block in blocks)
         {
-            T? obj = block.ToObject<T>();
+            T? obj = block.ToObject<T>(options);
             if (obj != null)
                 objects.Add(obj);
         }

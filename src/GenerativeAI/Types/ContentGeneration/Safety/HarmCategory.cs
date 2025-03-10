@@ -7,7 +7,7 @@ namespace GenerativeAI.Types;
 /// These categories cover various kinds of harms that developers may wish to adjust.
 /// </summary>
 /// <seealso href="https://ai.google.dev/api/generate-content#harmcategory">See Official API Documentation</seealso>
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter<HarmCategory>))]
 public enum HarmCategory
 {
     /// <summary>

@@ -6,7 +6,7 @@ namespace GenerativeAI.Types;
 /// Supported programming languages for the generated code.
 /// </summary>
 /// <seealso href="https://ai.google.dev/api/caching#Language">See Official API Documentation</seealso>
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter<Language>))]
 public enum Language
 {
     /// <summary>

@@ -110,16 +110,16 @@ public class GoogleAIPlatformAdapterTests:TestBase
     {
         // Arrange
         var loggerMock = new Mock<ILogger>();
-
+        
         // Act
         var adapter = new GoogleAIPlatformAdapter("TEST_API_KEY", logger: loggerMock.Object);
-
+        
         // Assert
         // Using reflection because Logger is not public:
         var loggerProperty = adapter.GetType().GetProperty("Logger",
             System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
         loggerProperty.ShouldNotBeNull("Logger property should exist.");
-
+        
         var actualLogger = loggerProperty!.GetValue(adapter) as ILogger;
         actualLogger.ShouldNotBeNull();
         actualLogger.ShouldBe(loggerMock.Object);

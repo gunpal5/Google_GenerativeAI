@@ -65,7 +65,7 @@ public class RagFile
     /// Output only. The type of the RagFile.
     /// </summary>
     [JsonPropertyName("ragFileType")]
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+   
     public RagFileType? RagFileType { get; set; }
 
     /// <summary>

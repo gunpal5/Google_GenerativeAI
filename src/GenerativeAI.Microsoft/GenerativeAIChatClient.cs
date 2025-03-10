@@ -1,4 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using GenerativeAI.Core;
 using GenerativeAI.Exceptions;
 using GenerativeAI.Microsoft.Extensions;
@@ -70,15 +72,15 @@ public class GenerativeAIChatClient : IChatClient
                 var content = response.Candidates?.FirstOrDefault()?.Content;
                 if (content != null)
                     contents.Add(content);
+                var responseObject = new JsonObject();
+                responseObject["name"] = functionCall.Name;
+                responseObject["content"] = ((JsonElement)result).AsNode().DeepClone();
+                //responseObject["content"] = result as JsonNode;
                 var functionResponse = new FunctionResponse()
                 {
                     Name = tool.Name,
                     Id = functionCall.CallId,
-                    Response = new
-                    {
-                        Name = tool.Name,
-                        Content = result
-                    }
+                    Response = responseObject
                 };
                 var funcContent = new Content() { Role = Roles.Function };
                 funcContent.AddPart(new Part()

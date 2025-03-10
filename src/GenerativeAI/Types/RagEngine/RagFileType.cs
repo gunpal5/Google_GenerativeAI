@@ -1,7 +1,9 @@
 ﻿using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace GenerativeAI.Types.RagEngine;
 
+[JsonConverter(typeof(JsonStringEnumConverter<RagFileType>))]
 public enum RagFileType
 {
 

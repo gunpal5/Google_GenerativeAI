@@ -6,7 +6,7 @@ namespace GenerativeAI.Types;
 /// Block at and beyond a specified harm probability.
 /// </summary>
 /// <seealso href="https://ai.google.dev/api/generate-content#HarmBlockThreshold">See Official API Documentation</seealso>
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter<HarmBlockThreshold>))]
 public enum HarmBlockThreshold
 {
     /// <summary>

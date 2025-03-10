@@ -184,7 +184,7 @@ public static class ContentExtensions
     /// <typeparam name="T">The target type to which the JSON content will be deserialized. Must be a class.</typeparam>
     /// <param name="content">The <see cref="Content"/> object containing JSON data to be converted.</param>
     /// <returns>An instance of type <typeparamref name="T"/> if conversion succeeds, or null if no valid JSON data is found or deserialization fails.</returns>
-    public static T? ToObject<T>(this Content content) where T : class
+    public static T? ToObject<T>(this Content content, JsonSerializerOptions? options = null) where T : class
     {
         var jsonBlocks = ExtractJsonBlocks(content);
 
@@ -192,10 +192,9 @@ public static class ContentExtensions
         {
             foreach (var block in jsonBlocks)
             {
-                return block.ToObject<T?>();
+                return block.ToObject<T?>(options);
             }
         }
-
         return null;
     }
 }

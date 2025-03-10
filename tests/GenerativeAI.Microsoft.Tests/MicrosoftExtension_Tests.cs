@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using Bogus;
 using GenerativeAI.IntegrationTests;
 using GenerativeAI.Microsoft.Extensions;
@@ -191,7 +192,7 @@ public class MicrosoftExtension_Tests
     public void ToAiContents_WithFunctionCallPart_ReturnsFunctionCallContent()
     {
         // Arrange
-        var parts = new List<Part> { new Part { FunctionCall = new FunctionCall { Name = "myFunction", Args = new { arg1 = "value1", arg2 = "value2" } } } };
+        var parts = new List<Part> { new Part { FunctionCall = new FunctionCall { Name = "myFunction", Args = null } } };
 
         // Act
         var result = parts.ToAiContents();
@@ -210,7 +211,7 @@ public class MicrosoftExtension_Tests
     public void ToAiContents_WithFunctionResponsePart_ReturnsFunctionResultContent()
     {
         // Arrange
-        var parts = new List<Part> { new Part { FunctionResponse = new FunctionResponse { Name = "myFunction", Response = new { result = "success" } } } };
+        var parts = new List<Part> { new Part { FunctionResponse = new FunctionResponse { Name = "myFunction", Response = JsonNode.Parse("{ \"result\": \"value\" }") } } };
 
         // Act
         var result = parts.ToAiContents();
@@ -250,7 +251,7 @@ public class MicrosoftExtension_Tests
         var parts = new List<Part>
         {
             new Part { Text = "Hello, world!" },
-            new Part { FunctionCall = new FunctionCall { Name = "myFunction", Args = new { arg1 = "value1" } } },
+            new Part { FunctionCall = new FunctionCall { Name = "myFunction", Args = null } },
             new Part { InlineData = new Blob { MimeType = "image/png", Data = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M/wHwAFAAH/8mdr1QAAAABJRU5ErkJggg==" } }
         };
 
@@ -279,14 +280,14 @@ public class MicrosoftExtension_Tests
                 else
                 {
                     o.FunctionCall = f.Random.Bool(0.5f)
-                        ? new FunctionCall { Name = f.Internet.DomainName(), Args = new Faker<Microsoft_AIFunction_Tests.Weather>().Generate()}
+                        ? new FunctionCall { Name = f.Internet.DomainName(), Args = null }
                         : null;
                 }
 
                 if (f.Random.Bool(0.33f))
                 {
                     o.FunctionResponse = f.Random.Bool(0.5f)
-                        ? new FunctionResponse { Name = f.Internet.DomainName(), Response = new Faker<Microsoft_AIFunction_Tests.Weather>().Generate() }
+                        ? new FunctionResponse { Name = f.Internet.DomainName(), Response = JsonNode.Parse("{ \"result\": \"value\" }") }
                         : null;
                 }
 

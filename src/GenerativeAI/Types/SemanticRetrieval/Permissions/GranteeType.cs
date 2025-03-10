@@ -6,7 +6,7 @@ namespace GenerativeAI.Types;
 /// Defines types of the grantee of this permission.
 /// <seealso href="https://ai.google.dev/api/semantic-retrieval/permissions#Permission.GranteeType">See Official API Documentation</seealso>
 /// </summary>
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter<GranteeType>))]
 public enum GranteeType
 {
     /// <summary>

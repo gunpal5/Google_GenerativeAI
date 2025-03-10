@@ -6,7 +6,7 @@ namespace GenerativeAI.Types;
 /// Source of the File.
 /// </summary>
 /// <seealso href="https://ai.google.dev/api/files#Source">See Official API Documentation</seealso>
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter<Source>))]
 public enum Source
 {
     /// <summary>

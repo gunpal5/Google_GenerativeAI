@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace GenerativeAI.Types.RagEngine;
 
@@ -17,7 +18,7 @@ public class GoogleRpcStatus
     /// A list of messages that carry the error details. There is a common set of message types for APIs to use.
     /// </summary>
     [JsonPropertyName("details")]
-    public System.Collections.Generic.ICollection<System.Collections.Generic.IDictionary<string, object>>? Details { get; set; } 
+    public System.Collections.Generic.ICollection<System.Collections.Generic.IDictionary<string, JsonElement>>? Details { get; set; } 
 
     /// <summary>
     /// A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.

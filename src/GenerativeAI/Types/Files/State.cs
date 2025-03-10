@@ -6,7 +6,7 @@ namespace GenerativeAI.Types;
 /// States for the lifecycle of a File.
 /// </summary>
 /// <seealso href="https://ai.google.dev/api/files#State">See Official API Documentation</seealso>
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter<FileState>))]
 public enum FileState
 {
     /// <summary>

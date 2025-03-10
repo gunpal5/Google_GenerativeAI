@@ -4,6 +4,7 @@ namespace GenerativeAI.Types;
 /// Represents the allowed generation of people by the model.
 /// </summary>
 /// <seealso href="https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/imagen-api">See Official API Documentation</seealso>
+[System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter<PersonGeneration>))]
 public enum PersonGeneration
 {
     /// <summary>

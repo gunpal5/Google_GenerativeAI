@@ -6,7 +6,7 @@ namespace GenerativeAI.Types;
 /// Defines the valid operators that can be applied to a key-value pair.
 /// </summary>
 /// <seealso href="https://ai.google.dev/api/semantic-retrieval/corpora#Operator">See Official API Documentation</seealso>
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter<Operator>))]
 public enum Operator
 {
     /// <summary>

@@ -6,7 +6,7 @@ namespace GenerativeAI.Types;
 /// Specifies the reason why the prompt was blocked.
 /// </summary>
 /// <seealso href="https://ai.google.dev/api/generate-content#BlockReason">BlockReason Documentation</seealso>
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter<BlockReason>))]
 public enum BlockReason
 {
     /// <summary>

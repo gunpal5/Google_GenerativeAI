@@ -1,9 +1,11 @@
 using GenerativeAI.Clients;
 using GenerativeAI.Live;
 using GenerativeAI.Types;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
+using Microsoft.Extensions.Options;
 
 namespace GenerativeAI.Tests.Model;
-
 public class MultiModalLive_Tests
 {
     public static async Task Main(string[] args)
@@ -13,9 +15,17 @@ public class MultiModalLive_Tests
 
     public async Task ShouldRunMultiModalLive()
     {
+        var logger = LoggerFactory.Create((s) =>
+        {
+            s.AddSimpleConsole();
+        }).CreateLogger<MultiModalLiveClient>();
+        
         var exitEvent = new ManualResetEvent(false);
         var multiModalLive = new MultiModalLiveClient(new GoogleAIPlatformAdapter(EnvironmentVariables.GOOGLE_API_KEY),
-            "gemini-2.0-flash-exp");
+            "gemini-2.0-flash-exp", new GenerationConfig()
+            {
+                ResponseModalities = [Modality.TEXT]
+            },logger:logger);
         multiModalLive.MessageReceived += (sender, e) =>
         {
             if (e.Payload.SetupComplete != null)
@@ -23,6 +33,7 @@ public class MultiModalLive_Tests
                 System.Console.WriteLine($"Setup complete: {e.Payload.SetupComplete}");
             }
 
+            Console.WriteLine("Payload received.");
             if (e.Payload.ServerContent != null)
             {
                 if (e.Payload.ServerContent.ModelTurn != null)

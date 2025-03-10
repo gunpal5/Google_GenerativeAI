@@ -1,4 +1,5 @@
-﻿using GenerativeAI.Types;
+﻿using System.Text.Json;
+using GenerativeAI.Types;
 
 namespace GenerativeAI;
 
@@ -14,7 +15,28 @@ public partial class GenerativeModel
     /// </remarks>
     public bool UseJsonMode { get; set; } = false;
 
-    
+    private JsonSerializerOptions _jsonSerializerOptions = DefaultSerializerOptions.GenerateObjectJsonOptions;
+
+    /// <summary>
+    /// Specifies the JSON serializer options to be used when generating objects as JSON outputs.
+    /// These options configure the behavior of JSON serialization and deserialization
+    /// for object generation in the context of JSON mode.
+    /// </summary>
+    /// <remarks>
+    /// Customize these options to adjust serialization rules, such as property naming policies,
+    /// handling of null values, and supported data types. Adjustments can impact the handling
+    /// of responses and compatibility with consuming systems.
+    /// </remarks>
+    public JsonSerializerOptions GenerateObjectJsonSerializerOptions
+    {
+        get => new JsonSerializerOptions(this._jsonSerializerOptions);
+        set
+        {
+            this._jsonSerializerOptions = value;
+        }
+    }
+
+
     #region Generate Object
     
     /// <summary>
@@ -30,7 +52,7 @@ public partial class GenerativeModel
         CancellationToken cancellationToken = default) where T : class
     {
         request.GenerationConfig ??= this.Config;
-        request.UseJsonMode<T>();
+        request.UseJsonMode<T>(GenerateObjectJsonSerializerOptions);
     
         return await GenerateContentAsync(request, cancellationToken).ConfigureAwait(false);
     }
@@ -48,7 +70,7 @@ public partial class GenerativeModel
         CancellationToken cancellationToken = default) where T : class
     {
         var response = await GenerateContentAsync<T>(request, cancellationToken).ConfigureAwait(false);
-        return response.ToObject<T>();
+        return response.ToObject<T>(GenerateObjectJsonSerializerOptions);
     }
 
     /// <summary>

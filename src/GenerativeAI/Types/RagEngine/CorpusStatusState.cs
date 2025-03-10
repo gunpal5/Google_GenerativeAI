@@ -1,7 +1,9 @@
 ﻿using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace GenerativeAI.Types.RagEngine;
 
+[JsonConverter(typeof(JsonStringEnumConverter<CorpusStatusState>))]
 public enum CorpusStatusState
 {
     [EnumMember(Value = @"UNKNOWN")]

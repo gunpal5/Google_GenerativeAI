@@ -133,8 +133,13 @@ public class ChunkClient : BaseClient
             if(string.IsNullOrEmpty(request.Parent))
                 request.Parent = parent;
         }
-        var requestBody = new { requests };
-        return await SendAsync<object, BatchCreateChunksResponse>(url, requestBody, HttpMethod.Post, cancellationToken).ConfigureAwait(false);
+
+        var batchRequest = new BatchCreateChunksRequest()
+        {
+            Requests = requests
+        };
+        
+        return await SendAsync<BatchCreateChunksRequest, BatchCreateChunksResponse>(url, batchRequest, HttpMethod.Post, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>

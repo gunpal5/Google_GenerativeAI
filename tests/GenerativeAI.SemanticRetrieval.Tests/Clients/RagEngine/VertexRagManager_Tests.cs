@@ -45,6 +45,7 @@ public class VertexRagManager_Tests : SemanticRetrieverTestBase
     {
         // Arrange
         var client = new VertexRagManager(GetTestVertexAIPlatform(), null);
+        //client.Platform.Authenticator = new GoogleCloudAdcAuthenticator();
         var newCorpus = new RagCorpus
         {
             DisplayName = "Test Pinecone Corpus",
@@ -58,7 +59,8 @@ public class VertexRagManager_Tests : SemanticRetrieverTestBase
                 {
                     IndexName = "test-index-5"
                 },
-                apiKeyResourceName: Environment.GetEnvironmentVariable("pinecone-secret"))
+                apiKeyResourceName:"projects/103876794532/secrets/pinecone/versions/1")
+                //apiKeyResourceName: Environment.GetEnvironmentVariable("pinecone-secret"))
             .ConfigureAwait(false);
 
         // Assert
@@ -232,23 +234,29 @@ public class VertexRagManager_Tests : SemanticRetrieverTestBase
     //     Console.WriteLine($"Corpora updated: {updated.DisplayName}, ");
     // }
 
-    [Fact, TestPriority(100)]
+    //[Fact(Skip = "Not needed", Explicit = true), TestPriority(100)]
+    [RunnableInDebugOnly]
     public async Task ShouldDeleteCorporaAsync()
     {
         // Arrange
         var client = new VertexRagManager(GetTestVertexAIPlatform(), null);
 
         var list = await client.ListCorporaAsync().ConfigureAwait(false);
-        var corpusName = list.RagCorpora
-            .FirstOrDefault(s => s.DisplayName.Contains("test", StringComparison.OrdinalIgnoreCase)).Name;
-
-        // Act
-        await client.DeleteRagCorpusAsync(corpusName).ConfigureAwait(false);
+        foreach (var l in list.RagCorpora)
+        {
+            await client.DeleteRagCorpusAsync(l.Name).ConfigureAwait(false);
+            
+        }
+        // var corpusName = list.RagCorpora
+        //     .FirstOrDefault(s => s.DisplayName.Contains("test", StringComparison.OrdinalIgnoreCase)).Name;
+        //
+        // // Act
+        // await client.DeleteRagCorpusAsync(corpusName).ConfigureAwait(false);
 
         // Assert
         // No exception should be thrown
 
-        Console.WriteLine($"Corpus Deleted: {corpusName}");
+        //Console.WriteLine($"Corpus Deleted: {corpusName}");
     }
 
     [Fact, TestPriority(7)]
@@ -272,7 +280,8 @@ public class VertexRagManager_Tests : SemanticRetrieverTestBase
         Console.WriteLine($"Corpus Deleted: {corpusName}");
     }
 
-    [Fact(Skip = "Not needed",Explicit = true), TestPriority(7)]
+    //[Fact(Skip = "Not needed",Explicit = true), TestPriority(7)]
+    [Fact, TestPriority(7)]
     public async Task ShouldImportFileAsync()
     {
         // Arrange
@@ -283,11 +292,11 @@ public class VertexRagManager_Tests : SemanticRetrieverTestBase
             .FirstOrDefault(s => s.DisplayName.Contains("test", StringComparison.OrdinalIgnoreCase)).Name;
 
         var request = new ImportRagFilesRequest();
-        // request.AddGooglDriveSource(new GoogleDriveSourceResourceId()
-        // {
-        //     ResourceId = "",
-        //     ResourceType = GoogleDriveSourceResourceIdResourceType.RESOURCE_TYPE_FILE
-        // });
+        request.AddGooglDriveSource(new GoogleDriveSourceResourceId()
+        {
+            ResourceId = "",
+            ResourceType = GoogleDriveSourceResourceIdResourceType.RESOURCE_TYPE_FILE
+        });
         var file = "TestData/pg1184.txt";
         // Act
         var result = await client.ImportFilesAsync(corpusName, request).ConfigureAwait(false);
@@ -329,7 +338,8 @@ public class VertexRagManager_Tests : SemanticRetrieverTestBase
         var f = await client.GetFileAsync(last.Name).ConfigureAwait(false);
     }
     
-    [Fact(Skip = "Not needed",Explicit = true), TestPriority(7)]
+    //[Fact(Skip = "Not needed",Explicit = true), TestPriority(7)]
+    [Fact, TestPriority(7)]
     public async Task ShouldQueryWithCorpusAsync()
     {
         // Arrange

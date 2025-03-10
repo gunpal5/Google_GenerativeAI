@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 using GenerativeAI.Exceptions;
 using GenerativeAI.Logging;
 using Microsoft.Extensions.Logging;
@@ -82,7 +83,7 @@ namespace GenerativeAI.Core
                 _logger?.LogSuccessfulGetResponse(url, content);
 
                 // Deserialize and return the response
-                return JsonSerializer.Deserialize<T>(content) ??
+                return JsonSerializer.Deserialize(content, (JsonTypeInfo<T>) SerializerOptions.GetTypeInfo(typeof(T))) ??
                        throw new InvalidOperationException("Deserialized response is null.");
             }
             catch (Exception ex) when (ex is TaskCanceledException or OperationCanceledException)
@@ -117,7 +118,7 @@ namespace GenerativeAI.Core
                 _logger?.LogHttpRequest(method.Method, url, payload);
 
                 // Serialize payload and create request
-                var jsonPayload = JsonSerializer.Serialize(payload, SerializerOptions);
+                var jsonPayload = JsonSerializer.Serialize(payload, SerializerOptions.GetTypeInfo(typeof(TRequest)));
                 using var request = new HttpRequestMessage(method, url)
                 {
                     Content = new StringContent(jsonPayload, System.Text.Encoding.UTF8, "application/json")
@@ -211,7 +212,7 @@ namespace GenerativeAI.Core
         /// <returns>The deserialized object of type T, or null if deserialization fails.</returns>
         protected T? Deserialize<T>(string json)
         {
-            return JsonSerializer.Deserialize<T>(json, SerializerOptions);
+            return (T?) JsonSerializer.Deserialize(json, SerializerOptions.GetTypeInfo(typeof(T)));
         }
 
         /// <summary>
@@ -360,7 +361,7 @@ namespace GenerativeAI.Core
         {
             // Serialize the request payload into a MemoryStream
             using var ms = new MemoryStream();
-            await JsonSerializer.SerializeAsync(ms, payload, SerializerOptions, cancellationToken).ConfigureAwait(false);
+            await JsonSerializer.SerializeAsync(ms, payload, SerializerOptions.GetTypeInfo(typeof(TRequest)), cancellationToken).ConfigureAwait(false);
             ms.Seek(0, SeekOrigin.Begin);
 
             // Prepare an HTTP request message
@@ -389,9 +390,9 @@ namespace GenerativeAI.Core
                 using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
                 #endif
                 
-                await foreach (var item in JsonSerializer.DeserializeAsyncEnumerable<TResponse>(
+                await foreach (var item in JsonSerializer.DeserializeAsyncEnumerable(
                                    stream,
-                                   SerializerOptions,
+                                   (JsonTypeInfo<TResponse>)SerializerOptions.GetTypeInfo(typeof(TResponse)),
                                    cancellationToken).ConfigureAwait(false)
                               )
                 {

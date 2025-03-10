@@ -53,7 +53,7 @@ public class FileClient : BaseClient
         if (progressCallback == null)
             progressCallback = d => { };
 
-        var json = JsonSerializer.Serialize(request, SerializerOptions);
+        var json = JsonSerializer.Serialize(request, SerializerOptions.GetTypeInfo(request.GetType()));
         //Upload File
         using var file = File.OpenRead(filePath);
         var httpMessage = new HttpRequestMessage(HttpMethod.Post, url);
@@ -105,7 +105,7 @@ public class FileClient : BaseClient
         if (progressCallback == null)
             progressCallback = d => { };
 
-        var json = JsonSerializer.Serialize(request, SerializerOptions);
+        var json = JsonSerializer.Serialize(request, SerializerOptions.GetTypeInfo(request.GetType()));
         //Upload File
 
         using var httpMessage = new HttpRequestMessage(HttpMethod.Post, url);

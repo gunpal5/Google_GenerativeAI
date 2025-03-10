@@ -1,7 +1,9 @@
-﻿using System.Text.Json.Nodes;
+﻿using System.Text.Json;
+using System.Text.Json.Nodes;
 using CSharpToJsonSchema;
 using GenerativeAI.Core;
 using GenerativeAI.Types;
+
 using JsonSerializer = System.Text.Json.JsonSerializer;
 using Tool = GenerativeAI.Types.Tool;
 
@@ -13,7 +15,7 @@ namespace GenerativeAI.Tools;
 /// It utilizes the code generation capabilities available in <see href="https://www.nuget.org/packages/CSharpToJsonSchema">CSharpToJsonSchema</see> for transforming
 /// tool definitions into executable formats and managing function invocations.
 /// </summary>
-public class GenericFunctionTool:IFunctionTool
+public class GenericFunctionTool:GoogleFunctionTool
 {
     /// <summary>
     /// Represents a generic functional tool that enables interaction with a set of tools and their associated functions,
@@ -29,7 +31,7 @@ public class GenericFunctionTool:IFunctionTool
     
    
     /// <inheritdoc/>
-    public Tool AsTool()
+    public override Tool AsTool()
     {
         return new Tool()
         {
@@ -44,30 +46,52 @@ public class GenericFunctionTool:IFunctionTool
 
     private Schema? ToSchema(object parameters)
     {
-        var param = JsonSerializer.Serialize(parameters);
+        var param = JsonSerializer.Serialize(parameters, OpenApiSchemaSourceGenerationContext.Default.OpenApiSchema);
         return JsonSerializer.Deserialize(param,SchemaSourceGenerationContext.Default.Schema);
     }
 
     /// <inheritdoc/>
-    public async Task<FunctionResponse?> CallAsync(FunctionCall functionCall, CancellationToken cancellationToken = default)
+    public override async Task<FunctionResponse?> CallAsync(FunctionCall functionCall, CancellationToken cancellationToken = default)
     {
+        #pragma disable warning IL2026, IL3050
         if (this.Calls.TryGetValue(functionCall.Name, out var call))
         {
-            var str = JsonSerializer.Serialize(functionCall.Args);
-            var response = await call(str, cancellationToken).ConfigureAwait(false);
+            string? args = null;
+            if (functionCall.Args !=null)
+            {
+                args = functionCall.Args.ToJsonString();
+            }
+            // else if (functionCall.Args is JsonNode jsonNode)
+            // {
+            //     args = jsonNode.ToJsonString();
+            // }
+            // else if (functionCall.Args is JsonObject jsonObject)
+            // {
+            //     args = jsonObject.ToJsonString();
+            // }
+            else
+            {
+                throw new NotImplementedException();
+                //args = JsonSerializer.Serialize(functionCall.Args, DefaultSerializerOptions.Options.GetTypeInfo());
+            }
+            var response = await call(args, cancellationToken).ConfigureAwait(false);
 
             var node = JsonNode.Parse(response);
+            var responseNode = new JsonObject();
 
-            return new FunctionResponse() { Id = functionCall.Id, Name = functionCall.Name, Response = new {
-                Name = functionCall.Name,
-                Content = node,
-            } };
+            responseNode["name"] = functionCall.Name;
+            responseNode["content"] = node;
+            return new FunctionResponse() { Id = functionCall.Id, Name = functionCall.Name, 
+                
+                Response = responseNode,
+            };
+#pragma restore warning IL2026, IL3050
         }
         return null;
     }
 
     /// <inheritdoc/>
-    public bool IsContainFunction(string name)
+    public override bool IsContainFunction(string name)
     {
         return Tools.Any(s => s.Name == name);
     }
