@@ -251,7 +251,7 @@ public class MicrosoftExtension_Tests
         var parts = new List<Part>
         {
             new Part { Text = "Hello, world!" },
-            new Part { FunctionCall = new FunctionCall { Name = "myFunction", Args = JsonNode.Parse(" { \"arg1\": \"value1\", \"arg2\": \"value2\" }"") } },
+            new Part { FunctionCall = new FunctionCall { Name = "myFunction", Args = JsonNode.Parse(" { \"arg1\": \"value1\", \"arg2\": \"value2\" }") } },
             new Part { InlineData = new Blob { MimeType = "image/png", Data = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M/wHwAFAAH/8mdr1QAAAABJRU5ErkJggg==" } }
         };
 
