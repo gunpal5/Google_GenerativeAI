@@ -21,7 +21,6 @@ namespace GenerativeAI.IntegrationTests
             var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.DefaultGeminiModel);
             
             model.AddFunctionTool(tool);
-           
 
             var result = await model.GenerateContentAsync("What is the weather in san francisco today?").ConfigureAwait(false);
             

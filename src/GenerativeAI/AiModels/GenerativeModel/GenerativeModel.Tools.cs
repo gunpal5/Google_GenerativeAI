@@ -132,6 +132,11 @@ public partial class GenerativeModel
         }
     }
 
+    public void AddFunctionTool(GoogleFunctionTool tool, ToolConfig? toolConfig = null,FunctionCallingBehaviour? functionCallingBehaviour=null)
+    {
+        AddFunctionTool((IFunctionTool)tool, toolConfig, functionCallingBehaviour);
+    }
+
     /// <summary>
     /// Disable Global Functions
     /// </summary>

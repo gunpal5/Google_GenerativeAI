@@ -74,7 +74,7 @@ public class GenerativeAIChatClient : IChatClient
                     contents.Add(content);
                 var responseObject = new JsonObject();
                 responseObject["name"] = functionCall.Name;
-                responseObject["content"] = ((JsonElement)result).AsNode();
+                responseObject["content"] = ((JsonElement)result).AsNode().DeepClone();
                 //responseObject["content"] = result as JsonNode;
                 var functionResponse = new FunctionResponse()
                 {

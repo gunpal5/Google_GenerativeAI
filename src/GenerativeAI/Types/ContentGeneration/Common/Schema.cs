@@ -97,6 +97,7 @@ public class Schema
     /// <returns>A <see cref="Schema"/> instance that represents the structure of the provided object.</returns>
     public static Schema FromObject(object value, JsonSerializerOptions? options = null) =>
         GoogleSchemaHelper.ConvertToSchema(value.GetType(), options);
+    
 }
 
 /// <summary>

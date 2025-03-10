@@ -4,12 +4,12 @@ using System.Text.Json.Serialization;
 
 #if NET8_0_OR_GREATER
 using System.Text.Json.Schema;
-
 #else
 using Json.More;
 using Json.Schema;
 using Json.Schema.Generation;
 #endif
+
 namespace GenerativeAI.Types;
 
 public static class GoogleSchemaHelper
@@ -153,7 +153,8 @@ public static class GoogleSchemaHelper
 #endif
     }
 
-    public static Schema ConvertToSchema(Type type, JsonSerializerOptions? jsonOptions = null)
+    public static Schema ConvertToSchema(Type type, JsonSerializerOptions? jsonOptions = null,
+        Dictionary<string, string>? descriptionTable = null)
     {
 #if NET8_0_OR_GREATER
         if (jsonOptions == null && !JsonSerializer.IsReflectionEnabledByDefault)
@@ -171,7 +172,25 @@ public static class GoogleSchemaHelper
 
         var typeInfo = newJsonOptions.GetTypeInfo(type);
 
-        return ConvertToCompatibleSchemaSubset(typeInfo.GetJsonSchemaAsNode());
+        var dics = descriptionTable ?? new Dictionary<string, string>();
+        var schema = typeInfo.GetJsonSchemaAsNode(exporterOptions: new JsonSchemaExporterOptions() { TransformSchemaNode
+ = (a, b) =>
+            {
+                if (a.TypeInfo.Type.IsEnum)
+                {
+                    b["type"] = "string";
+                }
+
+                if (a.PropertyInfo == null)
+                    return b;
+                var propName = a.PropertyInfo.Name.ToCamelCase();
+                if (dics.ContainsKey(propName))
+                {
+                    b["description"] = dics[propName];
+                }
+                return b;
+            }});
+        return ConvertToCompatibleSchemaSubset(schema);
 
 #else
         var generatorConfig = new SchemaGeneratorConfiguration();
@@ -186,6 +205,4 @@ public static class GoogleSchemaHelper
         return schema;
 #endif
     }
-
-
 }

@@ -35,7 +35,8 @@ public class DefaultSerializerOptions
                     PropertyNameCaseInsensitive = true,
                     Converters = { new JsonStringEnumConverter() },
                     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-                    TypeInfoResolver = TypesSerializerContext.Default
+                    TypeInfoResolver = TypesSerializerContext.Default,
+                    UnknownTypeHandling = JsonUnknownTypeHandling.JsonNode
                 };
                 options.TypeInfoResolverChain.Add(new DefaultJsonTypeInfoResolver());
                 #pragma restore warning IL2026, IL3050
@@ -50,7 +51,8 @@ public class DefaultSerializerOptions
                     PropertyNameCaseInsensitive = true,
                     //Converters = { new JsonStringEnumConverter() },
                     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-                    TypeInfoResolver = TypesSerializerContext.Default
+                    TypeInfoResolver = TypesSerializerContext.Default,
+                    UnknownTypeHandling = JsonUnknownTypeHandling.JsonNode
                 };
             }
         } 

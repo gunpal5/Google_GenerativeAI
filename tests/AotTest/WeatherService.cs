@@ -22,13 +22,13 @@ namespace AotTest
     public interface IWeatherFunctions
     {
         [Description("Get the current weather in a given location")]
-        public Weather GetCurrentWeather(
+        public Weather GetCurrentWeather2(
             [Description("The city and state, e.g. San Francisco, CA")]
             string location,
             Unit unit = Unit.Celsius);
 
         [Description("Get the current weather in a given location")]
-        public Task<Weather> GetCurrentWeatherAsync(
+        public Task<Weather> GetCurrentWeatherAsync2(
             [Description("The city and state, e.g. San Francisco, CA")]
             string location,
             Unit unit = Unit.Celsius,
@@ -39,7 +39,7 @@ namespace AotTest
     public class WeatherService : IWeatherFunctions
     {
         [Description("Get the current weather in a given location")]
-        public Weather GetCurrentWeather(string location, Unit unit = Unit.Celsius)
+        public Weather GetCurrentWeather2(string location, Unit unit = Unit.Celsius)
         {
             return new Weather
             {
@@ -50,7 +50,7 @@ namespace AotTest
             };
         }
 
-        public Task<Weather> GetCurrentWeatherAsync(string location, Unit unit = Unit.Celsius,
+        public Task<Weather> GetCurrentWeatherAsync2(string location, Unit unit = Unit.Celsius,
             CancellationToken cancellationToken = default)
         {
             return Task.FromResult(new Weather

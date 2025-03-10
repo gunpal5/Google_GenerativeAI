@@ -214,7 +214,7 @@ namespace GenerativeAI.Types;
 [JsonSerializable(typeof(JsonObject))]
 [JsonSerializable(typeof(ClientSecrets))]
 
-[JsonSourceGenerationOptions(WriteIndented = true)]
+[JsonSourceGenerationOptions(WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull, UseStringEnumConverter = true)]
 public partial class TypesSerializerContext : JsonSerializerContext
 {
 }

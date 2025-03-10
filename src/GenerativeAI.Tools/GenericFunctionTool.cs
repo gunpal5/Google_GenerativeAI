@@ -15,7 +15,7 @@ namespace GenerativeAI.Tools;
 /// It utilizes the code generation capabilities available in <see href="https://www.nuget.org/packages/CSharpToJsonSchema">CSharpToJsonSchema</see> for transforming
 /// tool definitions into executable formats and managing function invocations.
 /// </summary>
-public class GenericFunctionTool:IFunctionTool
+public class GenericFunctionTool:GoogleFunctionTool
 {
     /// <summary>
     /// Represents a generic functional tool that enables interaction with a set of tools and their associated functions,
@@ -31,7 +31,7 @@ public class GenericFunctionTool:IFunctionTool
     
    
     /// <inheritdoc/>
-    public Tool AsTool()
+    public override Tool AsTool()
     {
         return new Tool()
         {
@@ -51,18 +51,28 @@ public class GenericFunctionTool:IFunctionTool
     }
 
     /// <inheritdoc/>
-    public async Task<FunctionResponse?> CallAsync(FunctionCall functionCall, CancellationToken cancellationToken = default)
+    public override async Task<FunctionResponse?> CallAsync(FunctionCall functionCall, CancellationToken cancellationToken = default)
     {
+        #pragma disable warning IL2026, IL3050
         if (this.Calls.TryGetValue(functionCall.Name, out var call))
         {
             string? args = null;
-            if (functionCall.Args is JsonElement jsonElement)
+            if (functionCall.Args !=null)
             {
-                args = jsonElement.AsNode().ToJsonString();
+                args = functionCall.Args.ToJsonString();
             }
+            // else if (functionCall.Args is JsonNode jsonNode)
+            // {
+            //     args = jsonNode.ToJsonString();
+            // }
+            // else if (functionCall.Args is JsonObject jsonObject)
+            // {
+            //     args = jsonObject.ToJsonString();
+            // }
             else
             {
-                args =  JsonSerializer.Serialize(functionCall.Args);
+                throw new NotImplementedException();
+                //args = JsonSerializer.Serialize(functionCall.Args, DefaultSerializerOptions.Options.GetTypeInfo());
             }
             var response = await call(args, cancellationToken).ConfigureAwait(false);
 
@@ -75,12 +85,13 @@ public class GenericFunctionTool:IFunctionTool
                 
                 Response = responseNode,
             };
+#pragma restore warning IL2026, IL3050
         }
         return null;
     }
 
     /// <inheritdoc/>
-    public bool IsContainFunction(string name)
+    public override bool IsContainFunction(string name)
     {
         return Tools.Any(s => s.Name == name);
     }

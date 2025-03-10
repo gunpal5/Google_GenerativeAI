@@ -5,6 +5,7 @@ using GenerativeAI.Core;
 using GenerativeAI.Types;
 using Shouldly;
 
+
 namespace AotTest;
 
 public class JsonModeTests
