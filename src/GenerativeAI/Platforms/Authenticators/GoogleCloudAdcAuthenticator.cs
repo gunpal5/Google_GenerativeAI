@@ -77,8 +77,13 @@ public class GoogleCloudAdcAuthenticator : BaseAuthenticator
     private string AcquireGcpAccessToken()
     {
         // Detect if running on Windows; adjust command accordingly.
+        #if NET462_OR_GREATER
+        //NET 4.6.2 is windows only!
+        if(true)
+        #else
         if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(
                 System.Runtime.InteropServices.OSPlatform.Windows))
+        #endif
         {
             return ExecuteProcess(
                 "cmd.exe",

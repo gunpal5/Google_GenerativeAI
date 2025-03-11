@@ -1,8 +1,10 @@
 ﻿using System.Text.Json.Nodes;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
+using GenerativeAI.Utility;
 
-#if NET8_0_OR_GREATER
+#if NET8_0_OR_GREATER || NET462_OR_GREATER || NETSTANDARD2_0
 using System.Text.Json.Schema;
 #else
 using Json.More;
@@ -130,7 +132,7 @@ public static class GoogleSchemaHelper
 
     public static Schema ConvertToSchema<T>(JsonSerializerOptions? jsonOptions = null)
     {
-#if NET8_0_OR_GREATER
+#if NET8_0_OR_GREATER || NET462_OR_GREATER || NETSTANDARD2_0
         if (jsonOptions == null && !JsonSerializer.IsReflectionEnabledByDefault)
         {
             throw new InvalidOperationException("Please provide a JsonSerializerOptions instance to use in AOT mode.");
@@ -146,7 +148,7 @@ public static class GoogleSchemaHelper
 
         var typeInfo = newJsonOptions.GetTypeInfo(typeof(T));
 
-        return ConvertToCompatibleSchemaSubset(typeInfo.GetJsonSchemaAsNode());
+        return ConvertToCompatibleSchemaSubset(GetSchema(typeInfo, null));
 
 #else
         return ConvertToSchema(typeof(T), jsonOptions);
@@ -156,7 +158,7 @@ public static class GoogleSchemaHelper
     public static Schema ConvertToSchema(Type type, JsonSerializerOptions? jsonOptions = null,
         Dictionary<string, string>? descriptionTable = null)
     {
-#if NET8_0_OR_GREATER
+#if NET8_0_OR_GREATER || NET462_OR_GREATER || NETSTANDARD2_0
         if (jsonOptions == null && !JsonSerializer.IsReflectionEnabledByDefault)
         {
             throw new InvalidOperationException("Please provide a JsonSerializerOptions instance to use in AOT mode.");
@@ -171,25 +173,8 @@ public static class GoogleSchemaHelper
         };
 
         var typeInfo = newJsonOptions.GetTypeInfo(type);
-
-        var dics = descriptionTable ?? new Dictionary<string, string>();
-        var schema = typeInfo.GetJsonSchemaAsNode(exporterOptions: new JsonSchemaExporterOptions() { TransformSchemaNode
- = (a, b) =>
-            {
-                if (a.TypeInfo.Type.IsEnum)
-                {
-                    b["type"] = "string";
-                }
-
-                if (a.PropertyInfo == null)
-                    return b;
-                var propName = a.PropertyInfo.Name.ToCamelCase();
-                if (dics.ContainsKey(propName))
-                {
-                    b["description"] = dics[propName];
-                }
-                return b;
-            }});
+        
+        var schema = GetSchema(typeInfo, descriptionTable);
         return ConvertToCompatibleSchemaSubset(schema);
 
 #else
@@ -205,4 +190,31 @@ public static class GoogleSchemaHelper
         return schema;
 #endif
     }
+    
+#if NET8_0_OR_GREATER || NET462_OR_GREATER || NETSTANDARD2_0
+    private static JsonNode GetSchema(JsonTypeInfo typeInfo, Dictionary<string, string>? dics)
+    {
+        if (dics == null)
+            dics = TypeDescriptionExtractor.GetDescriptionDic(typeInfo.Type);
+        var schema = typeInfo.GetJsonSchemaAsNode(exporterOptions: new JsonSchemaExporterOptions() { TransformSchemaNode
+            = (a, b) =>
+            {
+                if (a.TypeInfo.Type.IsEnum)
+                {
+                    b["type"] = "string";
+                }
+
+                if (a.PropertyInfo == null)
+                    return b;
+                var propName = a.PropertyInfo.Name.ToCamelCase();
+                if (dics.ContainsKey(propName))
+                {
+                    b["description"] = dics[propName];
+                }
+                return b;
+            }});
+        return schema;
+    }
+
+#endif
 }

@@ -36,6 +36,9 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Remove="JetBrains.Annotations">
+			
+		</PackageReference>
 	</ItemGroup>
 
 	<PropertyGroup Label="Analyzers">

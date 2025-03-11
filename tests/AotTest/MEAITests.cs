@@ -32,7 +32,6 @@ public class MEAITests
         var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
         var chatClient = new GenerativeAIChatClient(apiKey);
         var chatOptions = new ChatOptions();
-        
        
         var tools = new Tools([GetBookPageContentAsync]);
         chatOptions.Tools = tools.AsMeaiTools();

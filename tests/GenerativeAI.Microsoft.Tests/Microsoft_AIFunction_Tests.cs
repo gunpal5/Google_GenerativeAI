@@ -33,7 +33,6 @@ public class Microsoft_AIFunction_Tests:TestBase
         var chatClient = new GenerativeAIChatClient(apiKey);
         var chatOptions = new ChatOptions();
         
-        chatOptions.Tools = new List<AITool>{AIFunctionFactory.Create(GetCurrentWeather)};
         var message = new ChatMessage(ChatRole.User, "What is the weather in New York?");
         var response = await chatClient.GetResponseAsync(message,options:chatOptions).ConfigureAwait(false);
 

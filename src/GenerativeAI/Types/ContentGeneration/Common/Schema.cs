@@ -52,6 +52,7 @@ public class Schema
     /// Optional. Maximum number of the elements for Type.ARRAY.
     /// </summary>
     [JsonPropertyName("maxItems")]
+    
     public long? MaxItems { get; set; }
 
     /// <summary>

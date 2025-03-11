@@ -250,7 +250,8 @@ internal class ComplexDataTypeClass
 [JsonSerializable(typeof(ComplexJsonClass.Detail))]
 [JsonSerializable(typeof(ComplexDataTypeClass))]
 [JsonSerializable(typeof(ComplexJsonClass))]
-[JsonSourceGenerationOptions(WriteIndented = true)]
+[JsonSerializable(typeof(QueryStudentRecordRequest))]
+[JsonSourceGenerationOptions(WriteIndented = true, UseStringEnumConverter = true)]
 internal partial class TestJsonSerializerContext : JsonSerializerContext
 {
 }

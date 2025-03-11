@@ -1,10 +1,8 @@
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
-using System.Text.Json;
-using System.Text.Json.Nodes;
-using System.Text.Json.Serialization;
-using System.Text.Json.Serialization.Metadata;
 using GenerativeAI.Types;
+using GenerativeAI.Utility;
 
 namespace GenerativeAI.Tools.Helpers;
 
@@ -28,8 +26,8 @@ public static class FunctionSchemaHelper
             var type = param.ParameterType;
             if(type.Name == "CancellationToken")
                 continue;
-            var descriptionsDics = GetDescriptionDic(type);
-            var desc = GetDescription(param);
+            var descriptionsDics = TypeDescriptionExtractor.GetDescriptionDic(type);
+            var desc = TypeDescriptionExtractor.GetDescription(param);
             descriptionsDics[param.Name.ToCamelCase()] = desc;
 
             var schema = GoogleSchemaHelper.ConvertToSchema(type, options, descriptionsDics);
@@ -38,7 +36,7 @@ public static class FunctionSchemaHelper
             parametersSchema.Required.Add(param.Name.ToCamelCase());
         }
 
-        var functionDescription = GetDescription(func.Method);
+        var functionDescription = TypeDescriptionExtractor.GetDescription(func.Method);
 
         FunctionDeclaration functionObject = new FunctionDeclaration();
         functionObject.Description = description ?? functionDescription;
@@ -46,42 +44,5 @@ public static class FunctionSchemaHelper
         functionObject.Name = name ?? func.Method.Name;
        
         return functionObject;
-    }
-
-    public static string GetDescription(ParameterInfo paramInfo)
-    {
-        var attribute = paramInfo.GetCustomAttribute<System.ComponentModel.DescriptionAttribute>();
-        return attribute?.Description ?? string.Empty;
-    }
-
-    private static Dictionary<string, string> GetDescriptionDic(Type type, Dictionary<string, string>? descriptions = null)
-    {
-        descriptions = descriptions ?? new Dictionary<string, string>();
-        descriptions[type.Name.ToCamelCase()] = GetDescription(type);
-        foreach (var member in type.GetMembers())
-        {
-            var description = GetDescription(member);
-            if (!string.IsNullOrEmpty(description))
-            {
-                descriptions[member.Name.ToCamelCase()] = description;
-            }
-
-            if (member.MemberType == MemberTypes.TypeInfo || member.MemberType == MemberTypes.NestedType)
-            {
-                var nestedType = member as Type;
-                if (nestedType != null)
-                {
-                    GetDescriptionDic(nestedType, descriptions);
-                }
-            }
-        }
-
-        return descriptions;
-    }
-
-    private static string GetDescription(MemberInfo member)
-    {
-        var attribute = member.GetCustomAttribute<System.ComponentModel.DescriptionAttribute>();
-        return attribute?.Description ?? string.Empty;
     }
 }
