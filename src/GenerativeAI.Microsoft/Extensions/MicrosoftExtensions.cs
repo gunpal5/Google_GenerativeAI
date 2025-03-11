@@ -1,5 +1,4 @@
 using GenerativeAI.Types;
-
 using Microsoft.Extensions.AI;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -47,7 +46,6 @@ public static class MicrosoftExtensions
 
         request.Tools = options?.Tools?.OfType<AIFunction>().Select(f => new Tool()
         {
-
             FunctionDeclarations = new()
             {
                 new FunctionDeclaration()
@@ -68,11 +66,9 @@ public static class MicrosoftExtensions
     /// </summary>
     /// <param name="schema">The JSON schema represented as a <see cref="JsonElement"/>.</param>
     /// <returns>A <see cref="Schema"/> object constructed from the provided JSON schema, or null if deserialization fails.</returns>
-    public static Schema? ToSchema(this JsonElement schema)
+    private static Schema? ToSchema(this JsonElement schema)
     {
-       return GoogleSchemaHelper.ConvertToCompatibleSchemaSubset(schema.AsNode().AsObject());
-        var serialized = JsonSerializer.Serialize(schema, DefaultSerializerOptions.Options.GetTypeInfo(schema.GetType()));
-        return JsonSerializer.Deserialize(serialized,SchemaSourceGenerationContext.Default.Schema);
+        return GoogleSchemaHelper.ConvertToCompatibleSchemaSubset(schema.AsNode());
     }
 
     /// <summary>
@@ -105,7 +101,7 @@ public static class MicrosoftExtensions
             {
                 FunctionResponse = new FunctionResponse()
                 {
-                    Name = frc.CallId, 
+                    Name = frc.CallId,
                     Response = frc.ToJsonNodeResponse()
                 }
             },
@@ -113,6 +109,11 @@ public static class MicrosoftExtensions
         };
     }
 
+    /// <summary>
+    /// Converts a dictionary of string keys and nullable object values into a <see cref="JsonNode"/> representation.
+    /// </summary>
+    /// <param name="args">The dictionary containing the arguments to be transformed.</param>
+    /// <returns>A <see cref="JsonNode"/> instance representing the provided dictionary.</returns>
     private static JsonNode ToJsonNode(this IDictionary<string, object?>? args)
     {
         var node = new JsonObject();
@@ -137,7 +138,7 @@ public static class MicrosoftExtensions
                         JsonArray a => a,
                         JsonValue v => v.GetValue<JsonElement>().AsNode()
                     },
-                    _ => throw new Exception("Unsupported argument type")
+                    _ => throw new ArgumentException("Unsupported argument type")
                 };
                 node.Add(arg.Key, p);
             }
@@ -145,22 +146,30 @@ public static class MicrosoftExtensions
 
         return node; //JsonSerializer.Deserialize(node.ToJsonString(), TypesSerializerContext.Default.JsonElement)!;
     }
-    public static JsonNode ToJsonNodeResponse(this object? response)
+
+    /// <summary>
+    /// Converts a given response object into a <see cref="JsonNode"/> representation.
+    /// </summary>
+    /// <param name="response">The response object to convert. It can be of type <see cref="FunctionResultContent"/>, <see cref="JsonNode"/>, or other compatible types.</param>
+    /// <returns>A <see cref="JsonNode"/> instance representing the response. Throws an exception if the response is not a valid JSON node.</returns>
+    private static JsonNode ToJsonNodeResponse(this object? response)
     {
         if (response is FunctionResultContent content)
         {
             if (content.Result is JsonObject obj)
                 return obj;
-            else if (content.Result is JsonNode arr)
+            if (content.Result is JsonNode arr)
                 return arr;
         }
-        if(response is JsonNode node)
+
+        if (response is JsonNode node)
         {
             return node;
         }
-        else throw new Exception("Response is not a json node");
-        
+
+        throw new ArgumentException("Response is not a json node");
     }
+
     /// <summary>
     /// Maps <see cref="ChatOptions"/> into a <see cref="GenerationConfig"/> object used by GenerativeAI.
     /// </summary>
@@ -173,18 +182,21 @@ public static class MicrosoftExtensions
             return null;
         }
 
-        var config = new GenerationConfig();
-        config.Temperature = options.Temperature;
-        config.TopP = options.TopP;
-        config.TopK = options.TopK;
-        config.MaxOutputTokens = options.MaxOutputTokens;
-        config.StopSequences = options.StopSequences?.ToList();
-        config.Seed = (int?) options.Seed;
-        config.ResponseMimeType = options.ResponseFormat is ChatResponseFormatJson ? "application/json" : null;
+        var config = new GenerationConfig
+        {
+            Temperature = options.Temperature,
+            TopP = options.TopP,
+            TopK = options.TopK,
+            MaxOutputTokens = options.MaxOutputTokens,
+            StopSequences = options.StopSequences?.ToList(),
+            Seed = (int?)options.Seed,
+            ResponseMimeType = options.ResponseFormat is ChatResponseFormatJson ? "application/json" : null
+        };
+        
         if (options.ResponseFormat is ChatResponseFormatJson jsonFormat)
         {
             // see also: https://github.com/dotnet/extensions/blob/f775ed6bd07c0dd94ac422dc6098162eef0b48e5/src/Libraries/Microsoft.Extensions.AI/ChatCompletion/ChatClientStructuredOutputExtensions.cs#L186-L192
-            if (jsonFormat.Schema is JsonElement je && je.ValueKind == JsonValueKind.Object)
+            if (jsonFormat.Schema is { ValueKind: JsonValueKind.Object } je)
             {
                 // Workaround to convert our real json schema to the format Google's api expects
                 var forGoogleApi = GoogleSchemaHelper.ConvertToCompatibleSchemaSubset(je.AsNode());
@@ -253,21 +265,25 @@ public static class MicrosoftExtensions
     /// <returns>A new <see cref="ChatResponseUpdate"/> object reflecting the data in the provided <see cref="GenerateContentResponse"/>.</returns>
     public static ChatResponseUpdate ToChatResponseUpdate(this GenerateContentResponse? response)
     {
-        if(response == null) throw new ArgumentNullException(nameof(response));
-        
-        return new ChatResponseUpdate
+        if (response == null) throw new ArgumentNullException(nameof(response));
+
+        if (response.Candidates != null)
         {
-            Contents = response.Candidates.Select(s => s.Content).SelectMany(s => s.Parts).ToList().ToAiContents(),
-            AdditionalProperties = null,
-            FinishReason = response?.Candidates?.FirstOrDefault()?.FinishReason == FinishReason.OTHER
-                ? ChatFinishReason.Stop
-                : null,
-            RawRepresentation = response,
-            //ResponseId = response.id,
-            Role = ToChatRole(response?.Candidates?.FirstOrDefault()?.Content?.Role),
-            
-           // Text = response?.Candidates?.FirstOrDefault()?.Content?.Parts?.Select(p => p.Text).FirstOrDefault() // Assuming extracting text from parts
-        };
+            return new ChatResponseUpdate
+            {
+                Contents = response.Candidates.Select(s => s.Content).SelectMany(s => s?.Parts).ToList().ToAiContents(),
+                AdditionalProperties = null,
+                FinishReason = response?.Candidates?.FirstOrDefault()?.FinishReason == FinishReason.OTHER
+                    ? ChatFinishReason.Stop
+                    : null,
+                RawRepresentation = response,
+                //ResponseId = response.id,
+                Role = ToChatRole(response?.Candidates?.FirstOrDefault()?.Content?.Role),
+
+                // Text = response?.Candidates?.FirstOrDefault()?.Content?.Parts?.Select(p => p.Text).FirstOrDefault() // Assuming extracting text from parts
+            };
+        }
+        throw new ArgumentException("Response is invalid with no candidates");
     }
 
     /// <summary>
@@ -287,7 +303,7 @@ public static class MicrosoftExtensions
         UsageDetails? usage = null;
 
         return new GeneratedEmbeddings<Embedding<float>>([
-            new Embedding<float>(response.Embedding?.Values.ToArray() )
+            new Embedding<float>(response.Embedding?.Values?.ToArray())
             {
                 CreatedAt = DateTimeOffset.Now,
                 ModelId = request.Model
@@ -306,15 +322,15 @@ public static class MicrosoftExtensions
     /// <returns>A <see cref="ChatMessage"/> representing the data contained in the <see cref="GenerateContentResponse"/>.</returns>
     private static ChatMessage ToChatMessage(GenerateContentResponse response)
     {
-        var generatedContent = response.Candidates?.FirstOrDefault().Content;
-        var contents = generatedContent.Parts.ToAiContents();
-        
-        return new ChatMessage(ToChatRole(generatedContent.Role), contents)
+        var generatedContent = response.Candidates?.FirstOrDefault()?.Content;
+        var contents = generatedContent?.Parts.ToAiContents();
+
+        return new ChatMessage(ToChatRole(generatedContent?.Role), contents)
         {
             RawRepresentation = response
         };
     }
-    
+
     /// <summary>
     /// Converts a <see cref="GenerateContentResponse"/> instance into a <see cref="ChatMessage"/>.
     /// </summary>
@@ -322,15 +338,9 @@ public static class MicrosoftExtensions
     /// <returns>A <see cref="ChatMessage"/> representing the data contained in the <see cref="GenerateContentResponse"/>.</returns>
     public static IEnumerable<ChatMessage> ToChatMessages(this List<Content>? contents)
     {
-        List<ChatMessage>? chatMessages = new List<ChatMessage>();
-        foreach (var content in contents)
-        {
-            var aiContents = content.Parts.ToAiContents();
-            chatMessages.Add(new ChatMessage(ToChatRole(content.Role), aiContents));
-            
-        }
-
-        return chatMessages;
+        return (from content in contents 
+            let aiContents = content.Parts.ToAiContents()
+            select new ChatMessage(ToChatRole(content.Role), aiContents)).ToList();
     }
 
     /// <summary>
@@ -383,7 +393,7 @@ public static class MicrosoftExtensions
     {
         if (response.UsageMetadata is null) return null;
 
-        return new()
+        return new UsageDetails
         {
             InputTokenCount = response.UsageMetadata.PromptTokenCount,
             OutputTokenCount = response.UsageMetadata.CandidatesTokenCount,
@@ -399,30 +409,31 @@ public static class MicrosoftExtensions
     public static IList<AIContent> ToAiContents(this List<Part>? parts)
     {
         List<AIContent>? contents = null;
-        if (parts is not null)
+        if (parts is null) return contents;
+        
+        foreach (var part in parts)
         {
-            foreach (Part part in parts)
+            if (part.Text is not null)
             {
-                if (part.Text is not null)
-                {
-                    (contents ??= new()).Add(new TextContent(part.Text));
-                }
+                (contents ??= new()).Add(new TextContent(part.Text));
+            }
 
-                if (part.FunctionCall is not null)
-                {
-                    (contents ??= new()).Add(new FunctionCallContent(part.FunctionCall.Name, part.FunctionCall.Name, ConvertFunctionCallArg(part.FunctionCall.Args)));
-                }
+            if (part.FunctionCall is not null)
+            {
+                (contents ??= new()).Add(new FunctionCallContent(part.FunctionCall.Name, part.FunctionCall.Name,
+                    ConvertFunctionCallArg(part.FunctionCall.Args)));
+            }
 
-                if (part.FunctionResponse is not null)
-                {
-                    (contents ??= new()).Add(new FunctionResultContent(part.FunctionResponse.Name, (object?) part.FunctionResponse.Response));
-                }
+            if (part.FunctionResponse is not null)
+            {
+                (contents ??= new()).Add(new FunctionResultContent(part.FunctionResponse.Name,
+                    (object?)part.FunctionResponse.Response));
+            }
 
-                if (part.InlineData is not null)
-                {
-                    byte[] data = Convert.FromBase64String(part.InlineData.Data!);
-                    (contents ??= new()).Add(new DataContent(data, part.InlineData.MimeType));
-                }
+            if (part.InlineData is not null)
+            {
+                byte[] data = Convert.FromBase64String(part.InlineData.Data!);
+                (contents ??= new()).Add(new DataContent(data, part.InlineData.MimeType));
             }
         }
 
@@ -434,33 +445,60 @@ public static class MicrosoftExtensions
     /// </summary>
     /// <param name="functionCallArgs">The arguments of the function call, potentially in a serialized JSON format.</param>
     /// <returns>A dictionary where the keys represent argument names and values represent their corresponding data, or null if conversion is not possible.</returns>
-    private static IDictionary<string, object?>? ConvertFunctionCallArg(object? functionCallArgs)
+    private static IDictionary<string, object?>? ConvertFunctionCallArg(JsonNode? functionCallArgs)
     {
-        if (functionCallArgs is JsonElement jsonElement)
-        {
-            var obj = jsonElement.AsNode().AsObject();
-            return obj?.ToDictionary(s=>s.Key,s=>(object?)s.Value?.DeepClone());
+        if(functionCallArgs  == null)
+            return null;
+        var obj = functionCallArgs.AsObject();
+        return obj?.ToDictionary(s => s.Key, s => (object?)s.Value?.DeepClone());
+    
+        #region Unused codes for future reference
+        // if (functionCallArgs is JsonElement jsonElement)
+        // {
+        //     var obj = jsonElement.AsNode().AsObject();
+        //     return obj?.ToDictionary(s => s.Key, s => (object?)s.Value?.DeepClone());
+        // }
 
-        }
-        if (functionCallArgs is JsonNode jsonElement2)
-        {
-            var obj = jsonElement2.AsObject();
-            return obj?.ToDictionary(s=>s.Key,s=>(object?)s.Value?.DeepClone());
-        }
-        else if (functionCallArgs != null && functionCallArgs is not JsonNode)
-        {
-            throw new Exception("Unsupported function call argument type");
-            // #pragma warning disable IL2026, IL3050
-            // functionCallArgs = JsonSerializer.Deserialize<dynamic>(JsonSerializer.Serialize(functionCallArgs));
-            // #pragma warning restore IL2026, IL3050
-        }
+        // if (functionCallArgs is JsonNode jsonElement2)
+        // {
+            // var obj = functionCallArgs.AsObject();
+            // return obj?.ToDictionary(s => s.Key, s => (object?)s.Value?.DeepClone());
+        // }
+        // else if (functionCallArgs != null && functionCallArgs is not JsonNode)
+        // {
+        //     //This code is a fail safe, it will never execute as of  
+        //     #pragma warning disable IL2026 IL3050
+        //     try
+        //     {
+        //         // Attempt to serialize and deserialize the object to a JsonNode
+        //         var serializedArg = JsonSerializer.Serialize(functionCallArgs);
+        //         var deserializedNode = JsonSerializer.Deserialize(serializedArg, TypesSerializerContext.Default.JsonNode);
+        //
+        //         if (deserializedNode != null && deserializedNode is JsonObject obj)
+        //         {
+        //             return obj.ToDictionary(s => s.Key, s => (object?)s.Value?.DeepClone());
+        //         }
+        //     }
+        //     catch (JsonException)
+        //     {
+        //         throw new ArgumentException("Cannot convert function call arguments to a supported type.");
+        //     }
+        // #pragma warning restore IL2026 IL3050
+        //}
 
-        return null;
+        //return null;
+        #endregion
     }
 
+    /// <summary>
+    /// Retrieves the first occurrence of a function call content from the provided <see cref="ChatResponse"/> message contents.
+    /// </summary>
+    /// <param name="response">The <see cref="ChatResponse"/> object containing the messages and their associated contents.</param>
+    /// <returns>A <see cref="FunctionCallContent"/> object if a function call is present; otherwise, null.</returns>
     public static FunctionCallContent? GetFunction(this ChatResponse response)
     {
-        var aiFunction = (FunctionCallContent?) response.Messages.SelectMany(s=>s.Contents).FirstOrDefault(s=>s is FunctionCallContent);
+        var aiFunction = (FunctionCallContent?)response.Messages.SelectMany(s => s.Contents)
+            .FirstOrDefault(s => s is FunctionCallContent);
         return aiFunction;
     }
 }

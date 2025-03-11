@@ -14,6 +14,18 @@ public class GenerativeAIChatClient : IChatClient
 {
     public GenerativeModel model { get; }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the function calls in the generative AI chat client
+    /// are automatically invoked without requiring explicit user input.
+    /// Default: false
+    /// </summary>
+    /// <remarks>
+    /// When set to false, the function calls are handled manually, providing flexibility for scenarios
+    /// where explicit user control over function invocation is required or when using M.E.A.I.'s 
+    /// FunctionInvokingChatClient.
+    /// </remarks>
+    public bool AutoCallFunction { get; set; } = true;
+
     /// <inheritdoc/>
     public GenerativeAIChatClient(string apiKey, string modelName = GoogleAIModels.DefaultGeminiModel)
     {
@@ -55,8 +67,12 @@ public class GenerativeAIChatClient : IChatClient
 
     private async Task<ChatResponse> CallFunctionAsync(GenerateContentRequest request,  GenerateContentResponse response, ChatOptions? options, CancellationToken cancellationToken)
     {
+       
         var chatResponse = response.ToChatResponse() ?? throw new GenerativeAIException("Failed to generate content",
             "The generative model response was null or could not be processed. Verify the API key, model name, input messages, and options for any issues.");
+        
+        if(!AutoCallFunction)
+            return chatResponse;
         
         var functionCall = chatResponse.GetFunction();
         if (functionCall == null)
