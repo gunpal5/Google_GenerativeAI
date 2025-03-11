@@ -128,7 +128,6 @@ public class MicrosoftExtension_Tests
         result.RawRepresentation.ShouldBe(response);
        // result.Role.ShouldBe((ChatRole?)candidate.Content?.Role);
         result.Text.ShouldBe(candidate.Content.Parts[0].Text);
-        result.ChoiceIndex.ShouldBe(0);
         result.CreatedAt.ShouldBeNull();
         result.AdditionalProperties.ShouldBeNull();
         result.ResponseId.ShouldBeNull();
@@ -241,7 +240,6 @@ public class MicrosoftExtension_Tests
         result.FirstOrDefault().ShouldBeOfType<DataContent>();
         var dataContent = (DataContent)result.FirstOrDefault();
         dataContent.MediaType.ShouldBe("image/png");
-        dataContent.Data.ShouldNotBeNull();
     }
 
     [Fact]

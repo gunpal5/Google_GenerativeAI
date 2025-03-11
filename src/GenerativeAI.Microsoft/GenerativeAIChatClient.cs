@@ -41,12 +41,12 @@ public class GenerativeAIChatClient : IChatClient
     }
 
     /// <inheritdoc/>
-    public async Task<ChatResponse> GetResponseAsync(IList<ChatMessage> chatMessages, ChatOptions? options = null,
+    public async Task<ChatResponse> GetResponseAsync(IEnumerable<ChatMessage> messages, ChatOptions? options = null,
         CancellationToken cancellationToken = default)
     {
-        if (chatMessages == null)
-            throw new ArgumentNullException(nameof(chatMessages));
-        var request = chatMessages.ToGenerateContentRequest(options);
+        if (messages == null)
+            throw new ArgumentNullException(nameof(messages));
+        var request = messages.ToGenerateContentRequest(options);
         var response = await model.GenerateContentAsync(request, cancellationToken).ConfigureAwait(false);
 
         return await CallFunctionAsync(request, response,
@@ -96,13 +96,13 @@ public class GenerativeAIChatClient : IChatClient
     }
 
     /// <inheritdoc/>
-    public async IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponseAsync(IList<ChatMessage> chatMessages,
+    public async IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponseAsync(IEnumerable<ChatMessage> messages,
         ChatOptions? options = null,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        if (chatMessages == null)
-            throw new ArgumentNullException(nameof(chatMessages));
-        var request = chatMessages.ToGenerateContentRequest(options);
+        if (messages == null)
+            throw new ArgumentNullException(nameof(messages));
+        var request = messages.ToGenerateContentRequest(options);
         await foreach (var response in model.StreamContentAsync(request, cancellationToken).ConfigureAwait(false))
         {
             yield return response.ToChatResponseUpdate();
