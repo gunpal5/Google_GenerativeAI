@@ -119,8 +119,8 @@ public class Microsoft_ChatClient_Tests : TestBase
 
         // Assert
         result.ShouldNotBeNull();
-        result.Choices.ShouldNotBeNull();
-        Console.WriteLine(result.Choices[0].Text);
+        result.Text.ShouldNotBeNullOrWhiteSpace();
+        Console.WriteLine(result.Text);
 
 
         Console.WriteLine("CompleteAsync returned a valid ChatCompletion when given valid input.");

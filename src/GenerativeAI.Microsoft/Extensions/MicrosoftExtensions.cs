@@ -85,12 +85,12 @@ public static class MicrosoftExtensions
         return content switch
         {
             TextContent text => new Part { Text = text.Text },
-            DataContent image when image.Data != null => new Part
+            DataContent image => new Part
             {
                 InlineData = new Blob()
                 {
                     MimeType = image.MediaType,
-                    Data = Convert.ToBase64String(image.Data!.Value.ToArray()),
+                    Data = Convert.ToBase64String(image.Data.ToArray()),
                 }
             },
             FunctionCallContent fcc => new Part
@@ -238,7 +238,6 @@ public static class MicrosoftExtensions
         {
             FinishReason = ToFinishReason(response.Candidates?.FirstOrDefault()?.FinishReason),
             AdditionalProperties = null,
-            Choices = new[] { chatMessage }.ToList(),
             CreatedAt = null,
             ModelId = null,
             RawRepresentation = response,
@@ -259,7 +258,6 @@ public static class MicrosoftExtensions
         return new ChatResponseUpdate
         {
             Contents = response.Candidates.Select(s => s.Content).SelectMany(s => s.Parts).ToList().ToAiContents(),
-            ChoiceIndex = 0,
             AdditionalProperties = null,
             FinishReason = response?.Candidates?.FirstOrDefault()?.FinishReason == FinishReason.OTHER
                 ? ChatFinishReason.Stop
@@ -462,7 +460,7 @@ public static class MicrosoftExtensions
 
     public static FunctionCallContent? GetFunction(this ChatResponse response)
     {
-        var aiFunction = (FunctionCallContent?) response.Choices.SelectMany(s=>s.Contents).FirstOrDefault(s=>s is FunctionCallContent);
+        var aiFunction = (FunctionCallContent?) response.Messages.SelectMany(s=>s.Contents).FirstOrDefault(s=>s is FunctionCallContent);
         return aiFunction;
     }
 }

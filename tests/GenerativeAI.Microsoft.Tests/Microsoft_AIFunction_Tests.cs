@@ -37,7 +37,7 @@ public class Microsoft_AIFunction_Tests:TestBase
         var message = new ChatMessage(ChatRole.User, "What is the weather in New York?");
         var response = await chatClient.GetResponseAsync(message,options:chatOptions).ConfigureAwait(false);
 
-        response.Choices.LastOrDefault().Text.Contains("New York", StringComparison.InvariantCultureIgnoreCase)
+        response.Text.Contains("New York", StringComparison.InvariantCultureIgnoreCase)
             .ShouldBeTrue();
     }
     
@@ -53,9 +53,9 @@ public class Microsoft_AIFunction_Tests:TestBase
         var message = new ChatMessage(ChatRole.User, "How does student john doe in senior grade is doing this year, enrollment start 01-01-2024 to 01-01-2025?");
         var response = await chatClient.GetResponseAsync(message,options:chatOptions).ConfigureAwait(false);
 
-        response.Choices.LastOrDefault().Text.Contains("John", StringComparison.InvariantCultureIgnoreCase)
+        response.Text.Contains("John", StringComparison.InvariantCultureIgnoreCase)
             .ShouldBeTrue();
-        Console.WriteLine(response.Choices.LastOrDefault().Text);
+        Console.WriteLine(response.Text);
     }
     
     [Fact]
@@ -74,7 +74,7 @@ public class Microsoft_AIFunction_Tests:TestBase
         var message = new ChatMessage(ChatRole.User, "what is written on page 96 in the book 'damdamadum'");
         var response = await chatClient.GetResponseAsync(message,options:chatOptions).ConfigureAwait(false);
 
-        response.Choices.LastOrDefault().Text.ShouldContain("damdamadum",Case.Insensitive);
+        response.Text.ShouldContain("damdamadum",Case.Insensitive);
     }
     
     [System.ComponentModel.Description("Get book page content")]
