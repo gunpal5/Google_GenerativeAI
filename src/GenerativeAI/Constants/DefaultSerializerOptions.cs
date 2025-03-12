@@ -22,13 +22,32 @@ namespace GenerativeAI;
 /// </remarks>
 public class DefaultSerializerOptions
 {
+    /// <summary>
+    /// Gets a list of custom type resolvers used to provide additional or specialized
+    /// type resolution logic for JSON serialization and deserialization processes.
+    /// </summary>
+    /// <remarks>
+    /// Custom type resolvers are essential for extending or modifying the default behavior
+    /// of JSON serialization, enabling support for application-specific or complex data types
+    /// that may not be adequately handled by the default resolvers.
+    /// This property is used for compatibility with NativeAOT in JsonMode and QuickTools.
+    /// </remarks>
+    public static List<IJsonTypeInfoResolver> CustomJsonTypeResolvers { get; } = new();
+
+    /// <summary>
+    /// Provides a centralized and consistent configuration for JSON serialization and deserialization settings.
+    /// </summary>
+    /// <remarks>
+    /// These options are used only for handling serialization for Google Services. It won't be used anywhere else.
+    /// For specifying custom type resolvers or <see cref="JsonSerializerContext"/>, use the <see cref="CustomJsonTypeResolvers"/> property.
+    /// </remarks>
     public static JsonSerializerOptions Options
     {
         get
         {
             if (JsonSerializer.IsReflectionEnabledByDefault)
             {
-                #pragma disable warning IL2026, IL3050
+#pragma disable warning IL2026, IL3050
                 var options = new JsonSerializerOptions
                 {
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -39,7 +58,7 @@ public class DefaultSerializerOptions
                     UnknownTypeHandling = JsonUnknownTypeHandling.JsonNode
                 };
                 options.TypeInfoResolverChain.Add(new DefaultJsonTypeInfoResolver());
-                #pragma restore warning IL2026, IL3050
+#pragma restore warning IL2026, IL3050
 
                 return options;
             }
@@ -55,10 +74,21 @@ public class DefaultSerializerOptions
                     UnknownTypeHandling = JsonUnknownTypeHandling.JsonNode
                 };
             }
-        } 
+        }
     }
 
 
+    /// <summary>
+    /// Provides a pre-configured instance of <see cref="JsonSerializerOptions"/> optimized for
+    /// generating JSON during serialization and deserialization, including custom resolvers and settings for specific cases.
+    /// </summary>
+    /// <remarks>
+    /// This property adjusts various JSON serialization settings such as default ignore condition,
+    /// string encoding modes, and options for writing indented JSON. It also integrates custom resolvers
+    /// and type information to fully support complex serialization demands.
+    /// In environments where reflection is disabled due to AOT (Ahead-Of-Time compilation) or trimming,
+    /// the returned options apply specific pre-compiled settings to ensure compatibility and maintain functionality.
+    /// </remarks>
     public static JsonSerializerOptions GenerateObjectJsonOptions
     {
         get
@@ -67,29 +97,42 @@ public class DefaultSerializerOptions
 
             if (JsonSerializer.IsReflectionEnabledByDefault)
             {
-                #pragma disable warning IL2026, IL3050
+#pragma disable warning IL2026, IL3050
                 // Keep in sync with the JsonSourceGenerationOptions attribute on JsonContext below.
                 options = new(JsonSerializerDefaults.Web)
                 {
-                    TypeInfoResolver = new DefaultJsonTypeInfoResolver(),
                     Converters = { new JsonStringEnumConverter() },
                     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
                     Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
                     WriteIndented = true,
                 };
-                #pragma restore warning IL2026, IL3050
+
+                AddCustomResolvers(options);
+                options.TypeInfoResolverChain.Add(new DefaultJsonTypeInfoResolver());
+#pragma restore warning IL2026, IL3050
             }
             else
             {
                 options = new(GenerateObjectJsonContext.Default.Options)
                 {
-                    // Compile-time encoder setting not yet available
+                    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
                     Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                    WriteIndented = true,
                 };
+                
+                AddCustomResolvers(options);
             }
 
             options.MakeReadOnly();
             return options;
+        }
+    }
+
+    private static void AddCustomResolvers(JsonSerializerOptions options)
+    {
+        foreach (var resolver in CustomJsonTypeResolvers.Where(resolver => !options.TypeInfoResolverChain.Contains(resolver)))
+        {
+            options.TypeInfoResolverChain.Add(resolver);
         }
     }
 }
@@ -114,9 +157,7 @@ public class DefaultSerializerOptions
 [JsonSerializable(typeof(bool))]
 [JsonSerializable(typeof(TimeSpan))]
 [JsonSerializable(typeof(DateTimeOffset))]
-
 [EditorBrowsable(EditorBrowsableState.Never)] // Never use JsonContext directly, use DefaultOptions instead.
 internal sealed partial class GenerateObjectJsonContext : JsonSerializerContext
 {
-    
 }

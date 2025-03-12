@@ -28,12 +28,16 @@ public static class GenerateContentRequestExtensions
     /// <summary>
     /// Configures the <see cref="GenerateContentRequest"/> to use JSON mode for responses of the specified type <typeparamref name="T"/>.
     /// </summary>
-    /// <typeparam name="T">The type that defines the response schema for the JSON.</typeparam>
+    /// <typeparam name="T">The type that defines the response schema for the JSON. Must be a class.</typeparam>
     /// <param name="request">The <see cref="GenerateContentRequest"/> on which JSON mode will be applied.</param>
-    /// <remarks>Some of the complex data types are not supported such as Dictionary. So make sure to avoid these.</remarks>
-    public static void UseJsonMode<T>(this GenerateContentRequest request, JsonSerializerOptions? options = null) where T : class
+    /// <param name="options">Optional <see cref="JsonSerializerOptions"/> for customizing the serialization process.</param>
+    /// <remarks>
+    /// For NativeAOT/Trimming JsonSerializerOptions are required, you can ignore it if you have already specified a resolver in <c ref="DefaultSerializerOptions.CustomJsonTypeResolvers"/>   
+    /// </remarks>
+    public static void UseJsonMode<T>(this GenerateContentRequest request, JsonSerializerOptions? options = null)
+        where T : class
     {
-        if(request.GenerationConfig == null)
+        if (request.GenerationConfig == null)
             request.GenerationConfig = new GenerationConfig();
         request.GenerationConfig.ResponseMimeType = "application/json";
         request.GenerationConfig.ResponseSchema =

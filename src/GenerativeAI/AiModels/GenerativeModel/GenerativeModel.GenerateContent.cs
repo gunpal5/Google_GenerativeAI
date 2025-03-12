@@ -25,7 +25,6 @@ public partial class GenerativeModel
         // Use the base class method to get the raw response
         var baseResponse = await base.GenerateContentAsync(Model, request).ConfigureAwait(false);
 
-
         // Attempt to call functions if instructed
         return await CallFunctionAsync(request, baseResponse, cancellationToken).ConfigureAwait(false);
     }

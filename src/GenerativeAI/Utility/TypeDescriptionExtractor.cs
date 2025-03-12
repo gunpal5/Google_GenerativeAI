@@ -1,19 +1,25 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Reflection;
 
 namespace GenerativeAI.Utility;
 
 public static class TypeDescriptionExtractor
 {
-    public static string GetDescription(ParameterInfo paramInfo)
+    // public static string GetDescription(ParameterInfo paramInfo)
+    // {
+    //     var attribute = paramInfo.GetCustomAttribute<System.ComponentModel.DescriptionAttribute>();
+    //     return attribute?.Description ?? string.Empty;
+    // }
+    public static string GetDescription(ICustomAttributeProvider attributeProvider)
     {
-        var attribute = paramInfo.GetCustomAttribute<System.ComponentModel.DescriptionAttribute>();
-        return attribute?.Description ?? string.Empty;
-    }
-    public static string GetDescription(MemberInfo member)
-    {
-        var attribute = member.GetCustomAttribute<System.ComponentModel.DescriptionAttribute>();
-        return attribute?.Description ?? string.Empty;
+        // Look up any description attributes.
+        DescriptionAttribute? descriptionAttr = attributeProvider?
+            .GetCustomAttributes(inherit: true)
+            .Select(attr => attr as DescriptionAttribute)
+            .FirstOrDefault(attr => attr is not null);
+        
+        return descriptionAttr?.Description ?? string.Empty;
     }
     public static Dictionary<string, string> GetDescriptionDic(Type type, Dictionary<string, string>? descriptions = null)
     {
@@ -26,7 +32,7 @@ public static class TypeDescriptionExtractor
             {
                 descriptions[member.Name.ToCamelCase()] = description;
             }
-
+        
             if (member.MemberType == MemberTypes.TypeInfo || member.MemberType == MemberTypes.NestedType)
             {
                 var nestedType = member as Type;
@@ -36,7 +42,6 @@ public static class TypeDescriptionExtractor
                 }
             }
         }
-
         return descriptions;
     }
 }

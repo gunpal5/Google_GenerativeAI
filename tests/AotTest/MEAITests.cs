@@ -1,5 +1,8 @@
+using System.Text.Json.Serialization;
 using CSharpToJsonSchema;
+using GenerativeAI;
 using GenerativeAI.Microsoft;
+using GenerativeAI.Tools;
 using Microsoft.Extensions.AI;
 using Shouldly;
 
@@ -8,15 +11,13 @@ namespace AotTest;
 
 public class MEAITests
 {
-   
     public async Task ShouldWorkWithTools()
     {
-       
         var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
         var chatClient = new GenerativeAIChatClient(apiKey);
         var chatOptions = new ChatOptions();
 
-        var tools = new Tools([GetCurrentWeather]);
+        var tools = new Tools([GetCurrentWeatherAsync]);
         chatOptions.Tools = tools.AsMeaiTools();
         var message = new ChatMessage(ChatRole.User, "What is the weather in New York in celsius?");
         var response = await chatClient.GetResponseAsync(message,options:chatOptions).ConfigureAwait(false);
@@ -25,10 +26,21 @@ public class MEAITests
         response.Text.Contains("New York", StringComparison.InvariantCultureIgnoreCase);
     }
     
-  
+    public async Task QuickToolTest()
+    {
+        var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+        var chatClient = new GenerativeAIChatClient(apiKey);
+        var chatOptions = new ChatOptions();
+        DefaultSerializerOptions.CustomJsonTypeResolvers.Add(MeaiTestJsonSerializerContext.Default);
+        chatOptions.Tools = [new QuickTool(GetCurrentWeatherAsync).AsMeaiTool()];
+        
+        var message = new ChatMessage(ChatRole.User, "What is the weather in New York in celsius?");
+        var response = await chatClient.GetResponseAsync(message,options:chatOptions).ConfigureAwait(false);
+        Console.WriteLine(response.Text);
+    }
+    
     public async Task ShouldWorkWith_BookStoreService()
     {
-       
         var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
         var chatClient = new GenerativeAIChatClient(apiKey);
         var chatOptions = new ChatOptions();
@@ -51,7 +63,7 @@ public class MEAITests
     
     [FunctionTool(MeaiFunctionTool = true)]
     [System.ComponentModel.Description("Get the current weather in a given location")]
-    public Weather GetCurrentWeather(string location, Unit unit = Unit.Celsius)
+    public async Task<Weather> GetCurrentWeatherAsync(string location, Unit unit = Unit.Celsius, CancellationToken cancellationToken = default)
     {
         return new Weather
         {
@@ -61,14 +73,12 @@ public class MEAITests
             Description = "Sunny",
         };
     }
-    
     public enum Unit
     {
         Celsius,
         Fahrenheit,
         Imperial
     }
-
     public class Weather
     {
         public string Location { get; set; } = string.Empty;
@@ -76,4 +86,12 @@ public class MEAITests
         public Unit Unit { get; set; }
         public string Description { get; set; } = string.Empty;
     }
+}
+
+[JsonSerializable(typeof(MEAITests.Weather))]
+[JsonSerializable(typeof(MEAITests.Unit))]
+[JsonSourceGenerationOptions(WriteIndented = true, UseStringEnumConverter = true)]
+public partial class MeaiTestJsonSerializerContext : JsonSerializerContext
+{
+        
 }

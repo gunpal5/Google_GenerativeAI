@@ -1,4 +1,7 @@
-﻿using System.Text.Json.Nodes;
+﻿using System.ComponentModel;
+using System.Diagnostics;
+using System.Reflection;
+using System.Text.Json.Nodes;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
@@ -133,11 +136,7 @@ public static class GoogleSchemaHelper
     public static Schema ConvertToSchema<T>(JsonSerializerOptions? jsonOptions = null)
     {
 #if NET8_0_OR_GREATER || NET462_OR_GREATER || NETSTANDARD2_0
-        if (jsonOptions == null && !JsonSerializer.IsReflectionEnabledByDefault)
-        {
-            throw new InvalidOperationException("Please provide a JsonSerializerOptions instance to use in AOT mode.");
-        }
-
+      
         if (jsonOptions == null)
             jsonOptions = DefaultSerializerOptions.GenerateObjectJsonOptions;
 
@@ -148,7 +147,8 @@ public static class GoogleSchemaHelper
 
         var typeInfo = newJsonOptions.GetTypeInfo(typeof(T));
 
-        return ConvertToCompatibleSchemaSubset(GetSchema(typeInfo, null));
+        var schema = GetSchema(typeInfo,null);
+        return JsonSerializer.Deserialize(schema.ToJsonString(),TypesSerializerContext.Default.Schema)?? ConvertToCompatibleSchemaSubset(schema);
 
 #else
         return ConvertToSchema(typeof(T), jsonOptions);
@@ -159,11 +159,7 @@ public static class GoogleSchemaHelper
         Dictionary<string, string>? descriptionTable = null)
     {
 #if NET8_0_OR_GREATER || NET462_OR_GREATER || NETSTANDARD2_0
-        if (jsonOptions == null && !JsonSerializer.IsReflectionEnabledByDefault)
-        {
-            throw new InvalidOperationException("Please provide a JsonSerializerOptions instance to use in AOT mode.");
-        }
-
+     
         if (jsonOptions == null)
             jsonOptions = DefaultSerializerOptions.GenerateObjectJsonOptions;
 
@@ -175,7 +171,7 @@ public static class GoogleSchemaHelper
         var typeInfo = newJsonOptions.GetTypeInfo(type);
         
         var schema = GetSchema(typeInfo, descriptionTable);
-        return ConvertToCompatibleSchemaSubset(schema);
+        return JsonSerializer.Deserialize(schema.ToJsonString(),TypesSerializerContext.Default.Schema)?? ConvertToCompatibleSchemaSubset(schema);
 
 #else
         var generatorConfig = new SchemaGeneratorConfiguration();
@@ -195,25 +191,88 @@ public static class GoogleSchemaHelper
     private static JsonNode GetSchema(JsonTypeInfo typeInfo, Dictionary<string, string>? dics)
     {
         if (dics == null)
-            dics = TypeDescriptionExtractor.GetDescriptionDic(typeInfo.Type);
-        var schema = typeInfo.GetJsonSchemaAsNode(exporterOptions: new JsonSchemaExporterOptions() { TransformSchemaNode
-            = (a, b) =>
+            dics = new Dictionary<string, string>();
+        var schema = typeInfo.GetJsonSchemaAsNode(exporterOptions: new JsonSchemaExporterOptions() {
+            TransformSchemaNode = (context, schema) =>
             {
-                if (a.TypeInfo.Type.IsEnum)
+                if (context.TypeInfo.Type.IsEnum)
                 {
-                    b["type"] = "string";
+                    schema["type"] = "string";
                 }
-
-                if (a.PropertyInfo == null)
-                    return b;
-                var propName = a.PropertyInfo.Name.ToCamelCase();
-                if (dics.ContainsKey(propName))
-                {
-                    b["description"] = dics[propName];
-                }
-                return b;
+                
+                ExtractDescription(context, schema, dics);
+                if (context.PropertyInfo == null)
+                    return schema;
+               
+                return schema;
             }});
         return schema;
+    }
+    
+    private static void ExtractDescription(JsonSchemaExporterContext context, JsonNode schema, Dictionary<string, string> dics)
+    {
+        // Determine if a type or property and extract the relevant attribute provider.
+        ICustomAttributeProvider? attributeProvider = context.PropertyInfo is not null
+            ? context.PropertyInfo.AttributeProvider
+            : context.TypeInfo.Type;
+
+        var description = TypeDescriptionExtractor.GetDescription(attributeProvider);
+        if (string.IsNullOrEmpty(description))
+        {
+            if (context.PropertyInfo is null)
+            {
+                var propertyName = context.TypeInfo.Type.Name.ToCamelCase();
+                dics.TryGetValue(propertyName, out description);
+            }
+        }
+
+        FixType(schema);
+        
+        // Apply description attribute to the generated schema.
+        if (description is not null)
+        {
+            if (schema is not JsonObject jObj)
+            {
+                // Handle the case where the schema is a Boolean.
+                JsonValueKind valueKind = schema.GetValueKind();
+                Debug.Assert(valueKind is JsonValueKind.True or JsonValueKind.False);
+                schema = jObj = new JsonObject();
+                if (valueKind is JsonValueKind.False)
+                {
+                    jObj.Add("not", true);
+                }
+            }
+            
+            jObj.Insert(0, "description", description);
+        }
+    }
+
+    private static void FixType(JsonNode schema)
+    {
+        // If "type" is an array, remove "null" and collapse if it leaves only one type
+        var typeValue = schema["type"];
+        if (typeValue!= null && typeValue is JsonArray array)
+        {
+            if (array.Count == 2)
+            {
+                var notNullTypes = array.Where(x => x is not null && x.GetValue<string>() != "null").ToList();
+                if (notNullTypes.Count == 1)
+                {
+                    schema["type"] = notNullTypes[0]!.GetValue<string>();
+                    schema["nullable"] = true;
+                }
+                else
+                {
+                    throw new InvalidOperationException(
+                        $"Google's API for strucutured output requires every property to have one defined type, not multiple options. Path: {schema.GetPath()} Schema: {schema.ToJsonString()}");
+                }
+            }
+            else if (array.Count > 2)
+            {
+                throw new InvalidOperationException(
+                    $"Google's API for strucutured output requires every property to have one defined type, not multiple options. Path: {schema.GetPath()} Schema: {schema.ToJsonString()}");
+            }
+        }
     }
 
 #endif

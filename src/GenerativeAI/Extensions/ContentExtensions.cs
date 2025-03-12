@@ -183,7 +183,11 @@ public static class ContentExtensions
     /// </summary>
     /// <typeparam name="T">The target type to which the JSON content will be deserialized. Must be a class.</typeparam>
     /// <param name="content">The <see cref="Content"/> object containing JSON data to be converted.</param>
+    /// <param name="options">The <see cref="JsonSerializerOptions"/> to customize the deserialization process, or null to use default options.</param>
     /// <returns>An instance of type <typeparamref name="T"/> if conversion succeeds, or null if no valid JSON data is found or deserialization fails.</returns>
+    /// <remarks>
+    /// For NativeAOT/Trimming JsonSerializerOptions are required, you can ignore it if you have already specified a resolver in <c ref="DefaultSerializerOptions.CustomJsonTypeResolvers"/>
+    /// </remarks>
     public static T? ToObject<T>(this Content content, JsonSerializerOptions? options = null) where T : class
     {
         var jsonBlocks = ExtractJsonBlocks(content);
@@ -195,6 +199,7 @@ public static class ContentExtensions
                 return block.ToObject<T?>(options);
             }
         }
+
         return null;
     }
 }

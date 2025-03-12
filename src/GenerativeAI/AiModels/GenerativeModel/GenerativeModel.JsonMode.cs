@@ -23,9 +23,7 @@ public partial class GenerativeModel
     /// for object generation in the context of JSON mode.
     /// </summary>
     /// <remarks>
-    /// Customize these options to adjust serialization rules, such as property naming policies,
-    /// handling of null values, and supported data types. Adjustments can impact the handling
-    /// of responses and compatibility with consuming systems.
+    /// For NativeAOT/Trimming GenerateObjectJsonSerializerOptions are required, you can ignore it if you have already specified a resolver in <c ref="DefaultSerializerOptions.CustomJsonTypeResolvers"/>
     /// </remarks>
     public JsonSerializerOptions GenerateObjectJsonSerializerOptions
     {
@@ -35,7 +33,6 @@ public partial class GenerativeModel
             this._jsonSerializerOptions = value;
         }
     }
-
 
     #region Generate Object
     

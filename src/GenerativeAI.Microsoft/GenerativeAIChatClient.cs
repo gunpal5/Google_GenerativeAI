@@ -67,7 +67,6 @@ public class GenerativeAIChatClient : IChatClient
 
     private async Task<ChatResponse> CallFunctionAsync(GenerateContentRequest request,  GenerateContentResponse response, ChatOptions? options, CancellationToken cancellationToken)
     {
-       
         var chatResponse = response.ToChatResponse() ?? throw new GenerativeAIException("Failed to generate content",
             "The generative model response was null or could not be processed. Verify the API key, model name, input messages, and options for any issues.");
         

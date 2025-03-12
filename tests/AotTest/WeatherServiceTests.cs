@@ -43,7 +43,8 @@ public class WeatherServiceTests
         var result = await model.GenerateContentAsync("how's Deepak Siwach is doing in Senior Grade for enrollment year 01-01-2024 to 01-01-2025").ConfigureAwait(false);
         Console.WriteLine(result.Text());
     }
-    
+
+   
     protected virtual IPlatformAdapter GetTestGooglePlatform()
     {
         //return GetTestVertexAIPlatform();

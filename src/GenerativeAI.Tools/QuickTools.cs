@@ -1,6 +1,9 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
+using CSharpToJsonSchema;
 using GenerativeAI.Core;
 using GenerativeAI.Types;
+using Tool = GenerativeAI.Types.Tool;
 
 namespace GenerativeAI.Tools;
 
@@ -15,9 +18,6 @@ public class QuickTools : GoogleFunctionTool
     /// Initializes a new instance of the <see cref="QuickTools"/> class with an array of <see cref="QuickTool"/> objects.
     /// </summary>
     /// <param name="tools">An array of <see cref="QuickTool"/> objects to initialize the tool collection.</param>
-#if NET6_0_OR_GREATER
-    [RequiresUnreferencedCode("QuickTool usages reflection to generate function schema and function invokation. Use GenericFunctionTool for NativeAOT and Trimming support.")]
-#endif
     public QuickTools(QuickTool[] tools)
     {
         _tools = tools.ToList();
@@ -27,12 +27,10 @@ public class QuickTools : GoogleFunctionTool
     /// Initializes a new instance of the <see cref="QuickTools"/> class with an array of delegates.
     /// </summary>
     /// <param name="delegates">An array of delegates to be converted into <see cref="QuickTool"/> objects.</param>
-#if NET6_0_OR_GREATER
-    [RequiresUnreferencedCode("QuickTool usages reflection to generate function schema and function invokation. Use GenericFunctionTool for NativeAOT and Trimming support.")]
-#endif
-    public QuickTools(Delegate[] delegates)
+    /// <param name="options">JSON Serializer context to appropriately parse the arguments, this can be ignored if JsonTypeResolver is set in global settings or not using NativeAOT</param>
+    public QuickTools(Delegate[] delegates, JsonSerializerOptions? options = null)
     {
-        _tools = delegates.Select(s => new QuickTool(s)).ToList();
+        _tools = delegates.Select(s => new QuickTool(s, options: options ?? DefaultSerializerOptions.GenerateObjectJsonOptions)).ToList();
     }
 
     /// <inheritdoc />
@@ -58,5 +56,10 @@ public class QuickTools : GoogleFunctionTool
     public override bool IsContainFunction(string name)
     {
         return _tools.Any(s => s.FunctionDeclaration.Name == name);
+    }
+
+    public List<MeaiFunction> ToMeaiFunctions()
+    {
+        return this._tools.Select(s => s.AsMeaiTool()).ToList();
     }
 }

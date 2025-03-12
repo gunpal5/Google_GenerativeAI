@@ -1,5 +1,4 @@
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using GenerativeAI;
 using GenerativeAI.Core;
 using GenerativeAI.Types;
@@ -120,7 +119,6 @@ public class JsonModeTests
 
     #endregion
 
-
     public async Task ShouldGenerateComplexObjectAsync_WithVariousDataTypes()
     {
         // Arrange
@@ -154,8 +152,6 @@ public class JsonModeTests
         //obj.OptionalField.ShouldBeNull();
         Console.WriteLine("GenerateContentAsync<T> with various data types returned a valid response.");
     }
-
-
     public async Task ShouldGenerateNestedObjectAsync_WithJsonMode()
     {
         // Arrange
@@ -184,8 +180,7 @@ public class JsonModeTests
         });
         Console.WriteLine("GenerateContentAsync<T> with nested types returned a valid response.");
     }
-
-
+    
     protected virtual IPlatformAdapter GetTestGooglePlatform()
     {
         //return GetTestVertexAIPlatform();
@@ -193,65 +188,4 @@ public class JsonModeTests
 
         return new GoogleAIPlatformAdapter(apiKey);
     }
-}
-
-/// <summary>
-/// A complex sample class with nested classes and collections used for testing JSON deserialization.
-/// </summary>
-internal class ComplexJsonClass
-{
-    public string? Description { get; set; }
-    public Detail? Details { get; set; }
-    public List<Child2>? Children { get; set; }
-
-    public class Detail
-    {
-        public string? Title { get; set; }
-        public string? Content { get; set; }
-    }
-
-    public class Child2
-    {
-        public string? Name { get; set; }
-        public List<int>? Values { get; set; }
-    }
-}
-
-/// <summary>
-/// A small sample class used for testing JSON deserialization. 
-/// The property name can be adjusted as needed for your test scenarios.
-/// </summary>
-internal class SampleJsonClass
-{
-    public string? Message { get; set; }
-}
-
-/// <summary>
-/// A sample class used to test serialization and deserialization with various data types.
-/// </summary>
-internal class ComplexDataTypeClass
-{
-    public string? Title { get; set; }
-    [JsonIgnore] public Dictionary<string, string>? Metadata { get; set; }
-    public int[]? Numbers { get; set; }
-    public List<Child>? Children { get; set; }
-    public string? OptionalField { get; set; }
-
-    public class Child
-    {
-        public string? Name { get; set; }
-        public List<int>? Values { get; set; }
-    }
-}
-
-[JsonSerializable(typeof(SampleJsonClass))]
-[JsonSerializable(typeof(ComplexDataTypeClass.Child))]
-[JsonSerializable(typeof(ComplexJsonClass.Child2))]
-[JsonSerializable(typeof(ComplexJsonClass.Detail))]
-[JsonSerializable(typeof(ComplexDataTypeClass))]
-[JsonSerializable(typeof(ComplexJsonClass))]
-[JsonSerializable(typeof(QueryStudentRecordRequest))]
-[JsonSourceGenerationOptions(WriteIndented = true, UseStringEnumConverter = true)]
-internal partial class TestJsonSerializerContext : JsonSerializerContext
-{
 }

@@ -8,9 +8,6 @@ namespace GenerativeAI.Tools.Helpers;
 
 public static class FunctionSchemaHelper
 {
-    #if NET6_0_OR_GREATER
-    [RequiresUnreferencedCode("Create Schema will perform reflection on the delegate type provided to generate Schema")]
-    #endif
     public static FunctionDeclaration CreateFunctionDecleration(Delegate func, string? name, string? description)
     {
         var parameters = func.Method.GetParameters();
@@ -22,15 +19,14 @@ public static class FunctionSchemaHelper
         parametersSchema.Type = "object";
         foreach (var param in parameters)
         {
-            
             var type = param.ParameterType;
             if(type.Name == "CancellationToken")
                 continue;
-            var descriptionsDics = TypeDescriptionExtractor.GetDescriptionDic(type);
+            //var descriptionsDics = TypeDescriptionExtractor.GetDescriptionDic(type);
             var desc = TypeDescriptionExtractor.GetDescription(param);
-            descriptionsDics[param.Name.ToCamelCase()] = desc;
+            //descriptionsDics[param.Name.ToCamelCase()] = desc;
 
-            var schema = GoogleSchemaHelper.ConvertToSchema(type, options, descriptionsDics);
+            var schema = GoogleSchemaHelper.ConvertToSchema(type, options);
             schema.Description = desc;
             parametersSchema.Properties.Add(param.Name.ToCamelCase(), schema);
             parametersSchema.Required.Add(param.Name.ToCamelCase());
