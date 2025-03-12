@@ -7,7 +7,7 @@ jobs:
   update:
     runs-on: ubuntu-latest
     outputs:
-      new_version: ${{ steps.update.outputs.newVersion }}
+      new_version: ${{ steps.update.outputs.oldVersion }}
     permissions:                      
         contents: write           
         pull-requests: write   
