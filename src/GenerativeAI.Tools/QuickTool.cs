@@ -36,6 +36,7 @@ public class QuickTool : GoogleFunctionTool
 
     private JsonSerializerOptions _options;
 
+    private Type _returnType;
     /// <summary>
     /// Represents a tool capable of wrapping a delegate function and exposing it as an interactive tool.
     /// </summary>
@@ -56,6 +57,7 @@ public class QuickTool : GoogleFunctionTool
         _options = options ?? DefaultSerializerOptions.GenerateObjectJsonOptions;
         this._func = func;
         this.FunctionDeclaration = FunctionSchemaHelper.CreateFunctionDecleration(func, name, description);
+        _returnType = func.Method.ReturnType;
     }
 
     /// <inheritdoc/>
@@ -109,7 +111,7 @@ public class QuickTool : GoogleFunctionTool
             return result;
 
         // If the result is Task, figure out the T in Task<T>, if any
-        var resultType = result.GetType();
+        var resultType = _returnType;
         if (resultType.IsGenericType && resultType.GetGenericTypeDefinition() == typeof(Task<>))
         {
             // This is Task<T>. We can reflect on its "Result" property after awaiting
