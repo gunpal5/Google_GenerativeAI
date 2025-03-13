@@ -11,9 +11,7 @@ namespace CodeExecutor;
 /// <summary>
 /// Provides functionality to execute JavaScript code using a JavaScript engine and return the result.
 /// </summary>
-public class 
-    
-    JavascriptCodeExecutor : IJavascriptCodeExecutor
+public class JavascriptCodeExecutor : IJavascriptCodeExecutor
 {
     public async Task<object?> ExecuteJavascriptCodeAsync(string code, CancellationToken cancellationToken = default)
     {
@@ -51,7 +49,7 @@ public class
     }
 }
 
-[GenerateJsonSchema]
+[GenerateJsonSchema(GoogleFunctionTool = true)]
 public interface IJavascriptCodeExecutor
 {
     [Description("this function executes javascript code. pass any javascript code to execute.")]
