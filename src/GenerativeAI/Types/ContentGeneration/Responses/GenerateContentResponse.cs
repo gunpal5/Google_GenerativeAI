@@ -16,7 +16,9 @@ namespace GenerativeAI.Types;
 /// <seealso href="https://ai.google.dev/api/generate-content#generatecontentresponse">See Official API Documentation</seealso>
 public class GenerateContentResponse
 {
-    
+    public string Text => string.Join("\r\n", Candidates?.LastOrDefault()?.Content?.Parts?.Select(s => s.Text) ?? Array.Empty<string?>()) ??
+                          string.Empty;
+
     /// <summary>
     /// Candidate responses from the model.
     /// </summary>
@@ -60,6 +62,7 @@ public class GenerateContentResponse
             return
                 $"GenerateContentResponse {{ Candidates = [{candidatesStr}], PromptFeedback = {feedbackStr}, UsageMetadata = {metadataStr}, ModelVersion = {versionStr} }}";
         }
+
         return text;
     }
 

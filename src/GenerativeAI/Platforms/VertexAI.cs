@@ -97,4 +97,6 @@ public class VertexAI : GenAI, IGenerativeAI
 
         return model;
     }
+    
+    
 }

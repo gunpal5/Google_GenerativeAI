@@ -50,6 +50,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenerativeAI.Live.Tests", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AotTest", "tests\AotTest\AotTest.csproj", "{5BF6737C-D3E4-4C46-ABBF-73ECAEE128AF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VertexRAGSimpleQA", "samples\VertexRAGSimpleQA\VertexRAGSimpleQA.csproj", "{D84F6F3C-E24F-4602-BA10-1A235AFFCD52}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -132,6 +134,10 @@ Global
 		{5BF6737C-D3E4-4C46-ABBF-73ECAEE128AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5BF6737C-D3E4-4C46-ABBF-73ECAEE128AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5BF6737C-D3E4-4C46-ABBF-73ECAEE128AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D84F6F3C-E24F-4602-BA10-1A235AFFCD52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D84F6F3C-E24F-4602-BA10-1A235AFFCD52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D84F6F3C-E24F-4602-BA10-1A235AFFCD52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D84F6F3C-E24F-4602-BA10-1A235AFFCD52}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -156,6 +162,7 @@ Global
 		{8DC0FF3E-8B46-41B0-B814-6049FD80C8C3} = {61CC49B3-1325-40EB-95DF-89E18A0D041B}
 		{157399AE-E8D1-4306-8B59-0BDEB45AED03} = {FCCDE15A-B121-4D6C-BD56-D1B043A26F18}
 		{5BF6737C-D3E4-4C46-ABBF-73ECAEE128AF} = {FCCDE15A-B121-4D6C-BD56-D1B043A26F18}
+		{D84F6F3C-E24F-4602-BA10-1A235AFFCD52} = {61CC49B3-1325-40EB-95DF-89E18A0D041B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FFF3E8BB-BACD-4376-8E33-55D6E8A30BE0}

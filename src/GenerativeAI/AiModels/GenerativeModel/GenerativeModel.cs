@@ -276,7 +276,15 @@ namespace GenerativeAI
             ICollection<SafetySetting>? safetySettings = null,
             string? systemInstruction = null)
         {
-            return new ChatSession(history,this.Platform,this.Model,config??this.Config,safetySettings??this.SafetySettings,systemInstruction??this.SystemInstruction,this.HttpClient,this.Logger);
+            var session =  new ChatSession(history,this.Platform,this.Model,config??this.Config,safetySettings??this.SafetySettings,systemInstruction??this.SystemInstruction,this.HttpClient,this.Logger)
+                {
+                    FunctionTools = this.FunctionTools,
+                    RetrievalTool = this.RetrievalTool,
+                    UseGrounding = this.UseGrounding,
+                    UseGoogleSearch = this.UseGoogleSearch,
+                    UseCodeExecutionTool = this.UseCodeExecutionTool
+                };
+            return session;
         }
 
         

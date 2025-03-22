@@ -10,6 +10,7 @@ namespace GenerativeAI;
 /// </summary>
 public static class GenerateContentResponseExtensions
 {
+   
     /// <summary>
     /// Returns the text of the first candidate’s first content part.
     /// </summary>
