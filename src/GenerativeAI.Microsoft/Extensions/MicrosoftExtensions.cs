@@ -160,11 +160,27 @@ public static class MicrosoftExtensions
                 return obj;
             if (content.Result is JsonNode arr)
                 return arr;
+            if (content.Result is JsonElement el)
+            {
+                var newNode = el.AsNode();
+                if (newNode != null)
+                    return newNode;
+            }
         }
 
         if (response is JsonNode node)
         {
             return node;
+        }
+        else
+        {
+#pragma warning disable IL2026, IL3050 // Reflection is used to deserialize the response
+            if (JsonSerializer.IsReflectionEnabledByDefault)
+            {
+                return JsonSerializer.Deserialize<JsonNode>(JsonSerializer.Serialize(response),
+                    TypesSerializerContext.Default.JsonNode)!;
+            }
+#pragma warning restore IL2026, IL3050 // Reflection is used to deserialize the response
         }
 
         throw new ArgumentException("Response is not a json node");
@@ -192,7 +208,7 @@ public static class MicrosoftExtensions
             Seed = (int?)options.Seed,
             ResponseMimeType = options.ResponseFormat is ChatResponseFormatJson ? "application/json" : null
         };
-        
+
         if (options.ResponseFormat is ChatResponseFormatJson jsonFormat)
         {
             // see also: https://github.com/dotnet/extensions/blob/f775ed6bd07c0dd94ac422dc6098162eef0b48e5/src/Libraries/Microsoft.Extensions.AI/ChatCompletion/ChatClientStructuredOutputExtensions.cs#L186-L192
@@ -283,6 +299,7 @@ public static class MicrosoftExtensions
                 // Text = response?.Candidates?.FirstOrDefault()?.Content?.Parts?.Select(p => p.Text).FirstOrDefault() // Assuming extracting text from parts
             };
         }
+
         throw new ArgumentException("Response is invalid with no candidates");
     }
 
@@ -338,7 +355,7 @@ public static class MicrosoftExtensions
     /// <returns>A <see cref="ChatMessage"/> representing the data contained in the <see cref="GenerateContentResponse"/>.</returns>
     public static IEnumerable<ChatMessage> ToChatMessages(this List<Content>? contents)
     {
-        return (from content in contents 
+        return (from content in contents
             let aiContents = content.Parts.ToAiContents()
             select new ChatMessage(ToChatRole(content.Role), aiContents)).ToList();
     }
@@ -410,7 +427,7 @@ public static class MicrosoftExtensions
     {
         List<AIContent>? contents = null;
         if (parts is null) return contents;
-        
+
         foreach (var part in parts)
         {
             if (part.Text is not null)
@@ -447,12 +464,13 @@ public static class MicrosoftExtensions
     /// <returns>A dictionary where the keys represent argument names and values represent their corresponding data, or null if conversion is not possible.</returns>
     private static IDictionary<string, object?>? ConvertFunctionCallArg(JsonNode? functionCallArgs)
     {
-        if(functionCallArgs  == null)
+        if (functionCallArgs == null)
             return null;
         var obj = functionCallArgs.AsObject();
         return obj?.ToDictionary(s => s.Key, s => (object?)s.Value?.DeepClone());
-    
+
         #region Unused codes for future reference
+
         // if (functionCallArgs is JsonElement jsonElement)
         // {
         //     var obj = jsonElement.AsNode().AsObject();
@@ -461,8 +479,8 @@ public static class MicrosoftExtensions
 
         // if (functionCallArgs is JsonNode jsonElement2)
         // {
-            // var obj = functionCallArgs.AsObject();
-            // return obj?.ToDictionary(s => s.Key, s => (object?)s.Value?.DeepClone());
+        // var obj = functionCallArgs.AsObject();
+        // return obj?.ToDictionary(s => s.Key, s => (object?)s.Value?.DeepClone());
         // }
         // else if (functionCallArgs != null && functionCallArgs is not JsonNode)
         // {
@@ -487,6 +505,7 @@ public static class MicrosoftExtensions
         //}
 
         //return null;
+
         #endregion
     }
 

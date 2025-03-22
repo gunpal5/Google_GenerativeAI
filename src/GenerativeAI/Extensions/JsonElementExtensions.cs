@@ -18,6 +18,6 @@ public static class JsonElementExtensions
     {
         JsonValueKind.Array => JsonArray.Create(element),
         JsonValueKind.Object => JsonObject.Create(element),
-        _ => JsonValue.Create(element)
+        _ => JsonValue.Create(element),
     };
 }

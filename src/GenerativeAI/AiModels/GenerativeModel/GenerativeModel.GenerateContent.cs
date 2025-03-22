@@ -44,9 +44,9 @@ public partial class GenerativeModel
         var request = new GenerateContentRequest();
         request.AddText(prompt, false);
 
-        var baseResponse = await GenerateContentAsync(request, cancellationToken).ConfigureAwait(false);
+        return await GenerateContentAsync(request, cancellationToken).ConfigureAwait(false);
 
-        return await CallFunctionAsync(request, baseResponse, cancellationToken).ConfigureAwait(false);
+      //  return await CallFunctionAsync(request, baseResponse, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -112,13 +112,25 @@ public partial class GenerativeModel
     {
         PrepareRequest(request);
 
+        GenerateContentResponse? lastResponse = null;
         await foreach (var streamedItem in base.GenerateContentStreamAsync(Model, request, cancellationToken).ConfigureAwait(false))
         {
             if (cancellationToken.IsCancellationRequested)
                 break;
             if (streamedItem?.Candidates == null) continue;
 
+            lastResponse = streamedItem;
             yield return streamedItem;
+        }
+        if (lastResponse != null)
+        {
+            if (lastResponse.GetFunction() != null)
+            {
+                await foreach (var relastResponse in CallFunctionStreamingAsync(request,lastResponse,cancellationToken).ConfigureAwait(false))
+                {
+                    yield return relastResponse;
+                }
+            }
         }
     }
 

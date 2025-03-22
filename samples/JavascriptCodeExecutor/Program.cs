@@ -18,6 +18,7 @@ var chat = model.StartChat();
 //Add Javascript Code Executor
 chat.AddFunctionTool(javascriptTool);
 
+
 //System Instruction
 chat.SystemInstruction = "Your job is to create javascript code and pass it to ExecuteJavascriptCodeAsync for execution. \r\n- Always use ExecuteJavascriptCodeAsync function to execute the javascript code.\r\n- use console.log to print the results.";
 

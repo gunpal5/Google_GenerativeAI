@@ -39,7 +39,25 @@ public class Microsoft_AIFunction_Tests:TestBase
         response.Text.Contains("New York", StringComparison.InvariantCultureIgnoreCase)
             .ShouldBeTrue();
     }
-    
+
+    [Fact]
+    public async Task ShouldWorkWithTools_with_Streaming()
+    {
+        Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+        var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+        var chatClient = new GenerativeAIChatClient(apiKey);
+        var chatOptions = new ChatOptions();
+        
+        var message = new ChatMessage(ChatRole.User, "What is the weather in New York?");
+        await foreach (var response in chatClient.GetStreamingResponseAsync(message, options: chatOptions))
+        {
+            Console.WriteLine(response.Text);
+        }
+        // var response = await chatClient.GetResponseAsync(message,options:chatOptions).ConfigureAwait(false);
+        //
+        // response.Text.Contains("New York", StringComparison.InvariantCultureIgnoreCase)
+        //     .ShouldBeTrue();
+    }
     [Fact]
     public async Task ShouldWorkWithComplexClasses()
     {
@@ -58,13 +76,37 @@ public class Microsoft_AIFunction_Tests:TestBase
     }
     
     [Fact]
+    public async Task ShouldWorkWithComplexClasses_Streaming()
+    {
+        Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+        var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+        var chatClient = new GenerativeAIChatClient(apiKey, modelName:"models/gemini-2.0-flash")
+        {
+            AutoCallFunction = false
+        }.AsBuilder().UseFunctionInvocation().Build();
+        var chatOptions = new ChatOptions();
+        
+        chatOptions.Tools = new List<AITool>{AIFunctionFactory.Create(GetStudentRecordAsync)};
+        var message = new ChatMessage(ChatRole.User, "How does student john doe in senior grade is doing this year, enrollment start 01-01-2024 to 01-01-2025?");
+        //var response = await chatClient.GetResponseAsync(message,options:chatOptions).ConfigureAwait(false);
+
+        await foreach (var resp in chatClient.GetStreamingResponseAsync(message, options: chatOptions)
+                           .ConfigureAwait(false))
+        {
+            Console.WriteLine(resp.Text);
+        }
+        // response.Text.Contains("John", StringComparison.InvariantCultureIgnoreCase)
+        //     .ShouldBeTrue();
+        // Console.WriteLine(response.Text);
+    }
+    
+    [Fact]
     public async Task ShouldWorkWith_BookStoreService()
     {
         Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
         var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
         var chatClient = new GenerativeAIChatClient(apiKey);
         var chatOptions = new ChatOptions();
-        
        
         chatOptions.Tools = new List<AITool>{AIFunctionFactory.Create(GetBookPageContentAsync,new AIFunctionFactoryOptions()
         {
@@ -74,6 +116,28 @@ public class Microsoft_AIFunction_Tests:TestBase
         var response = await chatClient.GetResponseAsync(message,options:chatOptions).ConfigureAwait(false);
 
         response.Text.ShouldContain("damdamadum",Case.Insensitive);
+    }
+    
+    [Fact]
+    public async Task ShouldWorkWith_BookStoreService_with_Streaming()
+    {
+        Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+        var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+        var chatClient = new GenerativeAIChatClient(apiKey);
+        var chatOptions = new ChatOptions();
+       
+        chatOptions.Tools = new List<AITool>{AIFunctionFactory.Create(GetBookPageContentAsync,new AIFunctionFactoryOptions()
+        {
+            
+        })};
+        var message = new ChatMessage(ChatRole.User, "what is written on page 96 in the book 'damdamadum'");
+        await foreach (var resp in chatClient.GetStreamingResponseAsync(message,options:chatOptions).ConfigureAwait(false))
+        {
+            Console.WriteLine(resp.Text);
+        }
+        // var response = await chatClient.GetResponseAsync(message,options:chatOptions).ConfigureAwait(false);
+        //
+        // response.Text.ShouldContain("damdamadum",Case.Insensitive);
     }
     
     [System.ComponentModel.Description("Get book page content")]

@@ -31,7 +31,14 @@ namespace GenerativeAI.Core
         /// <param name="logger">Optional. The logger instance for logging API interactions.</param>
         public ApiBase(HttpClient? httpClient, ILogger? logger = null)
         {
-            _httpClient = httpClient ?? new HttpClient();
+            _httpClient = httpClient ?? new HttpClient()
+            {
+                Timeout = new TimeSpan(0,5,0),
+                DefaultRequestHeaders =
+                {
+                    { "User-Agent", "Google_GenerativeAI SDK" }
+                }
+            };
             _logger = logger;
 
             SerializerOptions = DefaultSerializerOptions.Options;

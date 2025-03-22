@@ -26,6 +26,29 @@ namespace GenerativeAI.IntegrationTests
             
             Console.WriteLine(result.Text());
         }
+        
+        [Fact]
+        public async Task ShouldInvokeWeatherService_WithStreaming()
+        {
+            Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+            WeatherService service = new WeatherService();
+            var tools = service.AsTools();
+            var calls = service.AsCalls();
+            var tool = new GenericFunctionTool(tools, calls);
+            
+            var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.DefaultGeminiModel);
+            
+            model.AddFunctionTool(tool);
+
+            await foreach (var result in model.StreamContentAsync("What is the weather in san francisco today?")
+                               .ConfigureAwait(false))
+            {
+                Console.WriteLine(result.Text());
+            }
+            //var result = await model.StreamContentAsync("What is the weather in san francisco today?").ConfigureAwait(false);
+            
+           // Console.WriteLine(result.Text());
+        }
 
         [Fact]
         public async Task ShouldInvokeWetherService2()
@@ -53,6 +76,22 @@ namespace GenerativeAI.IntegrationTests
             model.AddFunctionTool(tool);
             var result = await model.GenerateContentAsync("what is written on page 35 in the book 'abracadabra'").ConfigureAwait(false);
             Console.WriteLine(result.Text());
+        }
+        
+        [Fact]
+        public async Task ShouldWorkWith_BookStoreService_with_streaming()
+        {
+            Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+            var service = new BookStoreService();
+            var tool = new GenericFunctionTool(service.AsTools(), service.AsCalls());
+            var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.DefaultGeminiModel);
+            model.AddFunctionTool(tool);
+            await foreach (var result in model
+                               .StreamContentAsync("what is written on page 35 in the book 'abracadabra'")
+                               .ConfigureAwait(false))
+            {
+                Console.WriteLine(result.Text());
+            }
         }
     }
 }

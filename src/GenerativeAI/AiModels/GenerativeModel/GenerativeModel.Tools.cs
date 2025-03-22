@@ -212,6 +212,99 @@ public partial class GenerativeModel
         if (!FunctionCallingBehaviour.AutoCallFunction || functionCall == null)
             return response;
 
+        var functionResponse = await ExecuteFunctionAsync(functionCall,response).ConfigureAwait(false);
+        
+        // var name = functionCall.Name ?? string.Empty;
+        // string jsonResult;
+        //
+        // var tool = FunctionTools.FirstOrDefault(s => s.IsContainFunction(name));
+        // FunctionResponse functionResponse;
+        // if (tool == null)
+        // {
+        //     if (!FunctionCallingBehaviour.AutoHandleBadFunctionCalls)
+        //     {
+        //         throw new GenerativeAIException(
+        //             $"AI Model called an invalid function: {name}",
+        //             $"Invalid function_name: {name}");
+        //     }
+        //
+        //     // Marking the function name as invalid in the response
+        //     if (response.Candidates.Length > 0)
+        //     {
+        //         response.Candidates[0].Content.Parts[0].FunctionCall!.Name = "InvalidName";
+        //     }
+        //
+        //     name = "InvalidName";
+        //     var node = JsonNode.Parse("{\"error\":\"Invalid function name or function doesn't exist.\"}");
+        //     
+        //     functionResponse = new FunctionResponse()
+        //     {
+        //         Name = name,
+        //         Response = node
+        //     };
+        // }
+        // else
+        // {
+        //     functionResponse = await tool.CallAsync(functionCall).ConfigureAwait(false);
+        // }
+
+        // If enabled, pass the function result back into the model
+        if (FunctionCallingBehaviour.AutoReplyFunction)
+        {
+            var content = functionResponse.ToFunctionCallContent();
+
+            var contents = BeforeRegeneration(originalRequest, response);
+            
+            // Add our function result
+            contents.Add(content);
+
+            // Re-call the model with appended result
+            var nextReq = new GenerateContentRequest { Contents = contents };
+
+            
+            response = await GenerateContentAsync(nextReq, cancellationToken).ConfigureAwait(false);
+        }
+
+        return response;
+    }
+    
+    /// <summary>
+    /// Handles invoking a function if the response requests one
+    /// and optionally feeding the response back into the model
+    /// </summary>
+    protected virtual async IAsyncEnumerable<GenerateContentResponse> CallFunctionStreamingAsync(
+        GenerateContentRequest originalRequest,
+        GenerateContentResponse response,
+        CancellationToken cancellationToken)
+    {
+        var functionCall = response.GetFunction();
+        
+        if (functionCall == null || !FunctionCallingBehaviour.AutoCallFunction) yield break;
+        
+        var functionResponse = await ExecuteFunctionAsync(functionCall,response).ConfigureAwait(false);
+
+        // If enabled, pass the function result back into the model
+        if (FunctionCallingBehaviour.AutoReplyFunction)
+        {
+            var content = functionResponse.ToFunctionCallContent();
+
+            var contents = BeforeRegeneration(originalRequest, response);
+
+            // Add our function result
+            contents.Add(content);
+
+            // Re-call the model with appended result
+            var nextReq = new GenerateContentRequest { Contents = contents };
+
+            await foreach (var resp in StreamContentAsync(nextReq, cancellationToken).ConfigureAwait(false))
+            {
+                yield return resp;
+            }
+        }
+    }
+
+    private async Task<FunctionResponse> ExecuteFunctionAsync(FunctionCall functionCall, GenerateContentResponse response)
+    {
         var name = functionCall.Name ?? string.Empty;
         string jsonResult;
 
@@ -234,7 +327,7 @@ public partial class GenerativeModel
 
             name = "InvalidName";
             var node = JsonNode.Parse("{\"error\":\"Invalid function name or function doesn't exist.\"}");
-            
+
             functionResponse = new FunctionResponse()
             {
                 Name = name,
@@ -245,25 +338,8 @@ public partial class GenerativeModel
         {
             functionResponse = await tool.CallAsync(functionCall).ConfigureAwait(false);
         }
-
-        // If enabled, pass the function result back into the model
-        if (FunctionCallingBehaviour.AutoReplyFunction)
-        {
-            var content = functionResponse.ToFunctionCallContent();
-
-            var contents = BeforeRegeneration(originalRequest, response);
-            
-            // Add our function result
-            contents.Add(content);
-
-            // Re-call the model with appended result
-            var nextReq = new GenerateContentRequest { Contents = contents };
-
-            
-            response = await GenerateContentAsync(nextReq, cancellationToken).ConfigureAwait(false);
-        }
-
-        return response;
+        
+        return functionResponse;
     }
 
     /// <summary>
