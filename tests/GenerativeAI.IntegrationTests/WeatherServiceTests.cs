@@ -93,5 +93,70 @@ namespace GenerativeAI.IntegrationTests
                 Console.WriteLine(result.Text());
             }
         }
+        
+        [Fact]
+        public async Task ShouldWorkWithoutParameters_Interface()
+        {
+            Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+            var service = new BookStoreService();
+            var tool = new GenericFunctionTool(service.AsTools(), service.AsCalls());
+            var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.DefaultGeminiModel);
+            model.AddFunctionTool(tool);
+            await foreach (var result in model
+                               .StreamContentAsync("Give me the list of books")
+                               .ConfigureAwait(false))
+            {
+                Console.WriteLine(result.Text());
+            }
+        }
+        
+        
+        [Fact]
+        public async Task ShouldWorkWithoutParametersAsync_QuickTool()
+        {
+            Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+            var service = new BookStoreService();
+            var tool = new QuickTool(service.GetBookListAsync);
+            var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.DefaultGeminiModel);
+            model.AddFunctionTool(tool);
+            await foreach (var result in model
+                               .StreamContentAsync("Give me the list of books")
+                               .ConfigureAwait(false))
+            {
+                Console.WriteLine(result.Text());
+            }
+        }
+        
+        [Fact]
+        public async Task ShouldWorkWithoutParameters_QuickTool()
+        {
+            Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+            var service = new BookStoreService();
+            var tool = new QuickTool(service.GetBookList);
+            var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.DefaultGeminiModel);
+            model.AddFunctionTool(tool);
+            await foreach (var result in model
+                               .StreamContentAsync("Give me the list of books")
+                               .ConfigureAwait(false))
+            {
+                Console.WriteLine(result.Text());
+            }
+        }
+        
+        [Fact]
+        public async Task ShouldWorkWithoutParameters_Method()
+        {
+            Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+            var service = new MethodTools();
+            var tool = new Tools([service.GetBookList2]);
+            var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.DefaultGeminiModel);
+            model.AddFunctionTool(tool);
+            await foreach (var result in model
+                               .StreamContentAsync("Give me the list of books")
+                               .ConfigureAwait(false))
+            {
+                Console.WriteLine(result.Text());
+            }
+        }
     }
 }

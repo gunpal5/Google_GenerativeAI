@@ -17,11 +17,13 @@ public static class FunctionSchemaHelper
         parametersSchema.Properties = new Dictionary<string, Schema>();
         parametersSchema.Required = new List<string>();
         parametersSchema.Type = "object";
+        var paramCount = 0;
         foreach (var param in parameters)
         {
             var type = param.ParameterType;
             if(type.Name == "CancellationToken")
                 continue;
+            paramCount++;
             //var descriptionsDics = TypeDescriptionExtractor.GetDescriptionDic(type);
             var desc = TypeDescriptionExtractor.GetDescription(param);
             //descriptionsDics[param.Name.ToCamelCase()] = desc;
@@ -36,7 +38,7 @@ public static class FunctionSchemaHelper
 
         FunctionDeclaration functionObject = new FunctionDeclaration();
         functionObject.Description = description ?? functionDescription;
-        functionObject.Parameters = parametersSchema;
+        functionObject.Parameters = paramCount>0? parametersSchema:null;
         functionObject.Name = name ?? func.Method.Name;
        
         return functionObject;

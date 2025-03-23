@@ -3,6 +3,7 @@ using System.Text.Json;
 using CSharpToJsonSchema;
 using GenerativeAI.Core;
 using GenerativeAI.Types;
+using Microsoft.Extensions.AI;
 using Tool = GenerativeAI.Types.Tool;
 
 namespace GenerativeAI.Tools;
@@ -58,7 +59,7 @@ public class QuickTools : GoogleFunctionTool
         return _tools.Any(s => s.FunctionDeclaration.Name == name);
     }
 
-    public List<MeaiFunction> ToMeaiFunctions()
+    public List<AITool> ToMeaiFunctions()
     {
         return this._tools.Select(s => s.AsMeaiTool()).ToList();
     }

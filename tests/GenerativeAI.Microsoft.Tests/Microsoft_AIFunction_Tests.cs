@@ -3,12 +3,13 @@ using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using CSharpToJsonSchema;
 using GenerativeAI.Microsoft;
 
 using ChatOptions = Microsoft.Extensions.AI.ChatOptions;
 using GenerativeAI.Microsoft.Extensions;
 using GenerativeAI.Tests;
-
+using GenerativeAI.Tools;
 using Microsoft.Extensions.AI;
 using Newtonsoft.Json;
 using Shouldly;
@@ -105,17 +106,164 @@ public class Microsoft_AIFunction_Tests:TestBase
     {
         Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
         var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
-        var chatClient = new GenerativeAIChatClient(apiKey);
+        var chatClient = new GenerativeAIChatClient(apiKey,GoogleAIModels.Gemini2Flash,false).AsBuilder().UseFunctionInvocation().Build();
         var chatOptions = new ChatOptions();
        
-        chatOptions.Tools = new List<AITool>{AIFunctionFactory.Create(GetBookPageContentAsync,new AIFunctionFactoryOptions()
-        {
-            
-        })};
+        // chatOptions.Tools = new List<AITool>{AIFunctionFactory.Create(GetBookPageContentAsync,new AIFunctionFactoryOptions()
+        // {
+        //     
+        // })};
+        var deleg = new Func<string, int, Task<string>>(GetBookPageContentAsync);
+        
+        chatOptions.Tools = new List<AITool>{AIFunctionFactory.Create(
+            deleg.Method,
+            this,
+            "GetBookPageContentAsync",
+            "Get book page content",
+            null
+        )};
         var message = new ChatMessage(ChatRole.User, "what is written on page 96 in the book 'damdamadum'");
         var response = await chatClient.GetResponseAsync(message,options:chatOptions).ConfigureAwait(false);
 
-        response.Text.ShouldContain("damdamadum",Case.Insensitive);
+        response.Text.ShouldContain("weather",Case.Insensitive);
+    }
+    
+    [Fact]
+    public async Task ShouldWorkWith_NoParameters_FunctionFactory()
+    {
+        Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+        var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+        var chatClient = new GenerativeAIChatClient(apiKey,GoogleAIModels.Gemini2Flash,false).AsBuilder().UseFunctionInvocation().Build();
+        var chatOptions = new ChatOptions();
+       
+        // chatOptions.Tools = new List<AITool>{AIFunctionFactory.Create(GetBookPageContentAsync,new AIFunctionFactoryOptions()
+        // {
+        //     
+        // })};
+        var deleg2 = new Func<string>(GetCurrentDateTime);
+        
+        chatOptions.Tools = new List<AITool>{AIFunctionFactory.Create(
+            deleg2.Method,
+            this,
+            "GetCurrentDateTime",
+            "Returns the current date & time",
+            null
+        )};
+        var message = new ChatMessage(ChatRole.User, "what is current date & time");
+        var response = await chatClient.GetResponseAsync(message,options:chatOptions).ConfigureAwait(false);
+
+        response.Text.ShouldContain("date",Case.Insensitive);
+    }
+    
+    [Fact]
+    public async Task ShouldWorkWith_NoParameters_MeaiTools()
+    {
+        Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+        var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+        var chatClient = new GenerativeAIChatClient(apiKey,GoogleAIModels.Gemini2Flash,false).AsBuilder().UseFunctionInvocation().Build();
+        var chatOptions = new ChatOptions();
+       
+        // chatOptions.Tools = new List<AITool>{AIFunctionFactory.Create(GetBookPageContentAsync,new AIFunctionFactoryOptions()
+        // {
+        //     
+        // })};
+        var deleg2 = new Func<string>(GetCurrentDateTime);
+
+        chatOptions.Tools = (new Tools([GetCurrentDateTime])).AsMeaiTools();
+        var message = new ChatMessage(ChatRole.User, "what is current date & time");
+        var response = await chatClient.GetResponseAsync(message,options:chatOptions).ConfigureAwait(false);
+
+        response.Text.ShouldContain("date",Case.Insensitive);
+    }
+    
+    [Fact]
+    public async Task ShouldWorkWith_NoParameters_QuickTools()
+    {
+        Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+        var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+        var chatClient = new GenerativeAIChatClient(apiKey,GoogleAIModels.Gemini2Flash,false).AsBuilder().UseFunctionInvocation().Build();
+        var chatOptions = new ChatOptions();
+       
+        // chatOptions.Tools = new List<AITool>{AIFunctionFactory.Create(GetBookPageContentAsync,new AIFunctionFactoryOptions()
+        // {
+        //     
+        // })};
+        var deleg2 = new Func<string>(GetCurrentDateTime);
+
+        chatOptions.Tools = (new QuickTools([GetCurrentDateTime])).ToMeaiFunctions();
+        var message = new ChatMessage(ChatRole.User, "what is current date & time");
+        var response = await chatClient.GetResponseAsync(message,options:chatOptions).ConfigureAwait(false);
+
+        response.Text.ShouldContain("date",Case.Insensitive);
+    }
+    
+     [Fact]
+    public async Task ShouldWorkWith_NoParameters_FunctionFactory_SelfInvoking()
+    {
+        Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+        var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+        var chatClient = new GenerativeAIChatClient(apiKey,GoogleAIModels.Gemini2Flash,false).AsBuilder().UseFunctionInvocation().Build();
+        var chatOptions = new ChatOptions();
+       
+        // chatOptions.Tools = new List<AITool>{AIFunctionFactory.Create(GetBookPageContentAsync,new AIFunctionFactoryOptions()
+        // {
+        //     
+        // })};
+        var deleg2 = new Func<string>(GetCurrentDateTime);
+        
+        chatOptions.Tools = new List<AITool>{AIFunctionFactory.Create(
+            deleg2.Method,
+            this,
+            "GetCurrentDateTime",
+            "Returns the current date & time",
+            null
+        )};
+        var message = new ChatMessage(ChatRole.User, "what is current date & time");
+        var response = await chatClient.GetResponseAsync(message,options:chatOptions).ConfigureAwait(false);
+
+        response.Text.ShouldContain("date",Case.Insensitive);
+    }
+    
+    [Fact]
+    public async Task ShouldWorkWith_NoParameters_MeaiTools_SelfInvoking()
+    {
+        Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+        var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+        var chatClient = new GenerativeAIChatClient(apiKey,GoogleAIModels.Gemini2Flash);
+        var chatOptions = new ChatOptions();
+       
+        // chatOptions.Tools = new List<AITool>{AIFunctionFactory.Create(GetBookPageContentAsync,new AIFunctionFactoryOptions()
+        // {
+        //     
+        // })};
+        var deleg2 = new Func<string>(GetCurrentDateTime);
+
+        chatOptions.Tools = (new Tools([GetCurrentDateTime])).AsMeaiTools();
+        var message = new ChatMessage(ChatRole.User, "what is current date & time");
+        var response = await chatClient.GetResponseAsync(message,options:chatOptions).ConfigureAwait(false);
+
+        response.Text.ShouldContain("date",Case.Insensitive);
+    }
+    
+    [Fact]
+    public async Task ShouldWorkWith_NoParameters_QuickTools_SelfInvoking()
+    {
+        Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+        var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+        var chatClient = new GenerativeAIChatClient(apiKey,GoogleAIModels.Gemini2Flash);
+        var chatOptions = new ChatOptions();
+       
+        // chatOptions.Tools = new List<AITool>{AIFunctionFactory.Create(GetBookPageContentAsync,new AIFunctionFactoryOptions()
+        // {
+        //     
+        // })};
+        var deleg2 = new Func<string>(GetCurrentDateTime);
+
+        chatOptions.Tools = (new QuickTools([GetCurrentDateTime])).ToMeaiFunctions();
+        var message = new ChatMessage(ChatRole.User, "what is current date & time");
+        var response = await chatClient.GetResponseAsync(message,options:chatOptions).ConfigureAwait(false);
+
+        response.Text.ShouldContain("date",Case.Insensitive);
     }
     
     [Fact]
@@ -156,6 +304,12 @@ public class Microsoft_AIFunction_Tests:TestBase
             Unit = unit,
             Description = "Sunny",
         };
+    }
+    [Description("Get the current date and time")]
+    [FunctionTool(MeaiFunctionTool = true)]
+    public static string GetCurrentDateTime()
+    {
+        return DateTime.Now.ToString("dddd dd MMMM yyyy HH:mm:ss");
     }
     
     [System.ComponentModel.Description("Get student record for the year")]

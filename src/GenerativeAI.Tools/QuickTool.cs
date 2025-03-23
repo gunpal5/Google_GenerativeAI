@@ -10,6 +10,7 @@ using GenerativeAI.Core;
 using GenerativeAI.Tools.Extensions;
 using GenerativeAI.Tools.Helpers;
 using GenerativeAI.Types;
+using Microsoft.Extensions.AI;
 using Tool = GenerativeAI.Types.Tool;
 
 namespace GenerativeAI.Tools;
@@ -208,7 +209,7 @@ public class QuickTool : GoogleFunctionTool
     /// A MeaiFunction instance populated with properties from the current QuickTool,
     /// including the defined function name, description, parameters, and invocation logic.
     /// </returns>
-    public MeaiFunction AsMeaiTool()
+    public AITool AsMeaiTool()
     {
         var tool = new CSharpToJsonSchema.Tool()
         {

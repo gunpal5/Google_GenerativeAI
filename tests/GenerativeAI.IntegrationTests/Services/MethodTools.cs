@@ -3,30 +3,7 @@ using CSharpToJsonSchema;
 
 namespace GenerativeAI.IntegrationTests;
 
-public class GetAuthorBook
-{
-    public string Title { get; set; } = string.Empty;
-    public string Description { get; set; } = string.Empty;
-}
-
-[GenerateJsonSchema]
-public interface IBookStoreService
-{
-    [Description("Get books written by some author")]
-    public Task<List<GetAuthorBook>> GetAuthorBooksAsync([Description("Author name")] string authorName,
-        CancellationToken cancellationToken = default);
-
-    [Description("Get book page content")]
-    public Task<string> GetBookPageContentAsync([Description("Book Name")] string bookName,
-        [Description("Book Page Number")] int bookPageNumber, CancellationToken cancellationToken = default);
-
-    [Description("Get book list")]
-    public Task<string> GetBookListAsync(CancellationToken cancellationToken = default);
-    [Description("Get book list")]
-    public string GetBookList();
-}
-
-public class BookStoreService : IBookStoreService
+public class MethodTools
 {
     public Task<List<GetAuthorBook>> GetAuthorBooksAsync(string authorName,
         CancellationToken cancellationToken = default)
@@ -50,7 +27,9 @@ public class BookStoreService : IBookStoreService
         return "Five point someone, Two States";
     }
 
-    public string GetBookList()
+    [Description("Get list of books")]
+    [FunctionTool(GoogleFunctionTool = true)]
+    public string GetBookList2()
     {
         return "Five point someone, Two States";
     }

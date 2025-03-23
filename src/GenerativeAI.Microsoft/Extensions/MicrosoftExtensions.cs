@@ -52,12 +52,29 @@ public static class MicrosoftExtensions
                 {
                     Name = f.Name,
                     Description = f.Description,
-                    Parameters = f.JsonSchema.ToSchema(),
+                    Parameters = ParseFunctionParameters(f.JsonSchema),
                 }
             }
         }).ToList()!;
 
         return request;
+    }
+
+    private static Schema? ParseFunctionParameters(JsonElement schema)
+    {
+        if (schema.ValueKind == JsonValueKind.Null)
+        {
+            return null;
+        }
+        else
+        {
+            var properties = schema.GetProperty("properties");
+            if (properties.GetPropertyCount() == 0)
+                return null;
+            else
+                return schema.ToSchema();
+        }
+        return null;
     }
 
 
@@ -162,12 +179,20 @@ public static class MicrosoftExtensions
                 return arr;
             if (content.Result is JsonElement el)
             {
-                var newNode = el.AsNode();
-                if (newNode != null)
-                    return newNode;
+                if (el.ValueKind != JsonValueKind.Object && el.ValueKind != JsonValueKind.Array)
+                {
+                    var jObj = new JsonObject();
+                    jObj.Add("content", el.AsNode().DeepClone());
+                    return jObj;
+                }
+                else
+                {
+                    var newNode = el.AsNode();
+                    if (newNode != null)
+                        return newNode;
+                }
             }
         }
-
         if (response is JsonNode node)
         {
             return node;
