@@ -7,10 +7,10 @@
 # Google GenerativeAI (Gemini)
 
 
-[![Nuget package](https://img.shields.io/nuget/vpre/Google_GenerativeAI)](https://www.nuget.org/packages/Google_GenerativeAI)
+
 [![License: MIT](https://img.shields.io/github/license/gunpal5/Google_GenerativeAI)](https://github.com/gunpal5/Google_GenerativeAI/blob/main/LICENSE)
 [![Nuget package](https://img.shields.io/nuget/vpre/Google_GenerativeAI)](https://www.nuget.org/packages/Google_GenerativeAI)
-[![NuGet Downloads](https://img.shields.io/nuget/vpre/Google_GenerativeAI)](https://www.nuget.org/packages/Google_GenerativeAI)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/Google_GenerativeAI)](https://www.nuget.org/packages/Google_GenerativeAI)
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
 <!-- code_chunk_output -->
 
@@ -423,13 +423,6 @@ model.UseCodeExecutionTool = false;
 Function calling lets you integrate custom functionality with Gemini by defining functions it can call. This requires
 the `GenerativeAI.Tools` package.
 
-* **Setup:**
-    1. Define an interface for your functions, using the `[GenerateJsonSchema()]` attribute.
-    2. Implement the interface.
-    3. Create `tools` and `calls` using `AsTools()` and `AsCalls()`.
-    4. Create a `GenericFunctionTool` instance.
-    5. Add the tool to your `GenerativeModel` with `AddFunctionTool()`.
-
 * **`FunctionCallingBehaviour`:** Customize behavior (e.g., auto-calling, error handling) using the `GenerativeModel`'s
   `FunctionCallingBehaviour` property:
     * `FunctionEnabled` (default: `true`): Enables/disables function calling.
@@ -437,44 +430,80 @@ the `GenerativeAI.Tools` package.
     * `AutoReplyFunction` (default: `true`): Gemini automatically generates responses after function calls.
     * `AutoHandleBadFunctionCalls` (default: `false`): Attempts to handle errors from incorrect calls
 
-```csharp
-// Install-Package GenerativeAI.Tools
-using GenerativeAI;
-using GenerativeAI.Tools;
+---
+ - ### 1. Reflection-based QuickTool
 
-[GenerateJsonSchema()]
-public interface IWeatherFunctions // Simplified Interface
+ Quickly wrap an inline function using reflection. This approach is ideal for rapid prototyping.
+
+```csharp
+// Define a QuickTool using an inline async function
+var quickTool = new QuickTool(
+    async ([Description("Query a student record")] QueryStudentRecordRequest query) =>
+    {
+        return new StudentRecord
+        {
+            StudentId = "12345",
+            FullName = query.FullName,
+            EnrollmentDate = DateTime.UtcNow
+        };
+    },
+    "GetStudentRecord",
+    "Retrieve a student record"
+);
+
+// Add the function tool to your generative model
+var model = new GenerativeModel("YOUR_API_KEY", GoogleAIModels.Gemini2Flash);
+model.AddFunctionTool(quickTool);
+```
+
+---
+
+ - ### 2. FunctionToolAttribute-based Function
+
+ Annotate a method with `FunctionToolAttribute` for automatic tool generation. This method is best for a small set of functions defined as static methods.
+
+```csharp
+[FunctionTool(GoogleFunctionTool = true)]
+[Description("Get book page content")]
+public static Task<string> GetBookPageContentAsync(string bookName, int pageNumber)
 {
-    [Description("Get the current weather")]
+    return Task.FromResult($"Content for {bookName} on page {pageNumber}");
+}
+
+// Create the model and add the function as a tool
+var model = new GenerativeModel("YOUR_API_KEY", GoogleAIModels.Gemini2Flash);
+model.AddFunctionTool(new Tools(new[] { GetBookPageContentAsync }));
+```
+
+---
+
+ - ### 3. Interface-based Function Tools
+
+ Define an interface for a reusable set of functions. This approach is great for structured and maintainable code.
+
+```csharp
+[GenerateJsonSchema(GoogleFunctionTool = true)]
+public interface IWeatherFunctions
+{
+    [Description("Get current weather")]
     Weather GetCurrentWeather(string location);
 }
 
 public class WeatherService : IWeatherFunctions
-{  // ... (Implementation - see full example in wiki) ...
-    public Weather GetCurrentWeather(string location)
-      =>  new Weather
-        {
-            Location = location,
-            Temperature = 30.0,
-            Unit = Unit.Celsius,
-            Description = "Sunny",
-        };
+{
+    public Weather GetCurrentWeather(string location) =>
+        new Weather { Location = location, Temperature = 25.0, Description = "Sunny" };
 }
 
-// --- Usage ---
+// Use the generated extension method to add the tool to your model
 var service = new WeatherService();
-var tools = service.AsTools();
-var calls = service.AsCalls();
-var tool = new GenericFunctionTool(tools, calls);
-var model = new GenerativeModel(apiKey: "YOUR_API_KEY");
-model.AddFunctionTool(tool);
-//Example for FunctionCallingBehaviour
-model.FunctionCallingBehaviour = new FunctionCallingBehaviour { AutoCallFunction = false }; // Example
-
-var result = await model.GenerateContentAsync("Weather in SF?");
-Console.WriteLine(result.Text);
+var model = new GenerativeModel("YOUR_API_KEY", GoogleAIModels.Gemini2Flash);
+model.AddFunctionTool(service.AsGoogleFunctionTool());
 ```
 
+---
+
+Choose the method that best fits your project's structure and requirements. Enjoy building with Gemini!
 **For more details and options, see the [wiki](https://github.com/gunpal5/Google_GenerativeAI/wiki/Function-Calling).**
 ---
 ## Image Generation and Captioning
