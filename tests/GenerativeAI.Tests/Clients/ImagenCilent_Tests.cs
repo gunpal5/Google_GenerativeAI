@@ -21,12 +21,12 @@ public class ImageModel_Tests:TestBase
         request.Instances = new List<ImageGenerationInstance>();
         request.Instances.Add(new ImageGenerationInstance()
         {
-            Prompt = "A photo of a cat and a dog fighting over a ball.",
+            Prompt = "Dog catching a ball",
+          
         });
         var model = "imagen-3.0-generate-002";
         var client = new ImagenModel(GetTestVertexAIPlatform(),model);
-
-       
+        
         
         var images = await client.GenerateImagesAsync(request);
         images.ShouldNotBeNull();

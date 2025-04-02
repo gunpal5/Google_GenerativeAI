@@ -47,9 +47,24 @@ public static class GenerateContentResponseExtensions
     /// </summary>
     /// <param name="response">The GenerateContentResponse to process.</param>
     /// <returns>The function call if found; otherwise null.</returns>
-    public static FunctionCall? GetFunction(this GenerateContentResponse response)
+    public static FunctionCall? GetFunction(this GenerateContentResponse? response)
     {
-        return response?.Candidates?[0].Content?.Parts?[0].FunctionCall;
+        if (response == null || response.Candidates == null || response.Candidates.Length == 0) 
+            return null;
+        
+        var candidate = response.Candidates.FirstOrDefault();
+        
+        if (candidate == null || candidate.Content == null || candidate.Content.Parts == null ||
+            candidate.Content.Parts.Count == 0)
+        {
+            return null;
+        }
+        
+        var part = candidate.Content.Parts.FirstOrDefault();
+        if(part == null || part.FunctionCall == null)
+            return null;
+        
+        return part.FunctionCall;
     }
 
     /// <summary>

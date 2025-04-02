@@ -281,7 +281,7 @@ public partial class GenerativeModel
     public async Task<CountTokensResponse> CountTokensAsync(GenerateContentRequest generateContentRequest)
     {
        
-        var request = new CountTokensRequest { GenerateContentRequest = new GenerateContentRequestForCountToken(Model,generateContentRequest) };
+        var request = new CountTokensRequest { GenerateContentRequest = new GenerateContentRequestForCountToken(Model.ToModelId(),generateContentRequest) };
 
         return await base.CountTokensAsync(Model, request).ConfigureAwait(false);
     }

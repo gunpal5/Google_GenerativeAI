@@ -18,6 +18,30 @@ public static class GoogleAIModels
     /// Gemini 2.0 Flash model name.
     /// </summary>
     public const string Gemini2Flash = "models/gemini-2.0-flash";
+    
+    /// <summary>
+    /// Gemini 2.5 Pro Exp 03-25 model name.
+    /// </summary>
+    public const string Gemini25ProExp0325 = "gemini-2.5-pro-exp-03-25";
+
+    /// <summary>
+    /// Gemini 2.0 Flash Exp 01-21 model name.
+    /// </summary>
+    public const string Gemini2FlashThinkingExp0121 = "gemini-2.0-flash-thinking-exp-01-21";
+
+    /// <summary>
+    /// Gemini 2.0 Flash Exp Image Generation model name.
+    /// </summary>
+    public const string Gemini2FlashExpImageGeneration = "gemini-2.0-flash-exp-image-generation";
+
+    /// <summary>
+    /// Gemini 2.0 Flash Exp model name.
+    /// </summary>
+    public const string GeminiEmbeddingExp = "gemini-embedding-exp";
+    /// <summary>
+    /// Gemma 3.0 27B model name.
+    /// </summary>
+    public const string Gemmma3_27B = "gemma-3-27b-it";
 
     /// <summary>
     /// Gemini 2.0 Flash model name.
@@ -26,10 +50,17 @@ public static class GoogleAIModels
 
 
     /// <summary>
+    /// Gemini 2.0 Flash Exp Model Name
+    /// </summary>
+    public const string Gemini2FlashExp = "gemini-2.0-flash-exp";
+    /// <summary>
     /// Gemini 2.0 Flash-Lite Preview model name.
     /// </summary>
     public const string Gemini2FlashLitePreview = "models/gemini-2.0-flash-lite-preview-02-05";
-
+    /// <summary>
+    /// Text Embedding 005 model name.
+    /// </summary>
+    public const string TextEmbedding005 = "text-embedding-005";
     /// <summary>
     /// Gemini 1.5 Flash model name.
     /// </summary>
@@ -67,6 +98,7 @@ public static class GoogleAIModels
     [Obsolete("Gemini 1.0 Pro is deprecated. Use Gemini 1.5 Pro or Gemini 1.5 Flash instead.", false)]
     public const string Gemini10Pro = "models/gemini-1.0-pro";
 
+    
     /// <summary>
     /// Gemini 1.0 Pro model name (Deprecated) - latest stable version.
     /// </summary>
@@ -74,9 +106,11 @@ public static class GoogleAIModels
     public const string Gemini10ProLatest = "gemini-1.0-pro-latest";
 
     /// <summary>
-    /// Text Embedding model name.
+    /// Text Embedding model 004 name.
     /// </summary>
     public const string TextEmbedding = "models/text-embedding-004";
+    
+   
 
     /// <summary>
     /// Embedding model name.

@@ -97,6 +97,14 @@ public class VertexAI : GenAI, IGenerativeAI
 
         return model;
     }
-    
-    
+
+    /// <summary>
+    /// Retrieves an instance of the <see cref="VideoGenerationModel"/> using the specified model name.
+    /// </summary>
+    /// <param name="modelName">The name of the video generation model to instantiate. Defaults to "veo-2.0-generate-001".</param>
+    /// <returns>An instance of <see cref="VideoGenerationModel"/> configured with the specified model name.</returns>
+    public VideoGenerationModel CreateVideoGenerationModel(string modelName = VertexAIModels.Video.Veo2Generate001)
+    {
+        return new VideoGenerationModel(this.Platform, modelName, this.HttpClient, this.Logger);
+    }
 }

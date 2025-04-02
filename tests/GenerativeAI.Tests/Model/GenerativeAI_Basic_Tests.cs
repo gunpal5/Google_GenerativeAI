@@ -16,7 +16,7 @@ namespace GenerativeAI.Tests.Model
         typeof(PriorityOrderer))]
     public class GenerativeModel_Tests : TestBase
     {
-        private const string DefaultTestModelName = GoogleAIModels.Gemini2Flash;
+        private const string DefaultTestModelName = GoogleAIModels.Gemini25ProExp0325;
 
         public GenerativeModel_Tests(ITestOutputHelper helper) : base(helper)
         {
@@ -349,6 +349,7 @@ namespace GenerativeAI.Tests.Model
         
             // Create a GenerateContentRequest
             var singleContent = RequestExtensions.FormatGenerateContentInput("Token count should be calculated here for this large piece of content that includes a detailed description, analysis, and examples of how token counting is used in AI-generated responses, particularly in models designed to understand and generate natural language.");
+            
             var generateRequest = new GenerateContentRequest(singleContent);
             
             // Act

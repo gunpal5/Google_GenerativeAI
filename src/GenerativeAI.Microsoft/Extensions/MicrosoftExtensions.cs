@@ -541,6 +541,8 @@ public static class MicrosoftExtensions
     /// <returns>A <see cref="FunctionCallContent"/> object if a function call is present; otherwise, null.</returns>
     public static FunctionCallContent? GetFunction(this ChatResponse response)
     {
+        if (response == null)
+            return null;
         var aiFunction = (FunctionCallContent?)response.Messages.SelectMany(s => s.Contents)
             .FirstOrDefault(s => s is FunctionCallContent);
         return aiFunction;

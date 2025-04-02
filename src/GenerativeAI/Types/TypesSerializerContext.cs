@@ -213,6 +213,22 @@ namespace GenerativeAI.Types;
 [JsonSerializable(typeof(JsonElement))]
 [JsonSerializable(typeof(JsonObject))]
 [JsonSerializable(typeof(ClientSecrets))]
+//Video Generation
+[JsonSerializable(typeof(GeneratedVideo))]
+[JsonSerializable(typeof(GenerateVideosConfig))]
+[JsonSerializable(typeof(GenerateVideosOperation))]
+[JsonSerializable(typeof(GenerateVideosRequest))]
+[JsonSerializable(typeof(GenerateVideosResponse))]
+[JsonSerializable(typeof(Video))]
+[JsonSerializable(typeof(ImageSample))]
+[JsonSerializable(typeof(VideoAspectRatio))]
+[JsonSerializable(typeof(VideoMetadataVideoGeneration))]
+[JsonSerializable(typeof(VideoPersonGeneration))]
+[JsonSerializable(typeof(VideoResolution))]
+[JsonSerializable(typeof(VideoParameters))]
+[JsonSerializable(typeof(VertexGenerateVideosPayload))]
+[JsonSerializable(typeof(VideoInstance))]
+
 
 [JsonSourceGenerationOptions(WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull, UseStringEnumConverter = true)]
 public partial class TypesSerializerContext : JsonSerializerContext

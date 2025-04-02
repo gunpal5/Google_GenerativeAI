@@ -25,6 +25,45 @@ public static class VertexAIModels
         public const string Gemini2ProExp = "gemini-2.0-pro-exp-02-05";
 
         /// <summary>
+        /// Gemini 2.5 Pro Exp 03-25 model name.
+        /// </summary>
+        public const string Gemini25ProExp0325 = "gemini-2.5-pro-exp-03-25";
+
+        /// <summary>
+        /// Gemini 2.0 Flash Exp 01-21 model name.
+        /// </summary>
+        public const string Gemini2FlashThinkingExp0121 = "gemini-2.0-flash-thinking-exp-01-21";
+
+        /// <summary>
+        /// Gemini 2.0 Flash Exp Image Generation model name.
+        /// </summary>
+        public const string Gemini2FlashExpImageGeneration = "gemini-2.0-flash-exp-image-generation";
+
+        /// <summary>
+        /// Gemini 2.0 Flash Exp model name.
+        /// </summary>
+        public const string GeminiEmbeddingExp = "gemini-embedding-exp";
+        /// <summary>
+        /// Gemma 3.0 27B model name.
+        /// </summary>
+        public const string Gemmma3_27B = "gemma-3-27b-it";
+
+        /// <summary>
+        /// Gemini 2.0 Flash model name.
+        /// </summary>
+        public const string Gemini2FlashLatest = "gemini-2.0-flash";
+        
+        /// <summary>
+        /// Gemini 2.0 Flash Exp model name.
+        /// </summary>
+        public const string Gemini2FlashExp = "gemini-2.0-flash-exp";
+
+        /// <summary>
+        /// Text Embedding 005 model name.
+        /// </summary>
+        public const string TextEmbedding005 = "text-embedding-005";
+        
+        /// <summary>
         /// Gemini 2.0 Flash-Lite Preview model name.
         /// </summary>
         public const string Gemini2FlashLitePreview = "gemini-2.0-flash-lite-preview-02-05";
@@ -115,6 +154,11 @@ public static class VertexAIModels
         /// Embeddings for multimodal model name.
         /// </summary>
         public const string MultimodalEmbedding = "multimodalembedding";
+    }
+
+    public static class Video
+    {
+        public const string Veo2Generate001 = "veo-2.0-generate-001";
     }
 
     /// <summary>

@@ -8,7 +8,8 @@
         <PackageId>Google_$(AssemblyName)</PackageId>
         <Title>Google MultiModal Live API Module for Google Generative AI SDK</Title>
         <Authors>Gunpal Jain</Authors>
-        <Company/>
+        <Company>Argentron Technologies</Company>
+        <PackageIcon>package-icon.jpg</PackageIcon>
         <Description>Gemini MultiModal Live API module for Google Generative AI SDK</Description>
         <PackageProjectUrl>https://github.com/gunpal5/Google_GenerativeAI</PackageProjectUrl>
         <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -21,7 +22,9 @@
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   
     </PropertyGroup>
-
+    <ItemGroup>
+        <None Include="..\..\package-icon.jpg" Pack="True" PackagePath="" />
+    </ItemGroup>
     <ItemGroup Condition=" '$(TargetFramework)' == 'net9.0'">
 
     </ItemGroup>

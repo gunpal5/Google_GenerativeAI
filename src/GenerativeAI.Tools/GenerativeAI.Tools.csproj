@@ -8,7 +8,8 @@
         <PackageId>Google_$(AssemblyName)</PackageId>
         <Title>Function Calling Tools for Google Generative AI SDK</Title>
         <Authors>Gunpal Jain</Authors>
-        <Company/>
+        <Company>Argentron Technologies</Company>
+        <PackageIcon>package-icon.jpg</PackageIcon>
         <Description>Provides a set of tools and concrete implementations to facilitate function calling with the Google_GenerativeAI SDK, including support for code generation.</Description>
         
         
@@ -24,6 +25,9 @@
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
       
     </PropertyGroup>
+    <ItemGroup>
+        <None Include="..\..\package-icon.jpg" Pack="True" PackagePath="" />
+    </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\GenerativeAI\GenerativeAI.csproj" />
     </ItemGroup>

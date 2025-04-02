@@ -8,7 +8,8 @@
 	  <PackageId>Google_$(AssemblyName)</PackageId>
 	  <Title>Unofficial Google GenerativeAI (Gemini) SDK</Title>
 	  <Authors>Gunpal Jain</Authors>
-	  <Company />
+      <Company>Argentron Technologies</Company>
+      <PackageIcon>package-icon.jpg</PackageIcon>
 	  <Description>Unofficial C# Google Generative AI SDK (Google Gemini) with function calls support</Description>
 	  <PackageProjectUrl>https://github.com/gunpal5/Google_GenerativeAI</PackageProjectUrl>
 	  <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -27,6 +28,7 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
+      <None Include="..\..\package-icon.jpg" Pack="True" PackagePath="" />
   </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net9.0'">
@@ -72,7 +74,6 @@
 
   <ItemGroup>
     <Folder Include="Clients\Imagen\" />
-    <Folder Include="Types\Converters\" />
     <Folder Include="Types\Tuning\Permissions\" />
   </ItemGroup>
 
