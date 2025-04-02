@@ -9,7 +9,7 @@
         <Title>Microsoft.Extensions.AI Integration with Google_GenerativeAI SDK for .NET Applications</Title>
         <Authors>Gunpal Jain</Authors>
         <Company>Argentron Technologies</Company>
-        <PackageIcon>package-icon.jpg</PackageIcon>
+        <PackageIcon>favicon.png</PackageIcon>
         <Description>This library provides Microsoft.Extensions.AI integration with Google_GenerativeAI SDK for .NET applications.</Description>
 
 
@@ -26,7 +26,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Include="..\..\package-icon.jpg" Pack="True" PackagePath="" />
+        <None Include="..\..\favicon.png" Pack="True" PackagePath="" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\GenerativeAI\GenerativeAI.csproj" />

@@ -9,7 +9,7 @@
         <Title>API Authentication for Google Generative AI SDK</Title>
         <Authors>Gunpal Jain</Authors>
         <Company>Argentron Technologies</Company>
-        <PackageIcon>package-icon.jpg</PackageIcon>
+        <PackageIcon>favicon.png</PackageIcon>
         <Description>This library is part of the Google_GenerativeAI SDK and provides various API authentication implementations for seamless usage of the Google_GenerativeAI SDK.</Description>
         <PackageProjectUrl>https://github.com/gunpal5/Google_GenerativeAI</PackageProjectUrl>
         <PackageReadmeFile>./README.md</PackageReadmeFile>
@@ -25,7 +25,7 @@
        
     </PropertyGroup>
     <ItemGroup>
-        <None Include="..\..\package-icon.jpg" Pack="True" PackagePath="" />
+        <None Include="..\..\favicon.png" Pack="True" PackagePath="" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\GenerativeAI\GenerativeAI.csproj"/>

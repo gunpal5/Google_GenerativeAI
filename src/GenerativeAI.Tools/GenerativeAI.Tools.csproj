@@ -9,7 +9,7 @@
         <Title>Function Calling Tools for Google Generative AI SDK</Title>
         <Authors>Gunpal Jain</Authors>
         <Company>Argentron Technologies</Company>
-        <PackageIcon>package-icon.jpg</PackageIcon>
+        <PackageIcon>favicon.png</PackageIcon>
         <Description>Provides a set of tools and concrete implementations to facilitate function calling with the Google_GenerativeAI SDK, including support for code generation.</Description>
         
         
@@ -26,7 +26,7 @@
       
     </PropertyGroup>
     <ItemGroup>
-        <None Include="..\..\package-icon.jpg" Pack="True" PackagePath="" />
+        <None Include="..\..\favicon.png" Pack="True" PackagePath="" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\GenerativeAI\GenerativeAI.csproj" />

@@ -9,7 +9,7 @@
         <Title>.NET Web Application Integration for Google Generative AI SDK</Title>
         <Authors>Gunpal Jain</Authors>
         <Company>Argentron Technologies</Company>
-        <PackageIcon>package-icon.jpg</PackageIcon>
+        <PackageIcon>favicon.png</PackageIcon>
         <Description>This library is part of the Google_GenerativeAI SDK and provides .NET Web Application integration for seamless usage of the Google_GenerativeAI SDK.</Description>
         <PackageProjectUrl>https://github.com/gunpal5/Google_GenerativeAI</PackageProjectUrl>
         <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -50,7 +50,7 @@
         <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.1" />
     </ItemGroup>
     <ItemGroup>
-        <None Include="..\..\package-icon.jpg" Pack="True" PackagePath="" />
+        <None Include="..\..\favicon.png" Pack="True" PackagePath="" />
     </ItemGroup>
 
 </Project>
