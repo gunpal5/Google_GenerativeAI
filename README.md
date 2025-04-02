@@ -29,7 +29,7 @@
     - [Easy JSON Handling](#easy-json-handling)
     - [Gemini Tools and Function Calling](#gemini-tools-and-function-calling)
         - [1. Inbuilt Tools (GoogleSearch, GoogleSearchRetrieval, and Code Execution)](#1-inbuilt-tools-googlesearch-googlesearchretrieval-and-code-execution)
-        - [2. Function Calling](#2-function-calling-)
+        - [2. Function Calling](#2-function-calling)
     - [Image Generation and Captioning](#image-generation-and-captioning)
     - [Multimodal Live API](#multimodal-live-api)
     - [Retrieval-Augmented Generation](#retrieval-augmented-generation)
