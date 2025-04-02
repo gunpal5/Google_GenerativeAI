@@ -152,4 +152,13 @@ public static class GenerateContentResponseExtensions
 
         return objects;
     }
+
+    public static T? ToEnum<T>(this GenerateContentResponse response, JsonSerializerOptions? options = null)
+        where T : Enum
+    {
+        var text = Text(response);
+        if (string.IsNullOrEmpty(text))
+            return default;
+        return (T)Enum.Parse(typeof(T), text, true);
+    }
 }

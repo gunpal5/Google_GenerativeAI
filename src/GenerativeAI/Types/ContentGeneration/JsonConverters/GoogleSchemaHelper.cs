@@ -201,6 +201,13 @@ public static class GoogleSchemaHelper
                 if (context.TypeInfo.Type.IsEnum)
                 {
                     schema["type"] = "string";
+                    var array = new JsonArray();
+                    foreach (var name in context.TypeInfo.Type.GetEnumNames())
+                    {
+                        array.Add(name);
+                    }
+
+                    schema["enum"] = array;
                 }
                
                 ExtractDescription(context, schema, dics);

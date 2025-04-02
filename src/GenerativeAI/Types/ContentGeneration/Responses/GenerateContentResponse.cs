@@ -75,4 +75,6 @@ public class GenerateContentResponse
     {
         return response.Text() ?? string.Empty;
     }
+
+    
 }

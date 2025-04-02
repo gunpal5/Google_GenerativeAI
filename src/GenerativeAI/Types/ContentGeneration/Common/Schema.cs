@@ -98,7 +98,12 @@ public class Schema
     /// <returns>A <see cref="Schema"/> instance that represents the structure of the provided object.</returns>
     public static Schema FromObject(object value, JsonSerializerOptions? options = null) =>
         GoogleSchemaHelper.ConvertToSchema(value.GetType(), options);
-    
+
+
+    public static Schema? FromEnum<T>(JsonSerializerOptions? options = null) where T : Enum
+    {
+        return GoogleSchemaHelper.ConvertToSchema(typeof(T), options);
+    }
 }
 
 /// <summary>

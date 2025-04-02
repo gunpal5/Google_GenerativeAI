@@ -41,6 +41,24 @@ public static class GenerateContentRequestExtensions
             request.GenerationConfig = new GenerationConfig();
         request.GenerationConfig.ResponseMimeType = "application/json";
         request.GenerationConfig.ResponseSchema =
-            GoogleSchemaHelper.ConvertToSchema<T>(options); //GoogleSchemaHelper.ConvertToSchema(typeof(T));
+            GoogleSchemaHelper.ConvertToSchema<T>(options); 
+    }
+    
+    /// <summary>
+    /// Configures the <see cref="GenerateContentRequest"/> to use JSON mode for responses of the specified type <typeparamref name="T"/>.
+    /// </summary>
+    /// <typeparam name="T">The type that defines the response schema for the JSON. Must be a class.</typeparam>
+    /// <param name="request">The <see cref="GenerateContentRequest"/> on which JSON mode will be applied.</param>
+    /// <param name="options">Optional <see cref="JsonSerializerOptions"/> for customizing the serialization process.</param>
+    /// <remarks>
+    /// For NativeAOT/Trimming JsonSerializerOptions are required, you can ignore it if you have already specified a resolver in <c ref="DefaultSerializerOptions.CustomJsonTypeResolvers"/>   
+    /// </remarks>
+    public static void UseEnumMode<T>(this GenerateContentRequest request, JsonSerializerOptions? options = null)
+        where T : Enum
+    {
+        if (request.GenerationConfig == null)
+            request.GenerationConfig = new GenerationConfig();
+        request.GenerationConfig.ResponseMimeType = "text/x.enum";
+        request.GenerationConfig.ResponseSchema = Schema.FromEnum<T>(options);
     }
 }

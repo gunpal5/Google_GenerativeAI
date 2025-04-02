@@ -17,7 +17,7 @@ namespace GenerativeAI.Tests.Model
         typeof(PriorityOrderer))]
     public partial class GenerativeModel_JsonMode_Tests : TestBase
     {
-        private const string DefaultTestModelName = GoogleAIModels.DefaultGeminiModel;
+        private const string DefaultTestModelName = GoogleAIModels.Gemini2Flash;
 
         public GenerativeModel_JsonMode_Tests(ITestOutputHelper helper) : base(helper)
         {
@@ -125,6 +125,7 @@ namespace GenerativeAI.Tests.Model
             var request = new GenerateContentRequest();
             request.AddText("Generate a structured object with various data types including dictionary, list, array, and nested objects.", false);
         
+            model.Model = GoogleAIModels.Gemini15Flash;
             // Act
             var response = await model.GenerateContentAsync<ComplexDataTypeClass>(request).ConfigureAwait(false);
         
@@ -176,7 +177,8 @@ namespace GenerativeAI.Tests.Model
             var model = CreateInitializedModel();
             var request = new GenerateContentRequest();
             request.AddText("Prepare a daily meal plan for a week.", false);
-        
+            
+            model.Model = GoogleAIModels.Gemini15Flash;
             // Act
             var response = await model.GenerateObjectAsync<List<Meal>>(request).ConfigureAwait(false);
            
@@ -193,6 +195,52 @@ namespace GenerativeAI.Tests.Model
             }
         }
         
+       
+        [Theory]
+        [InlineData("What color is a ripe banana?",Color.Yellow)]
+        [InlineData("What color is an emerald?",Color.EmeraldGreen)]
+        [InlineData("What color is a strawberry?",Color.Red)]
+        [InlineData("What color is a polar bear's fur?",Color.White)]
+        [InlineData("What color is a sunflower?",Color.Yellow)]
+        [InlineData("What color is a flamingo?",Color.Pink)]
+        [InlineData("What color is the grass in spring?",Color.Green)]
+        [InlineData("What color is charcoal?",Color.Charcoal)]
+        public async Task ShouldGenerate_WithEnum(string prompt,Color expectedColor)
+        {
+            // Arrange
+            var model = CreateInitializedModel();
+            var request = new GenerateContentRequest();
+            request.AddText(prompt, false);
+
+            request.UseEnumMode<Color>();
+           
+            // Act
+            var response = await model.GenerateContentAsync(request).ConfigureAwait(false);
+           
+            // Assert
+            response.ShouldNotBeNull();
+            var color = response.ToEnum<Color>();
+            
+            color.ShouldBe(expectedColor);
+
+            var color2 = model.GenerateEnumAsync<Color>(prompt);
+            color2.Result.ShouldBe(expectedColor);
+        }
+        
+        public enum Color
+        {
+            SkyBlue,
+            Yellow,
+            EmeraldGreen,
+            Red,
+            White,
+            OceanBlue,
+            Golden,
+            Pink,
+            Green,
+            Charcoal
+        }
+
         
         
         [Fact, TestPriority(25)]
@@ -203,6 +251,7 @@ namespace GenerativeAI.Tests.Model
             var request = new GenerateContentRequest();
             request.AddText("Generate a complex JSON object with nested properties.", false);
         
+            model.Model = GoogleAIModels.Gemini15Flash;
             // Act
             var response = await model.GenerateContentAsync<ComplexJsonClass>(request).ConfigureAwait(false);
         
