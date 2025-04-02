@@ -503,7 +503,6 @@ model.AddFunctionTool(service.AsGoogleFunctionTool());
 
 ---
 
-Choose the method that best fits your project's structure and requirements. Enjoy building with Gemini!
 **For more details and options, see the [wiki](https://github.com/gunpal5/Google_GenerativeAI/wiki/Function-Calling).**
 ---
 ## Image Generation and Captioning
@@ -706,7 +705,7 @@ The following features are planned for future releases of the GenerativeAI SDK:
 *   [x] **Image Generation:** Generate images with imagen from text prompts, expanding Gemini's capabilities beyond
     text and code. ***(Added on 24th Feb, 2025)***
 *   [x] **Multimodal Live API:**  Bidirectional Multimodal Live Chat with Gemini 2.0 Flash (Added on 22nd Fed, 2025)
-*   [ ] **Model Tuning:**  Customize Gemini models to better suit your specific needs and data.
+*   [x] **Model Tuning:**  Customize Gemini models to better suit your specific needs and data. (Abandoned Supported Gemini Models are Deprecated)
 
 ---
 
