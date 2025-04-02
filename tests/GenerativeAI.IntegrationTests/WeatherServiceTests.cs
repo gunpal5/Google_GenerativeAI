@@ -92,6 +92,7 @@ namespace GenerativeAI.IntegrationTests
             {
                 Console.WriteLine(result.Text());
             }
+            
         }
         
         [Fact]

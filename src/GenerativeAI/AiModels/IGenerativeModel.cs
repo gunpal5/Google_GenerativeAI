@@ -49,23 +49,6 @@ public interface IGenerativeModel
     Task<GenerateAnswerResponse> GenerateAnswerAsync(GenerateAnswerRequest request,
         CancellationToken cancellationToken = default);
     
-
-    /// <summary>
-    /// Generates an answer asynchronously based on the given prompt and specified parameters.
-    /// </summary>
-    /// <param name="prompt">The text input that serves as the basis for generating a response.</param>
-    /// <param name="answerStyle">An optional parameter indicating the stylistic approach to be used when generating the answer.</param>
-    /// <param name="safetySettings">An optional collection of rules or configurations applied to ensure safety during the answer generation process.</param>
-    /// <param name="cancellationToken">A token to monitor for cancellation requests during the asynchronous operation.</param>
-    /// <returns>Returns a <see cref="GenerateAnswerResponse"/> object containing the generated response and associated metadata.</returns>
-    /// <seealso href="https://ai.google.dev/gemini-api/docs/question_answering#method:-models.generateanswer">See Official API Documentation</seealso>
-    Task<GenerateAnswerResponse> GenerateAnswerAsync(string prompt,
-        AnswerStyle answerStyle = AnswerStyle.ABSTRACTIVE,
-        ICollection<SafetySetting>? safetySettings = null,
-        CancellationToken cancellationToken = default);
-    
-    
-
     #region Generate Content
 
     /// <summary>
@@ -267,5 +250,42 @@ public interface IGenerativeModel
         IEnumerable<Part> parts,
         CancellationToken cancellationToken = default) where T : class;
 
+    #endregion
+
+    #region Generate Enum
+    /// <summary>
+    /// Generates an enumerated value asynchronously using Enum mode based on the given input parameters.
+    /// </summary>
+    /// <typeparam name="T">The enumeration type to convert the resulting JSON into.</typeparam>
+    /// <param name="request">An instance of <see cref="GenerateContentRequest"/> containing the input configuration and settings for enum generation.</param>
+    /// <param name="cancellationToken">Token to monitor for cancellation requests.</param>
+    /// <returns>A task that represents the asynchronous operation, containing the generated enumeration value of type <typeparamref name="T"/>.</returns>
+   Task<T?> GenerateEnumAsync<T>(
+        GenerateContentRequest request,
+        CancellationToken cancellationToken = default) where T : Enum;
+
+    /// <summary>
+    /// Generates an enumeration asynchronously using Enum mode based on the provided prompt and converts the resulting Enum data into a C# enumeration of type <typeparamref name="T"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of C# enumeration to convert the resulting JSON into. Must be an <see cref="Enum"/>.</typeparam>
+    /// <param name="prompt">The textual input used to generate an enumeration of type <typeparamref name="T"/>.</param>
+    /// <param name="cancellationToken">Token to monitor for cancellation requests during the asynchronous operation.</param>
+    /// <returns>A task representing the asynchronous operation, containing the generated enumeration of type <typeparamref name="T"/>.</returns>
+    /// <remarks>Some of the complex data types are not supported, such as Dictionary. Ensure that all input and output types conform to the supported JSON conversion structure.</remarks>
+   Task<T?> GenerateEnumAsync<T>(
+        string prompt,
+        CancellationToken cancellationToken = default) where T : Enum;
+
+    /// <summary>
+    /// Asynchronously generates an enumeration of the specified type <typeparamref name="T"/> based on the provided parts input.
+    /// </summary>
+    /// <typeparam name="T">The enumeration type to convert the resulting data into. Must be an enumeration.</typeparam>
+    /// <param name="parts">A collection of <see cref="Part"/> objects representing the input components for generating the enumeration.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>A task representing the asynchronous operation, containing the generated enumeration of type <typeparamref name="T"/>.</returns>
+    /// <remarks>Ensure the type <typeparamref name="T"/> is an enumeration; non-enumeration types are not supported.</remarks>
+   Task<T?> GenerateEnumAsync<T>(
+        IEnumerable<Part> parts,
+        CancellationToken cancellationToken = default) where T : Enum;
     #endregion
 }

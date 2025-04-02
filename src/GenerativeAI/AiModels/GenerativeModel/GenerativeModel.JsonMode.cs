@@ -114,51 +114,50 @@ public partial class GenerativeModel
     #endregion
     
     #region Generate Enum
-    
+
     /// <summary>
-    /// Generates content asynchronously using JSON mode based on the given input parameters and converts the resulting JSON into a C# object of type <typeparamref name="T"/>.
+    /// Generates an enumerated value asynchronously using Enum mode based on the given input parameters.
     /// </summary>
-    /// <typeparam name="T">The type of C# object to convert the resulting JSON into.</typeparam>
-    /// <param name="request">An instance of <see cref="GenerateContentRequest"/> containing the input configuration and settings for content generation.</param>
+    /// <typeparam name="T">The enumeration type to convert the resulting JSON into.</typeparam>
+    /// <param name="request">An instance of <see cref="GenerateContentRequest"/> containing the input configuration and settings for enum generation.</param>
     /// <param name="cancellationToken">Token to monitor for cancellation requests.</param>
-    /// <returns>A task that represents the asynchronous operation, containing the generated object of type <typeparamref name="T"/>.</returns>
-    /// <remarks>Some of the complex data types are not supported such as Dictionary. So make sure to avoid these.</remarks>
+    /// <returns>A task that represents the asynchronous operation, containing the generated enumeration value of type <typeparamref name="T"/>.</returns>
     public virtual async Task<T?> GenerateEnumAsync<T>(
         GenerateContentRequest request,
         CancellationToken cancellationToken = default) where T : Enum
     {
         request.UseEnumMode<T>();
-        
+
         var response = await GenerateContentAsync(request, cancellationToken).ConfigureAwait(false);
         return response.ToEnum<T>(GenerateObjectJsonSerializerOptions);
     }
 
     /// <summary>
-    /// Generates content asynchronously using JSON mode based on the specified text input prompt and converts the resulting JSON into a C# object of type <typeparamref name="T"/>.
+    /// Generates an enumeration asynchronously using Enum mode based on the provided prompt and converts the resulting Enum data into a C# enumeration of type <typeparamref name="T"/>.
     /// </summary>
-    /// <typeparam name="T">The type of C# object to convert the resulting JSON into.</typeparam>
-    /// <param name="prompt">The text input used to generate the content.</param>
-    /// <param name="cancellationToken">Token to monitor for cancellation requests.</param>
-    /// <returns>A task representing the asynchronous operation, containing the generated object of type <typeparamref name="T"/>.</returns>
-    /// <remarks>Some of the complex data types are not supported such as Dictionary. So make sure to avoid these.</remarks>
+    /// <typeparam name="T">The type of C# enumeration to convert the resulting JSON into. Must be an <see cref="Enum"/>.</typeparam>
+    /// <param name="prompt">The textual input used to generate an enumeration of type <typeparamref name="T"/>.</param>
+    /// <param name="cancellationToken">Token to monitor for cancellation requests during the asynchronous operation.</param>
+    /// <returns>A task representing the asynchronous operation, containing the generated enumeration of type <typeparamref name="T"/>.</returns>
+    /// <remarks>Some of the complex data types are not supported, such as Dictionary. Ensure that all input and output types conform to the supported JSON conversion structure.</remarks>
     public async Task<T?> GenerateEnumAsync<T>(
         string prompt,
         CancellationToken cancellationToken = default) where T : Enum
     {
         var request = new GenerateContentRequest();
         request.AddText(prompt, false);
-    
+
         return await GenerateEnumAsync<T>(request, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
-    /// Generates content asynchronously using JSON mode based on the specified content generation request parts and converts the resulting JSON into a C# object of type <typeparamref name="T"/>.
+    /// Asynchronously generates an enumeration of the specified type <typeparamref name="T"/> based on the provided parts input.
     /// </summary>
-    /// <typeparam name="T">The type of C# object to convert the resulting JSON into.</typeparam>
-    /// <param name="parts">An enumerable containing the input parts used for generating the content.</param>
+    /// <typeparam name="T">The enumeration type to convert the resulting data into. Must be an enumeration.</typeparam>
+    /// <param name="parts">A collection of <see cref="Part"/> objects representing the input components for generating the enumeration.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
-    /// <returns>A task that represents the asynchronous operation, containing the generated object of type <typeparamref name="T"/>.</returns>
-    /// <remarks>Some of the complex data types are not supported such as Dictionary. So make sure to avoid these.</remarks>
+    /// <returns>A task representing the asynchronous operation, containing the generated enumeration of type <typeparamref name="T"/>.</returns>
+    /// <remarks>Ensure the type <typeparamref name="T"/> is an enumeration; non-enumeration types are not supported.</remarks>
     public async Task<T?> GenerateEnumAsync<T>(
         IEnumerable<Part> parts,
         CancellationToken cancellationToken = default) where T : Enum
@@ -170,6 +169,6 @@ public partial class GenerativeModel
 
         return await GenerateEnumAsync<T>(request, cancellationToken).ConfigureAwait(false);
     }
+
     #endregion
-    
 }
