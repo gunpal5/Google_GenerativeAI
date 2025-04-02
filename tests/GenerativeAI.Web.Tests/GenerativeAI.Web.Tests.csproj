@@ -11,8 +11,8 @@
 
     <ItemGroup>
         <PackageReference Include="coverlet.collector" Version="6.0.2" />
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.2" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.2" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.3" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.3" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
         <PackageReference Include="Shouldly" Version="4.2.1" />
         <PackageReference Include="xunit.v3" Version="1.1.0" />
