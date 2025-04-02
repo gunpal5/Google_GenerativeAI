@@ -6,6 +6,7 @@ using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
 using GenerativeAI.Types;
+using GenerativeAI.Types.Converters;
 
 namespace GenerativeAI;
 
@@ -60,11 +61,12 @@ public class DefaultSerializerOptions
                 options.TypeInfoResolverChain.Add(new DefaultJsonTypeInfoResolver());
 #pragma restore warning IL2026, IL3050
 
+                AddConverters(options);
                 return options;
             }
             else
             {
-                return new JsonSerializerOptions
+                var options = new JsonSerializerOptions
                 {
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                     PropertyNameCaseInsensitive = true,
@@ -73,6 +75,9 @@ public class DefaultSerializerOptions
                     TypeInfoResolver = TypesSerializerContext.Default,
                     UnknownTypeHandling = JsonUnknownTypeHandling.JsonElement
                 };
+
+                AddConverters(options);
+                return options;
             }
         }
     }
@@ -119,18 +124,28 @@ public class DefaultSerializerOptions
                     Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
                     WriteIndented = true,
                 };
-                
+
                 AddCustomResolvers(options);
             }
 
+            AddConverters(options);
             options.MakeReadOnly();
             return options;
         }
     }
 
+    private static void AddConverters(JsonSerializerOptions options)
+    {
+#if NET8_0_OR_GREATER
+        options.Converters.Add(new DateOnlyJsonConverter());
+        options.Converters.Add(new TimeOnlyJsonConverter());
+#endif
+    }
+
     private static void AddCustomResolvers(JsonSerializerOptions options)
     {
-        foreach (var resolver in CustomJsonTypeResolvers.Where(resolver => !options.TypeInfoResolverChain.Contains(resolver)))
+        foreach (var resolver in CustomJsonTypeResolvers.Where(resolver =>
+                     !options.TypeInfoResolverChain.Contains(resolver)))
         {
             options.TypeInfoResolverChain.Add(resolver);
         }

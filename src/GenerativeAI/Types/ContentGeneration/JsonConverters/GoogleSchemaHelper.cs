@@ -145,6 +145,7 @@ public static class GoogleSchemaHelper
             NumberHandling = JsonNumberHandling.Strict
         };
 
+        newJsonOptions.Converters.Clear();
         var typeInfo = newJsonOptions.GetTypeInfo(typeof(T));
 
         var schema = GetSchema(typeInfo,null);
@@ -165,8 +166,10 @@ public static class GoogleSchemaHelper
 
         var newJsonOptions = new JsonSerializerOptions(jsonOptions)
         {
-            NumberHandling = JsonNumberHandling.Strict
+            NumberHandling = JsonNumberHandling.Strict,
         };
+
+        newJsonOptions.Converters.Clear();
 
         var typeInfo = newJsonOptions.GetTypeInfo(type);
         
@@ -199,11 +202,16 @@ public static class GoogleSchemaHelper
                 {
                     schema["type"] = "string";
                 }
-                
+               
                 ExtractDescription(context, schema, dics);
                 if (context.PropertyInfo == null)
                     return schema;
-               
+#if NET8_0_OR_GREATER 
+                if (context.TypeInfo.Type.Name == "DateOnly" || context.TypeInfo.Type.Name == "TimeOnly")
+                {
+                    schema["format"] = "date-time";
+                }
+#endif 
                 return schema;
             }});
         return schema;

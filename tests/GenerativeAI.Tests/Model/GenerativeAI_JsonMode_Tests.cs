@@ -168,6 +168,32 @@ namespace GenerativeAI.Tests.Model
                 public List<int>? Values { get; set; }
             }
         }
+
+        [Fact, TestPriority(27)]
+        public async Task ShouldGenerate_WithRecords()
+        {
+            // Arrange
+            var model = CreateInitializedModel();
+            var request = new GenerateContentRequest();
+            request.AddText("Prepare a daily meal plan for a week.", false);
+        
+            // Act
+            var response = await model.GenerateObjectAsync<List<Meal>>(request).ConfigureAwait(false);
+           
+            // Assert
+            response.ShouldNotBeNull();
+            response.ShouldAllBe(meal => meal != null, "All meals should be non-null");
+            response.ShouldNotBeEmpty("The meal list should not be empty");
+            foreach (var meal in response)
+            {
+                meal.Type.ShouldNotBeNullOrWhiteSpace("Meal type should not be null or whitespace");
+                meal.Name.ShouldNotBeNullOrWhiteSpace("Meal name should not be null or whitespace");
+                meal.FullName.ShouldNotBeNullOrWhiteSpace("Meal full name should not be null or whitespace");
+                Console.WriteLine($"Meal FullName: {meal.FullName}");
+            }
+        }
+        
+        
         
         [Fact, TestPriority(25)]
         public async Task ShouldGenerateNestedObjectAsync_WithJsonMode()
@@ -228,7 +254,12 @@ namespace GenerativeAI.Tests.Model
         {
             public string? Message { get; set; }
         }
-        
+        public record Root(List<Menu> Menus);
+        public record Menu(DateOnly Date, TimeOnly Time, List<Meal> Meals);
+        public record Meal(string Type, string Name, double? Weight, bool Selected)
+        {
+            public string FullName => $"{Weight}g {Name}";
+        }
         
     }
 }
