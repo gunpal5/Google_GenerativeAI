@@ -29,6 +29,7 @@ public class ImageModel_Tests:TestBase
         
         
         var images = await client.GenerateImagesAsync(request);
+        
         images.ShouldNotBeNull();
         images.Predictions.ShouldNotBeNull();
         images.Predictions.Count.ShouldBeGreaterThan(0);

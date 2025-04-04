@@ -198,7 +198,7 @@ public class MultiModalLiveClient : IDisposable
             }
             if (responsePayload.ToolCall != null)
             {
-                Task.Run(async () => await CallFunctions(responsePayload.ToolCall));   
+                Task.Run(async () => await CallFunctions(responsePayload.ToolCall).ConfigureAwait(false));   
             }
             ProcessTextChunk(responsePayload);
             ProcessAudioChunk(responsePayload);
@@ -363,8 +363,9 @@ public class MultiModalLiveClient : IDisposable
                         _logger?.LogFunctionCall(call.Name);
                         try
                         {
-                            var functionResponse = await tool.CallAsync(call, cancellationToken);
-                            functionResponses.Add(functionResponse);
+                            var functionResponse = await tool.CallAsync(call, cancellationToken).ConfigureAwait(false);
+                            if(functionResponse != null)
+                                functionResponses.Add(functionResponse);
                         }
                         catch (Exception ex)
                         {
@@ -381,11 +382,14 @@ public class MultiModalLiveClient : IDisposable
             }
         }
 
-        var toolResponse = new BidiGenerateContentToolResponse()
+        if (functionResponses.Count > 0)
         {
-            FunctionResponses = functionResponses.ToArray()
-        };
-        await SendToolResponseAsync(toolResponse, cancellationToken);
+            var toolResponse = new BidiGenerateContentToolResponse()
+            {
+                FunctionResponses = functionResponses.ToArray()
+            };
+            await SendToolResponseAsync(toolResponse, cancellationToken).ConfigureAwait(false);
+        }
     }
 
     #endregion
@@ -396,12 +400,12 @@ public class MultiModalLiveClient : IDisposable
     /// Connects to the MultiModal Live API WebSocket endpoint.
     /// </summary>
     /// <returns>A task representing the asynchronous operation.</returns>
-    public async Task ConnectAsync(CancellationToken cancellationToken = default)
+    public async Task ConnectAsync(bool autoSendSetup = true,CancellationToken cancellationToken = default)
     {
         _logger?.LogConnectionAttempt();
 
         var url = _platformAdapter.GetMultiModalLiveUrl();
-        var socketClient = await GetClient();
+        var socketClient = await GetClient().ConfigureAwait(false);
         _client = socketClient.WithReconnect(url); // Use the factory and an extension method for clarity
 
         _client.ReconnectionHappened.Subscribe(info =>
@@ -437,7 +441,10 @@ public class MultiModalLiveClient : IDisposable
             await _client.Start().ConfigureAwait(false);
             _logger?.LogConnectionEstablished();
             Connected?.Invoke(this, EventArgs.Empty);
-            await SendSetupAsync(cancellationToken).ConfigureAwait(false);
+            if (autoSendSetup)
+            {
+                await SendSetupAsync(cancellationToken).ConfigureAwait(false);
+            }
         }
         catch (Exception ex)
         {
@@ -616,7 +623,7 @@ public class MultiModalLiveClient : IDisposable
         };
 
         var payload = new BidiClientPayload { RealtimeInput = realtimeInput };
-        await SendAsync(payload, cancellationToken);
+        await SendAsync(payload, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -635,7 +642,7 @@ public class MultiModalLiveClient : IDisposable
         };
 
         var payload = new BidiClientPayload { ClientContent = clientContent };
-        await SendAsync(payload, cancellationToken);
+        await SendAsync(payload, cancellationToken).ConfigureAwait(false);
     }
 
     #endregion

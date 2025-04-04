@@ -1,6 +1,7 @@
 ﻿using GenerativeAI.Authenticators;
 using GenerativeAI.Core;
 using GenerativeAI.Types;
+using GenerativeAI.Types.RagEngine;
 
 namespace GenerativeAI.Tests.Model;
 
@@ -14,8 +15,12 @@ public class VideoGeneationModel_Tests:TestBase
     [Fact]
     public async Task ShouldGenerateVideos()
     {
+        var vertexAI = new VertexAI(projectId, region,
+            authenticator: new GoogleServiceAccountAuthenticator(serviceAccountJsonFile));
+        
         var model = new VideoGenerationModel(GetTestVertexAIPlatform(),VertexAIModels.Video.Veo2Generate001);
 
+        vertexAI.CreateVideoGenerationModel()
         var request = new GenerateVideosRequest()
         {
             Model = "veo2-generate-001",
@@ -31,7 +36,14 @@ public class VideoGeneationModel_Tests:TestBase
                 Resolution = VideoResolution.HD_720P
             }
         };
-        var response = await model.GenerateVideosAsync( request);
+        var operation = await model.GenerateVideosAsync( request);
+        
+        var response = await model.AwaitForLongRunningOperation(operation.Name,(int) TimeSpan.FromMinutes(10).TotalMilliseconds).ConfigureAwait(false);
+
+        if (response.Done == true)
+        {
+            await File.WriteAllBytesAsync("generated.mp4", response.Result.GeneratedVideos[0].Video.VideoBytes);
+        }
     }
     
     protected override IPlatformAdapter GetTestVertexAIPlatform()
