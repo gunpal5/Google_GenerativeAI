@@ -15,12 +15,8 @@ public class VideoGeneationModel_Tests:TestBase
     [Fact]
     public async Task ShouldGenerateVideos()
     {
-        var vertexAI = new VertexAI(projectId, region,
-            authenticator: new GoogleServiceAccountAuthenticator(serviceAccountJsonFile));
-        
         var model = new VideoGenerationModel(GetTestVertexAIPlatform(),VertexAIModels.Video.Veo2Generate001);
-
-        vertexAI.CreateVideoGenerationModel()
+       
         var request = new GenerateVideosRequest()
         {
             Model = "veo2-generate-001",

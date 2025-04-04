@@ -161,7 +161,7 @@ public partial class MainWindow : FluentWindow, INotifyPropertyChanged
 
             RegisterClientEvents();
 
-            await _multiModalLiveClient.ConnectAsync(cancellationToken);
+            await _multiModalLiveClient.ConnectAsync(true, cancellationToken);
             StartRecording(device); //No need to pass cancellation token, as it's handled within StartRecording
             btnStartChat.Content = AppConstants.StopChatText;
         }

@@ -638,7 +638,8 @@ public class MultiModalLiveClient : IDisposable
         var content = new Content(prompt, Roles.User);
         var clientContent = new BidiGenerateContentClientContent()
         {
-            Turns = [content]
+            Turns = [content],
+            TurnComplete = true
         };
 
         var payload = new BidiClientPayload { ClientContent = clientContent };
