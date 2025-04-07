@@ -81,7 +81,7 @@ public class GenerativeAIChatClient : IChatClient
         var tool = (AIFunction?) options.Tools.Where(s=>s is AIFunction).FirstOrDefault(s=>s.Name == functionCall.Name);
         if (tool != null)
         {
-            var result = await tool.InvokeAsync(functionCall.Arguments,cancellationToken).ConfigureAwait(false);
+            var result = await tool.InvokeAsync(new AIFunctionArguments(functionCall.Arguments), cancellationToken).ConfigureAwait(false);
             if (result != null)
             {
                 var contents = request.Contents;
@@ -126,7 +126,7 @@ public class GenerativeAIChatClient : IChatClient
         var tool = (AIFunction?) options.Tools.Where(s=>s is AIFunction).FirstOrDefault(s=>s.Name == functionCall.Name);
         if (tool != null)
         {
-            var result = await tool.InvokeAsync(functionCall.Arguments,cancellationToken).ConfigureAwait(false);
+            var result = await tool.InvokeAsync(new AIFunctionArguments(functionCall.Arguments), cancellationToken).ConfigureAwait(false);
             if (result != null)
             {
                 var contents = request.Contents;
