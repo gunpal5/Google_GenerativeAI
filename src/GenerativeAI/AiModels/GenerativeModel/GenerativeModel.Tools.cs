@@ -40,7 +40,7 @@ public partial class GenerativeModel
     /// </remarks>
     public bool UseCodeExecutionTool { get; set; } = false;
     
-    public Tool? RetrievalTool { get; private set; }
+    public Tool? RetrievalTool { get; protected set; }
 
 
     /// <summary>

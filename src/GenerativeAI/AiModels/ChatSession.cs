@@ -86,6 +86,43 @@ public class ChatSession : GenerativeModel
     {
         History = history ?? new();
     }
+    
+    public ChatSession(ChatSessionBackUpData chatSessionBackUpData, string apiKey, List<IFunctionTool>? toolList = null, 
+        HttpClient? httpClient = null, ILogger? logger = null) : base(apiKey, chatSessionBackUpData.Model, chatSessionBackUpData.GenerationConfig, chatSessionBackUpData.SafetySettings,
+        chatSessionBackUpData.SystemInstructions, httpClient, logger)
+    {
+        History = chatSessionBackUpData.History ?? new();
+        LastRequestContent = chatSessionBackUpData.LastRequestContent;
+        LastResponseContent = chatSessionBackUpData.LastResponseContent;
+        UseGrounding = chatSessionBackUpData.UseGrounding;
+        UseGoogleSearch = chatSessionBackUpData.UseGoogleSearch;
+        UseCodeExecutionTool = chatSessionBackUpData.UseCodeExecutionTool;
+        RetrievalTool = chatSessionBackUpData.RetrievalTool;
+        FunctionCallingBehaviour = chatSessionBackUpData.FunctionCallingBehaviour;
+        ToolConfig = chatSessionBackUpData.ToolConfig;
+        UseJsonMode = chatSessionBackUpData.UseJsonMode;
+        CachedContent = chatSessionBackUpData.CachedContent;
+        this.FunctionTools = toolList?? new List<IFunctionTool>();
+    }
+    /// Represents a session for chat interactions using a generative model.
+    public ChatSession(ChatSessionBackUpData chatSessionBackUpData,  IPlatformAdapter platform, List<IFunctionTool>? toolList = null, 
+        HttpClient? httpClient = null, ILogger? logger = null) : base(platform, chatSessionBackUpData.Model, chatSessionBackUpData.GenerationConfig, chatSessionBackUpData.SafetySettings,
+        chatSessionBackUpData.SystemInstructions, httpClient, logger)
+    {
+        History = chatSessionBackUpData.History ?? new();
+        LastRequestContent = chatSessionBackUpData.LastRequestContent;
+        LastResponseContent = chatSessionBackUpData.LastResponseContent;
+        UseGrounding = chatSessionBackUpData.UseGrounding;
+        UseGoogleSearch = chatSessionBackUpData.UseGoogleSearch;
+        UseCodeExecutionTool = chatSessionBackUpData.UseCodeExecutionTool;
+        RetrievalTool = chatSessionBackUpData.RetrievalTool;
+        FunctionCallingBehaviour = chatSessionBackUpData.FunctionCallingBehaviour;
+        ToolConfig = chatSessionBackUpData.ToolConfig;
+        UseJsonMode = chatSessionBackUpData.UseJsonMode;
+        CachedContent = chatSessionBackUpData.CachedContent;
+        this.FunctionTools = toolList?? new List<IFunctionTool>();
+    }
+    
 
     #endregion
     
@@ -192,5 +229,32 @@ public class ChatSession : GenerativeModel
         History.Add(lastResponseContent);
         this.LastRequestContent = lastRequestContent;
         this.LastResponseContent = lastResponseContent;
+    }
+
+    /// Creates a backup object representing the current state of the chat session.
+    /// <return>
+    /// A ChatSessionBackUpData object containing the chat session's history, settings, configurations,
+    /// last request and response content, and other relevant details.
+    /// </return>
+    public ChatSessionBackUpData CreateChatSessionBackUpData()
+    {
+        return new ChatSessionBackUpData()
+        {
+            History = History,
+            LastRequestContent = LastRequestContent,
+            LastResponseContent = LastResponseContent,
+            GenerationConfig = this.Config,
+            SafetySettings = this.SafetySettings,
+            SystemInstructions = this.SystemInstruction,
+            Model = this.Model,
+            CachedContent = CachedContent,
+            UseJsonMode = this.UseJsonMode,
+            UseGrounding = UseGrounding,
+            UseGoogleSearch = UseGoogleSearch,
+            UseCodeExecutionTool = UseCodeExecutionTool,
+            RetrievalTool = this.RetrievalTool,
+            FunctionCallingBehaviour = FunctionCallingBehaviour,
+            ToolConfig = this.ToolConfig,
+        };
     }
 }

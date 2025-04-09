@@ -8,7 +8,7 @@ namespace GenerativeAI
     /// <summary>
     /// A Generative AI Model that extends BaseModel
     /// </summary>
-    public partial class GenerativeModel : BaseModel,IGenerativeModel
+    public partial class GenerativeModel : BaseModel, IGenerativeModel
     {
         #region Properties
 
@@ -55,7 +55,7 @@ namespace GenerativeAI
         /// by leveraging the CachingClient within the model's context.
         /// </summary>
         public CachingClient CachingClient { get; set; }
-       
+
         #endregion
 
         #region Constructors
@@ -84,7 +84,7 @@ namespace GenerativeAI
             : base(platform, httpClient, logger)
         {
             model ??= EnvironmentVariables.GOOGLE_AI_MODEL ?? GoogleAIModels.DefaultGeminiModel;
-            
+
             Initialize(platform, model, config, safetySettings, systemInstruction);
             InitializeClients(platform, httpClient, logger);
         }
@@ -260,7 +260,7 @@ namespace GenerativeAI
         }
 
         #endregion
-        
+
         #region Public Methods
 
         /// <summary>
@@ -276,19 +276,39 @@ namespace GenerativeAI
             ICollection<SafetySetting>? safetySettings = null,
             string? systemInstruction = null)
         {
-            var session =  new ChatSession(history,this.Platform,this.Model,config??this.Config,safetySettings??this.SafetySettings,systemInstruction??this.SystemInstruction,this.HttpClient,this.Logger)
-                {
-                    FunctionTools = this.FunctionTools,
-                    RetrievalTool = this.RetrievalTool,
-                    UseGrounding = this.UseGrounding,
-                    UseGoogleSearch = this.UseGoogleSearch,
-                    UseCodeExecutionTool = this.UseCodeExecutionTool
-                };
+            var session = new ChatSession(history, this.Platform, this.Model, config ?? this.Config,
+                safetySettings ?? this.SafetySettings, systemInstruction ?? this.SystemInstruction, this.HttpClient,
+                this.Logger)
+            {
+                FunctionTools = this.FunctionTools,
+                RetrievalTool = this.RetrievalTool,
+                UseGrounding = this.UseGrounding,
+                UseGoogleSearch = this.UseGoogleSearch,
+                UseCodeExecutionTool = this.UseCodeExecutionTool
+            };
             return session;
         }
 
-        
-        
+        /// <summary>
+        /// Starts a new chat session with the specified configuration, tools, and backup data.
+        /// </summary>
+        /// <param name="chatSessionBackUpData">The backup data for the chat session, containing the model, safety settings, generation configuration, and history.</param>
+        /// <param name="tools">Optional collection of tools to be used during the chat session. If not specified, default tools associated with the model will be used.</param>
+        /// <returns>A new instance of the ChatSession class initialized with the provided parameters and model settings.</returns>
+        public virtual ChatSession StartChat(ChatSessionBackUpData chatSessionBackUpData,
+            List<IFunctionTool>? tools = null)
+        {
+            chatSessionBackUpData.Model ??= this.Model;
+            chatSessionBackUpData.SafetySettings ??= this.SafetySettings;
+            chatSessionBackUpData.GenerationConfig ??= this.Config;
+            chatSessionBackUpData.History ??= new List<Content>();
+            chatSessionBackUpData.FunctionCallingBehaviour ??= this.FunctionCallingBehaviour;
+            chatSessionBackUpData.ToolConfig ??= this.ToolConfig;
+
+            return new ChatSession(chatSessionBackUpData, this.Platform, tools ?? this.FunctionTools, this.HttpClient,
+                this.Logger);
+        }
+
         #endregion
     }
 }
