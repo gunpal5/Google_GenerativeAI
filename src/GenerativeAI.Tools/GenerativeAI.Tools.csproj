@@ -32,7 +32,7 @@
       <ProjectReference Include="..\GenerativeAI\GenerativeAI.csproj" />
     </ItemGroup>
     <ItemGroup>
-      <PackageReference Include="CSharpToJsonSchema" Version="3.10.2-dev.31" />
+      <PackageReference Include="CSharpToJsonSchema" Version="3.10.2-dev.34" />
     </ItemGroup>
 
 </Project>

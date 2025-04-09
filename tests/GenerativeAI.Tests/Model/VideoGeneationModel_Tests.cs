@@ -12,7 +12,7 @@ public class VideoGeneationModel_Tests:TestBase
         Assert.SkipWhen(SkipVertexAITests, VertextTestSkipMesaage);
     }
 
-    [Fact]
+    [RunnableInDebugOnly]
     public async Task ShouldGenerateVideos()
     {
         var model = new VideoGenerationModel(GetTestVertexAIPlatform(),VertexAIModels.Video.Veo2Generate001);
