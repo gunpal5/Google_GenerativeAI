@@ -228,7 +228,7 @@ namespace GenerativeAI.Types;
 [JsonSerializable(typeof(VideoParameters))]
 [JsonSerializable(typeof(VertexGenerateVideosPayload))]
 [JsonSerializable(typeof(VideoInstance))]
-
+[JsonSerializable(typeof(ChatSessionBackUpData))]
 
 [JsonSourceGenerationOptions(WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull, UseStringEnumConverter = true)]
 public partial class TypesSerializerContext : JsonSerializerContext
