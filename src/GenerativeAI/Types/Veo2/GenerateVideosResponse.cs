@@ -10,8 +10,8 @@ public class GenerateVideosResponse
     /// <summary>
     /// A list containing the generated video(s).
     /// </summary>
-    [JsonPropertyName("generatedVideos")]
-    public List<GeneratedVideo>? GeneratedVideos { get; set; }
+    [JsonPropertyName("videos")]
+    public List<Video>? GeneratedVideos { get; set; }
 
     /// <summary>
     /// Optional. Indicates the number of videos that were filtered due to Responsible AI (RAI) policies.

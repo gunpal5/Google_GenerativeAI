@@ -24,7 +24,7 @@ public class VideoGeneationModel_Tests:TestBase
             Config = new GenerateVideosConfig()
             {
                 AspectRatio = VideoAspectRatio.LANDSCAPE_16_9,
-                DurationSeconds = 2,
+                DurationSeconds = 5,
                 EnhancePrompt = true,
                 Fps = 24,
                 NumberOfVideos = 1,
@@ -38,7 +38,7 @@ public class VideoGeneationModel_Tests:TestBase
 
         if (response.Done == true)
         {
-            await File.WriteAllBytesAsync("generated.mp4", response.Result.GeneratedVideos[0].Video.VideoBytes);
+            await File.WriteAllBytesAsync("generated.mp4", response.Result.GeneratedVideos[0].VideoBytes);
         }
     }
     

@@ -13,7 +13,7 @@ public class Video
     /// <summary>
     /// The URI (e.g., Google Cloud Storage path) where the video is stored.
     /// </summary>
-    [JsonPropertyName("uri")]
+    [JsonPropertyName("gcsUri")]
     public string? Uri { get; set; }
 
     /// <summary>
@@ -21,6 +21,25 @@ public class Video
     /// </summary>
     [JsonPropertyName("videoBytes")]
     public byte[]? VideoBytes { get; set; }
+    
+    private string? _bytesBase64Encoded;
+    /// <summary>
+    /// The raw video data as a byte array, Base64 encoded when serialized. May not always be populated, especially for large videos stored at a URI.
+    /// </summary>
+    [JsonPropertyName("bytesBase64Encoded")]
+    public string? BytesBase64Encoded 
+    {
+        get
+        {
+            return _bytesBase64Encoded;
+        }
+        set
+        {
+            this._bytesBase64Encoded = value;
+            if(value != null)
+                this.VideoBytes = Convert.FromBase64String(value);
+        }
+    }
 
     /// <summary>
     /// The MIME type of the video (e.g., "video/mp4").

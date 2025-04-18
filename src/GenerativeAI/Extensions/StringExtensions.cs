@@ -213,6 +213,28 @@ public static class StringExtensions
         return $"operations/{operationId}";
     }
 
+    public static string RecoverModelIdFromOperationId(this string operationId)
+    {
+#if NETSTANDARD2_0 || NET462_OR_GREATER
+        if (operationId.Contains("/"))
+#else
+        if (operationId.Contains("/", StringComparison.InvariantCulture))
+#endif
+        {
+            if (operationId.StartsWith("publishers/", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return operationId;
+            }
+            else
+            {
+                var opId = operationId.Substring(operationId.LastIndexOf("/publishers") + 1);
+                opId = opId.Remove(opId.IndexOf("/operations"));
+                return $"{opId}";
+            }
+        }
+
+        return $"operations/{operationId}";
+    }
 
     /// <summary>
     /// Converts a content name or path string into a standardized cached content identifier.

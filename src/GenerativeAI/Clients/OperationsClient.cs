@@ -96,4 +96,15 @@ public class OperationsClient : BaseClient
         var url = $"{_platform.GetBaseUrl(appendPublisher:false)}/{name.RecoverOperationId()}:cancel";
         await GetAsync<dynamic>(url, cancellationToken).ConfigureAwait(false);
     }
+
+    public async Task<GoogleLongRunningOperation> FetchOperationStatusAsync(string operationId, CancellationToken cancellationToken)
+    {
+        var url = $"{_platform.GetBaseUrl(appendPublisher:false)}/{operationId.RecoverModelIdFromOperationId()}:fetchPredictOperation";
+
+        GoogleLongRunningOperation post = new GoogleLongRunningOperation()
+        {
+            OperationName = operationId
+        };
+        return await SendAsync<GoogleLongRunningOperation,GoogleLongRunningOperation>(url, post, HttpMethod.Post, cancellationToken).ConfigureAwait(false);
+    }
 }

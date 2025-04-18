@@ -176,12 +176,7 @@ public class Part
         /// </summary>
         [JsonPropertyName("title")]
         public string? Title { get; set; }
-
-        /// <summary>
-        /// Optional. The type of the data.
-        /// </summary>
-        [JsonPropertyName("httpOptions")]
-        public HttpOptions? HttpOptions { get; set; }
+       
 
         /// <summary>
         /// Instructions for the model to steer it toward better performance.
@@ -204,44 +199,4 @@ public class Part
         public GenerationConfig? GenerationConfig { get; set; }
     }
     
-    /// <summary>
-    /// HTTP options to be used in each of the requests.
-    /// </summary>
-    public class HttpOptions
-    {
-        /// <summary>
-        /// The base URL for the AI platform service endpoint.
-        /// </summary>
-        [JsonPropertyName("baseUrl")]
-        public string? BaseUrl { get; set; }
-
-        /// <summary>
-        /// Specifies the version of the API to use.
-        /// </summary>
-        [JsonPropertyName("apiVersion")]
-        public string? ApiVersion { get; set; }
-
-        /// <summary>
-        /// Additional HTTP headers to be sent with the request.
-        /// </summary>
-        [JsonPropertyName("headers")]
-        public Dictionary<string, string>? Headers { get; set; }
-
-        /// <summary>
-        /// Timeout for the request in milliseconds.
-        /// </summary>
-        [JsonPropertyName("timeout")]
-        public int? Timeout { get; set; }
-
-        /// <summary>
-        /// Args passed to the HTTP client.
-        /// </summary>
-        [JsonPropertyName("clientArgs")]
-        public object? ClientArgs { get; set; }
-
-        /// <summary>
-        /// Args passed to the async HTTP client.
-        /// </summary>
-        [JsonPropertyName("asyncClientArgs")]
-        public object? AsyncClientArgs { get; set; }
-    }
+   

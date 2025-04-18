@@ -126,7 +126,8 @@ namespace GenerativeAI
                 longRunningOperation =
                     await GetVideoGenerationStatusAsync(operationId, timeOut, cancellationToken).ConfigureAwait(false);
 
-                await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
+                if(longRunningOperation.Done == false)
+                    await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
             } while (longRunningOperation.Done != true && sw.ElapsedMilliseconds < LongRunningOperationTimeout);
 
             if (longRunningOperation.Done == true && longRunningOperation.Error != null)
@@ -153,7 +154,7 @@ namespace GenerativeAI
             CancellationToken cancellationToken = default)
         {
             var longRunningOperation =
-                await _operationsClient.GetOperationAsync(operationId, cancellationToken: cancellationToken)
+                await _operationsClient.FetchOperationStatusAsync(operationId, cancellationToken: cancellationToken)
                     .ConfigureAwait(false);
 
             return new GenerateVideosOperation(longRunningOperation);

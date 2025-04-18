@@ -29,7 +29,7 @@ public class GenerateVideosOperation : GoogleLongRunningOperation
             {
                 if (operation.Response.ContainsKey("generatedVideos"))
                     Result.GeneratedVideos = (operation.Response["generatedVideos"] as JsonElement?)
-                        ?.Deserialize<List<GeneratedVideo>>();
+                        ?.Deserialize<List<Video>>();
                 if (operation.Response.ContainsKey("raiMediaFilteredCount"))
                     Result.RaiMediaFilteredCount =
                         (operation.Response["raiMediaFilteredCount"] as JsonElement?)?.GetInt32();
@@ -37,9 +37,13 @@ public class GenerateVideosOperation : GoogleLongRunningOperation
                     Result.RaiMediaFilteredReasons =
                         (operation.Response["raiMediaFilteredReasons"] as JsonElement?)?.Deserialize<List<string>>();
                 
+                if (operation.Response.ContainsKey("videos"))
+                    Result.GeneratedVideos = (operation.Response["videos"] as JsonElement?)
+                        ?.Deserialize<List<Video>>();
+                
                 if (operation.Response.ContainsKey("generated_videos"))
                     Result.GeneratedVideos = (operation.Response["generated_videos"] as JsonElement?)
-                        ?.Deserialize<List<GeneratedVideo>>();
+                        ?.Deserialize<List<Video>>();
                 if (operation.Response.ContainsKey("rai_media_filtered_count"))
                     Result.RaiMediaFilteredCount =
                         (operation.Response["rai_media_filtered_count"] as JsonElement?)?.GetInt32();
