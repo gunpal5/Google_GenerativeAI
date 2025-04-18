@@ -10,7 +10,7 @@
 	  <Authors>Gunpal Jain</Authors>
       <Company>Argentron Technologies</Company>
       <PackageIcon>favicon.png</PackageIcon>
-	  <Description>Unofficial C# Google Generative AI SDK (Google Gemini) with function calls support</Description>
+	  <Description>Most complete C# .Net SDK for Google Generative AI and Vertex AI (Google Gemini), featuring function calling, easiest JSON Mode, multi-modal live streaming, chat sessions, and more!</Description>
 	  <PackageProjectUrl>https://github.com/gunpal5/Google_GenerativeAI</PackageProjectUrl>
 	  <PackageReadmeFile>README.md</PackageReadmeFile>
 	  <RepositoryUrl>https://github.com/gunpal5/Google_GenerativeAI</RepositoryUrl>

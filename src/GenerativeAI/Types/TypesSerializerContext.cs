@@ -237,7 +237,6 @@ namespace GenerativeAI.Types;
 [JsonSerializable(typeof(AutoRoutingMode))]
 [JsonSerializable(typeof(RoutingConfig))]
 [JsonSerializable(typeof(ModelRoutingPreference))]
-[JsonSerializable(typeof(HttpOptions))]
 [JsonSourceGenerationOptions(WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull, UseStringEnumConverter = true)]
 public partial class TypesSerializerContext : JsonSerializerContext
 {
