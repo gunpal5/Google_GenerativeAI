@@ -229,7 +229,15 @@ namespace GenerativeAI.Types;
 [JsonSerializable(typeof(VertexGenerateVideosPayload))]
 [JsonSerializable(typeof(VideoInstance))]
 [JsonSerializable(typeof(ChatSessionBackUpData))]
-
+[JsonSerializable(typeof(ThinkingConfig))]
+[JsonSerializable(typeof(MediaResolution))]
+[JsonSerializable(typeof(VideoMetadataResult))]
+[JsonSerializable(typeof(RoutingConfig))]
+[JsonSerializable(typeof(ManualRoutingMode))]
+[JsonSerializable(typeof(AutoRoutingMode))]
+[JsonSerializable(typeof(RoutingConfig))]
+[JsonSerializable(typeof(ModelRoutingPreference))]
+[JsonSerializable(typeof(HttpOptions))]
 [JsonSourceGenerationOptions(WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull, UseStringEnumConverter = true)]
 public partial class TypesSerializerContext : JsonSerializerContext
 {

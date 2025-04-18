@@ -45,4 +45,6 @@ public class Tool
     /// </summary>
     [JsonPropertyName("retrieval")]
     public VertexRetrievalTool? Retrieval { get; set; }
+    
 }
+

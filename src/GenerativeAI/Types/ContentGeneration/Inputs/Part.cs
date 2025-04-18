@@ -55,6 +55,12 @@ public class Part
     /// </summary>
     [JsonPropertyName("codeExecutionResult")]
     public CodeExecutionResult? CodeExecutionResult { get; set; }
+    
+    /// <summary>
+    /// Metadata for a given video.
+    /// </summary>
+    [JsonPropertyName("videoMetadata")]
+    public VideoMetadataResult? VideoMetadata { get; set; }
 
     /// <summary>
     /// Represents a structured part of content that can include various types of data,
@@ -75,3 +81,167 @@ public class Part
         this.Text = text;
     }
 }
+
+ /// <summary>
+    /// Metadata describes the input video content.
+    /// </summary>
+    public class VideoMetadataResult
+    {
+        /// <summary>
+        /// Optional. The end offset of the video.
+        /// </summary>
+        [JsonPropertyName("endOffset")]
+        public string? EndOffset { get; set; }
+
+        /// <summary>
+        /// Optional. The start offset of the video.
+        /// </summary>
+        [JsonPropertyName("anyOf")]
+        public List<Schema>? AnyOf { get; set; }
+
+        /// <summary>
+        /// Optional. The description of the data.
+        /// </summary>
+        [JsonPropertyName("description")]
+        public string? Description { get; set; }
+
+        /// <summary>
+        /// Optional. Possible values of the element of primitive type with enum format.
+        /// </summary>
+        [JsonPropertyName("enum")]
+        public List<string>? Enum { get; set; }
+
+        /// <summary>
+        /// Optional. The format of the data.
+        /// </summary>
+        [JsonPropertyName("format")]
+        public string? Format { get; set; }
+
+        /// <summary>
+        /// Optional. Schema of the elements of Type.ARRAY.
+        /// </summary>
+        [JsonPropertyName("items")]
+        public Schema? Items { get; set; }
+
+        /// <summary>
+        /// Optional. Maximum number of the elements for Type.ARRAY.
+        /// </summary>
+        [JsonPropertyName("maxItems")]
+        public int? MaxItems { get; set; }
+
+        /// <summary>
+        /// Optional. Maximum value of the Type.INTEGER and Type.NUMBER
+        /// </summary>
+        [JsonPropertyName("maximum")]
+        public float? Maximum { get; set; }
+
+        /// <summary>
+        /// Optional. Minimum number of the elements for Type.ARRAY.
+        /// </summary>
+        [JsonPropertyName("minItems")]
+        public int? MinItems { get; set; }
+
+        /// <summary>
+        /// Optional. Minimum value of the Type.INTEGER and Type.NUMBER
+        /// </summary>
+        [JsonPropertyName("minimum")]
+        public float? Minimum { get; set; }
+
+        /// <summary>
+        /// Optional. Indicates if the value may be null.
+        /// </summary>
+        [JsonPropertyName("nullable")]
+        public bool? Nullable { get; set; }
+
+        /// <summary>
+        /// Optional. Properties of Type.OBJECT.
+        /// </summary>
+        [JsonPropertyName("properties")]
+        public Dictionary<string, Schema>? Properties { get; set; }
+
+        /// <summary>
+        /// Optional. The order of the properties.
+        /// </summary>
+        [JsonPropertyName("propertyOrdering")]
+        public List<string>? PropertyOrdering { get; set; }
+
+        /// <summary>
+        /// Optional. Required properties of Type.OBJECT.
+        /// </summary>
+        [JsonPropertyName("required")]
+        public List<string>? Required { get; set; }
+
+        /// <summary>
+        /// Optional. The title of the Schema.
+        /// </summary>
+        [JsonPropertyName("title")]
+        public string? Title { get; set; }
+
+        /// <summary>
+        /// Optional. The type of the data.
+        /// </summary>
+        [JsonPropertyName("httpOptions")]
+        public HttpOptions? HttpOptions { get; set; }
+
+        /// <summary>
+        /// Instructions for the model to steer it toward better performance.
+        /// </summary>
+        [JsonPropertyName("systemInstruction")]
+        public object? SystemInstruction { get; set; }
+
+        /// <summary>
+        /// Code that enables the system to interact with external systems to
+        /// perform an action outside of the knowledge and scope of the model.
+        /// </summary>
+        [JsonPropertyName("tools")]
+        public List<Tool>? Tools { get; set; }
+
+        /// <summary>
+        /// Configuration that the model uses to generate the response. Not
+        /// supported by the Gemini Developer API.
+        /// </summary>
+        [JsonPropertyName("generationConfig")]
+        public GenerationConfig? GenerationConfig { get; set; }
+    }
+    
+    /// <summary>
+    /// HTTP options to be used in each of the requests.
+    /// </summary>
+    public class HttpOptions
+    {
+        /// <summary>
+        /// The base URL for the AI platform service endpoint.
+        /// </summary>
+        [JsonPropertyName("baseUrl")]
+        public string? BaseUrl { get; set; }
+
+        /// <summary>
+        /// Specifies the version of the API to use.
+        /// </summary>
+        [JsonPropertyName("apiVersion")]
+        public string? ApiVersion { get; set; }
+
+        /// <summary>
+        /// Additional HTTP headers to be sent with the request.
+        /// </summary>
+        [JsonPropertyName("headers")]
+        public Dictionary<string, string>? Headers { get; set; }
+
+        /// <summary>
+        /// Timeout for the request in milliseconds.
+        /// </summary>
+        [JsonPropertyName("timeout")]
+        public int? Timeout { get; set; }
+
+        /// <summary>
+        /// Args passed to the HTTP client.
+        /// </summary>
+        [JsonPropertyName("clientArgs")]
+        public object? ClientArgs { get; set; }
+
+        /// <summary>
+        /// Args passed to the async HTTP client.
+        /// </summary>
+        [JsonPropertyName("asyncClientArgs")]
+        public object? AsyncClientArgs { get; set; }
+    }

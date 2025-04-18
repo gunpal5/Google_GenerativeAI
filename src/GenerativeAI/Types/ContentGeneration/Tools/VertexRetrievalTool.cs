@@ -6,6 +6,11 @@ namespace GenerativeAI.Types;
 public class VertexRetrievalTool
 {
     /// <summary>
+    /// Optional. Deprecated. This option is no longer supported.
+    /// </summary>
+    [JsonPropertyName("disableAttribution")]
+    public bool? DisableAttribution { get; set; }
+    /// <summary>
     /// Set to use data source powered by Vertex AI Search.
     /// </summary>
     [JsonPropertyName("vertexAiSearch")]

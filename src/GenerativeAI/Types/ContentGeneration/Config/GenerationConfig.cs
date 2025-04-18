@@ -164,4 +164,129 @@ public class GenerationConfig
     /// </summary>
     [JsonPropertyName("speechConfig")]
     public SpeechConfig? SpeechConfig { get; set; }
+    
+    /// <summary>
+    /// Optional. Config for thinking features.
+    /// An error will be returned if this field is set for models that don't support thinking.
+    /// </summary>
+    [JsonPropertyName("thinkingConfig")]
+    public ThinkingConfig? ThinkingConfig { get; set; }
+
+    /// <summary>
+    /// Optional. If specified, the media resolution specified will be used.
+    /// </summary>
+    [JsonPropertyName("mediaResolution")]
+    public MediaResolution? MediaResolution { get; set; }
+    
+    /// <summary>
+    /// Optional. If enabled, audio timestamp will be included in the request to the model.
+    /// </summary>
+    [JsonPropertyName("audioTimestamp")]
+    public bool? AudioTimestamp { get; set; }
+    
+    /// <summary>
+    /// Optional. Routing configuration.
+    /// </summary>
+    [JsonPropertyName("routingConfig")]
+    public RoutingConfig? RoutingConfig { get; set; }
+}
+
+
+/// <summary>
+/// Config for thinking features.
+/// </summary>
+public class ThinkingConfig
+{
+    /// <summary>
+    /// Indicates whether to include thoughts in the response. If true, thoughts are returned only if the model supports thought and thoughts are available.
+    /// </summary>
+    [JsonPropertyName("includeThoughts")]
+    public bool? IncludeThoughts { get; set; }
+    
+    /// <summary>
+    /// Indicates the thinking budget in tokens
+    /// </summary>
+    [JsonPropertyName("thinkingBudget")]
+    public int? ThinkingBudget { get; set; }
+}
+
+/// <summary>
+/// Media resolution for the input media.
+/// </summary>
+public enum MediaResolution
+{
+    MEDIA_RESOLUTION_UNSPECIFIED,
+    MEDIA_RESOLUTION_LOW,
+    MEDIA_RESOLUTION_MEDIUM,
+    MEDIA_RESOLUTION_HIGH
+}
+
+
+/// <summary>
+/// The configuration for routing the request to a specific model.
+/// </summary>
+public class RoutingConfig
+{
+    /// <summary>
+    /// Automated routing.
+    /// </summary>
+    [JsonPropertyName("autoMode")]
+    public AutoRoutingMode? AutoMode { get; set; }
+
+    /// <summary>
+    /// Manual routing.
+    /// </summary>
+    [JsonPropertyName("manualMode")]
+    public ManualRoutingMode? ManualMode { get; set; }
+}
+
+/// <summary>
+/// When automated routing is specified, the routing will be determined by the pretrained routing model 
+/// and customer provided model routing preference.
+/// </summary>
+public class AutoRoutingMode
+{
+    /// <summary>
+    /// The model routing preference.
+    /// </summary>
+    [JsonPropertyName("modelRoutingPreference")]
+    public ModelRoutingPreference? ModelRoutingPreference { get; set; }
+}
+
+/// <summary>
+/// Model routing preference options.
+/// </summary>
+public enum ModelRoutingPreference
+{
+    /// <summary>
+    /// Unknown preference.
+    /// </summary>
+    UNKNOWN,
+
+    /// <summary>
+    /// Prioritize quality over cost.
+    /// </summary>
+    PRIORITIZE_QUALITY,
+
+    /// <summary>
+    /// Balanced between quality and cost.
+    /// </summary>
+    BALANCED,
+
+    /// <summary>
+    /// Prioritize cost over quality.
+    /// </summary>
+    PRIORITIZE_COST
+}
+
+/// <summary>
+/// When manual routing is set, the specified model will be used directly.
+/// </summary>
+public class ManualRoutingMode
+{
+    /// <summary>
+    /// The model name to use. Only the public LLM models are accepted. e.g. 'gemini-1.5-pro-001'.
+    /// </summary>
+    [JsonPropertyName("modelName")]
+    public string? ModelName { get; set; }
 }

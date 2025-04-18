@@ -18,4 +18,21 @@ public class VertexRagStore
     /// </summary>
     [JsonPropertyName("ragRetrievalConfig")]
     public RagRetrievalConfig? RagRetrievalConfig { get; set; } 
+    
+    /// <summary>
+    /// Optional. Deprecated. Please use rag_resources instead.
+    /// </summary>
+    [JsonPropertyName("ragCorpora")]
+    public List<string>? RagCorpora { get; set; }
+    /// <summary>
+    /// Optional. Number of top k results to return from the selected corpora.
+    /// </summary>
+    [JsonPropertyName("similarityTopK")]
+    public int? SimilarityTopK { get; set; }
+
+    /// <summary>
+    /// Optional. Only return results with vector distance smaller than the threshold.
+    /// </summary>
+    [JsonPropertyName("vectorDistanceThreshold")]
+    public float? VectorDistanceThreshold { get; set; }
 }

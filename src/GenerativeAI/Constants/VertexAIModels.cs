@@ -28,6 +28,21 @@ public static class VertexAIModels
         /// Gemini 2.5 Pro Exp 03-25 model name.
         /// </summary>
         public const string Gemini25ProExp0325 = "gemini-2.5-pro-exp-03-25";
+        
+        /// <summary>
+        /// Gemini 2.5 Pro Preview model name from March 25th release.
+        /// </summary>
+        public const string Gemini25ProPreview0325 = "gemini-2.5-pro-preview-03-25";
+
+        /// <summary>
+        /// Gemini 2.0 Flash Live model name version 001.
+        /// </summary>
+        public const string Gemini2FlashLive001 = "gemini-2.0-flash-live-001";
+    
+        /// <summary>
+        /// Gemini 2.5 Flash Preview model name from April 17th release.
+        /// </summary>
+        public const string Gemini25FlashPreview0417 = "gemini-2.5-flash-preview-04-17";
 
         /// <summary>
         /// Gemini 2.0 Flash Exp 01-21 model name.
