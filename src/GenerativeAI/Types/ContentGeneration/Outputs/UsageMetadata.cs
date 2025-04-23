@@ -28,6 +28,18 @@ public class UsageMetadata
     public int CandidatesTokenCount { get; set; }
 
     /// <summary>
+    /// Output only. Number of tokens present in tool-use prompt(s).
+    /// </summary>
+    [JsonPropertyName("toolUsePromptTokenCount")]
+    public int ToolUsePromptTokenCount { get; set; }
+
+    /// <summary>
+    /// Output only. Number of tokens of thoughts for thinking models.
+    /// </summary>
+    [JsonPropertyName("thoughtsTokenCount")]
+    public int ThoughtsTokenCount { get; set; }
+
+    /// <summary>
     /// Total token count for the generation request (prompt + response candidates).
     /// </summary>
     [JsonPropertyName("totalTokenCount")]
@@ -50,4 +62,10 @@ public class UsageMetadata
     /// </summary>
     [JsonPropertyName("candidatesTokensDetails")]
     public List<ModalityTokenCount>? CandidatesTokensDetails { get; set; }
+
+    /// <summary>
+    /// Output only. List of modalities that were processed for tool-use request inputs.
+    /// </summary>
+    [JsonPropertyName("toolUsePromptTokensDetails")]
+    public List<ModalityTokenCount>? ToolUsePromptTokensDetails { get; set; }
 }
