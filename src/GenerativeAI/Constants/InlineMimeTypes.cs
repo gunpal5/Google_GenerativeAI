@@ -17,6 +17,8 @@ public static class InlineMimeTypes
     public static readonly HashSet<string> AllowedMimeTypes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
     {
         "image/jpeg", "image/png", "image/heif", "image/heic", "image/webp",
-        "audio/wav", "audio/mp3", "audio/mpeg", "audio/aiff", "audio/aac", "audio/ogg", "audio/flac"
+        "audio/wav", "audio/mp3", "audio/mpeg", "audio/aiff", "audio/aac", "audio/ogg", "audio/flac",
+        "application/pdf","text/javascript","application/x-javascript","application/x-python","text/x-python","text/plain",
+        "text/html", "text/css","text/md","text/csv","text/xml","text/rtf"
     };
 }
