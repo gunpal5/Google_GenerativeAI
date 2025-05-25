@@ -27,7 +27,8 @@ public class GenerativeAIChatClient : IChatClient
     public bool AutoCallFunction { get; set; } = true;
 
     /// <inheritdoc/>
-    public GenerativeAIChatClient(string apiKey, string modelName = GoogleAIModels.DefaultGeminiModel, bool autoCallFunction = true)
+    public GenerativeAIChatClient(string apiKey, string modelName = GoogleAIModels.DefaultGeminiModel,
+        bool autoCallFunction = true)
     {
         model = new GenerativeModel(apiKey, modelName)
         {
@@ -66,98 +67,119 @@ public class GenerativeAIChatClient : IChatClient
             options, cancellationToken).ConfigureAwait(false);
     }
 
-    private async Task<ChatResponse> CallFunctionAsync(GenerateContentRequest request,  GenerateContentResponse response, ChatOptions? options, CancellationToken cancellationToken)
+    private async Task<ChatResponse> CallFunctionAsync(GenerateContentRequest request, GenerateContentResponse response,
+        ChatOptions? options, CancellationToken cancellationToken)
     {
         var chatResponse = response.ToChatResponse() ?? throw new GenerativeAIException("Failed to generate content",
             "The generative model response was null or could not be processed. Verify the API key, model name, input messages, and options for any issues.");
-        
-        if(!AutoCallFunction)
-            return chatResponse;
-        
-        var functionCall = chatResponse.GetFunction();
-        if (functionCall == null)
+
+        if (!AutoCallFunction)
             return chatResponse;
 
-        var tool = (AIFunction?) options.Tools.Where(s=>s is AIFunction).FirstOrDefault(s=>s.Name == functionCall.Name);
-        if (tool != null)
+        var functionCalls = chatResponse.GetFunctions();
+        if (functionCalls == null)
+            return chatResponse;
+        var contents = request.Contents;
+        List<FunctionResponse> functionResponses = new List<FunctionResponse>();
+        foreach (var functionCall in functionCalls)
         {
-            var result = await tool.InvokeAsync(new AIFunctionArguments(functionCall.Arguments), cancellationToken).ConfigureAwait(false);
-            if (result != null)
+            var tool = (AIFunction?)options.Tools.Where(s => s is AIFunction)
+                .FirstOrDefault(s => s.Name == functionCall.Name);
+            if (tool != null)
             {
-                var contents = request.Contents;
-                var content = response.Candidates?.FirstOrDefault()?.Content;
-                if (content != null)
-                    contents.Add(content);
-                var responseObject = new JsonObject();
-                responseObject["name"] = functionCall.Name;
-                responseObject["content"] = ((JsonElement)result).AsNode().DeepClone();
-                //responseObject["content"] = result as JsonNode;
-                var functionResponse = new FunctionResponse()
+                var result = await tool.InvokeAsync(new AIFunctionArguments(functionCall.Arguments), cancellationToken)
+                    .ConfigureAwait(false);
+                if (result != null)
                 {
-                    Name = tool.Name,
-                    Id = functionCall.CallId,
-                    Response = responseObject
-                };
-                var funcContent = new Content() { Role = Roles.Function };
-                funcContent.AddPart(new Part()
-                {
-                    FunctionResponse = functionResponse
-                });
-                contents.Add(funcContent);
-                
-                return await GetResponseAsync(contents.ToChatMessages().ToList(), options, cancellationToken).ConfigureAwait(false);
+                    var content = response.Candidates?.FirstOrDefault()?.Content;
+                    if (content != null)
+                        contents.Add(content);
+                    var responseObject = new JsonObject();
+                    responseObject["name"] = functionCall.Name;
+                    responseObject["content"] = ((JsonElement)result).AsNode().DeepClone();
+                    //responseObject["content"] = result as JsonNode;
+                    var functionResponse = new FunctionResponse()
+                    {
+                        Name = tool.Name,
+                        Id = functionCall.CallId,
+                        Response = responseObject
+                    };
+                    functionResponses.Add(functionResponse);
+                }
             }
+            
         }
+        var funcContent = new Content() { Role = Roles.Function };
+        funcContent.AddParts(functionResponses.Select(s => new Part()
+        {
+            FunctionResponse = s
+        }).ToList());
+        contents.Add(funcContent);
+        return await GetResponseAsync(contents.ToChatMessages().ToList(), options, cancellationToken)
+            .ConfigureAwait(false);
+
         return chatResponse;
     }
-    
-     private async IAsyncEnumerable<ChatResponseUpdate> CallFunctionStreamingAsync(GenerateContentRequest request,  GenerateContentResponse response, ChatOptions? options, CancellationToken cancellationToken)
+
+    private async IAsyncEnumerable<ChatResponseUpdate> CallFunctionStreamingAsync(GenerateContentRequest request,
+        GenerateContentResponse response, ChatOptions? options, CancellationToken cancellationToken)
     {
         var chatResponse = response.ToChatResponse() ?? throw new GenerativeAIException("Failed to generate content",
             "The generative model response was null or could not be processed. Verify the API key, model name, input messages, and options for any issues.");
-        
-        if(!AutoCallFunction)
-            yield break;
-        
-        var functionCall = chatResponse.GetFunction();
-        if (functionCall == null)
+
+        if (!AutoCallFunction)
             yield break;
 
-        var tool = (AIFunction?) options.Tools.Where(s=>s is AIFunction).FirstOrDefault(s=>s.Name == functionCall.Name);
-        if (tool != null)
+        var functionCalls = chatResponse.GetFunctions();
+        if (functionCalls == null)
+            yield break;
+
+        List<FunctionResponse> functionResponses = new List<FunctionResponse>();
+        List<Task> tasks = new List<Task>();
+        var contents = request.Contents;
+        foreach (var functionCall in functionCalls)
         {
-            var result = await tool.InvokeAsync(new AIFunctionArguments(functionCall.Arguments), cancellationToken).ConfigureAwait(false);
-            if (result != null)
+            var tool = (AIFunction?)options.Tools.Where(s => s is AIFunction)
+                .FirstOrDefault(s => s.Name == functionCall.Name);
+            if (tool != null)
             {
-                var contents = request.Contents;
-                var content = response.Candidates?.FirstOrDefault()?.Content;
-                if (content != null)
-                    contents.Add(content);
-                var responseObject = new JsonObject();
-                responseObject["name"] = functionCall.Name;
-                responseObject["content"] = ((JsonElement)result).AsNode().DeepClone();
-                //responseObject["content"] = result as JsonNode;
-                var functionResponse = new FunctionResponse()
+                var result = await tool.InvokeAsync(new AIFunctionArguments(functionCall.Arguments), cancellationToken)
+                    .ConfigureAwait(false);
+                if (result != null)
                 {
-                    Name = tool.Name,
-                    Id = functionCall.CallId,
-                    Response = responseObject
-                };
-                var funcContent = new Content() { Role = Roles.Function };
-                funcContent.AddPart(new Part()
-                {
-                    FunctionResponse = functionResponse
-                });
-                contents.Add(funcContent);
+                    var content = response.Candidates?.FirstOrDefault()?.Content;
+                    if (content != null)
+                        contents.Add(content);
+                    var responseObject = new JsonObject();
+                    responseObject["name"] = functionCall.Name;
+                    responseObject["content"] = ((JsonElement)result).AsNode().DeepClone();
+                    //responseObject["content"] = result as JsonNode;
+                    var functionResponse = new FunctionResponse()
+                    {
+                        Name = tool.Name,
+                        Id = functionCall.CallId,
+                        Response = responseObject
+                    };
 
-                await foreach (var res in GetStreamingResponseAsync(contents.ToChatMessages().ToList(), options,
-                                   cancellationToken).ConfigureAwait(false))
-                {
-                    yield return res;
+                    functionResponses.Add(functionResponse);
+                    //yield return GetResponseAsync(contents.ToChatMessages().ToList(), options, cancellationToken);
                 }
-                //yield return GetResponseAsync(contents.ToChatMessages().ToList(), options, cancellationToken);
             }
         }
+        
+        var funcContent = new Content() { Role = Roles.Function };
+        funcContent.AddParts(functionResponses.Select(s => new Part()
+        {
+            FunctionResponse = s
+        }));
+        contents.Add(funcContent);
+        
+        await foreach (var res in GetStreamingResponseAsync(contents.ToChatMessages().ToList(), options,
+                           cancellationToken).ConfigureAwait(false))
+        {
+            yield return res;
+        }
+
         yield break;
     }
 
@@ -176,9 +198,10 @@ public class GenerativeAIChatClient : IChatClient
             yield return lastResponse.ToChatResponseUpdate();
         }
 
-        if (lastResponse != null && lastResponse.GetFunction()!=null)
+        if (lastResponse != null && lastResponse.GetFunctions() != null)
         {
-            await foreach (var resp in CallFunctionStreamingAsync(request, lastResponse, options, cancellationToken).ConfigureAwait(false))
+            await foreach (var resp in CallFunctionStreamingAsync(request, lastResponse, options, cancellationToken)
+                               .ConfigureAwait(false))
             {
                 yield return resp;
             }

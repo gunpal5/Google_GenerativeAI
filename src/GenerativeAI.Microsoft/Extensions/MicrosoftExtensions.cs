@@ -539,12 +539,12 @@ public static class MicrosoftExtensions
     /// </summary>
     /// <param name="response">The <see cref="ChatResponse"/> object containing the messages and their associated contents.</param>
     /// <returns>A <see cref="FunctionCallContent"/> object if a function call is present; otherwise, null.</returns>
-    public static FunctionCallContent? GetFunction(this ChatResponse response)
+    public static List<FunctionCallContent>? GetFunctions(this ChatResponse response)
     {
         if (response == null)
             return null;
-        var aiFunction = (FunctionCallContent?)response.Messages.SelectMany(s => s.Contents)
-            .FirstOrDefault(s => s is FunctionCallContent);
-        return aiFunction;
+        var aiFunction = response.Messages
+            .SelectMany(s => s.Contents).OfType<FunctionCallContent>().ToList();
+        return aiFunction.Count>0 ? aiFunction : null;
     }
 }
