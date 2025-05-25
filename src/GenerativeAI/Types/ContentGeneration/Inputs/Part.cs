@@ -80,6 +80,12 @@ public class Part
     {
         this.Text = text;
     }
+    
+    /// <summary>
+    /// Indicates if the part is thought from the model.
+    /// </summary>
+    [JsonPropertyName("thought")]
+    public bool? Thought { get; set; }
 }
 
  /// <summary>

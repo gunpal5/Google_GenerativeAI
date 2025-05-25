@@ -14,6 +14,7 @@ public static class VertexAIModels
     /// </summary>
     public class Gemini
     {
+        
         /// <summary>
         /// Gemini 2.0 Flash model name.
         /// </summary>
@@ -43,6 +44,31 @@ public static class VertexAIModels
         /// Gemini 2.5 Flash Preview model name from April 17th release.
         /// </summary>
         public const string Gemini25FlashPreview0417 = "gemini-2.5-flash-preview-04-17";
+        
+        /// <summary>
+        /// Gemini 2.5 Flash Preview model name from May 20th release.
+        /// </summary>
+        public const string Gemini25FlashPreview0520 = "gemini-2.5-flash-preview-05-20";
+        
+        /// <summary>
+        /// Gemini 2.5 Flash Native Audio model name.
+        /// </summary>
+        public const string Gemini25FlashNativeAudioDialog = "gemini-2.5-flash-preview-native-audio-dialog";
+        
+        /// <summary>
+        /// Gemini 2.5 Flash Preview TTS model name.
+        /// </summary>
+        public const string Gemini25FlashPreviewTTS = "gemini-2.5-flash-preview-tts";
+        
+        /// <summary>
+        /// Gemini 2.5 Pro Preview model name from May 6th release.
+        /// </summary>
+        public const string Gemini25ProPreview0506 = "gemini-2.5-pro-preview-05-06";
+        
+        /// <summary>
+        /// Gemini 2.5 Pro Preview TTS model name.
+        /// </summary>
+        public const string Gemini25ProPreviewTTS = "gemini-2.5-pro-preview-tts";
 
         /// <summary>
         /// Gemini 2.0 Flash Exp 01-21 model name.

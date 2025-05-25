@@ -19,7 +19,7 @@ public class MicrosoftExtension_Tests
         // Arrange
         var options = new ChatOptions
         {
-            ChatThreadId = "test-thread-id",
+            //ChatThreadId = "test-thread-id",
             Temperature = 0.7f,
             MaxOutputTokens = 150,
             TopP = 0.9f,

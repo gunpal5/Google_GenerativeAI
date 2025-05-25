@@ -33,7 +33,14 @@ public static class GoogleAIModels
     /// Gemini 2.5 Pro Preview model name from March 25th release.
     /// </summary>
     public const string Gemini25ProPreview0325 = "gemini-2.5-pro-preview-03-25";
-
+    
+    /// <summary>
+    /// Gemini 2.5 Flash Preview 05-20 model name from March 25th release.
+    /// </summary>
+    public const string Gemini25ProPreview0520 = "gemini-2.5-flash-preview-05-20";
+    
+   
+    
     /// <summary>
     /// Gemini 2.0 Flash Live model name version 001.
     /// </summary>
@@ -43,6 +50,31 @@ public static class GoogleAIModels
     /// Gemini 2.5 Flash Preview model name from April 17th release.
     /// </summary>
     public const string Gemini25FlashPreview0417 = "gemini-2.5-flash-preview-04-17";
+    
+    /// <summary>
+    /// Gemini 2.5 Flash Preview Native Audio Dialog model name.
+    /// </summary>
+    public const string Gemini25FlashPreviewNativeAudioDialog = "gemini-2.5-flash-preview-native-audio-dialog";
+    
+    /// <summary>
+    /// Gemini 2.5 Flash Preview Native Audio Thinking Dialog model name.
+    /// </summary>
+    public const string Gemini25FlashPreviewNativeAudioThinkingDialog = "gemini-2.5-flash-exp-native-audio-thinking-dialog";
+    
+    /// <summary>
+    /// Gemini 2.5 Flash Preview TTS model name.
+    /// </summary>
+    public const string Gemini25FlashPreviewTts = "gemini-2.5-flash-preview-tts";
+    
+    /// <summary>
+    /// Gemini 2.5 Pro Preview TTS model name.
+    /// </summary>
+    public const string Gemini25ProPreviewTts = "gemini-2.5-pro-preview-tts";
+    
+    /// <summary>
+    /// Gemini 2.5 Pro Preview model name from May 6th release.
+    /// </summary>
+    public const string Gemini25ProPreview0506 = "gemini-2.5-pro-preview-05-06";
     
     /// <summary>
     /// Gemini 2.0 Flash Exp Image Generation model name.

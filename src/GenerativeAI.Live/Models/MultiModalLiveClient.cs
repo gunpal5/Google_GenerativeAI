@@ -25,7 +25,7 @@ public class MultiModalLiveClient : IDisposable
     #region Constants
 
     private const int DefaultSampleRate = 24000;
-    private const string DefaultAudioMimeType = "audio/pcm; rate=16000";
+    private const string DefaultAudioMimeType = "audio/pcm;rate=16000";
 
     #endregion
 

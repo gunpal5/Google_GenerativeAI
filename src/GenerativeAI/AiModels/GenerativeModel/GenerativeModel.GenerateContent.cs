@@ -124,7 +124,7 @@ public partial class GenerativeModel
         }
         if (lastResponse != null)
         {
-            if (lastResponse.GetFunction() != null)
+            if (lastResponse.GetFunctions() != null)
             {
                 await foreach (var relastResponse in CallFunctionStreamingAsync(request,lastResponse,cancellationToken).ConfigureAwait(false))
                 {

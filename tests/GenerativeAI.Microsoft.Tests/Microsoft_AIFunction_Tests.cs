@@ -81,10 +81,10 @@ public class Microsoft_AIFunction_Tests:TestBase
     {
         Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
         var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
-        var chatClient = new GenerativeAIChatClient(apiKey, modelName:"models/gemini-2.0-flash")
+        var chatClient = new GenerativeAIChatClient(apiKey, modelName: "models/gemini-2.0-flash")
         {
             AutoCallFunction = false
-        }.AsBuilder().UseFunctionInvocation().Build();
+        };
         var chatOptions = new ChatOptions();
         
         chatOptions.Tools = new List<AITool>{AIFunctionFactory.Create(GetStudentRecordAsync)};

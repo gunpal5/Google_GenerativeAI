@@ -208,11 +208,11 @@ public partial class GenerativeModel
         GenerateContentResponse response,
         CancellationToken cancellationToken)
     {
-        var functionCall = response.GetFunction();
+        var functionCall = response.GetFunctions();
         if (!FunctionCallingBehaviour.AutoCallFunction || functionCall == null)
             return response;
 
-        var functionResponse = await ExecuteFunctionAsync(functionCall,response).ConfigureAwait(false);
+        var functionResponse = await ExecuteFunctionsAsync(functionCall,response).ConfigureAwait(false);
         
         // var name = functionCall.Name ?? string.Empty;
         // string jsonResult;
@@ -277,11 +277,11 @@ public partial class GenerativeModel
         GenerateContentResponse response,
         CancellationToken cancellationToken)
     {
-        var functionCall = response.GetFunction();
+        var functionCalls = response.GetFunctions();
         
-        if (functionCall == null || !FunctionCallingBehaviour.AutoCallFunction) yield break;
+        if (functionCalls == null || !FunctionCallingBehaviour.AutoCallFunction) yield break;
         
-        var functionResponse = await ExecuteFunctionAsync(functionCall,response).ConfigureAwait(false);
+        var functionResponse = await ExecuteFunctionsAsync(functionCalls,response).ConfigureAwait(false);
 
         // If enabled, pass the function result back into the model
         if (FunctionCallingBehaviour.AutoReplyFunction)
@@ -303,43 +303,57 @@ public partial class GenerativeModel
         }
     }
 
-    private async Task<FunctionResponse> ExecuteFunctionAsync(FunctionCall functionCall, GenerateContentResponse response)
+    private async Task<List<FunctionResponse>> ExecuteFunctionsAsync(List<FunctionCall> functionCalls, GenerateContentResponse response)
     {
-        var name = functionCall.Name ?? string.Empty;
-        string jsonResult;
+        List<FunctionResponse> functionResponses = new List<FunctionResponse>();
+        List<Task> tasks = new List<Task>();
+        foreach (var functionCall in functionCalls)
+        { 
+            var name = functionCall.Name ?? string.Empty;
+            string jsonResult;
 
-        var tool = FunctionTools.FirstOrDefault(s => s.IsContainFunction(name));
-        FunctionResponse functionResponse;
-        if (tool == null)
-        {
-            if (!FunctionCallingBehaviour.AutoHandleBadFunctionCalls)
+            var tool = FunctionTools.FirstOrDefault(s => s.IsContainFunction(name));
+            FunctionResponse functionResponse;
+            
+            if (tool == null)
             {
-                throw new GenerativeAIException(
-                    $"AI Model called an invalid function: {name}",
-                    $"Invalid function_name: {name}");
+                if (!FunctionCallingBehaviour.AutoHandleBadFunctionCalls)
+                {
+                    throw new GenerativeAIException(
+                        $"AI Model called an invalid function: {name}",
+                        $"Invalid function_name: {name}");
+                }
+
+                // Marking the function name as invalid in the response
+                if (response.Candidates.Length > 0)
+                {
+                    response.Candidates[0].Content.Parts[0].FunctionCall!.Name = "InvalidName";
+                }
+
+                name = "InvalidName";
+                var node = JsonNode.Parse("{\"error\":\"Invalid function name or function doesn't exist.\"}");
+
+                functionResponse = new FunctionResponse()
+                {
+                    Name = name,
+                    Response = node
+                };
             }
-
-            // Marking the function name as invalid in the response
-            if (response.Candidates.Length > 0)
+            else
             {
-                response.Candidates[0].Content.Parts[0].FunctionCall!.Name = "InvalidName";
+                
+                var task = Task.Run(async () =>
+                {
+                    functionResponse = await tool.CallAsync(functionCall).ConfigureAwait(false);
+                    functionResponses.Add(functionResponse);
+                });
+                tasks.Add(task);
             }
-
-            name = "InvalidName";
-            var node = JsonNode.Parse("{\"error\":\"Invalid function name or function doesn't exist.\"}");
-
-            functionResponse = new FunctionResponse()
-            {
-                Name = name,
-                Response = node
-            };
+            
         }
-        else
-        {
-            functionResponse = await tool.CallAsync(functionCall).ConfigureAwait(false);
-        }
-        
-        return functionResponse;
+
+        await Task.WhenAll(tasks.ToArray()).ConfigureAwait(false);
+        return functionResponses;
     }
 
     /// <summary>

@@ -11,6 +11,7 @@
 
     <ItemGroup>
         <PackageReference Include="Bogus" Version="35.6.1" />
+        <PackageReference Include="Microsoft.Extensions.AI" Version="9.5.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.0-preview-25107-01" />
         <PackageReference Include="xunit.runner.visualstudio" Version="3.0.2">
           <PrivateAssets>all</PrivateAssets>
