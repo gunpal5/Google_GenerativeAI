@@ -74,6 +74,7 @@ public static class MicrosoftExtensions
             else
                 return schema.ToSchema();
         }
+
         return null;
     }
 
@@ -193,6 +194,7 @@ public static class MicrosoftExtensions
                 }
             }
         }
+
         if (response is JsonNode node)
         {
             return node;
@@ -257,6 +259,22 @@ public static class MicrosoftExtensions
             config.ResponseLogprobs = responseProbs;
         if (options.AdditionalProperties.TryGetValue("Logprobs", out int? logProbs))
             config.Logprobs = logProbs;
+
+        if (options.AdditionalProperties.TryGetValue(AdditionalPropertiesKeys.ThinkingBudget, out int? thinkingBudget))
+        {
+            if (config.ThinkingConfig == null)
+                config.ThinkingConfig = new ThinkingConfig();
+            config.ThinkingConfig.ThinkingBudget = thinkingBudget;
+        }
+
+        if (options.AdditionalProperties.TryGetValue(AdditionalPropertiesKeys.ThinkingConfigIncludeThoughts,
+                out bool? includeThoughts))
+        {
+            if (config.ThinkingConfig == null)
+                config.ThinkingConfig = new ThinkingConfig();
+            config.ThinkingConfig.IncludeThoughts = includeThoughts;
+        }
+
         return config;
     }
 
@@ -545,6 +563,6 @@ public static class MicrosoftExtensions
             return null;
         var aiFunction = response.Messages
             .SelectMany(s => s.Contents).OfType<FunctionCallContent>().ToList();
-        return aiFunction.Count>0 ? aiFunction : null;
+        return aiFunction.Count > 0 ? aiFunction : null;
     }
 }

@@ -88,6 +88,7 @@ public class Microsoft_ChatClient_Tests : TestBase
         var adapter = CreateTestPlatformAdapter();
         var client = new GenerativeAIChatClient(adapter);
 
+        
         // Act & Assert
         await Should.ThrowAsync<ArgumentNullException>(async () =>
         {
