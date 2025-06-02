@@ -1,3 +1,5 @@
+using GenerativeAI.Types;
+
 namespace GenerativeAI.Live;
 
 /// <summary>
@@ -14,6 +16,9 @@ public class AudioBufferReceivedEventArgs : EventArgs
     /// Gets or sets the header information for the audio data.
     /// </summary>
     public AudioHeaderInfo HeaderInfo { get; set; }
+    
+    public Transcription? InputTranscription { get; set; }
+    public Transcription? OutputTranscription { get; set; }
 
     public AudioBufferReceivedEventArgs(byte[] buffer, AudioHeaderInfo audioHeaderInfo)
     {

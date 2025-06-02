@@ -3,7 +3,9 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using System.Windows;
+using System.Windows.Forms.VisualStyles;
 using GenerativeAI;
 using GenerativeAI.Live;
 using GenerativeAI.Types;
@@ -26,6 +28,28 @@ public partial class MainWindow : FluentWindow, INotifyPropertyChanged
     private ModelResponse? _currentResponse;
     private readonly NAudioHelper _audioHelper = new();
 
+    public string InputTranscript
+    {
+        get => _inputTranscript;
+        set
+        {
+            if (value == _inputTranscript) return;
+            _inputTranscript = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public string OutputTranscript
+    {
+        get => _outputTranscript;
+        set
+        {
+            if (value == _outputTranscript) return;
+            _outputTranscript = value;
+            OnPropertyChanged();
+        }
+    }
+
     public bool IsRecording
     {
         get => _isRecording;
@@ -37,8 +61,12 @@ public partial class MainWindow : FluentWindow, INotifyPropertyChanged
         }
     }
 
+    private const string Model = "gemini-2.0-flash-live-001";
+
     private CancellationTokenSource? _cancellationTokenSource;
     private bool _isRecording = false;
+    private string _inputTranscript;
+    private string _outputTranscript;
 
     /// <summary>
     /// Gets or sets the collection of model responses displayed in the UI.
@@ -161,7 +189,14 @@ public partial class MainWindow : FluentWindow, INotifyPropertyChanged
 
             RegisterClientEvents();
 
-            await _multiModalLiveClient.ConnectAsync(true, cancellationToken);
+            await _multiModalLiveClient.ConnectAsync(false, cancellationToken);
+            await _multiModalLiveClient.SendSetupAsync(new BidiGenerateContentSetup()
+            {
+                Model = Model.ToModelId(),
+                GenerationConfig = config,
+                OutputAudioTranscription = new AudioTranscriptionConfig(),
+                InputAudioTranscription = new AudioTranscriptionConfig()
+            }, cancellationToken);
             StartRecording(device); //No need to pass cancellation token, as it's handled within StartRecording
             btnStartChat.Content = AppConstants.StopChatText;
         }
@@ -212,6 +247,24 @@ public partial class MainWindow : FluentWindow, INotifyPropertyChanged
             }
         };
 
+        _multiModalLiveClient.TextChunkReceived += (sender, args) =>
+        {
+            Console.WriteLine(args.Text);
+        };
+        _multiModalLiveClient.InputTranscriptionReceived += (sender, args) =>
+        {
+            InputTranscript = $"{InputTranscript}{args.Text}";
+        };
+        
+        _multiModalLiveClient.OutputTranscriptionReceived += (sender, args) =>
+        {
+            OutputTranscript = $"{OutputTranscript}{args.Text}";
+        };
+
+        _multiModalLiveClient.SessionResumableUpdateReceived += (sender, args) =>
+        {
+            Console.WriteLine(JsonSerializer.Serialize(args));
+        };
         _multiModalLiveClient.AudioChunkReceived += (sender, args) =>
         {
             Dispatcher.Invoke(() => // Batch UI updates for better performance
@@ -237,6 +290,7 @@ public partial class MainWindow : FluentWindow, INotifyPropertyChanged
             _audioHelper.ClearPlayback(); //Consider if this needs to be inside the Dispatcher.Invoke
             var tmpFile = Path.GetTempFileName() + ".wav";
 
+           
             //Consider handling IOException
             try
             {

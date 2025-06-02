@@ -213,6 +213,10 @@ namespace GenerativeAI.Types;
 [JsonSerializable(typeof(JsonElement))]
 [JsonSerializable(typeof(JsonObject))]
 [JsonSerializable(typeof(ClientSecrets))]
+[JsonSerializable(typeof(Transcription))]
+[JsonSerializable(typeof(UrlRetrievalStatus))]
+[JsonSerializable(typeof(UrlMetadata))]
+[JsonSerializable(typeof(UrlContextMetadata))]
 //Video Generation
 [JsonSerializable(typeof(GeneratedVideo))]
 [JsonSerializable(typeof(GenerateVideosConfig))]
@@ -237,6 +241,8 @@ namespace GenerativeAI.Types;
 [JsonSerializable(typeof(AutoRoutingMode))]
 [JsonSerializable(typeof(RoutingConfig))]
 [JsonSerializable(typeof(ModelRoutingPreference))]
+[JsonSerializable(typeof(AudioTranscriptionConfig))]
+
 [JsonSourceGenerationOptions(WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull, UseStringEnumConverter = true)]
 public partial class TypesSerializerContext : JsonSerializerContext
 {

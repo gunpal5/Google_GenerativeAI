@@ -27,4 +27,16 @@ public class BidiResponsePayload
     /// </summary>
     [JsonPropertyName("toolCallCancellation")]
     public BidiGenerateContentToolCallCancellation? ToolCallCancellation { get; set; }
+    
+    /// <summary>
+    /// Gets or sets a notification that server will disconnect soon.
+    /// </summary>
+    [JsonPropertyName("goAway")]
+    public LiveServerGoAway? GoAway { get; set; }
+
+    /// <summary>
+    /// Gets or sets an update of the session resumption state.
+    /// </summary>
+    [JsonPropertyName("sessionResumptionUpdate")]
+    public LiveServerSessionResumptionUpdate? SessionResumptionUpdate { get; set; }
 }

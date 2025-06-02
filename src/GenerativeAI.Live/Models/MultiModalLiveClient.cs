@@ -169,7 +169,35 @@ public class MultiModalLiveClient : IDisposable
     /// </summary>
     public event EventHandler<ErrorEventArgs>? ErrorOccurred;
 
+    /// <summary>
+    /// Event triggered when a chunk of text is received from the server during the live API session.
+    /// </summary>
     public event EventHandler<TextChunkReceivedArgs>? TextChunkReceived;
+
+    /// <summary>
+    /// Event triggered upon receiving input transcription data.
+    /// </summary>
+    public event EventHandler<Transcription>? InputTranscriptionReceived;
+
+    /// <summary>
+    /// An event triggered when an output transcription is received from the system.
+    /// </summary>
+    public event EventHandler<Transcription>? OutputTranscriptionReceived;
+
+    /// <summary>
+    /// Message sent by the server to indicate that the current connection should be terminated
+    /// and the client should cease sending further requests on this stream.
+    /// This is often used for graceful shutdown or when the server is no longer able to
+    /// process requests on the current stream.
+    /// </summary>
+    public event EventHandler<LiveServerGoAway>? GoAwayReceived;
+
+    /// <summary>
+    /// Occurs when the server sends an update that allows the current session to be resumed.
+    /// This event provides information related to session resumption, enabling the client to continue
+    /// an existing session without starting over.
+    /// </summary>
+    public event EventHandler<LiveServerSessionResumptionUpdate>? SessionResumableUpdateReceived; 
 
     #endregion
 
@@ -202,6 +230,10 @@ public class MultiModalLiveClient : IDisposable
             }
             ProcessTextChunk(responsePayload);
             ProcessAudioChunk(responsePayload);
+            ProcessInputTranscription(responsePayload);
+            ProcessOutputTranscription(responsePayload);
+            ProcessSessionResumableUpdate(responsePayload);
+            ProcessGoAway(responsePayload);
            
             MessageReceived?.Invoke(this, new MessageReceivedEventArgs(responsePayload));
         }
@@ -255,12 +287,15 @@ public class MultiModalLiveClient : IDisposable
         {
             var audioBlobs = responsePayload.ServerContent.ModelTurn.Parts
                 .Where(p => p.InlineData?.MimeType?.Contains("audio") == true)
-                .Select(p => p.InlineData!)
+                
                 .ToList();
 
             foreach (var blob in audioBlobs)
             {
-                ProcessAudioBlob(blob);
+                if (blob.InlineData != null)
+                {
+                    ProcessAudioBlob(blob.InlineData);
+                }
             }
         }
 
@@ -293,7 +328,8 @@ public class MultiModalLiveClient : IDisposable
             this._lastHeaderInfo = headerInfo;
 
             var bufferReceived = new AudioBufferReceivedEventArgs(audioBuffer, headerInfo);
-
+        
+            
             _audioBuffer.AddRange(audioBuffer);
             _logger?.LogAudioChunkReceived(sampleRate, hasHeader, bufferReceived.Buffer.Length);
             AudioChunkReceived?.Invoke(this, bufferReceived);
@@ -347,6 +383,38 @@ public class MultiModalLiveClient : IDisposable
         _audioBuffer.Clear();
     }
 
+    private void ProcessInputTranscription(BidiResponsePayload responsePayload)
+    {
+        if (responsePayload.ServerContent?.InputTranscription != null)
+        {
+            InputTranscriptionReceived?.Invoke(this, responsePayload.ServerContent.InputTranscription);
+        }
+    }
+    
+    private void ProcessOutputTranscription(BidiResponsePayload responsePayload)
+    {
+        if (responsePayload.ServerContent?.OutputTranscription != null)
+        {
+            OutputTranscriptionReceived?.Invoke(this, responsePayload.ServerContent.OutputTranscription);
+        }
+    }
+    
+    private void ProcessSessionResumableUpdate(BidiResponsePayload responsePayload)
+    {
+        if (responsePayload.SessionResumptionUpdate != null)
+        {
+            SessionResumableUpdateReceived?.Invoke(this, responsePayload.SessionResumptionUpdate);
+        }
+    }
+    
+    private void ProcessGoAway(BidiResponsePayload responsePayload)
+    {
+        if (responsePayload.GoAway != null)
+        {
+            GoAwayReceived?.Invoke(this, responsePayload.GoAway);
+        }
+    }
+    
     private async Task CallFunctions(BidiGenerateContentToolCall responsePayloadToolCall,
         CancellationToken cancellationToken = default)
     {
@@ -531,6 +599,8 @@ public class MultiModalLiveClient : IDisposable
     /// </returns>
     public async Task SendSetupAsync(BidiGenerateContentSetup setup, CancellationToken cancellationToken = default)
     {
+        if(!setup.Model.Contains("/"))
+            throw new ArgumentException("Please provide a valid model name such as 'models/gemini-2.0-flash-live-001'.");
         var payload = new BidiClientPayload { Setup = setup };
         await SendAsync(payload, cancellationToken).ConfigureAwait(false);
     }

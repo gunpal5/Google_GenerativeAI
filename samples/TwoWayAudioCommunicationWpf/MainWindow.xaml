@@ -53,6 +53,14 @@
                 </StackPanel>
                
             </ui:Card>
+            <StackPanel DockPanel.Dock="Bottom">
+                <TextBlock Text="Input Transcript" Margin="0,0,0,8"></TextBlock>
+                <TextBox TextWrapping="Wrap" Text="{Binding InputTranscript}" Height="100"></TextBox>
+            </StackPanel>
+            <StackPanel DockPanel.Dock="Bottom">
+                <TextBlock Text="Input Transcript" Margin="0,0,0,8"></TextBlock>
+                <TextBox TextWrapping="Wrap" Text="{Binding OutputTranscript}" Height="100"></TextBox>
+            </StackPanel>
             <ListBox x:Name="Responses" ItemsSource="{Binding ModelResponses, ElementName=Window}"
                      VerticalAlignment="Stretch"
                      BorderThickness="0"

@@ -14,7 +14,6 @@ public class BidiGenerateContentServerContent
     /// </summary>
     [JsonPropertyName("turnComplete")]
     public bool? TurnComplete { get; set; }
-
     /// <summary>
     /// Output only. If true, indicates that a client message has interrupted current model generation. If the client is playing out the content in real time, this is a good signal to stop and empty the current playback queue.
     /// </summary>
@@ -32,4 +31,96 @@ public class BidiGenerateContentServerContent
     /// </summary>
     [JsonPropertyName("modelTurn")]
     public Content? ModelTurn { get; set; }
+    
+    /// <summary>
+    /// Output only. If true, indicates that the model has completed generating all content for the current request.
+    /// </summary>
+    [JsonPropertyName("generationComplete")]
+    public bool? GenerationComplete { get; set; }
+    
+    /// <summary>
+    /// Output only. Transcription of the input content.
+    /// </summary>
+    [JsonPropertyName("inputTranscription")]
+    public Transcription? InputTranscription { get; set; }
+    
+    /// <summary>
+    /// Output only. Transcription of the output content.
+    /// </summary>
+    [JsonPropertyName("outputTranscription")]
+    public Transcription? OutputTranscription { get; set; }
+    
+    /// <summary>
+    /// Output only. Metadata for URL context.
+    /// </summary>
+    [JsonPropertyName("urlContextMetadata")]
+    public UrlContextMetadata? UrlContextMetadata { get; set; }
+}
+
+/// <summary>
+/// Audio transcription in Server Content.
+/// </summary>
+public class Transcription
+{
+    /// <summary>
+    /// The bool indicates the end of the transcription.
+    /// </summary>
+    [JsonPropertyName("finished")]
+    public bool? Finished { get; set; }
+
+    /// <summary>
+    /// Transcription text.
+    /// </summary>
+    [JsonPropertyName("text")]
+    public string? Text { get; set; }
+}
+/// <summary>
+/// Status of the url retrieval.
+/// </summary>
+public enum UrlRetrievalStatus
+{
+    /// <summary>
+    /// Default value. This value is unused.
+    /// </summary>
+    URL_RETRIEVAL_STATUS_UNSPECIFIED,
+
+    /// <summary>
+    /// Url retrieval is successful.
+    /// </summary>
+    URL_RETRIEVAL_STATUS_SUCCESS,
+
+    /// <summary>
+    /// Url retrieval is failed due to error.
+    /// </summary>
+    URL_RETRIEVAL_STATUS_ERROR
+}
+
+/// <summary>
+/// Context for a single url retrieval.
+/// </summary>
+public class UrlMetadata
+{
+    /// <summary>
+    /// The URL retrieved by the tool.
+    /// </summary>
+    [JsonPropertyName("retrievedUrl")]
+    public string? RetrievedUrl { get; set; }
+
+    /// <summary>
+    /// Status of the url retrieval.
+    /// </summary>
+    [JsonPropertyName("urlRetrievalStatus")]
+    public UrlRetrievalStatus? UrlRetrievalStatus { get; set; }
+}
+
+/// <summary>
+/// Metadata related to url context retrieval tool.
+/// </summary>
+public class UrlContextMetadata
+{
+    /// <summary>
+    /// List of url context.
+    /// </summary>
+    [JsonPropertyName("urlMetadata")]
+    public List<UrlMetadata>? UrlMetadata { get; set; }
 }

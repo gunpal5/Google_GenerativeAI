@@ -45,12 +45,102 @@ public class BidiGenerateContentSetup
     public Tool[]? Tools { get; set; }
 
     [JsonPropertyName("outputAudioTranscription")]
-    public OutputAudioTranscription? OutputAudioTranscription { get; set; } = new OutputAudioTranscription();
+    public AudioTranscriptionConfig? OutputAudioTranscription { get; set; } 
 
     [JsonPropertyName("inputAudioTranscription")]
-    public OutputAudioTranscription? InputAudioTranscription { get; set; }
+    public AudioTranscriptionConfig? InputAudioTranscription { get; set; }
+    /// <summary>
+    /// Configures context window compression mechanism. If included, server will compress context window to fit into given length.
+    /// </summary>
+    [JsonPropertyName("contextWindowCompression")]
+    public ContextWindowCompressionConfig? ContextWindowCompression { get; set; }
+    
+    /// <summary>
+    /// Configures the proactivity of the model. This allows the model to respond proactively to the input and to ignore irrelevant input.
+    /// </summary>
+    [JsonPropertyName("proactivity")]
+    public ProactivityConfig? Proactivity { get; set; }
+
+    /// <summary>
+    /// Configures session resumption mechanism. If included server will send SessionResumptionUpdate messages.
+    /// </summary>
+    [JsonPropertyName("sessionResumption")]
+    public SessionResumptionConfig? SessionResumption { get; set; }
+
 }
-public class OutputAudioTranscription
+
+/// <summary>
+/// Configures context window compression mechanism. If included, server will compress context window to fit into given length.
+/// </summary>
+public class ContextWindowCompressionConfig
+{
+    /// <summary>
+    /// Sliding window compression mechanism.
+    /// </summary>
+    [JsonPropertyName("slidingWindow")]
+    public SlidingWindow? SlidingWindow { get; set; }
+
+    /// <summary>
+    /// Number of tokens (before running turn) that triggers context window compression mechanism.
+    /// </summary>
+    [JsonPropertyName("triggerTokens")]
+    public int? TriggerTokens { get; set; }
+}
+
+/// <summary>
+/// Context window will be truncated by keeping only suffix of it.
+/// Context window will always be cut at start of USER role turn. System
+/// instructions and BidiGenerateContentSetup.prefix_turns will not be
+/// subject to the sliding window mechanism, they will always stay at the
+/// beginning of context window.
+/// </summary>
+public class SlidingWindow
+{
+    /// <summary>
+    /// Session reduction target -- how many tokens we should keep. Window shortening operation has some latency costs,
+    /// so we should avoid running it on every turn. Should be &lt; trigger_tokens. If not set, trigger_tokens/2 is assumed.
+    /// </summary>
+    [JsonPropertyName("targetTokens")]
+    public int? TargetTokens { get; set; }
+}
+
+/// <summary>
+/// Configuration of session resumption mechanism.
+/// Included in LiveConnectConfig.session_resumption. If included server
+/// will send LiveServerSessionResumptionUpdate messages.
+/// </summary>
+public class SessionResumptionConfig
+{
+    /// <summary>
+    /// Session resumption handle of previous session (session to restore).
+    /// If not present new session will be started.
+    /// </summary>
+    [JsonPropertyName("handle")]
+    public string? Handle { get; set; }
+
+    /// <summary>
+    /// If set the server will send last_consumed_client_message_index in the session_resumption_update messages
+    /// to allow for transparent reconnections.
+    /// </summary>
+    [JsonPropertyName("transparent")]
+    public bool? Transparent { get; set; }
+}
+
+
+
+
+/// <summary>
+/// Configures the proactivity of the model.
+/// </summary>
+public class ProactivityConfig
+{
+    // Add properties for ProactivityConfig if available
+    [JsonPropertyName("proactiveAudio")]
+    public bool? ProactiveAudio { get; set; }
+}
+
+
+public class AudioTranscriptionConfig
 {
 
 }
