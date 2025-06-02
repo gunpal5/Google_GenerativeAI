@@ -48,6 +48,12 @@ public class GoogleServiceAccountAuthenticator : BaseAuthenticator
         _credential.Scopes = _scopes;
     }
 
+    public GoogleServiceAccountAuthenticator(Stream stream)
+    {
+        _credential = ServiceAccountCredential.FromServiceAccountData(stream);
+        _credential.Scopes = _scopes;
+    }
+
     public override async Task<AuthTokens> GetAccessTokenAsync(CancellationToken cancellationToken = default)
     {
         var token = await _credential.GetAccessTokenForRequestAsync(cancellationToken:cancellationToken).ConfigureAwait(false);
