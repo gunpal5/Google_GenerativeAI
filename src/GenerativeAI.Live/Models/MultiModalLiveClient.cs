@@ -429,6 +429,11 @@ public class MultiModalLiveClient : IDisposable
                 _logger?.LogConnectionClosedWithError(info.Type, info.Exception!);
                 ErrorOccurred?.Invoke(this, new ErrorEventArgs(info.Exception!)); 
             }
+            else if (info.CloseStatus == WebSocketCloseStatus.InvalidPayloadData)
+            {
+                //log info.CloseStatusDescription
+                _logger?.LogConnectionClosedWithInvalidPyload(info.CloseStatusDescription!);
+            }
             else
             {
                 _logger?.LogConnectionClosed();
