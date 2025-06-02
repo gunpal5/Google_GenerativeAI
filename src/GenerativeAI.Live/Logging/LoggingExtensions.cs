@@ -47,4 +47,7 @@ public static partial class MultiModalLiveClientLoggingExtensions
 
     [LoggerMessage(EventId = 112, Level = LogLevel.Information, Message = "Calling function: {FunctionName}")]
     public static partial void LogFunctionCall(this ILogger logger, string functionName);
+
+    [LoggerMessage(EventId = 113, Level = LogLevel.Error, Message = "WebSocket connection closed caused by invalid payload: {CloseStatusDescription}")]
+    public static partial void LogConnectionClosedWithInvalidPyload(this ILogger logger, string closeStatusDescription);
 }
