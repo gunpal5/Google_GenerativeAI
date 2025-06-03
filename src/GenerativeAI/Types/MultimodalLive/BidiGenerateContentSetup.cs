@@ -44,9 +44,15 @@ public class BidiGenerateContentSetup
     [JsonPropertyName("tools")]
     public Tool[]? Tools { get; set; }
 
+    /// <summary>
+    /// Configures output audio transcription settings.
+    /// </summary>
     [JsonPropertyName("outputAudioTranscription")]
-    public AudioTranscriptionConfig? OutputAudioTranscription { get; set; } 
+    public AudioTranscriptionConfig? OutputAudioTranscription { get; set; }
 
+    /// <summary>
+    /// Configures input audio transcription settings.
+    /// </summary>
     [JsonPropertyName("inputAudioTranscription")]
     public AudioTranscriptionConfig? InputAudioTranscription { get; set; }
     /// <summary>
