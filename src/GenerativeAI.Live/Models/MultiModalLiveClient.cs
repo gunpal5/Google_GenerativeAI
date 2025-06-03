@@ -105,6 +105,10 @@ public class MultiModalLiveClient : IDisposable
     /// </summary>
     public bool UseCodeExecutor { get; set; } = false;
 
+    public bool InputAudioTranscriptionEnabled { get; set; } = false;
+
+    public bool OutputAudioTranscriptionEnabled { get; set; } = false;
+
     #endregion
 
     #region Constructors
@@ -115,6 +119,7 @@ public class MultiModalLiveClient : IDisposable
     public MultiModalLiveClient(IPlatformAdapter platformAdapter, string modelName, GenerationConfig? config = null,
         ICollection<SafetySetting>? safetySettings = null,
         string? systemInstruction = null,
+        bool inputAudioTranscriptionEnabled = false, bool outputAudioTranscriptionEnabled = false,
         ILogger? logger = null)
     {
         _platformAdapter = platformAdapter ?? throw new ArgumentNullException(nameof(platformAdapter));
@@ -123,6 +128,8 @@ public class MultiModalLiveClient : IDisposable
         {
             ResponseModalities = new List<Modality> { Modality.TEXT }
         };
+        InputAudioTranscriptionEnabled = inputAudioTranscriptionEnabled;
+        OutputAudioTranscriptionEnabled = outputAudioTranscriptionEnabled;
         SafetySettings = safetySettings;
         SystemInstruction = systemInstruction;
         _connectionId = Guid.NewGuid();
@@ -550,6 +557,8 @@ public class MultiModalLiveClient : IDisposable
                  ? new Content(this.SystemInstruction, Roles.System)
                  : null,
             Tools = tools.Count > 0 ? tools.ToArray() : null,
+            InputAudioTranscription = InputAudioTranscriptionEnabled ? new AudioTranscriptionConfig(): null,
+            OutputAudioTranscription = OutputAudioTranscriptionEnabled ? new AudioTranscriptionConfig() : null,
         };
         await SendSetupAsync(setup, cancellationToken).ConfigureAwait(false);
     }
