@@ -111,7 +111,7 @@ our [Wiki Page](https://github.com/gunpal5/Google_GenerativeAI/wiki/initializati
 3. **Initialize GoogleAI**  
    Provide the API key when creating an instance of the GoogleAI class:
    ```csharp
-   var googleAI = new GoogleAI("Your_API_Key");
+   var googleAI = new GoogleAi("Your_API_Key");
    ```
 
 4. **Obtain a GenerativeModel**  
@@ -130,7 +130,7 @@ our [Wiki Page](https://github.com/gunpal5/Google_GenerativeAI/wiki/initializati
 
    ```csharp
    var apiKey = "YOUR_GOOGLE_API_KEY";
-   var googleAI = new GoogleAI(apiKey);
+   var googleAI = new GoogleAi(apiKey);
 
    var googleModel = googleAI.CreateGenerativeModel("models/gemini-1.5-flash");
    var googleResponse = await googleModel.GenerateContentAsync("How is the weather today?");
@@ -195,8 +195,8 @@ Below is an example using the model name "gemini-1.5-flash":
 ```csharp
 // Example: Starting a chat session with a Google AI GenerativeModel
 
-// 1) Initialize your AI instance (GoogleAI) with credentials or environment variables
-var googleAI = new GoogleAI("YOUR_GOOGLE_API_KEY");
+// 1) Initialize your AI instance (GoogleAi) with credentials or environment variables
+var googleAI = new GoogleAi("YOUR_GOOGLE_API_KEY");
 
 // 2) Create a GenerativeModel using the model name "gemini-1.5-flash"
 var generativeModel = googleAI.CreateGenerativeModel("models/gemini-1.5-flash");
