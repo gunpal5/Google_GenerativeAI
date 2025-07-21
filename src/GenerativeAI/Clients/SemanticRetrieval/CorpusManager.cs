@@ -42,6 +42,11 @@ public class CorporaManager : BaseClient
     public CorporaManager(IPlatformAdapter platform, HttpClient? httpClient, ILogger? logger = null) : base(platform,
         httpClient, logger)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(platform);
+#else
+        if (platform == null) throw new ArgumentNullException(nameof(platform));
+#endif
         if (platform.Authenticator == null)
             throw new GenerativeAIException("Google Authenticator is required for Corpus Manager to work. .",
                 "Please provide an instance of GoogleAuthenticator to the constructor of Corpus Manager to work.");
@@ -195,6 +200,13 @@ public class CorporaManager : BaseClient
     public async Task<Chunk?> AddChunkAsync(string documentName, Chunk chunk,
         CancellationToken cancellationToken = default)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(documentName);
+        ArgumentNullException.ThrowIfNull(chunk);
+#else
+        if (documentName == null) throw new ArgumentNullException(nameof(documentName));
+        if (chunk == null) throw new ArgumentNullException(nameof(chunk));
+#endif
         if (ChunkClient == null)
             throw new InvalidOperationException("ChunkClient is not initialized");
         return await ChunkClient.CreateChunkAsync(documentName, chunk, cancellationToken).ConfigureAwait(false);
@@ -210,6 +222,11 @@ public class CorporaManager : BaseClient
     public async Task<List<Chunk>?> AddChunksAsync(string documentName, List<Chunk> chunks,
         CancellationToken cancellationToken = default)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(chunks);
+#else
+        if (chunks == null) throw new ArgumentNullException(nameof(chunks));
+#endif
         var chunksResponsRequests = chunks.Select(chunk => new CreateChunkRequest() { Chunk = chunk, Parent = documentName })
             .ToList();
         if (ChunkClient == null)

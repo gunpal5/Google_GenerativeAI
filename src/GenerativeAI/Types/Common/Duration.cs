@@ -39,6 +39,11 @@ public class Duration
     /// <param name="duration">The <see cref="Duration"/> object to convert.</param>
     public static implicit operator TimeSpan(Duration duration)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(duration);
+#else
+        if (duration == null) throw new ArgumentNullException(nameof(duration));
+#endif
         return duration.ToTimeSpan();
     }
 
@@ -87,6 +92,13 @@ public class DurationJsonConverter : JsonConverter<Duration>
     /// <inheritdoc/>
     public override void Write(Utf8JsonWriter writer, Duration value, JsonSerializerOptions options)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(writer);
+        ArgumentNullException.ThrowIfNull(value);
+#else
+        if (writer == null) throw new ArgumentNullException(nameof(writer));
+        if (value == null) throw new ArgumentNullException(nameof(value));
+#endif
         // Convert seconds and nanoseconds to a duration string with the specified format
         var duration = (double)value.Seconds + (double)value.Nanos / 1_000_000_000;
         writer.WriteStringValue($"{duration:F9}s");

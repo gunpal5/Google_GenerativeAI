@@ -47,6 +47,11 @@ namespace GenerativeAI
         public async Task<GenerateVideosOperation?> GenerateVideosAsync(GenerateVideosRequest request,
             CancellationToken cancellationToken = default)
         {
+#if NET6_0_OR_GREATER
+            ArgumentNullException.ThrowIfNull(request);
+#else
+            if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
             var modelId = this.ModelName.ToModelId();
             var url = $"{_platform.GetBaseUrl()}/{modelId}:predictLongRunning";
 

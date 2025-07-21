@@ -9,6 +9,7 @@ namespace GenerativeAI;
 /// to integrate with Google AI Generative API. It handles authorization, URL generation, and
 /// credential management for making requests to the Google AI platform.
 /// </summary>
+// ReSharper disable once InconsistentNaming
 public class GoogleAIPlatformAdapter : IPlatformAdapter
 {
     /// <summary>
@@ -23,7 +24,7 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
     /// By default, this property is initialized to the URL specified in <see cref="BaseUrls.GoogleGenerativeAI"/>.
     /// It serves as the foundational endpoint for constructing resource-specific URLs.
     /// </summary>
-    public string BaseUrl { get; set; } = BaseUrls.GoogleGenerativeAI;
+    private string BaseUrl { get; set; } = BaseUrls.GoogleGenerativeAI;
 
     /// <summary>
     /// Gets or sets the API version used for constructing API request URLs in the integration
@@ -61,6 +62,11 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
     public async Task AddAuthorizationAsync(HttpRequestMessage request, bool requireAccessToken,
         CancellationToken cancellationToken = default)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         if (!requireAccessToken)
         {
             await this.ValidateCredentialsAsync(cancellationToken).ConfigureAwait(false);

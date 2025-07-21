@@ -195,6 +195,11 @@ public class VertextPlatformAdapter : IPlatformAdapter
     public async Task AddAuthorizationAsync(HttpRequestMessage request, bool requireAccessToken,
         CancellationToken cancellationToken = default)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         if (this.Credentials == null || this.Credentials.AuthToken == null)
         {
             await this.AuthorizeAsync(cancellationToken).ConfigureAwait(false);

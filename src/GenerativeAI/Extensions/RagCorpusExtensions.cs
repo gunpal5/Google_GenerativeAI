@@ -16,6 +16,11 @@ public static class RagCorpusExtensions
     public static void AddPinecone(this RagCorpus corpus, RagVectorDbConfigPinecone config,
         string apiKeySecretResourceName)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(corpus);
+#else
+        if (corpus == null) throw new ArgumentNullException(nameof(corpus));
+#endif
         corpus.VectorDbConfig = new RagVectorDbConfig()
         {
             Pinecone = config,
@@ -38,6 +43,11 @@ public static class RagCorpusExtensions
     public static void AddWeaviate(this RagCorpus corpus, RagVectorDbConfigWeaviate config,
         string apiKeySecretResourceName)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(corpus);
+#else
+        if (corpus == null) throw new ArgumentNullException(nameof(corpus));
+#endif
         corpus.VectorDbConfig = new RagVectorDbConfig()
         {
             Weaviate = config,
@@ -58,6 +68,11 @@ public static class RagCorpusExtensions
     /// <param name="config">The <see cref="RagVectorDbConfigVertexFeatureStore"/> containing Vertex AI Feature Store-specific settings.</param>
     public static void AddVertexFeatureStore(this RagCorpus corpus, RagVectorDbConfigVertexFeatureStore config)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(corpus);
+#else
+        if (corpus == null) throw new ArgumentNullException(nameof(corpus));
+#endif
         corpus.VectorDbConfig = new RagVectorDbConfig()
         {
             VertexFeatureStore = config
@@ -71,6 +86,11 @@ public static class RagCorpusExtensions
     /// <param name="config">The <see cref="RagVectorDbConfigVertexVectorSearch"/> containing Vertex Vector Search-specific settings.</param>
     public static void AddVertexSearch(this RagCorpus corpus, RagVectorDbConfigVertexVectorSearch config)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(corpus);
+#else
+        if (corpus == null) throw new ArgumentNullException(nameof(corpus));
+#endif
         corpus.VectorDbConfig = new RagVectorDbConfig()
         {
             VertexVectorSearch = config

@@ -17,14 +17,14 @@ public class RagQuery
     /// Optional. Configurations for hybrid search results ranking.
     /// </summary>
     [JsonPropertyName("ranking")]
-    [System.Obsolete]
+    [System.Obsolete("Use RagRetrievalConfig property instead. Ranking property will be removed in a future version.")]
     public RagQueryRanking? Ranking { get; set; }
 
     /// <summary>
     /// Optional. The number of contexts to retrieve.
     /// </summary>
     [JsonPropertyName("similarityTopK")]
-    [System.Obsolete]
+    [System.Obsolete("Use RagRetrievalConfig property instead. SimilarityTopK property will be removed in a future version.")]
     public int? SimilarityTopK { get; set; }
 
     /// <summary>

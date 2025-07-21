@@ -110,8 +110,15 @@ public class Schema
     /// <param name="value">The object from which to generate the schema.</param>
     /// <param name="options">Optional JSON serializer options used for customization during schema generation.</param>
     /// <returns>A <see cref="Schema"/> instance that represents the structure of the provided object.</returns>
-    public static Schema FromObject(object value, JsonSerializerOptions? options = null) =>
-        GoogleSchemaHelper.ConvertToSchema(value.GetType(), options);
+    public static Schema FromObject(object value, JsonSerializerOptions? options = null)
+    {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(value);
+#else
+        if (value == null) throw new ArgumentNullException(nameof(value));
+#endif
+        return GoogleSchemaHelper.ConvertToSchema(value.GetType(), options);
+    }
 
 
     /// <summary>

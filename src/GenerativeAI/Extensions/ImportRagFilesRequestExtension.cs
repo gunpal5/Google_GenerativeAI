@@ -14,6 +14,11 @@ public static class ImportRagFilesRequestExtensions
     /// <param name="source">The Jira source to add.</param>
     public static void AddSource(this ImportRagFilesRequest request, JiraSource source)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         if (request.ImportRagFilesConfig == null)
             request.ImportRagFilesConfig = new ImportRagFilesConfig();
         request.ImportRagFilesConfig.JiraSource = source;
@@ -26,6 +31,11 @@ public static class ImportRagFilesRequestExtensions
     /// <param name="source">The GCS source to add.</param>
     public static void AddSource(this ImportRagFilesRequest request, GcsSource source)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         if (request.ImportRagFilesConfig == null)
             request.ImportRagFilesConfig = new ImportRagFilesConfig();
         request.ImportRagFilesConfig.GcsSource = source;
@@ -38,6 +48,11 @@ public static class ImportRagFilesRequestExtensions
     /// <param name="source">The Google Drive source to add.</param>
     public static void AddSource(this ImportRagFilesRequest request, GoogleDriveSource source)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         if (request.ImportRagFilesConfig == null)
             request.ImportRagFilesConfig = new ImportRagFilesConfig();
         request.ImportRagFilesConfig.GoogleDriveSource = source;
@@ -50,6 +65,11 @@ public static class ImportRagFilesRequestExtensions
     /// <param name="slackChannel">The Slack channel to add.</param>
     public static void AddSource(this ImportRagFilesRequest request, SlackSourceSlackChannels slackChannel)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         AddSource(request, new[] { slackChannel });
     }
 
@@ -60,6 +80,11 @@ public static class ImportRagFilesRequestExtensions
     /// <param name="slackChannels">The Slack channels to add.</param>
     public static void AddSource(this ImportRagFilesRequest request, IEnumerable<SlackSourceSlackChannels> slackChannels)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         if (request.ImportRagFilesConfig == null)
             request.ImportRagFilesConfig = new ImportRagFilesConfig();
         request.ImportRagFilesConfig.SlackSource = new SlackSource()
@@ -75,6 +100,11 @@ public static class ImportRagFilesRequestExtensions
     /// <param name="slackSource">The Slack source to add.</param>
     public static void AddSource(this ImportRagFilesRequest request, SlackSource slackSource)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         if (request.ImportRagFilesConfig == null)
             request.ImportRagFilesConfig = new ImportRagFilesConfig();
         request.ImportRagFilesConfig.SlackSource = slackSource;
@@ -87,6 +117,11 @@ public static class ImportRagFilesRequestExtensions
     /// <param name="source">The SharePoint source to add.</param>
     public static void AddSource(this ImportRagFilesRequest request, SharePointSource source)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         AddSource(request, new[] { source });
     }
 
@@ -97,6 +132,11 @@ public static class ImportRagFilesRequestExtensions
     /// <param name="source">The SharePoint sources to add.</param>
     public static void AddSource(this ImportRagFilesRequest request, IEnumerable<SharePointSource> source)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         if (request.ImportRagFilesConfig == null)
             request.ImportRagFilesConfig = new ImportRagFilesConfig();
         request.ImportRagFilesConfig.SharePointSources = new SharePointSources()
@@ -112,6 +152,11 @@ public static class ImportRagFilesRequestExtensions
     /// <param name="sources">The SharePoint sources to add.</param>
     public static void AddSource(this ImportRagFilesRequest request, SharePointSources sources)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         if (request.ImportRagFilesConfig == null)
             request.ImportRagFilesConfig = new ImportRagFilesConfig();
         request.ImportRagFilesConfig.SharePointSources = sources;
@@ -124,6 +169,11 @@ public static class ImportRagFilesRequestExtensions
     /// <param name="gcsUris">The list of GCS URIs to add.</param>
     public static void AddGcsSource(this ImportRagFilesRequest request, IEnumerable<string> gcsUris)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         if (request.ImportRagFilesConfig == null)
             request.ImportRagFilesConfig = new ImportRagFilesConfig();
         request.ImportRagFilesConfig.GcsSource = new GcsSource()
@@ -139,6 +189,11 @@ public static class ImportRagFilesRequestExtensions
     /// <param name="gcsUri">The GCS URI to add.</param>
     public static void AddGcsSource(this ImportRagFilesRequest request, string gcsUri)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         if (request.ImportRagFilesConfig == null)
             request.ImportRagFilesConfig = new ImportRagFilesConfig();
         request.ImportRagFilesConfig.GcsSource = new GcsSource()
@@ -154,6 +209,11 @@ public static class ImportRagFilesRequestExtensions
     /// <param name="resourceId">The Google Drive resource ID to add.</param>
     public static void AddGooglDriveSource(this ImportRagFilesRequest request, GoogleDriveSourceResourceId resourceId)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         AddGooglDriveSource(request, new[] { resourceId });
     }
 
@@ -164,6 +224,11 @@ public static class ImportRagFilesRequestExtensions
     /// <param name="resourceIds">The Google Drive resource IDs to add.</param>
     public static void AddGooglDriveSource(this ImportRagFilesRequest request, IEnumerable<GoogleDriveSourceResourceId> resourceIds)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         if (request.ImportRagFilesConfig == null)
             request.ImportRagFilesConfig = new ImportRagFilesConfig();
         request.ImportRagFilesConfig.GoogleDriveSource = new GoogleDriveSource()

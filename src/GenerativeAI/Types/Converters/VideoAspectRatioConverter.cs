@@ -54,6 +54,11 @@ public class VideoAspectRatioConverter : JsonConverter<VideoAspectRatio>
     /// <param name="options">An object that specifies serialization options to use.</param>
     public override void Write(Utf8JsonWriter writer, VideoAspectRatio value, JsonSerializerOptions options)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(writer);
+#else
+        if (writer == null) throw new ArgumentNullException(nameof(writer));
+#endif
         switch (value)
         {
             case VideoAspectRatio.LANDSCAPE_16_9:

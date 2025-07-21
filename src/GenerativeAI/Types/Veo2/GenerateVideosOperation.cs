@@ -22,6 +22,11 @@ public class GenerateVideosOperation : GoogleLongRunningOperation
     /// <param name="operation">The base Google long-running operation to convert.</param>
     public GenerateVideosOperation(GoogleLongRunningOperation operation)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(operation);
+#else
+        if (operation == null) throw new ArgumentNullException(nameof(operation));
+#endif
         this.Name = operation.Name;
         this.Metadata = operation.Metadata;
         this.Response = operation.Response;

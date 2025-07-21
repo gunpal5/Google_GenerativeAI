@@ -55,6 +55,11 @@ public class DateOnlyJsonConverter : JsonConverter<DateOnly>
     /// <param name="options">The serializer options.</param>
     public override void Write(Utf8JsonWriter writer, DateOnly value, JsonSerializerOptions options)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(writer);
+#else
+        if (writer == null) throw new ArgumentNullException(nameof(writer));
+#endif
         var dateTime = new DateTime(value.Year, value.Month, value.Day);
         writer.WriteStringValue(dateTime.ToString("O", CultureInfo.InvariantCulture)); 
     }

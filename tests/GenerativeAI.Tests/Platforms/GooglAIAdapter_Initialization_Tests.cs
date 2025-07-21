@@ -77,10 +77,8 @@ public class GoogleAIPlatformAdapterTests:TestBase
         var adapter = new GoogleAIPlatformAdapter(testApiKey);
 
         // Assert
-        adapter.BaseUrl.ShouldNotBeNullOrEmpty();
-        // Use whichever default value you expect it to have:
-        // For example, "https://generativelanguage.googleapis.com"
-        // adapter.BaseUrl.ShouldBe("https://generativelanguage.googleapis.com");
+        // BaseUrl is private, so we test it indirectly through GetBaseUrl method
+        adapter.GetBaseUrl().ShouldNotBeNullOrEmpty();
     }
 
     [Fact]

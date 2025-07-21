@@ -37,6 +37,11 @@ public static class TypeDescriptionExtractor
     /// <returns>A dictionary containing member names (in camelCase) mapped to their descriptions.</returns>
     public static Dictionary<string, string> GetDescriptionDic(Type type, Dictionary<string, string>? descriptions = null)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(type);
+#else
+        if (type == null) throw new ArgumentNullException(nameof(type));
+#endif
         descriptions = descriptions ?? new Dictionary<string, string>();
         descriptions[type.Name.ToCamelCase()] = GetDescription(type);
         foreach (var member in type.GetMembers())

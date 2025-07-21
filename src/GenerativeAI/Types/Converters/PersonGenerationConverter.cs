@@ -49,6 +49,11 @@ public class VideoPersonGenerationConverter : JsonConverter<VideoPersonGeneratio
     /// <exception cref="JsonException">Thrown for undefined enum values.</exception>
     public override void Write(Utf8JsonWriter writer, VideoPersonGeneration value, JsonSerializerOptions options)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(writer);
+#else
+        if (writer == null) throw new ArgumentNullException(nameof(writer));
+#endif
         string stringValue = value switch
         {
             VideoPersonGeneration.DontAllow => "dont_allow",

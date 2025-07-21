@@ -29,6 +29,6 @@ public class RagFileParsingConfig
     /// Whether to use advanced PDF parsing.
     /// </summary>
     [JsonPropertyName("useAdvancedPdfParsing")]
-    [System.Obsolete]
+    [System.Obsolete("Use AdvancedParser property instead. UseAdvancedPdfParsing property will be removed in a future version.")]
     public bool? UseAdvancedPdfParsing { get; set; }
 }

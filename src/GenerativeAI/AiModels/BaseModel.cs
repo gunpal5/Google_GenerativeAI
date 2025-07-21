@@ -118,6 +118,11 @@ public abstract class BaseModel : BaseClient
     /// <seealso href="https://ai.google.dev/api/embeddings">See Official API Documentation</seealso>
     protected virtual async Task<BatchEmbedContentsResponse> BatchEmbedContentAsync(string model, BatchEmbedContentRequest request)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         var url = $"{_platform.GetBaseUrl()}/{model.ToModelId()}:{GenerativeModelTasks.BatchEmbedContents}";
         if (request.Requests != null)
         {
@@ -154,6 +159,11 @@ public abstract class BaseModel : BaseClient
     /// <seealso href="https://ai.google.dev/gemini-api/docs/embeddings">See Official API Documentation</seealso>
     protected virtual async Task<EmbedContentResponse> EmbedContentAsync(string model, EmbedContentRequest request)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         var url = $"{_platform.GetBaseUrl()}/{model.ToModelId()}:{GenerativeModelTasks.EmbedContent}";
         ValidateEmbeddingRequest(model, request);
         return await SendAsync<EmbedContentRequest, EmbedContentResponse>(url, request, HttpMethod.Post).ConfigureAwait(false);

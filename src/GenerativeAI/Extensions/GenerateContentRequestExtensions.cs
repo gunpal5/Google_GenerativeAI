@@ -20,6 +20,11 @@ public static class GenerateContentRequestExtensions
         this GenerateContentRequest request,
         Tool tool, ToolConfig? config = null)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         request.Tools ??= new List<Tool>();
         request.Tools.Add(tool);
         request.ToolConfig = config;
@@ -37,6 +42,11 @@ public static class GenerateContentRequestExtensions
     public static void UseJsonMode<T>(this GenerateContentRequest request, JsonSerializerOptions? options = null)
         where T : class
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         if (request.GenerationConfig == null)
             request.GenerationConfig = new GenerationConfig();
         request.GenerationConfig.ResponseMimeType = "application/json";
@@ -56,6 +66,11 @@ public static class GenerateContentRequestExtensions
     public static void UseEnumMode<T>(this GenerateContentRequest request, JsonSerializerOptions? options = null)
         where T : Enum
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         if (request.GenerationConfig == null)
             request.GenerationConfig = new GenerationConfig();
         request.GenerationConfig.ResponseMimeType = "text/x.enum";

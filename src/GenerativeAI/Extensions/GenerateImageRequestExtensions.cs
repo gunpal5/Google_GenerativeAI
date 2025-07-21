@@ -15,6 +15,11 @@ public static class GenerateImageRequestExtensions
     /// <param name="source">The optional image source to use as additional context.</param>
     public static void AddPrompt(this GenerateImageRequest request, string prompt, ImageSource? source = null)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         if (request.Instances == null)
         {
             request.Instances = new List<ImageGenerationInstance>();
@@ -34,6 +39,11 @@ public static class GenerateImageRequestExtensions
     /// <param name="parameters">The image generation parameters to set.</param>
     public static void AddParameters(this GenerateImageRequest request, ImageGenerationParameters? parameters)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         request.Parameters = parameters;
     }
 }

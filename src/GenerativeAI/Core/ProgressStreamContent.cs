@@ -30,6 +30,11 @@ public class ProgressStreamContent : HttpContent
     /// <returns>A task representing the asynchronous operation of writing the content to the target stream.</returns>
     protected override async Task SerializeToStreamAsync(Stream targetStream, TransportContext? context)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(targetStream);
+#else
+        if (targetStream == null) throw new ArgumentNullException(nameof(targetStream));
+#endif
         var buffer = new byte[81920]; // 80 KB buffer size
         var totalBytes = _stream.Length;
         var uploadedBytes = 0L;

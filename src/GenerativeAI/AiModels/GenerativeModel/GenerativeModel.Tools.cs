@@ -73,7 +73,7 @@ public partial class GenerativeModel
     /// <remarks>
     /// This tool is automatically added to the request tools if no other search tool is explicitly defined.
     /// </remarks>
-    public Tool DefaultSearchTool = new Tool() { GoogleSearch = new GoogleSearchTool() };
+    public Tool DefaultSearchTool { get; set; } = new Tool() { GoogleSearch = new GoogleSearchTool() };
 
     /// <summary>
     /// Represents the default Google Search Retrieval tool configuration used within the generative model.
@@ -83,7 +83,7 @@ public partial class GenerativeModel
     /// Configured with a dynamic retrieval mode and threshold. Primarily used when no specific retrieval tool
     /// is provided in the request. Ensures the integration of up-to-date search results.
     /// </remarks>
-    public Tool DefaultGoogleSearchRetrieval = new Tool()
+    public Tool DefaultGoogleSearchRetrieval { get; set; } = new Tool()
     {
         GoogleSearchRetrieval = new GoogleSearchRetrievalTool()
         {
@@ -222,6 +222,11 @@ public partial class GenerativeModel
         GenerateContentResponse response,
         CancellationToken cancellationToken)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(response);
+#else
+        if (response == null) throw new ArgumentNullException(nameof(response));
+#endif
         var functionCall = response.GetFunctions();
         if (!FunctionCallingBehaviour.AutoCallFunction || functionCall == null)
             return response;
@@ -291,6 +296,11 @@ public partial class GenerativeModel
         GenerateContentResponse response,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(response);
+#else
+        if (response == null) throw new ArgumentNullException(nameof(response));
+#endif
         var functionCalls = response.GetFunctions();
         
         if (functionCalls == null || !FunctionCallingBehaviour.AutoCallFunction) yield break;
@@ -382,6 +392,13 @@ public partial class GenerativeModel
     /// <returns>A list of contents combining the original request contents and updated content from the response.</returns>
     protected virtual List<Content> BeforeRegeneration(GenerateContentRequest originalRequest, GenerateContentResponse response)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(originalRequest);
+        ArgumentNullException.ThrowIfNull(response);
+#else
+        if (originalRequest == null) throw new ArgumentNullException(nameof(originalRequest));
+        if (response == null) throw new ArgumentNullException(nameof(response));
+#endif
         var contents = new List<Content>();
         if (originalRequest.Contents != null)
         {

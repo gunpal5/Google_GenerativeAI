@@ -48,6 +48,11 @@ public partial class GenerativeModel
         GenerateContentRequest request,
         CancellationToken cancellationToken = default) where T : class
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         request.GenerationConfig ??= this.Config;
         request.UseJsonMode<T>(GenerateObjectJsonSerializerOptions);
     

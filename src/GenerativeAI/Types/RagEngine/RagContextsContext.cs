@@ -11,7 +11,7 @@ public class RagContextsContext
     /// The distance between the query dense embedding vector and the context text vector.
     /// </summary>
     [JsonPropertyName("distance")]
-    [System.Obsolete]
+    [System.Obsolete("Use Score property instead. Distance property will be removed in a future version.")]
     public double? Distance { get; set; }
 
     /// <summary>
@@ -36,7 +36,7 @@ public class RagContextsContext
     /// The distance between the query sparse embedding vector and the context text vector.
     /// </summary>
     [JsonPropertyName("sparseDistance")]
-    [System.Obsolete]
+    [System.Obsolete("Use Score property instead. SparseDistance property will be removed in a future version.")]
     public double? SparseDistance { get; set; }
 
     /// <summary>

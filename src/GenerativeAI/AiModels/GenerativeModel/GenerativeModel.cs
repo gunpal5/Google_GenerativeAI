@@ -105,10 +105,15 @@ namespace GenerativeAI
         /// </remarks>
         public GenerativeModel(string apiKey, ModelParams modelParams, HttpClient? client = null,
             ILogger? logger = null) : this(new GoogleAIPlatformAdapter(apiKey),
-            modelParams.Model ?? EnvironmentVariables.GOOGLE_AI_MODEL ?? GoogleAIModels.DefaultGeminiModel,
-            modelParams.GenerationConfig,
-            modelParams.SafetySettings, modelParams.SystemInstruction, client, logger)
+            modelParams?.Model ?? EnvironmentVariables.GOOGLE_AI_MODEL ?? GoogleAIModels.DefaultGeminiModel,
+            modelParams?.GenerationConfig,
+            modelParams?.SafetySettings, modelParams?.SystemInstruction, client, logger)
         {
+#if NET6_0_OR_GREATER
+            ArgumentNullException.ThrowIfNull(modelParams);
+#else
+            if (modelParams == null) throw new ArgumentNullException(nameof(modelParams));
+#endif
         }
 
         /// <summary>
@@ -172,6 +177,11 @@ namespace GenerativeAI
         /// </remarks>
         protected virtual void ValidateGenerateContentRequest(GenerateContentRequest request)
         {
+#if NET6_0_OR_GREATER
+            ArgumentNullException.ThrowIfNull(request);
+#else
+            if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
             if (UseJsonMode && (UseGrounding || UseGoogleSearch || UseCodeExecutionTool))
                 throw new NotSupportedException(
                     "Json mode does not support grounding or google search or code execution tool");
@@ -201,6 +211,11 @@ namespace GenerativeAI
         /// </remarks>
         protected virtual void PrepareRequest(GenerateContentRequest request)
         {
+#if NET6_0_OR_GREATER
+            ArgumentNullException.ThrowIfNull(request);
+#else
+            if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
             //Add Global Properties
             request.GenerationConfig ??= Config;
             request.SafetySettings ??= SafetySettings;
@@ -226,6 +241,11 @@ namespace GenerativeAI
         /// </remarks>
         protected void AddCachedContent(GenerateContentRequest request)
         {
+#if NET6_0_OR_GREATER
+            ArgumentNullException.ThrowIfNull(request);
+#else
+            if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
             if (CachedContent != null)
             {
                 if (Model != CachedContent.Model)
@@ -250,6 +270,11 @@ namespace GenerativeAI
         /// <param name="request">The generate content request being processed, which includes configuration and settings for content generation.</param>
         protected void AdjustJsonMode(GenerateContentRequest request)
         {
+#if NET6_0_OR_GREATER
+            ArgumentNullException.ThrowIfNull(request);
+#else
+            if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
             if (UseJsonMode)
             {
                 if (request.GenerationConfig == null)
@@ -298,6 +323,11 @@ namespace GenerativeAI
         public virtual ChatSession StartChat(ChatSessionBackUpData chatSessionBackUpData,
             List<IFunctionTool>? tools = null)
         {
+#if NET6_0_OR_GREATER
+            ArgumentNullException.ThrowIfNull(chatSessionBackUpData);
+#else
+            if (chatSessionBackUpData == null) throw new ArgumentNullException(nameof(chatSessionBackUpData));
+#endif
             chatSessionBackUpData.Model ??= this.Model;
             chatSessionBackUpData.SafetySettings ??= this.SafetySettings;
             chatSessionBackUpData.GenerationConfig ??= this.Config;

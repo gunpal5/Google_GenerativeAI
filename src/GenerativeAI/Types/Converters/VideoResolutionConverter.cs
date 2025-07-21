@@ -59,6 +59,11 @@ namespace GenerativeAI.Types.Converters;
         /// <param name="options">An object that specifies serialization options to use.</param>
         public override void Write(Utf8JsonWriter writer, VideoResolution value, JsonSerializerOptions options)
         {
+#if NET6_0_OR_GREATER
+            ArgumentNullException.ThrowIfNull(writer);
+#else
+            if (writer == null) throw new ArgumentNullException(nameof(writer));
+#endif
             switch (value)
             {
                 case VideoResolution.HD_720P:

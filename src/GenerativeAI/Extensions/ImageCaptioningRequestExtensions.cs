@@ -17,6 +17,11 @@ public static class ImageCaptioningRequestExtensions
     /// <param name="imagePath">The file path of the local image to add.</param>
     public static void AddLocalImage(this ImageCaptioningRequest request, string imagePath)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         var mimeType = MimeTypeMap.GetMimeType(imagePath);
         var getBytes = Convert.ToBase64String(File.ReadAllBytes(imagePath));
 
@@ -40,6 +45,11 @@ public static class ImageCaptioningRequestExtensions
     /// <param name="imageUri">The GCS URI of the image to add.</param>
     public static void AddGcsImage(this ImageCaptioningRequest request, string imageUri)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         var mimeType = MimeTypeMap.GetMimeType(imageUri);
 
         if (request.Instances == null)

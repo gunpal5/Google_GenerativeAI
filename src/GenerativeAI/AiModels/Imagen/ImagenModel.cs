@@ -34,6 +34,11 @@ public class ImagenModel : BaseClient
     /// <seealso href="https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/imagen-api">See Official API Documentation</seealso>
     public async Task<GenerateImageResponse?> GenerateImagesAsync(GenerateImageRequest request, CancellationToken cancellationToken = default)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         var url = $"{_platform.GetBaseUrl()}/{_modelName.ToModelId()}:predict";
         return await SendAsync<GenerateImageRequest, GenerateImageResponse>(url, request, HttpMethod.Post,cancellationToken: cancellationToken).ConfigureAwait(false);
     }

@@ -39,6 +39,11 @@ public class Timestamp
     /// <param name="timestamp">The <see cref="Timestamp"/> object to convert.</param>
     public static implicit operator DateTime(Timestamp timestamp)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(timestamp);
+#else
+        if (timestamp == null) throw new ArgumentNullException(nameof(timestamp));
+#endif
         return timestamp.ToDateTime();
     }
 
@@ -85,6 +90,13 @@ public class TimestampJsonConverter: JsonConverter<Timestamp>
     /// <inheritdoc/>
     public override void Write(Utf8JsonWriter writer, Timestamp value, JsonSerializerOptions options)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(writer);
+        ArgumentNullException.ThrowIfNull(value);
+#else
+        if (writer == null) throw new ArgumentNullException(nameof(writer));
+        if (value == null) throw new ArgumentNullException(nameof(value));
+#endif
         // Assuming the JSON representation is a string in RFC 3339 format
         writer.WriteStringValue(value.ToDateTime().ToString("o")); // "o" format specifier for RFC 3339
     }

@@ -24,6 +24,11 @@ public static class StringExtensions
     /// </exception>
     public static string ToModelId(this string modelName)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(modelName);
+#else
+        if (modelName == null) throw new ArgumentNullException(nameof(modelName));
+#endif
 #if NETSTANDARD2_0 || NET462_OR_GREATER
         if (modelName.Contains("/"))
 #else
@@ -60,6 +65,11 @@ public static class StringExtensions
     /// </exception>
     public static string ToRagCorpusId(this string corpusName)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(corpusName);
+#else
+        if (corpusName == null) throw new ArgumentNullException(nameof(corpusName));
+#endif
 #if NETSTANDARD2_0 || NET462_OR_GREATER
         if (corpusName.Contains("/"))
 #else
@@ -101,6 +111,11 @@ public static class StringExtensions
     /// </exception>
     public static string ToRagFileId(this string fileName)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(fileName);
+#else
+        if (fileName == null) throw new ArgumentNullException(nameof(fileName));
+#endif
 #if NETSTANDARD2_0 || NET462_OR_GREATER
         if (fileName.Contains("/"))
 #else
@@ -136,6 +151,11 @@ public static class StringExtensions
     /// </exception>
     public static string ToTunedModelId(this string modelName)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(modelName);
+#else
+        if (modelName == null) throw new ArgumentNullException(nameof(modelName));
+#endif
 #if NETSTANDARD2_0 || NET462_OR_GREATER
         if (modelName.Contains("/"))
 #else
@@ -172,6 +192,11 @@ public static class StringExtensions
     /// </exception>
     public static string ToFileId(this string fileName)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(fileName);
+#else
+        if (fileName == null) throw new ArgumentNullException(nameof(fileName));
+#endif
 #if NETSTANDARD2_0 || NET462_OR_GREATER
         if (fileName.Contains("/"))
 #else
@@ -198,6 +223,11 @@ public static class StringExtensions
     /// <returns>The properly formatted operation ID.</returns>
     public static string RecoverOperationId(this string operationId)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(operationId);
+#else
+        if (operationId == null) throw new ArgumentNullException(nameof(operationId));
+#endif
 #if NETSTANDARD2_0 || NET462_OR_GREATER
         if (operationId.Contains("/"))
 #else
@@ -225,6 +255,11 @@ public static class StringExtensions
     /// <returns>The extracted model ID.</returns>
     public static string RecoverModelIdFromOperationId(this string operationId)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(operationId);
+#else
+        if (operationId == null) throw new ArgumentNullException(nameof(operationId));
+#endif
 #if NETSTANDARD2_0 || NET462_OR_GREATER
         if (operationId.Contains("/"))
 #else
@@ -263,6 +298,11 @@ public static class StringExtensions
     /// </exception>
     public static string ToCachedContentId(this string contentName)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(contentName);
+#else
+        if (contentName == null) throw new ArgumentNullException(nameof(contentName));
+#endif
 #if NETSTANDARD2_0 || NET462_OR_GREATER
         if (contentName.Contains("/"))
 #else
@@ -300,6 +340,11 @@ public static class StringExtensions
     /// </exception>
     public static string ToCorpusId(this string corporaName)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(corporaName);
+#else
+        if (corporaName == null) throw new ArgumentNullException(nameof(corporaName));
+#endif
 #if NETSTANDARD2_0 || NET462_OR_GREATER
         if (corporaName.Contains("/"))
 #else

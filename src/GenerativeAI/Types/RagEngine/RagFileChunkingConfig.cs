@@ -11,14 +11,14 @@ public class RagFileChunkingConfig
     /// The overlap between chunks.
     /// </summary>
     [JsonPropertyName("chunkOverlap")]
-    [System.Obsolete]
+    [System.Obsolete("Use FixedLengthChunking property instead. ChunkOverlap property will be removed in a future version.")]
     public int? ChunkOverlap { get; set; }
 
     /// <summary>
     /// The size of the chunks.
     /// </summary>
     [JsonPropertyName("chunkSize")]
-    [System.Obsolete]
+    [System.Obsolete("Use FixedLengthChunking property instead. ChunkSize property will be removed in a future version.")]
     public int? ChunkSize { get; set; }
 
     /// <summary>

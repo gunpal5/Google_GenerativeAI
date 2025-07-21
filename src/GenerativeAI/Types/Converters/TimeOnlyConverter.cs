@@ -59,6 +59,11 @@ public class TimeOnlyJsonConverter : JsonConverter<TimeOnly>
     /// <param name="options">The serializer options.</param>
     public override void Write(Utf8JsonWriter writer, TimeOnly value, JsonSerializerOptions options)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(writer);
+#else
+        if (writer == null) throw new ArgumentNullException(nameof(writer));
+#endif
         writer.WriteStringValue(value.ToString("O", CultureInfo.InvariantCulture));
     }
 }

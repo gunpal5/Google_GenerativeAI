@@ -16,6 +16,11 @@ public partial class SemanticRetrieverModel
     public  async Task<GenerateAnswerResponse> GenerateAnswerAsync(GenerateAnswerRequest request,
         CancellationToken cancellationToken = default)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         if (request.AnswerStyle == AnswerStyle.ANSWER_STYLE_UNSPECIFIED)
             request.AnswerStyle = AnswerStyle.ABSTRACTIVE;
 

@@ -39,6 +39,11 @@ public static class ContentRequestExtensions
         bool appendToLastContent = true,
         string role = Roles.User)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         if (appendToLastContent)
         {
             var lastContent = request.Contents.LastOrDefault();
@@ -73,6 +78,11 @@ public static class ContentRequestExtensions
         bool appendToLastContent = true,
         string role = Roles.User)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         if (appendToLastContent)
         {
             var lastContent = request.Contents.LastOrDefault();
@@ -106,6 +116,11 @@ public static class ContentRequestExtensions
         bool appendToLastContent = true, 
         string role = Roles.User)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         if (appendToLastContent)
         {
             var lastContent = request.Contents.LastOrDefault();
@@ -145,6 +160,11 @@ public static class ContentRequestExtensions
         bool appendToLastContent = true, 
         string role = Roles.User)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         if (appendToLastContent)
         {
             var lastContent = request.Contents.LastOrDefault();
@@ -178,6 +198,11 @@ public static class ContentRequestExtensions
         this IContentsRequest request,
         Content content)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         request.Contents.Add(content);
     }
  
@@ -195,6 +220,11 @@ public static class ContentRequestExtensions
         bool appendToLastContent = true,
         string role = Roles.User)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         if (appendToLastContent)
         {
             var lastContent = request.Contents.LastOrDefault();
@@ -230,6 +260,11 @@ public static class ContentRequestExtensions
         bool appendToLastContent = true,
         string role = Roles.User)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         if (appendToLastContent)
         {
             var lastContent = request.Contents.LastOrDefault();
@@ -269,6 +304,11 @@ public static class ContentRequestExtensions
         bool appendToLastContent = true,
         string role = Roles.User)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         if (appendToLastContent)
         {
             var lastContent = request.Contents.LastOrDefault();

@@ -17,6 +17,11 @@ public static class VqaRequestExtensions
     /// <exception cref="ArgumentException">Thrown if the file does not exist or cannot be accessed.</exception>
     public static void AddLocalImage(this VqaRequest request, string prompt, string imagePath)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         var imageMime = MimeTypeMap.GetMimeType(imagePath);
         var imageContent = Convert.ToBase64String(File.ReadAllBytes(imagePath));
 
@@ -41,6 +46,11 @@ public static class VqaRequestExtensions
     /// <param name="imageUri">The URI of the image stored in Google Cloud Storage.</param>
     public static void AddGcsImage(this VqaRequest request, string prompt, string imageUri)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         var imageMime = MimeTypeMap.GetMimeType(imageUri);
 
         if (request.Instances == null)

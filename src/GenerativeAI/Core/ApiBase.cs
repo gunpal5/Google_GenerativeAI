@@ -130,6 +130,11 @@ namespace GenerativeAI.Core
         protected async Task<TResponse> SendAsync<TRequest, TResponse>(string url, TRequest payload, HttpMethod method,
             CancellationToken cancellationToken = default)
         {
+#if NET6_0_OR_GREATER
+            ArgumentNullException.ThrowIfNull(method);
+#else
+            if (method == null) throw new ArgumentNullException(nameof(method));
+#endif
             try
             {
                 _logger?.LogHttpRequest(method.Method, url, payload);
@@ -179,6 +184,11 @@ namespace GenerativeAI.Core
         /// </exception>
         protected async Task CheckAndHandleErrors(HttpResponseMessage response, string url)
         {
+#if NET6_0_OR_GREATER
+            ArgumentNullException.ThrowIfNull(response);
+#else
+            if (response == null) throw new ArgumentNullException(nameof(response));
+#endif
             if (!response.IsSuccessStatusCode)
             {
                 _logger?.LogNonSuccessStatusCode((int)response.StatusCode, url.MaskApiKey());
@@ -221,6 +231,11 @@ namespace GenerativeAI.Core
         /// <returns>The deserialized object of type T, or null if deserialization fails.</returns>
         protected async Task<T?> Deserialize<T>(HttpResponseMessage response)
         {
+#if NET6_0_OR_GREATER
+            ArgumentNullException.ThrowIfNull(response);
+#else
+            if (response == null) throw new ArgumentNullException(nameof(response));
+#endif
             var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             return Deserialize<T>(responseContent);

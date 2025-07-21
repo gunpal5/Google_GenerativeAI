@@ -34,6 +34,11 @@ public class ImageTextModel: BaseClient
     /// <seealso href="https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/image-captioning">See Official API Documentation</seealso>
     public async Task<ImageCaptioningResponse?> GenerateImageCaptionAsync(ImageCaptioningRequest request, CancellationToken cancellationToken = default)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         var url = $"{_platform.GetBaseUrl()}/models/imagetext:predict";
         
         return await SendAsync<ImageCaptioningRequest, ImageCaptioningResponse>(url, request, HttpMethod.Post, cancellationToken).ConfigureAwait(false);
@@ -48,6 +53,11 @@ public class ImageTextModel: BaseClient
     /// <seealso href="https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/visual-question-answering">See Official API Documentation</seealso>
     public async Task<VqaResponse?> VisualQuestionAnsweringAsync(VqaRequest request, CancellationToken cancellationToken = default)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         var url = $"{_platform.GetBaseUrl()}/models/imagetext:predict";
         
         return await SendAsync<VqaRequest, VqaResponse>(url, request, HttpMethod.Post, cancellationToken).ConfigureAwait(false);
@@ -64,6 +74,11 @@ public class ImageTextModel: BaseClient
     public async Task<ImageCaptioningResponse?> GenerateImageCaptionFromLocalFileAsync(string imagePath,
         ImageCaptioningParameters? parameters = null, CancellationToken cancellationToken = default)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(imagePath);
+#else
+        if (imagePath == null) throw new ArgumentNullException(nameof(imagePath));
+#endif
         var request = new ImageCaptioningRequest();
         request.AddLocalImage(imagePath);
         request.Parameters = parameters;
@@ -82,6 +97,11 @@ public class ImageTextModel: BaseClient
         ImageCaptioningParameters? parameters = null,
         CancellationToken cancellationToken = default)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(imageUri);
+#else
+        if (imageUri == null) throw new ArgumentNullException(nameof(imageUri));
+#endif
         var request = new ImageCaptioningRequest();
         request.AddGcsImage(imageUri);
         request.Parameters = parameters;
@@ -101,6 +121,13 @@ public class ImageTextModel: BaseClient
     public async Task<VqaResponse?> VisualQuestionAnsweringFromLocalFileAsync(string prompt, string imagePath,
         VqaParameters? parameters = null, CancellationToken cancellationToken = default)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(prompt);
+        ArgumentNullException.ThrowIfNull(imagePath);
+#else
+        if (prompt == null) throw new ArgumentNullException(nameof(prompt));
+        if (imagePath == null) throw new ArgumentNullException(nameof(imagePath));
+#endif
         var request = new VqaRequest();
         request.AddLocalImage(prompt, imagePath);
         request.Parameters = parameters;
@@ -120,6 +147,13 @@ public class ImageTextModel: BaseClient
         VqaParameters? parameters = null,
         CancellationToken cancellationToken = default)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(prompt);
+        ArgumentNullException.ThrowIfNull(imageUri);
+#else
+        if (prompt == null) throw new ArgumentNullException(nameof(prompt));
+        if (imageUri == null) throw new ArgumentNullException(nameof(imageUri));
+#endif
         var request = new VqaRequest();
         request.AddGcsImage(prompt, imageUri);
         request.Parameters = parameters;

@@ -27,6 +27,11 @@ public class GenerateContentRequestForCountToken: GenerateContentRequest
         {
             throw new ArgumentException("Model cannot be null or empty", nameof(modelName));
         }
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(baseRequest);
+#else
+        if (baseRequest == null) throw new ArgumentNullException(nameof(baseRequest));
+#endif
 
         Model = modelName;
         Contents = baseRequest.Contents;

@@ -27,6 +27,11 @@ public class MarkdownExtractor
     /// </returns>
     public static List<CodeBlock> ExtractCodeBlocks(string markdown, string languageFilter = "*")
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(markdown);
+#else
+        if (markdown == null) throw new ArgumentNullException(nameof(markdown));
+#endif
         List<CodeBlock> extractedCodeBlocks = new List<CodeBlock>();
         string[] lines = markdown.Split('\n');
         bool insideFencedBlock = false; // Track if we are inside a fenced block
@@ -107,6 +112,11 @@ public class MarkdownExtractor
     /// </returns>
     public static List<JsonBlock> ExtractJsonBlocks(string text)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(text);
+#else
+        if (text == null) throw new ArgumentNullException(nameof(text));
+#endif
         List<JsonBlock> extractedJsonObjectsAndArrays = new List<JsonBlock>();
         string[] lines = text.Split('\n');
         string currentJsonContent = "";

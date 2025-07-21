@@ -95,6 +95,11 @@ public class FileClient : BaseClient
     public async Task<RemoteFile> UploadStreamAsync(Stream stream, string displayName, string mimeType,
         Action<double>? progressCallback = null, CancellationToken cancellationToken = default)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(stream);
+#else
+        if (stream == null) throw new ArgumentNullException(nameof(stream));
+#endif
         var baseUrl = _platform.GetBaseUrl(false);
         var apiVersion = _platform.GetApiVersion();
         var url = $"{baseUrl}/upload/{apiVersion}/files?alt=json&uploadType=multipart";

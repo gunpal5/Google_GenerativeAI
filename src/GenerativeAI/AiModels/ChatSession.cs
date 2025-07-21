@@ -117,9 +117,14 @@ public class ChatSession : GenerativeModel
     }
     /// Represents a session for chat interactions using a generative model.
     public ChatSession(ChatSessionBackUpData chatSessionBackUpData, IPlatformAdapter platform, List<IFunctionTool>? toolList = null,
-        HttpClient? httpClient = null, ILogger? logger = null) : base(platform, chatSessionBackUpData.Model, chatSessionBackUpData.GenerationConfig, chatSessionBackUpData.SafetySettings,
-        chatSessionBackUpData.SystemInstructions, httpClient, logger)
+        HttpClient? httpClient = null, ILogger? logger = null) : base(platform, chatSessionBackUpData?.Model, chatSessionBackUpData?.GenerationConfig, chatSessionBackUpData?.SafetySettings,
+        chatSessionBackUpData?.SystemInstructions, httpClient, logger)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(chatSessionBackUpData);
+#else
+        if (chatSessionBackUpData == null) throw new ArgumentNullException(nameof(chatSessionBackUpData));
+#endif
         History = chatSessionBackUpData.History ?? new();
         LastRequestContent = chatSessionBackUpData.LastRequestContent;
         LastResponseContent = chatSessionBackUpData.LastResponseContent;
@@ -151,6 +156,11 @@ public class ChatSession : GenerativeModel
     public override async Task<GenerateContentResponse> GenerateContentAsync(GenerateContentRequest request,
         CancellationToken cancellationToken = default)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         var response = await base.GenerateContentAsync(request, cancellationToken).ConfigureAwait(false);
 
         UpdateHistory(request, response);
@@ -163,15 +173,22 @@ public class ChatSession : GenerativeModel
     /// <returns>A list of content objects that includes filtered and updated content based on the original request and response.</returns>
     protected override List<Content> BeforeRegeneration(GenerateContentRequest originalRequest, GenerateContentResponse response)
     {
+        #if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(originalRequest);
+        ArgumentNullException.ThrowIfNull(response);
+        #else
+        if(originalRequest == null)
+            throw new ArgumentNullException(nameof(originalRequest));
+        if(response == null)
+            throw new ArgumentNullException(nameof(response));
+        #endif
+        
         var contents = new List<Content>();
-        if (originalRequest.Contents != null)
+        foreach (var content in originalRequest.Contents)
         {
-            foreach (var content in originalRequest.Contents)
-            {
-                if (History.Contains(content))
-                    continue;
-                contents.Add(content);
-            }
+            if (History.Contains(content))
+                continue;
+            contents.Add(content);
         }
         // Add the AI's function-call message
         if (response.Candidates != null && response.Candidates.Length > 0)
@@ -190,6 +207,11 @@ public class ChatSession : GenerativeModel
     /// <inheritdoc />
     public override async IAsyncEnumerable<GenerateContentResponse> StreamContentAsync(GenerateContentRequest request, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         var historyCountBeforeRequest = this.History.Count;
         var sb = new StringBuilder();
         await foreach (var response in base.StreamContentAsync(request, cancellationToken).ConfigureAwait(false))

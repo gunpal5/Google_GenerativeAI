@@ -99,6 +99,11 @@ public class ChunkClient : BaseClient
     /// <seealso href="https://ai.google.dev/api/rest/v1beta/corpora.documents.chunks/patch">See Official API Documentation</seealso>
     public async Task<Chunk?> UpdateChunkAsync(Chunk chunk, string updateMask, CancellationToken cancellationToken = default)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(chunk);
+#else
+        if (chunk == null) throw new ArgumentNullException(nameof(chunk));
+#endif
         var url = $"{_platform.GetBaseUrl()}/{chunk.Name}";
 
         var queryParams = new List<string>
@@ -134,6 +139,11 @@ public class ChunkClient : BaseClient
     /// <seealso href="https://ai.google.dev/api/rest/v1beta/corpora.documents.chunks/batchCreate">See Official API Documentation</seealso>
     public async Task<BatchCreateChunksResponse?> BatchCreateChunksAsync(string parent, List<CreateChunkRequest> requests, CancellationToken cancellationToken = default)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(requests);
+#else
+        if (requests == null) throw new ArgumentNullException(nameof(requests));
+#endif
         var url = $"{_platform.GetBaseUrl()}/{parent}/chunks:batchCreate";
         foreach (var request in requests)
         {

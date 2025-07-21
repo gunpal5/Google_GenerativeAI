@@ -32,6 +32,13 @@ public class DocumentsClient : BaseClient
     /// <seealso href="https://ai.google.dev/api/semantic-retrieval/documents#method:-corpora.documents.create">See Official API Documentation</seealso>
     public async Task<Document?> CreateDocumentAsync(string parent, Document document, CancellationToken cancellationToken = default)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(parent);
+        ArgumentNullException.ThrowIfNull(document);
+#else
+        if (parent == null) throw new ArgumentNullException(nameof(parent));
+        if (document == null) throw new ArgumentNullException(nameof(document));
+#endif
         var url = $"{_platform.GetBaseUrl()}/{parent.ToCorpusId()}/documents";
         return await SendAsync<Document, Document>(url, document, HttpMethod.Post, cancellationToken).ConfigureAwait(false);
     }

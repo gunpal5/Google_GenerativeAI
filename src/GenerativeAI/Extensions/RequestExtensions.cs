@@ -15,6 +15,11 @@ public static class RequestExtensions
     /// <returns>A new instance of <see cref="Content"/> containing the formatted input and specified role.</returns>
     public static Content FormatGenerateContentInput(string @params, string role = Roles.User)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(@params);
+#else
+        if (@params == null) throw new ArgumentNullException(nameof(@params));
+#endif
         var parts = new[]{new Part(){Text = @params}};
         return new Content(parts, role);
     }
@@ -40,6 +45,11 @@ public static class RequestExtensions
     /// <returns>A new instance of <see cref="Content"/> containing the specified parts and role.</returns>
     public static Content FormatGenerateContentInput( IEnumerable<string> request, string role = Roles.User)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         var parts = request.Select(part => new Part() { Text = part }).ToArray();
 
         return new Content(parts, role);
@@ -53,6 +63,11 @@ public static class RequestExtensions
     /// <returns>A new instance of <see cref="Content"/> containing the provided parts and specified role.</returns>
     public static Content FormatGenerateContentInput(IEnumerable<Part> request, string role = Roles.User)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         return new Content(request.ToArray(), role);
     }
     

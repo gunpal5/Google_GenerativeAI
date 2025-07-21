@@ -29,9 +29,10 @@ public static class GoogleSchemaHelper
     /// </summary>
     /// <param name="constructedSchema">Generated, valid json schema.</param>
     /// <returns>Subset of the given json schema in a google-comaptible format.</returns>
-    public static Schema ConvertToCompatibleSchemaSubset(JsonDocument constructedSchema)
+    public static Schema? ConvertToCompatibleSchemaSubset(JsonDocument constructedSchema)
     {
 #if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(constructedSchema);
         var node = constructedSchema.RootElement.AsNode();
 
         ConvertNullableProperties(node);
@@ -44,6 +45,8 @@ public static class GoogleSchemaHelper
         var schema = JsonSerializer.Deserialize(x2, SchemaSourceGenerationContext.Default.Schema);
         return schema;
 #else
+        if(constructedSchema == null)
+            throw new ArgumentNullException(nameof(constructedSchema));
         var schema = JsonSerializer.Deserialize<Schema>(constructedSchema.RootElement.GetRawText());
         return schema;
 #endif
@@ -59,6 +62,7 @@ public static class GoogleSchemaHelper
     public static Schema ConvertToCompatibleSchemaSubset(JsonNode node)
     {
 #if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(node);
         ConvertNullableProperties(node);
 
 
@@ -67,6 +71,7 @@ public static class GoogleSchemaHelper
         var schema = JsonSerializer.Deserialize(x2, SchemaSourceGenerationContext.Default.Schema);
         return schema;
 #else
+        if (node == null) throw new ArgumentNullException(nameof(node));
         var schema = JsonSerializer.Deserialize<Schema>(node.ToJsonString());
         return schema;
 #endif
