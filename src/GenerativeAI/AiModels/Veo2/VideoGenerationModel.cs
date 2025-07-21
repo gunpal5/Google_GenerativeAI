@@ -13,6 +13,9 @@ namespace GenerativeAI
     /// </summary>
     public class VideoGenerationModel : BaseClient
     {
+        /// <summary>
+        /// Gets or sets the name of the video generation model.
+        /// </summary>
         public string ModelName { get; set; }
 
         private readonly OperationsClient _operationsClient;
@@ -38,8 +41,8 @@ namespace GenerativeAI
         /// Generates videos based on a text prompt and optional image input and configuration.
         /// This typically initiates a long-running operation.
         /// </summary>
-        /// <param name="model">The resource name or ID of the model to use for video generation (e.g., "models/veo-2.0-generate-001").</param>
         /// <param name="request">The request containing the prompt, optional image, and configuration for video generation.</param>
+        /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="GenerateVideosOperation"/> representing the long-running video generation task.</returns>
         public async Task<GenerateVideosOperation?> GenerateVideosAsync(GenerateVideosRequest request,
             CancellationToken cancellationToken = default)
@@ -99,7 +102,7 @@ namespace GenerativeAI
                 Config = config
             };
 
-            return await GenerateVideosAsync(request, cancellationToken);
+            return await GenerateVideosAsync(request, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>

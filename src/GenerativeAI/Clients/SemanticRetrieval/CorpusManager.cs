@@ -15,23 +15,30 @@ public class CorporaManager : BaseClient
     /// <summary>
     /// Gets the client for performing operations on documents.
     /// </summary>
-    public DocumentsClient DocumentsClient { get; private set; }
+    public DocumentsClient? DocumentsClient { get; private set; }
 
     /// <summary>
     /// Gets the client for managing corpora.
     /// </summary>
-    public CorporaClient CorporaClient { get; private set; }
+    public CorporaClient? CorporaClient { get; private set; }
 
     /// <summary>
     /// Gets the client for handling chunks.
     /// </summary>
-    public ChunkClient ChunkClient { get; private set; }
+    public ChunkClient? ChunkClient { get; private set; }
 
     /// <summary>
     /// Gets the client for managing permissions on corpora.
     /// </summary>
-    public CorpusPermissionClient CorpusPermissionClient { get; private set; }
+    public CorpusPermissionClient? CorpusPermissionClient { get; private set; }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CorporaManager"/> class.
+    /// </summary>
+    /// <param name="platform">The platform adapter for API communication.</param>
+    /// <param name="httpClient">Optional HTTP client for API requests.</param>
+    /// <param name="logger">Optional logger for diagnostic output.</param>
+    /// <exception cref="GenerativeAIException">Thrown when the platform authenticator is null.</exception>
     public CorporaManager(IPlatformAdapter platform, HttpClient? httpClient, ILogger? logger = null) : base(platform,
         httpClient, logger)
     {

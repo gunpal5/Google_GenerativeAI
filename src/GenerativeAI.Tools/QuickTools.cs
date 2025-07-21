@@ -50,7 +50,7 @@ public class QuickTools : GoogleFunctionTool
         var ft = _tools.FirstOrDefault(s => s.FunctionDeclaration.Name == functionCall.Name);
         if (ft == null)
             throw new ArgumentException("Function name does not match");
-        return await ft.CallAsync(functionCall, cancellationToken);
+        return await ft.CallAsync(functionCall, cancellationToken).ConfigureAwait(false);
     }
 
     /// <inheritdoc />

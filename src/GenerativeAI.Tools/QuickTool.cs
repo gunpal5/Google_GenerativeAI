@@ -78,7 +78,7 @@ public class QuickTool : GoogleFunctionTool
             throw new ArgumentException("Function name does not match");
         object?[]? param = MarshalParameters(functionCall.Args, cancellationToken);
 
-        var result = await InvokeAsTaskAsync(_func, param);
+        var result = await InvokeAsTaskAsync(_func, param).ConfigureAwait(false);
         var responseNode = new JsonObject();
         responseNode["name"] = functionCall.Name;
 
@@ -173,7 +173,8 @@ public class QuickTool : GoogleFunctionTool
             }
 
             // Retrieve the parameter value from the JSON node using its name in camelCase
-            var val = functionCallArgs[param.Name.ToCamelCase()];
+            var paramName = param.Name ?? $"param{objects.Count}";
+            var val = functionCallArgs[paramName.ToCamelCase()];
 
             // If the value is not provided, add null
             if (val == null)
@@ -225,7 +226,7 @@ public class QuickTool : GoogleFunctionTool
     {
         var node = JsonNode.Parse(param);
         var paramerters = MarshalParameters(node, cancellationToken);
-        var result = await InvokeAsTaskAsync(_func, paramerters);
+        var result = await InvokeAsTaskAsync(_func, paramerters).ConfigureAwait(false);
         if (result != null)
         {
             var typeInfo = _options.GetTypeInfo(result.GetType());

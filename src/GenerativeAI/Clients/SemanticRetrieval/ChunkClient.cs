@@ -64,6 +64,13 @@ public class ChunkClient : BaseClient
         return await GetAsync<ListChunksResponse>(url, cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Adds the authorization header to the HTTP request.
+    /// </summary>
+    /// <param name="request">The HTTP request message.</param>
+    /// <param name="requireAccessToken">Whether an access token is required.</param>
+    /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
     protected override Task AddAuthorizationHeader(HttpRequestMessage request, bool requireAccessToken = false, CancellationToken cancellationToken = default)
     {
         return base.AddAuthorizationHeader(request, true, cancellationToken);

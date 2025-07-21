@@ -3,6 +3,9 @@ using System.Text.Json.Nodes;
 
 namespace GenerativeAI;
 
+/// <summary>
+/// Provides extension methods for <see cref="JsonElement"/> objects.
+/// </summary>
 public static class JsonElementExtensions
 {
     /// <summary>

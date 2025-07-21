@@ -14,6 +14,12 @@ namespace GenerativeAI.Types.RagEngine;
 /// <seealso href="https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/rag-api">See Official API Documentation</seealso>
 public class FileManagementClient : BaseClient
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FileManagementClient"/> class.
+    /// </summary>
+    /// <param name="platform">The platform adapter for API communication.</param>
+    /// <param name="httpClient">Optional HTTP client for API requests.</param>
+    /// <param name="logger">Optional logger for diagnostic output.</param>
     public FileManagementClient(IPlatformAdapter platform, HttpClient? httpClient = null, ILogger? logger = null) : base(platform, httpClient, logger)
     {
     }
@@ -30,7 +36,7 @@ public class FileManagementClient : BaseClient
     /// <param name="cancellationToken">The cancellation token to cancel the upload operation.</param>
     /// <returns>The response containing details of the uploaded <see cref="RagFile"/>.</returns>
     public async Task<RagFile?> UploadRagFileAsync(string corpusName, string filePath,
-        string? displayName = null, string? description = null, UploadRagFileConfig uploadRagFileConfig = null,
+        string? displayName = null, string? description = null, UploadRagFileConfig? uploadRagFileConfig = null,
         Action<double>? progressCallback = null, CancellationToken cancellationToken = default)
     {
         var url =

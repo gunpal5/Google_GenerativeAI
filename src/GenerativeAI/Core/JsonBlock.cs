@@ -75,7 +75,7 @@ public class JsonBlock
             return JsonSerializer.Deserialize(Json, typeInfo) as T;
             
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return null;
         }

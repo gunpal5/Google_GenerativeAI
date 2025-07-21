@@ -31,6 +31,9 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
     /// </summary>
     public string ApiVersion { get; set; } = ApiVersions.v1Beta;
 
+    /// <summary>
+    /// Gets or sets the authenticator used for handling Google API authentication.
+    /// </summary>
     public IGoogleAuthenticator? Authenticator { get; set; }
     bool ValidateAccessToken { get; set; } = true;
     ILogger? Logger { get; set; }
@@ -232,17 +235,19 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
        this.Authenticator = authenticator;
     }
 
+    /// <inheritdoc />
     public string GetMultiModalLiveUrl(string version = "v1alpha")
     {
         return $"{BaseUrls.GoogleMultiModalLive.Replace("{version}",version)}?key={this.Credentials.ApiKey}";
     }
     
     /// <inheritdoc />
-    public async Task<AuthTokens?> GetAccessTokenAsync(CancellationToken cancellationToken = default)
+    public Task<AuthTokens?> GetAccessTokenAsync(CancellationToken cancellationToken = default)
     {
-        return null;
+        return Task.FromResult<AuthTokens?>(null);
     }
 
+    /// <inheritdoc />
     public string? GetMultiModalLiveModalName(string modelName)
     {
         return modelName.ToModelId();

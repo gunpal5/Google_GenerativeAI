@@ -85,6 +85,11 @@ public interface IPlatformAdapter
     /// <param name="authenticator">The Google authenticator to be used for handling authentication operations.</param>
     void SetAuthenticator(IGoogleAuthenticator authenticator);
 
+    /// <summary>
+    /// Gets the WebSocket URL for multi-modal live sessions.
+    /// </summary>
+    /// <param name="version">The API version to use (default: "v1alpha").</param>
+    /// <returns>The WebSocket URL for multi-modal live sessions.</returns>
     string GetMultiModalLiveUrl(string version = "v1alpha");
 
     /// <summary>
@@ -94,5 +99,10 @@ public interface IPlatformAdapter
     /// <returns>A task that represents the asynchronous operation, containing the authentication tokens.</returns>
     Task<AuthTokens?> GetAccessTokenAsync(CancellationToken cancellationToken = default);
 
+    /// <summary>
+    /// Gets the formatted model name for multi-modal live sessions.
+    /// </summary>
+    /// <param name="modelName">The base model name to format.</param>
+    /// <returns>The formatted model name for multi-modal live sessions, or null if not applicable.</returns>
     string? GetMultiModalLiveModalName(string modelName);
 }

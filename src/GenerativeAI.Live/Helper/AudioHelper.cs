@@ -12,9 +12,9 @@ public static class AudioHelper
     /// Adds a WAV file header to the given raw audio data.
     /// </summary>
     /// <param name="audioData">The raw audio data to which the header will be added.</param>
-    /// <param name="numChannels">The number of audio channels (e.g., 1 for mono, 2 for stereo).</param>
+    /// <param name="numberOfChannels">The number of audio channels (e.g., 1 for mono, 2 for stereo).</param>
     /// <param name="sampleRate">The sample rate of the audio (e.g., 44100 for 44.1kHz).</param>
-    /// <param name="bitsPerSample">The number of bits per sample (e.g., 16 for 16-bit audio).</param>
+    /// <param name="bitsPerSample2">The number of bits per sample (e.g., 16 for 16-bit audio).</param>
     /// <returns>A byte array containing the audio data with the WAV header prepended.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="audioData"/> is null.</exception>
     public static byte[] AddWaveHeader(byte[] audioData, int numberOfChannels, int sampleRate, int bitsPerSample2)

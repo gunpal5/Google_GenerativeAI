@@ -54,7 +54,7 @@ namespace GenerativeAI
         /// such as creating, updating, retrieving, or deleting cached content. It helps manage content efficiently
         /// by leveraging the CachingClient within the model's context.
         /// </summary>
-        public CachingClient CachingClient { get; set; }
+        public CachingClient? CachingClient { get; set; }
 
         #endregion
 

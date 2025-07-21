@@ -37,7 +37,7 @@ public abstract class BaseModel : BaseClient
     /// <exception cref="GenerativeAIException">Thrown if the response is blocked or invalid with details of the error.</exception>
     protected void CheckBlockedResponse(GenerateContentResponse? response, string url)
     {
-        if (!(response.Candidates is { Length: > 0 }))
+        if (response == null || !(response.Candidates is { Length: > 0 }))
         {
             var blockErrorMessage = ResponseHelper.FormatBlockErrorMessage(response);
             if (!string.IsNullOrEmpty(blockErrorMessage))
@@ -48,7 +48,7 @@ public abstract class BaseModel : BaseClient
             }
         }
     }
-    
+
     /// <summary>
     /// Generates a model response given an input <see cref="GenerateContentRequest"/>.
     /// </summary>
@@ -85,7 +85,7 @@ public abstract class BaseModel : BaseClient
         CancellationToken cancellationToken = default)
     {
         var url = $"{_platform.GetBaseUrl()}/{model.ToModelId()}:{GenerativeModelTasks.StreamGenerateContent}";
-       
+
         await foreach (var response in StreamAsync<GenerateContentRequest, GenerateContentResponse>(url, request, cancellationToken).ConfigureAwait(false))
             yield return response;
     }
@@ -102,9 +102,9 @@ public abstract class BaseModel : BaseClient
         var url = $"{_platform.GetBaseUrl()}/{model.ToModelId()}:{GenerativeModelTasks.CountTokens}";
         return await SendAsync<CountTokensRequest, CountTokensResponse>(url, request, HttpMethod.Post).ConfigureAwait(false);
     }
-    
- 
-     /// <summary>
+
+
+    /// <summary>
     /// Embeds a batch of content using the specified <see cref="Model">Generative AI model</see>.
     /// </summary>
     /// <param name="model">
@@ -119,19 +119,22 @@ public abstract class BaseModel : BaseClient
     protected virtual async Task<BatchEmbedContentsResponse> BatchEmbedContentAsync(string model, BatchEmbedContentRequest request)
     {
         var url = $"{_platform.GetBaseUrl()}/{model.ToModelId()}:{GenerativeModelTasks.BatchEmbedContents}";
-        foreach (var req in request.Requests)
+        if (request.Requests != null)
         {
-            ValidateEmbeddingRequest(model,req);
+            foreach (var req in request.Requests)
+            {
+                ValidateEmbeddingRequest(model, req);
+            }
         }
         return await SendAsync<BatchEmbedContentRequest, BatchEmbedContentsResponse>(url, request, HttpMethod.Post).ConfigureAwait(false);
     }
 
     private void ValidateEmbeddingRequest(string model, EmbedContentRequest req)
     {
-        req.Model = req.Model?? model;
-        
-        if(!SupportedEmbedingModels.All.Contains(req.Model)) throw new NotSupportedException($"Model {req.Model} is not supported for embedding.");
-        
+        req.Model = req.Model ?? model;
+
+        if (!SupportedEmbedingModels.All.Contains(req.Model)) throw new NotSupportedException($"Model {req.Model} is not supported for embedding.");
+
         if (!string.IsNullOrEmpty(req.Title) && req.TaskType != TaskType.RETRIEVAL_DOCUMENT) throw new NotSupportedException("A title can only be specified for tasks of type 'RETRIEVAL_DOCUMENT'.");
 
     }
@@ -152,7 +155,7 @@ public abstract class BaseModel : BaseClient
     protected virtual async Task<EmbedContentResponse> EmbedContentAsync(string model, EmbedContentRequest request)
     {
         var url = $"{_platform.GetBaseUrl()}/{model.ToModelId()}:{GenerativeModelTasks.EmbedContent}";
-        ValidateEmbeddingRequest(model,request); 
+        ValidateEmbeddingRequest(model, request);
         return await SendAsync<EmbedContentRequest, EmbedContentResponse>(url, request, HttpMethod.Post).ConfigureAwait(false);
     }
 
@@ -164,10 +167,20 @@ public abstract class BaseModel : BaseClient
     /// <param name="cancellationToken"></param>
     /// <returns>The <see cref="GenerateAnswerResponse"/> containing the model's answer.</returns>
     /// <seealso href="https://ai.google.dev/gemini-api/docs/question_answering#method:-models.generateanswer">See Official API Documentation</seealso>
-    protected async Task<GenerateAnswerResponse> GenerateAnswerAsync(string model, GenerateAnswerRequest request,CancellationToken cancellationToken=default)
+    protected async Task<GenerateAnswerResponse> GenerateAnswerAsync(string model, GenerateAnswerRequest request, CancellationToken cancellationToken = default)
     {
         var url = $"{_platform.GetBaseUrl()}/{model.ToModelId()}:{GenerativeModelTasks.GenerateAnswer}";
-     
+
         return await SendAsync<GenerateAnswerRequest, GenerateAnswerResponse>(url, request, HttpMethod.Post, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Checks if the response contains blocked content and handles accordingly.
+    /// </summary>
+    /// <param name="response">The response to check for blocked content.</param>
+    /// <param name="url">The URL of the request that generated the response.</param>
+    protected void CheckBlockedResponse(GenerateContentResponse? response, Uri url)
+    {
+        throw new NotImplementedException();
     }
 }

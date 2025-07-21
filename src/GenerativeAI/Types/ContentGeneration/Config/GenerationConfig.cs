@@ -215,9 +215,21 @@ public class ThinkingConfig
 /// </summary>
 public enum MediaResolution
 {
+    /// <summary>
+    /// The media resolution is unspecified.
+    /// </summary>
     MEDIA_RESOLUTION_UNSPECIFIED,
+    /// <summary>
+    /// Low media resolution.
+    /// </summary>
     MEDIA_RESOLUTION_LOW,
+    /// <summary>
+    /// Medium media resolution.
+    /// </summary>
     MEDIA_RESOLUTION_MEDIUM,
+    /// <summary>
+    /// High media resolution.
+    /// </summary>
     MEDIA_RESOLUTION_HIGH
 }
 

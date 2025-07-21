@@ -4,6 +4,9 @@ using System.Reflection;
 
 namespace GenerativeAI.Utility;
 
+/// <summary>
+/// Utility class for extracting description information from types and their members using reflection.
+/// </summary>
 public static class TypeDescriptionExtractor
 {
     // public static string GetDescription(ParameterInfo paramInfo)
@@ -11,6 +14,11 @@ public static class TypeDescriptionExtractor
     //     var attribute = paramInfo.GetCustomAttribute<System.ComponentModel.DescriptionAttribute>();
     //     return attribute?.Description ?? string.Empty;
     // }
+    /// <summary>
+    /// Extracts the description from a DescriptionAttribute on the provided attribute provider.
+    /// </summary>
+    /// <param name="attributeProvider">The attribute provider (e.g., PropertyInfo, ParameterInfo) to extract description from.</param>
+    /// <returns>The description text, or empty string if no description is found.</returns>
     public static string GetDescription(ICustomAttributeProvider attributeProvider)
     {
         // Look up any description attributes.
@@ -21,6 +29,12 @@ public static class TypeDescriptionExtractor
         
         return descriptionAttr?.Description ?? string.Empty;
     }
+    /// <summary>
+    /// Extracts descriptions from a type and its members, returning them as a dictionary.
+    /// </summary>
+    /// <param name="type">The type to extract descriptions from.</param>
+    /// <param name="descriptions">Optional existing dictionary to add descriptions to.</param>
+    /// <returns>A dictionary containing member names (in camelCase) mapped to their descriptions.</returns>
     public static Dictionary<string, string> GetDescriptionDic(Type type, Dictionary<string, string>? descriptions = null)
     {
         descriptions = descriptions ?? new Dictionary<string, string>();

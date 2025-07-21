@@ -191,6 +191,11 @@ public static class StringExtensions
         return $"files/{fileName}";
     }
 
+    /// <summary>
+    /// Ensures an operation ID is in the correct format with "operations/" prefix.
+    /// </summary>
+    /// <param name="operationId">The operation ID to format.</param>
+    /// <returns>The properly formatted operation ID.</returns>
     public static string RecoverOperationId(this string operationId)
     {
 #if NETSTANDARD2_0 || NET462_OR_GREATER
@@ -213,6 +218,11 @@ public static class StringExtensions
         return $"operations/{operationId}";
     }
 
+    /// <summary>
+    /// Extracts the model ID from an operation ID string.
+    /// </summary>
+    /// <param name="operationId">The operation ID containing the model information.</param>
+    /// <returns>The extracted model ID.</returns>
     public static string RecoverModelIdFromOperationId(this string operationId)
     {
 #if NETSTANDARD2_0 || NET462_OR_GREATER

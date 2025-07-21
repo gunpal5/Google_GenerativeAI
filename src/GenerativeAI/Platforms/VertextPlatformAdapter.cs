@@ -221,7 +221,7 @@ public class VertextPlatformAdapter : IPlatformAdapter
 
         await this.ValidateCredentialsAsync(cancellationToken).ConfigureAwait(false);
 
-        if (!string.IsNullOrEmpty(Credentials.ApiKey))
+        if (Credentials != null && !string.IsNullOrEmpty(Credentials.ApiKey))
             request.Headers.Add("x-goog-api-key", Credentials.ApiKey);
         if (this.Credentials.AuthToken != null && !string.IsNullOrEmpty(Credentials.AuthToken.AccessToken))
             request.Headers.Add("Authorization", "Bearer " + Credentials.AuthToken.AccessToken);
@@ -292,12 +292,12 @@ public class VertextPlatformAdapter : IPlatformAdapter
 
         var token = await Authenticator.GetAccessTokenAsync(cancellationToken).ConfigureAwait(false);
 
-        if (this.Credentials == null)
+        if (token != null && this.Credentials == null)
             this.Credentials = new GoogleAICredentials("", token.AccessToken, token.ExpiryTime);
-        else
+        else if (token != null)
         {
-            if (this.Credentials.AuthToken == null)
-                this.Credentials.AuthToken = token;
+            if (this.Credentials?.AuthToken == null)
+                this.Credentials!.AuthToken = token;
             else
             {
                 this.Credentials.AuthToken.AccessToken = token.AccessToken;
@@ -383,11 +383,13 @@ public class VertextPlatformAdapter : IPlatformAdapter
         return ApiVersions.v1Beta;
     }
 
+    /// <inheritdoc />
     public void SetAuthenticator(IGoogleAuthenticator authenticator)
     {
         this.Authenticator = authenticator;
     }
 
+    /// <inheritdoc />
     public string GetMultiModalLiveUrl(string version = "v1alpha")
     {
         return BaseUrls.VertexMultiModalLive.Replace("{version}", "v1beta1").Replace("{location}", Region).Replace("{projectId}",ProjectId);
@@ -404,6 +406,7 @@ public class VertextPlatformAdapter : IPlatformAdapter
         return this.Credentials.AuthToken;
     }
 
+    /// <inheritdoc />
     public string? GetMultiModalLiveModalName(string modelName)
     {
        var transformed = "projects/{project}/locations/{location}/publishers/google/{model}";

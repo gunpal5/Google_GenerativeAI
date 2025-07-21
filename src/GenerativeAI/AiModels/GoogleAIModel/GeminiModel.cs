@@ -69,7 +69,7 @@ public partial class GeminiModel:GenerativeModel
     /// This property is used to access and manage files through the FileClient, allowing
     /// operations such as uploading, retrieving, deleting, and listing files.
     /// </remarks>
-    public FileClient Files { get; set; }
+    public FileClient? Files { get; set; }
 
   
 }

@@ -97,6 +97,12 @@ public class OperationsClient : BaseClient
         await GetAsync<dynamic>(url, cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Fetches the status of a long-running operation by its ID.
+    /// </summary>
+    /// <param name="operationId">The ID of the operation to fetch status for.</param>
+    /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
+    /// <returns>The current status of the long-running operation.</returns>
     public async Task<GoogleLongRunningOperation> FetchOperationStatusAsync(string operationId, CancellationToken cancellationToken)
     {
         var url = $"{_platform.GetBaseUrl(appendPublisher:false)}/{operationId.RecoverModelIdFromOperationId()}:fetchPredictOperation";

@@ -34,7 +34,7 @@ public class ImagenModel : BaseClient
     public async Task<GenerateImageResponse?> GenerateImagesAsync(GenerateImageRequest request, CancellationToken cancellationToken = default)
     {
         var url = $"{_platform.GetBaseUrl()}/{_modelName.ToModelId()}:predict";
-        return await SendAsync<GenerateImageRequest, GenerateImageResponse>(url, request, HttpMethod.Post,cancellationToken: cancellationToken);
+        return await SendAsync<GenerateImageRequest, GenerateImageResponse>(url, request, HttpMethod.Post,cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -52,6 +52,6 @@ public class ImagenModel : BaseClient
         var request = new GenerateImageRequest();
         request.AddPrompt(prompt, imageSource);
         request.AddParameters(parameters);
-        return await GenerateImagesAsync(request, cancellationToken);
+        return await GenerateImagesAsync(request, cancellationToken).ConfigureAwait(false);
     }
 }

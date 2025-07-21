@@ -10,6 +10,11 @@ public class ProgressStreamContent : HttpContent
     private readonly Stream _stream;
     private readonly Action<double> _progressCallback;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ProgressStreamContent"/> class.
+    /// </summary>
+    /// <param name="stream">The stream to upload with progress tracking.</param>
+    /// <param name="progressCallback">The callback to report upload progress as a percentage (0.0 to 100.0).</param>
     public ProgressStreamContent(Stream stream, Action<double> progressCallback)
     {
         _stream = stream ?? throw new ArgumentNullException(nameof(stream));

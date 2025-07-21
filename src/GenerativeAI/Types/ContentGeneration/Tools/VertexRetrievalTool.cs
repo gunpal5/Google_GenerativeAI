@@ -3,6 +3,9 @@ using GenerativeAI.Types.RagEngine;
 
 namespace GenerativeAI.Types;
 
+/// <summary>
+/// Represents a retrieval tool that can access data sources powered by Vertex AI Search or Vertex RAG store.
+/// </summary>
 public class VertexRetrievalTool
 {
     /// <summary>

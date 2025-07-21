@@ -29,5 +29,6 @@ public class FunctionCall
     /// Optional. The function parameters and values in JSON object format.
     /// </summary>
     [JsonPropertyName("args")]
-    public JsonNode? Args { get; set; }  
+    public JsonNode? Args { get; set; }
+
 }

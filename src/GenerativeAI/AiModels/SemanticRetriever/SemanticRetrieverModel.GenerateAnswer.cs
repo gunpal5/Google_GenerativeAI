@@ -27,9 +27,8 @@ public partial class SemanticRetrieverModel
         var answer = await GenerateAnswerAsync(this.ModelName, request, cancellationToken).ConfigureAwait(false);
         if (answer.Answer == null)
         {
-            var message = ResponseHelper.FormatErrorMessage(answer.Answer.FinishReason ?? FinishReason.SAFETY);
+            var message = ResponseHelper.FormatErrorMessage(FinishReason.SAFETY);
             throw new GenerativeAIException(message, message);
-            return answer;
         }
 
         return answer;
@@ -39,8 +38,8 @@ public partial class SemanticRetrieverModel
     /// Generates an answer asynchronously based on the given prompt and specified parameters.
     /// </summary>
     /// <param name="prompt">The text input that serves as the basis for generating a response.</param>
+    /// <param name="corpusId">The ID of the corpus to use as the grounding source for generating the answer.</param>
     /// <param name="answerStyle">An optional parameter indicating the stylistic approach to be used when generating the answer.</param>
-    /// <param name="groundingSource">An optional parameter specifying additional grounding content that can provide context or relevance to the generated answer.</param>
     /// <param name="safetySettings">An optional collection of rules or configurations applied to ensure safety during the answer generation process.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests during the asynchronous operation.</param>
     /// <returns>Returns a <see cref="GenerateAnswerResponse"/> object containing the generated response and associated metadata.</returns>

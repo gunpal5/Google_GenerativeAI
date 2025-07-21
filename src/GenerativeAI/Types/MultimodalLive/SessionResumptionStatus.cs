@@ -5,7 +5,7 @@ namespace GenerativeAI.Types;
 /// <summary>
 /// Represents the status of a session resumption attempt.
 /// </summary>
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter<SessionResumptionStatus>))]
 public enum SessionResumptionStatus
 {
     /// <summary>

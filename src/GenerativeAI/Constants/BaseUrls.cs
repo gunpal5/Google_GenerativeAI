@@ -29,10 +29,19 @@ public static class BaseUrls
     /// </summary>
     public const string VertexAIExpress = "https://aiplatform.googleapis.com";
 
+    /// <summary>
+    /// WebSocket URL for Google AI multi-modal live sessions.
+    /// </summary>
     public const string GoogleMultiModalLive =
         "wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.{version}.GenerativeService.BidiGenerateContent";
+    /// <summary>
+    /// WebSocket URL for Vertex AI multi-modal live sessions (global endpoint).
+    /// </summary>
     public const string VertexMultiModalLiveGlobal =
         "wss://aiplatform.googleapis.com/ws/google.cloud.aiplatform.{version}.LlmBidiService/BidiGenerateContent";
+    /// <summary>
+    /// WebSocket URL template for Vertex AI multi-modal live sessions with location parameter.
+    /// </summary>
     public const string VertexMultiModalLive =
         "wss://{location}-aiplatform.googleapis.com/ws/google.cloud.aiplatform.{version}.LlmBidiService/BidiGenerateContent";
 }

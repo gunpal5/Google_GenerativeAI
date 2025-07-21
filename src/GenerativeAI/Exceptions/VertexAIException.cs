@@ -11,7 +11,15 @@ namespace GenerativeAI.Exceptions;
 /// </remarks>
 public class VertexAIException:Exception
 {
+    /// <summary>
+    /// Gets or sets the detailed RPC status information about the error.
+    /// </summary>
     public GoogleRpcStatus Status { get; set; }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="VertexAIException"/> class.
+    /// </summary>
+    /// <param name="message">The exception message.</param>
+    /// <param name="status">The detailed RPC status information.</param>
     public VertexAIException(string message, GoogleRpcStatus status):base(message)
     {
         Status = status;

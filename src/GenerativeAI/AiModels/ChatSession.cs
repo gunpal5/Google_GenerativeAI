@@ -72,7 +72,7 @@ public class ChatSession : GenerativeModel
     /// Encapsulates a session for chat-based interaction with a generative AI model.
     /// Manages the exchange of messages, maintains a history of interactions, and supports generating and
     /// streaming responses from the model.
-    public ChatSession(List<Content>? history,string apiKey, ModelParams modelParams, HttpClient? client = null, ILogger? logger = null) :
+    public ChatSession(List<Content>? history, string apiKey, ModelParams modelParams, HttpClient? client = null, ILogger? logger = null) :
         base(apiKey, modelParams, client, logger)
     {
         History = history ?? new();
@@ -86,9 +86,20 @@ public class ChatSession : GenerativeModel
     {
         History = history ?? new();
     }
-    
-    public ChatSession(ChatSessionBackUpData chatSessionBackUpData, string apiKey, List<IFunctionTool>? toolList = null, 
-        HttpClient? httpClient = null, ILogger? logger = null) : base(apiKey, chatSessionBackUpData.Model, chatSessionBackUpData.GenerationConfig, chatSessionBackUpData.SafetySettings,
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ChatSession"/> class from backup data.
+    /// </summary>
+    /// <param name="chatSessionBackUpData">The backup data containing chat session state.</param>
+    /// <param name="apiKey">The API key for authentication.</param>
+    /// <param name="toolList">Optional list of function tools for the session.</param>
+    /// <param name="httpClient">Optional HTTP client for making requests.</param>
+    /// <param name="logger">Optional logger for diagnostic output.</param>
+    public ChatSession(ChatSessionBackUpData chatSessionBackUpData, string apiKey, List<IFunctionTool>? toolList = null,
+        HttpClient? httpClient = null, ILogger? logger = null) : base(apiKey,
+        chatSessionBackUpData?.Model ?? throw new ArgumentNullException(nameof(chatSessionBackUpData)),
+        chatSessionBackUpData.GenerationConfig,
+        chatSessionBackUpData.SafetySettings,
         chatSessionBackUpData.SystemInstructions, httpClient, logger)
     {
         History = chatSessionBackUpData.History ?? new();
@@ -102,10 +113,10 @@ public class ChatSession : GenerativeModel
         ToolConfig = chatSessionBackUpData.ToolConfig;
         UseJsonMode = chatSessionBackUpData.UseJsonMode;
         CachedContent = chatSessionBackUpData.CachedContent;
-        this.FunctionTools = toolList?? new List<IFunctionTool>();
+        this.FunctionTools = toolList ?? new List<IFunctionTool>();
     }
     /// Represents a session for chat interactions using a generative model.
-    public ChatSession(ChatSessionBackUpData chatSessionBackUpData,  IPlatformAdapter platform, List<IFunctionTool>? toolList = null, 
+    public ChatSession(ChatSessionBackUpData chatSessionBackUpData, IPlatformAdapter platform, List<IFunctionTool>? toolList = null,
         HttpClient? httpClient = null, ILogger? logger = null) : base(platform, chatSessionBackUpData.Model, chatSessionBackUpData.GenerationConfig, chatSessionBackUpData.SafetySettings,
         chatSessionBackUpData.SystemInstructions, httpClient, logger)
     {
@@ -120,15 +131,17 @@ public class ChatSession : GenerativeModel
         ToolConfig = chatSessionBackUpData.ToolConfig;
         UseJsonMode = chatSessionBackUpData.UseJsonMode;
         CachedContent = chatSessionBackUpData.CachedContent;
-        this.FunctionTools = toolList?? new List<IFunctionTool>();
+        this.FunctionTools = toolList ?? new List<IFunctionTool>();
     }
-    
+
 
     #endregion
-    
+
     /// <inheritdoc />
     protected override void PrepareRequest(GenerateContentRequest request)
     {
+        if (request == null) throw new ArgumentNullException(nameof(request));
+
         request.Contents.InsertRange(0, History);
         base.PrepareRequest(request);
     }
@@ -161,7 +174,7 @@ public class ChatSession : GenerativeModel
             }
         }
         // Add the AI's function-call message
-        if (response.Candidates.Length > 0)
+        if (response.Candidates.Length > 0 && response.Candidates[0].Content != null)
         {
             contents.Add(new Content(response.Candidates[0].Content.Parts, response.Candidates[0].Content.Role));
         }
@@ -195,6 +208,7 @@ public class ChatSession : GenerativeModel
         {
             this.LastResponseContent = finalModelResponseContent;
         }
+
     }
 
     private void UpdateHistory(GenerateContentRequest request, GenerateContentResponse response)
@@ -213,7 +227,7 @@ public class ChatSession : GenerativeModel
                 UpdateHistory(lastRequestContent, lastResponseContent);
             }
         }
-       
+
     }
 
     private bool IsFunctionResponse(GenerateContentRequest request)
@@ -222,7 +236,7 @@ public class ChatSession : GenerativeModel
         {
             foreach (var requestContentPart in requestContent.Parts)
             {
-                if(requestContentPart.FunctionResponse!=null)
+                if (requestContentPart.FunctionResponse != null)
                     return true;
             }
         }

@@ -36,7 +36,7 @@ public class ImageTextModel: BaseClient
     {
         var url = $"{_platform.GetBaseUrl()}/models/imagetext:predict";
         
-        return await SendAsync<ImageCaptioningRequest, ImageCaptioningResponse>(url, request, HttpMethod.Post, cancellationToken);
+        return await SendAsync<ImageCaptioningRequest, ImageCaptioningResponse>(url, request, HttpMethod.Post, cancellationToken).ConfigureAwait(false);
     }
     
     /// <summary>
@@ -50,7 +50,7 @@ public class ImageTextModel: BaseClient
     {
         var url = $"{_platform.GetBaseUrl()}/models/imagetext:predict";
         
-        return await SendAsync<VqaRequest, VqaResponse>(url, request, HttpMethod.Post, cancellationToken);
+        return await SendAsync<VqaRequest, VqaResponse>(url, request, HttpMethod.Post, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -67,7 +67,7 @@ public class ImageTextModel: BaseClient
         var request = new ImageCaptioningRequest();
         request.AddLocalImage(imagePath);
         request.Parameters = parameters;
-        return await GenerateImageCaptionAsync(request, cancellationToken);
+        return await GenerateImageCaptionAsync(request, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -85,7 +85,7 @@ public class ImageTextModel: BaseClient
         var request = new ImageCaptioningRequest();
         request.AddGcsImage(imageUri);
         request.Parameters = parameters;
-        return await GenerateImageCaptionAsync(request, cancellationToken);
+        return await GenerateImageCaptionAsync(request, cancellationToken).ConfigureAwait(false);
     }
 
 
@@ -104,7 +104,7 @@ public class ImageTextModel: BaseClient
         var request = new VqaRequest();
         request.AddLocalImage(prompt, imagePath);
         request.Parameters = parameters;
-        return await VisualQuestionAnsweringAsync(request, cancellationToken);
+        return await VisualQuestionAnsweringAsync(request, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -123,6 +123,6 @@ public class ImageTextModel: BaseClient
         var request = new VqaRequest();
         request.AddGcsImage(prompt, imageUri);
         request.Parameters = parameters;
-        return await VisualQuestionAnsweringAsync(request, cancellationToken);
+        return await VisualQuestionAnsweringAsync(request, cancellationToken).ConfigureAwait(false);
     }
 }

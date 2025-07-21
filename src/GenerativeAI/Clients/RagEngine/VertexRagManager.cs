@@ -351,8 +351,8 @@ public class VertexRagManager : BaseClient
     /// <param name="progressCallback">An optional callback to monitor the upload progress, represented as a percentage value.</param>
     /// <param name="cancellationToken">A token to monitor and handle request cancellation.</param>
     /// <returns>An <see cref="UploadRagFileResponse"/> containing details about the uploaded file, or null if the operation fails.</returns>
-    public async Task<RagFile?> UploadLocalFileAsync(string corpusName, string localFilePath, string displayName = null,
-        string? description = null, UploadRagFileConfig uploadRagFileConfig = null,
+    public async Task<RagFile?> UploadLocalFileAsync(string corpusName, string localFilePath, string? displayName = null,
+        string? description = null, UploadRagFileConfig? uploadRagFileConfig = null,
         Action<double>? progressCallback = null, CancellationToken cancellationToken = default)
     {
         return await FileManager.UploadRagFileAsync(corpusName, localFilePath, displayName, description,

@@ -42,7 +42,7 @@ public class MultiModalLiveClient : IDisposable
                 KeepAliveInterval = TimeSpan.FromSeconds(10),
             }
         };
-        var accessToken = await _platformAdapter.GetAccessTokenAsync();
+        var accessToken = await _platformAdapter.GetAccessTokenAsync().ConfigureAwait(false);
         if(accessToken != null)
             client.Options.SetRequestHeader("Authorization", $"Bearer {accessToken.AccessToken}");
         return client;
@@ -663,7 +663,7 @@ public class MultiModalLiveClient : IDisposable
             _client.Send(json);
             //var bytes = Encoding.UTF8.GetBytes(json);
             //_client.Send(bytes); // Removed cancellationToken. This is handled by the library.
-            await Task.CompletedTask;
+            await Task.CompletedTask.ConfigureAwait(false);
         }
         catch (WebSocketException ex)
         {

@@ -6,11 +6,22 @@ using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+/// <summary>
+/// JSON converter for <see cref="TimeOnly"/> values.
+/// </summary>
 public class TimeOnlyJsonConverter : JsonConverter<TimeOnly>
 {
     private const string TimeFormat = "O";
 
     // Reads JSON and converts it to TimeOnly
+    /// <summary>
+    /// Reads and converts the JSON to a <see cref="TimeOnly"/> value.
+    /// </summary>
+    /// <param name="reader">The reader to read from.</param>
+    /// <param name="typeToConvert">The type to convert.</param>
+    /// <param name="options">The serializer options.</param>
+    /// <returns>The converted <see cref="TimeOnly"/> value.</returns>
+    /// <exception cref="JsonException">Thrown when the JSON cannot be parsed as a valid time.</exception>
     public override TimeOnly Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         // Check if the token is a string
@@ -40,6 +51,12 @@ public class TimeOnlyJsonConverter : JsonConverter<TimeOnly>
         throw new JsonException($"Could not parse \"{timeString}\" as a valid time format for TimeOnly. Expected formats like 'HH:mm:ss.fffffff' or an ISO 8601 DateTimeOffset string.");
     }
 
+    /// <summary>
+    /// Writes the <see cref="TimeOnly"/> value as JSON.
+    /// </summary>
+    /// <param name="writer">The writer to write to.</param>
+    /// <param name="value">The <see cref="TimeOnly"/> value to write.</param>
+    /// <param name="options">The serializer options.</param>
     public override void Write(Utf8JsonWriter writer, TimeOnly value, JsonSerializerOptions options)
     {
         writer.WriteStringValue(value.ToString("O", CultureInfo.InvariantCulture));

@@ -39,7 +39,7 @@ public class GenericFunctionTool:GoogleFunctionTool
             {
                 Description = s.Description,
                 Name = s.Name,
-                Parameters = ToSchema(s.Parameters)
+                Parameters = s.Parameters != null ? ToSchema(s.Parameters) : null
             }).ToList(),
         };
     }

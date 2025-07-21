@@ -59,6 +59,13 @@ public static class ContentExtensions
         content.AddPart(part);
     }
 
+    /// <summary>
+    /// Adds a file as inline base64-encoded data to the content.
+    /// </summary>
+    /// <param name="content">The content to add the file to.</param>
+    /// <param name="filePath">The path to the file to add.</param>
+    /// <param name="role">The role parameter (currently unused but kept for interface compatibility).</param>
+    /// <exception cref="ArgumentException">Thrown when content is null.</exception>
     public static void AddInlineFile(this Content content, string filePath, string role)
     {
         if (content == null)

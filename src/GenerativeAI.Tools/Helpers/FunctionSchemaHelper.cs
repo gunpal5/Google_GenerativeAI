@@ -30,8 +30,9 @@ public static class FunctionSchemaHelper
 
             var schema = GoogleSchemaHelper.ConvertToSchema(type, options);
             schema.Description = desc;
-            parametersSchema.Properties.Add(param.Name.ToCamelCase(), schema);
-            parametersSchema.Required.Add(param.Name.ToCamelCase());
+            var paramName = param.Name ?? "param" + paramCount;
+            parametersSchema.Properties.Add(paramName.ToCamelCase(), schema);
+            parametersSchema.Required.Add(paramName.ToCamelCase());
         }
 
         var functionDescription = TypeDescriptionExtractor.GetDescription(func.Method);

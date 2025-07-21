@@ -141,11 +141,17 @@ public class SessionResumptionConfig
 public class ProactivityConfig
 {
     // Add properties for ProactivityConfig if available
+    /// <summary>
+    /// Gets or sets whether proactive audio generation is enabled.
+    /// </summary>
     [JsonPropertyName("proactiveAudio")]
     public bool? ProactiveAudio { get; set; }
 }
 
 
+/// <summary>
+/// Configuration settings for audio transcription in multimodal live sessions.
+/// </summary>
 public class AudioTranscriptionConfig
 {
 

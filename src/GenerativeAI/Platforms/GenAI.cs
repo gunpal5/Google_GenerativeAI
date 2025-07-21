@@ -42,6 +42,12 @@ public abstract class GenAI
     public ModelClient ModelClient { get; }
 
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="GenAI"/> class.
+    /// </summary>
+    /// <param name="platformAdapter">The platform adapter for API communication.</param>
+    /// <param name="client">Optional HTTP client for API requests.</param>
+    /// <param name="logger">Optional logger for diagnostic output.</param>
     protected GenAI(IPlatformAdapter platformAdapter, HttpClient? client = null, ILogger? logger = null)
     {
         this.Platform = platformAdapter;
