@@ -58,11 +58,19 @@ public class VertexRagDemo
                 return existingCorpus;
             }
 
-            return existingCorpus;
+            // If corpus doesn't exist, create a new one
+            var newCorpus = await _ragManager.CreateCorpusAsync(corpusName, corpusDescription);
+            if (newCorpus == null)
+                throw new InvalidOperationException($"Failed to create corpus '{corpusName}'.");
+            this._corpus = newCorpus;
+            Console.WriteLine($"Corpus '{newCorpus.Name}' created.");
+            return newCorpus;
         }
         catch (Exception ex)
         {
             var newCorpus = await _ragManager.CreateCorpusAsync(corpusName, corpusDescription);
+            if (newCorpus == null)
+                throw new InvalidOperationException($"Failed to create corpus '{corpusName}'.");
             this._corpus = newCorpus;
             Console.WriteLine($"Corpus '{_corpus.Name}' created.");
            

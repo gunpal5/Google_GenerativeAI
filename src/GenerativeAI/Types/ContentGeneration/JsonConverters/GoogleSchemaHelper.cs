@@ -69,10 +69,14 @@ public static class GoogleSchemaHelper
         var x1 = node;
         var x2 = x1.ToJsonString();
         var schema = JsonSerializer.Deserialize(x2, SchemaSourceGenerationContext.Default.Schema);
+        if (schema == null)
+            throw new InvalidOperationException("Failed to deserialize schema. The JSON content was invalid or empty.");
         return schema;
 #else
         if (node == null) throw new ArgumentNullException(nameof(node));
         var schema = JsonSerializer.Deserialize<Schema>(node.ToJsonString());
+        if (schema == null)
+            throw new InvalidOperationException("Failed to deserialize schema. The JSON content was invalid or empty.");
         return schema;
 #endif
     }
@@ -209,6 +213,8 @@ public static class GoogleSchemaHelper
 
         //Work around to avoid type as array
         var schema = GoogleSchemaHelper.ConvertToCompatibleSchemaSubset(constructedSchema);
+        if (schema == null)
+            throw new InvalidOperationException($"Failed to convert schema for type {type.Name}.");
         return schema;
 #endif
     }

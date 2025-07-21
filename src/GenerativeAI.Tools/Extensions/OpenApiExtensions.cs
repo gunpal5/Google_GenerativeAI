@@ -14,6 +14,9 @@ public static class OpenApiExtensions
     public static OpenApiSchema ToOpenApiSchema(this Schema schema)
     {
         var json = JsonSerializer.Serialize(schema, TypesSerializerContext.Default.Schema);
-        return JsonSerializer.Deserialize(json, OpenApiSchemaSourceGenerationContext.Default.OpenApiSchema);   
+        var result = JsonSerializer.Deserialize(json, OpenApiSchemaSourceGenerationContext.Default.OpenApiSchema);
+        if (result == null)
+            throw new InvalidOperationException("Failed to convert Schema to OpenApiSchema. The serialization resulted in null.");
+        return result;   
     }
 }

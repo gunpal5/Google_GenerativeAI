@@ -293,10 +293,13 @@ public class VertexRagManager : BaseClient
         if (longRunning != null && longRunning.Done == true)
         {
             var name = corpus.Name;
-            return await RagCorpusClient.GetRagCorpusAsync(name, cancellationToken).ConfigureAwait(false);
+            var updatedCorpus = await RagCorpusClient.GetRagCorpusAsync(name, cancellationToken).ConfigureAwait(false);
+            if (updatedCorpus == null)
+                throw new InvalidOperationException($"Failed to retrieve updated corpus '{name}' after update operation completed.");
+            return updatedCorpus;
         }
 
-        return null;
+        throw new InvalidOperationException("Failed to update corpus. The long-running operation did not complete successfully.");
     }
 
     /// <summary>

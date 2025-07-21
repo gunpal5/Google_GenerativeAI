@@ -161,7 +161,10 @@ namespace GenerativeAI.Core
                 var response = await _httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
                 await CheckAndHandleErrors(response, url).ConfigureAwait(false);
-                return await Deserialize<TResponse>(response).ConfigureAwait(false);
+                var result = await Deserialize<TResponse>(response).ConfigureAwait(false);
+                if (result == null)
+                    throw new InvalidOperationException($"Failed to deserialize response from {url}. The server returned null or invalid data.");
+                return result;
             }
             catch (Exception ex) when (ex is TaskCanceledException or OperationCanceledException)
             {
@@ -462,7 +465,8 @@ namespace GenerativeAI.Core
                     if (cancellationToken.IsCancellationRequested)
                         yield break;
 
-                    yield return item;
+                    if (item != null)
+                        yield return item;
                 }
             }
         }

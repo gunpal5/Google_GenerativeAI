@@ -78,7 +78,9 @@ public class FileClient : BaseClient
         await CheckAndHandleErrors(response, url).ConfigureAwait(false);
 
         var fileResponse = await Deserialize<UploadFileResponse>(response).ConfigureAwait(false);
-        return fileResponse?.File;
+        if (fileResponse?.File == null)
+            throw new InvalidOperationException("Failed to upload file. The server response did not contain file information.");
+        return fileResponse.File;
     }
 
     /// <summary>
@@ -144,7 +146,9 @@ public class FileClient : BaseClient
         await CheckAndHandleErrors(response, url).ConfigureAwait(false);
 
         var fileResponse = await Deserialize<UploadFileResponse>(response).ConfigureAwait(false);
-        return fileResponse?.File;
+        if (fileResponse?.File == null)
+            throw new InvalidOperationException("Failed to upload file. The server response did not contain file information.");
+        return fileResponse.File;
     }
 
     private void ValidateStream(Stream stream, string mimeType)

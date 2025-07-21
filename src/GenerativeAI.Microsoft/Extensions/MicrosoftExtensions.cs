@@ -346,7 +346,7 @@ public static class MicrosoftExtensions
         {
             return new ChatResponseUpdate
             {
-                Contents = response.Candidates.Select(s => s.Content).SelectMany(s => s?.Parts).ToList().ToAiContents(),
+                Contents = response.Candidates.Select(s => s.Content).SelectMany(s => s?.Parts ?? new List<Part>()).ToList().ToAiContents(),
                 AdditionalProperties = null,
                 FinishReason = response?.Candidates?.FirstOrDefault()?.FinishReason == FinishReason.OTHER
                     ? ChatFinishReason.Stop
@@ -485,7 +485,7 @@ public static class MicrosoftExtensions
     public static IList<AIContent> ToAiContents(this List<Part>? parts)
     {
         List<AIContent>? contents = null;
-        if (parts is null) return contents;
+        if (parts is null) return new List<AIContent>();
 
         foreach (var part in parts)
         {
@@ -513,7 +513,7 @@ public static class MicrosoftExtensions
             }
         }
 
-        return contents;
+        return contents ?? new List<AIContent>();
     }
 
     /// <summary>

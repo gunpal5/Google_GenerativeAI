@@ -33,7 +33,7 @@ public class VertextPlatformAdapter : IPlatformAdapter
     /// <summary>
     /// The API version to use when making requests.
     /// </summary>
-    private string ApiVersion { get; set; }
+    public string ApiVersion { get; set; }
 
     /// <summary>
     /// Publisher information, defaulting to "google".

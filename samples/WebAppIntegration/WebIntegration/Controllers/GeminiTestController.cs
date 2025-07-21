@@ -21,6 +21,6 @@ public class GeminiTestController : Controller
 
         var response = await model.GenerateContentAsync(prompt).ConfigureAwait(false);
         
-        return response.Text();
+        return response.Text() ?? "No response generated";
     }
 }
