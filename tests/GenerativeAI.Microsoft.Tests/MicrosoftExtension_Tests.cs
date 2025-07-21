@@ -155,7 +155,8 @@ public class MicrosoftExtension_Tests
         var result = parts.ToAiContents();
 
         // Assert
-        result.ShouldBeNull();
+        result.ShouldNotBeNull();
+        result.ShouldBeEmpty();
     }
 
     [Fact]
@@ -168,7 +169,8 @@ public class MicrosoftExtension_Tests
         var result = parts.ToAiContents();
 
         // Assert
-        result.ShouldBeNull();
+        result.ShouldNotBeNull();
+        result.Count.ShouldBe(0);   
     }
 
     [Fact]
