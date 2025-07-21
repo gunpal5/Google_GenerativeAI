@@ -83,7 +83,7 @@ public class GenerativeAIChatClient : IChatClient
         List<FunctionResponse> functionResponses = new List<FunctionResponse>();
         foreach (var functionCall in functionCalls)
         {
-            var tool = (AIFunction?)options.Tools.Where(s => s is AIFunction)
+            var tool = (AIFunction?)options.Tools?.Where(s => s is AIFunction)
                 .FirstOrDefault(s => s.Name == functionCall.Name);
             if (tool != null)
             {
@@ -139,7 +139,7 @@ public class GenerativeAIChatClient : IChatClient
         var contents = request.Contents;
         foreach (var functionCall in functionCalls)
         {
-            var tool = (AIFunction?)options.Tools.Where(s => s is AIFunction)
+            var tool = (AIFunction?)options.Tools?.Where(s => s is AIFunction)
                 .FirstOrDefault(s => s.Name == functionCall.Name);
             if (tool != null)
             {

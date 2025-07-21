@@ -173,7 +173,8 @@ public class QuickTool : GoogleFunctionTool
             }
 
             // Retrieve the parameter value from the JSON node using its name in camelCase
-            var val = functionCallArgs[param.Name.ToCamelCase()];
+            var paramName = param.Name ?? $"param{objects.Count}";
+            var val = functionCallArgs[paramName.ToCamelCase()];
 
             // If the value is not provided, add null
             if (val == null)

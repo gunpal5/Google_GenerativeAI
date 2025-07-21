@@ -93,7 +93,8 @@ public static class MicrosoftExtensions
     /// <returns>A <see cref="Schema"/> object constructed from the provided JSON schema, or null if deserialization fails.</returns>
     private static Schema? ToSchema(this JsonElement schema)
     {
-        return GoogleSchemaHelper.ConvertToCompatibleSchemaSubset(schema.AsNode());
+        var node = schema.AsNode();
+        return node != null ? GoogleSchemaHelper.ConvertToCompatibleSchemaSubset(node) : null;
     }
 
     /// <summary>
@@ -249,8 +250,12 @@ public static class MicrosoftExtensions
             if (jsonFormat.Schema is { ValueKind: JsonValueKind.Object } je)
             {
                 // Workaround to convert our real json schema to the format Google's api expects
-                var forGoogleApi = GoogleSchemaHelper.ConvertToCompatibleSchemaSubset(je.AsNode());
-                config.ResponseSchema = forGoogleApi;
+                var node = je.AsNode();
+                if (node != null)
+                {
+                    var forGoogleApi = GoogleSchemaHelper.ConvertToCompatibleSchemaSubset(node);
+                    config.ResponseSchema = forGoogleApi;
+                }
             }
         }
 
@@ -425,7 +430,7 @@ public static class MicrosoftExtensions
             Roles.Model => ChatRole.Assistant,
             Roles.System => ChatRole.System,
             Roles.Function => ChatRole.Tool,
-            _ => new ChatRole(role)
+            _ => new ChatRole(role!)
         };
     }
 
@@ -500,7 +505,7 @@ public static class MicrosoftExtensions
             if (part.InlineData is not null)
             {
                 byte[] data = Convert.FromBase64String(part.InlineData.Data!);
-                (contents ??= new()).Add(new DataContent(data, part.InlineData.MimeType));
+                (contents ??= new()).Add(new DataContent(data, part.InlineData.MimeType ?? "application/octet-stream"));
             }
         }
 

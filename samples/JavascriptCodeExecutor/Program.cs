@@ -3,6 +3,11 @@ using GenerativeAI;
 
 //Get API Key
 var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY", EnvironmentVariableTarget.User);
+if (string.IsNullOrEmpty(apiKey))
+{
+    Console.WriteLine("Please set the GOOGLE_API_KEY environment variable.");
+    return;
+}
 restart:
 
 //Initialize Model

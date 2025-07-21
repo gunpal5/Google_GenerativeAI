@@ -31,11 +31,4 @@ public class FunctionCall
     [JsonPropertyName("args")]
     public JsonNode? Args { get; set; }
 
-    /// <summary>
-    /// Represents a function call predicted by the model, including its name and arguments.
-    /// </summary>
-    public FunctionCall(string name)
-    {
-        this.Name = name;
-    }
 }

@@ -20,11 +20,14 @@ async Task AddBooksToCorpus(CorporaManager corporaManager, string corpusName, st
     var doc1 = await corporaManager.AddDocumentAsync(corpusName, bookName,
         new List<CustomMetadata> { new CustomMetadata() { Key = "Author", StringValue = authorName } });
 
-    await foreach (var parts in chunker.ExtractChunksInPartsFromUrlAsync(contentUrl, 100))
+    if (doc1 != null && !string.IsNullOrEmpty(doc1.Name))
     {
-        var chunks = parts.Select(s => new Chunk() { Data = new ChunkData() { StringValue = s } }).ToList();
+        await foreach (var parts in chunker.ExtractChunksInPartsFromUrlAsync(contentUrl, 100))
+        {
+            var chunks = parts.Select(s => new Chunk() { Data = new ChunkData() { StringValue = s } }).ToList();
 
-        chunks = await corporaManager.AddChunksAsync(doc1.Name, chunks);
+            chunks = await corporaManager.AddChunksAsync(doc1.Name, chunks);
+        }
     }
 }
 
@@ -40,7 +43,13 @@ if (string.IsNullOrEmpty(serviceAccountConfigFile) || !File.Exists(serviceAccoun
     return;
 }
 var authenticator = new GoogleServiceAccountAuthenticator(serviceAccountConfigFile);
-var retrieverModel = new SemanticRetrieverModel(GoogleAIModels.Aqa, EnvironmentVariables.GOOGLE_API_KEY,
+var apiKey = EnvironmentVariables.GOOGLE_API_KEY;
+if (string.IsNullOrEmpty(apiKey))
+{
+    Console.WriteLine("Please set the GOOGLE_API_KEY environment variable.");
+    return;
+}
+var retrieverModel = new SemanticRetrieverModel(GoogleAIModels.Aqa, apiKey,
     authenticator: authenticator);
 
 
@@ -56,11 +65,14 @@ if (corpora == null || corpora.All(c => c.DisplayName != "Generative AI Demo"))
     corpus = await corporaManager.CreateCorpusAsync("Generative AI Demo");
 
     //Add Documents
-    await AddBooksToCorpus(corporaManager, corpus.Name, "https://www.gutenberg.org/cache/epub/1184/pg1184.txt",
-        "The Count of Monte Cristo", "Alexandre Dumas");
+    if (corpus != null && corpus.Name != null)
+    {
+        await AddBooksToCorpus(corporaManager, corpus.Name, "https://www.gutenberg.org/cache/epub/1184/pg1184.txt",
+            "The Count of Monte Cristo", "Alexandre Dumas");
 
-    await AddBooksToCorpus(corporaManager, corpus.Name, "https://www.gutenberg.org/cache/epub/75400/pg75400.txt",
-        "The boys of Columbia High on the diamond or, Winning out by pluck", "Graham B. Forbes");
+        await AddBooksToCorpus(corporaManager, corpus.Name, "https://www.gutenberg.org/cache/epub/75400/pg75400.txt",
+            "The boys of Columbia High on the diamond or, Winning out by pluck", "Graham B. Forbes");
+    }
     
     Console.WriteLine("Corpus was created for books. listed below:\r\n1) The Count of Monte Cristo \r\n2) \"The boys of Columbia High on the diamond or, Winning out by pluck\"");
 }
@@ -74,6 +86,11 @@ else
 Console.WriteLine("type 'exit' to exit");
 Console.WriteLine("Please enter a question:");
 Console.WriteLine("e.g. tell me something about The Count of Monte Cristo.");
+if (corpus == null || string.IsNullOrEmpty(corpus.Name))
+{
+    Console.WriteLine("Error: Corpus or corpus name is null.");
+    return;
+}
 var chatSession = retrieverModel.CreateChatSession(corpus.Name,AnswerStyle.VERBOSE);
 do
 {
