@@ -44,18 +44,25 @@ public static class MicrosoftExtensions
                 where p is not null
                 select p).ToArray(), m.Role == ChatRole.Assistant ? Roles.Model : Roles.User)).ToList();
 
-        request.Tools = options?.Tools?.OfType<AIFunction>().Select(f => new Tool()
-        {
-            FunctionDeclarations = new()
+        var functionDeclarations = options?.Tools?.OfType<AIFunction>().Select(f => 
+            new FunctionDeclaration()
             {
-                new FunctionDeclaration()
-                {
-                    Name = f.Name,
-                    Description = f.Description,
-                    Parameters = ParseFunctionParameters(f.JsonSchema),
-                }
+                Name = f.Name,
+                Description = f.Description,
+                Parameters = ParseFunctionParameters(f.JsonSchema),
             }
-        }).ToList()!;
+        ).ToList();
+
+        if (functionDeclarations != null && functionDeclarations.Count > 0)
+        {
+            request.Tools = new List<Tool>()
+            {
+                new Tool
+                {
+                    FunctionDeclarations = functionDeclarations.ToList()
+                }
+            };
+        }
 
         return request;
     }
