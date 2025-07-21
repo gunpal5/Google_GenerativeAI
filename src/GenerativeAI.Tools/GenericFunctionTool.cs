@@ -38,7 +38,7 @@ public class GenericFunctionTool:GoogleFunctionTool
             FunctionDeclarations = Tools.Select(s => new FunctionDeclaration()
             {
                 Description = s.Description,
-                Name = s.Name,
+                Name = s.Name ?? throw new InvalidOperationException("Tool name cannot be null"),
                 Parameters = s.Parameters != null ? ToSchema(s.Parameters) : null
             }).ToList(),
         };

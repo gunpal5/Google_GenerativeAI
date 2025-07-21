@@ -1,4 +1,4 @@
-﻿using GenerativeAI.Clients;
+using GenerativeAI.Clients;
 using Shouldly;
 
 namespace GenerativeAI.Tests.Clients
@@ -14,7 +14,7 @@ namespace GenerativeAI.Tests.Clients
         {
              var client = CreateClient();
 
-            var response = await client.ListModelsAsync().ConfigureAwait(false);
+            var response = await client.ListModelsAsync(cancellationToken: TestContext.Current.CancellationToken);
             
             var models = response.Models;
             models.ShouldNotBeNull();
@@ -47,7 +47,7 @@ namespace GenerativeAI.Tests.Clients
         {
              var client = CreateClient();
 
-            var modelInfo = await client.GetModelAsync(GoogleAIModels.DefaultGeminiModel).ConfigureAwait(false);
+            var modelInfo = await client.GetModelAsync(GoogleAIModels.DefaultGeminiModel, cancellationToken: TestContext.Current.CancellationToken);
             modelInfo.Name.ShouldNotBeNullOrEmpty();
             modelInfo.Description.ShouldNotBeNullOrEmpty();
             modelInfo.DisplayName.ShouldNotBeNullOrEmpty();

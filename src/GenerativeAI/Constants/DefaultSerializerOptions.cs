@@ -21,7 +21,7 @@ namespace GenerativeAI;
 /// - Automatic serialization of enums as strings.
 /// - Ignoring null values during serialization.
 /// </remarks>
-public class DefaultSerializerOptions
+public static class DefaultSerializerOptions
 {
     /// <summary>
     /// Gets a list of custom type resolvers used to provide additional or specialized

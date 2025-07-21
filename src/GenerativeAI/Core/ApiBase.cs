@@ -83,7 +83,7 @@ namespace GenerativeAI.Core
             {
                 _logger?.LogGetRequest(url);
 
-                var request = new HttpRequestMessage(HttpMethod.Get, new Uri(url));
+                using var request = new HttpRequestMessage(HttpMethod.Get, new Uri(url));
 
                 await AddAuthorizationHeader(request, false, cancellationToken).ConfigureAwait(false);
 
@@ -207,13 +207,13 @@ namespace GenerativeAI.Core
                     var errorDocument = JsonDocument.Parse(content);
                     var error = errorDocument.RootElement.GetProperty("error");
                     if (error.ValueKind == JsonValueKind.Null)
-                        throw new Exception();
+                        throw new InvalidOperationException("API error response is missing required fields.");
                     error.TryGetProperty("status", out var status);
                     error.TryGetProperty("message", out var message);
                     error.TryGetProperty("code", out var code);
                     if (message.ValueKind == JsonValueKind.Null)
                     {
-                        throw new Exception();
+                        throw new InvalidOperationException("API error response is missing required fields.");
                     }
 
                     throw new ApiException(code.GetInt32(), message.GetString() ?? "Unknown error", status.GetString() ?? "Unknown status");
@@ -344,9 +344,9 @@ namespace GenerativeAI.Core
             Dictionary<string, string>? additionalHeaders = null,
             CancellationToken cancellationToken = default)
         {
-            var content = new ProgressStreamContent(stream, progress);
-
+            using var content = new ProgressStreamContent(stream, progress);
             using var form = new MultipartFormDataContent();
+            
             content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
             form.Add(content, "file", filePath);
 

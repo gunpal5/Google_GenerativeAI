@@ -173,31 +173,37 @@ public interface IGenerativeModel
     /// <summary>
     /// Counts tokens asynchronously based on the provided request.
     /// </summary>
-    /// <param name="request">An instance of <see cref="CountTokensRequest"/> containing the details of contents or generation parameters for counting tokens.</param>
-    /// <returns>A task that represents the asynchronous operation, containing a <see cref="CountTokensResponse"/> with the token count details.</returns>
-    Task<CountTokensResponse> CountTokensAsync(CountTokensRequest request);
+    /// <param name="request">An instance of <see cref="CountTokensRequest"/> containing the content or parameters for token counting.</param>
+    /// <param name="cancellationToken">A cancellation token for monitoring cancellation requests.</param>
+    /// <returns>Returns a <see cref="CountTokensResponse"/> containing details of the token count.</returns>
+    Task<CountTokensResponse> CountTokensAsync(CountTokensRequest request,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Asynchronously counts the tokens in the given contents.
     /// </summary>
     /// <param name="contents">A collection of <see cref="Content"/> objects representing the input for which tokens need to be counted.</param>
-    /// <returns>A task representing the asynchronous operation, containing the <see cref="CountTokensResponse"/> with the resulting token count.</returns>
-    Task<CountTokensResponse> CountTokensAsync(IEnumerable<Content> contents);
+    /// <param name="cancellationToken">A cancellation token to observe while waiting for the task to complete.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the <see cref="CountTokensResponse"/> with the resulting token count.</returns>
+    Task<CountTokensResponse> CountTokensAsync(IEnumerable<Content> contents,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Asynchronously counts the tokens in the provided collection of parts.
     /// </summary>
     /// <param name="parts">A collection of <see cref="Part"/> objects representing the input data for token counting.</param>
-    /// <returns>A task representing the asynchronous operation, containing the <see cref="CountTokensResponse"/> with the token counting results.</returns>
-    Task<CountTokensResponse> CountTokensAsync(IEnumerable<Part> parts);
+    /// <param name="cancellationToken">A cancellation token that can be used to cancel the token counting operation.</param>
+    /// <returns>A task representing the asynchronous operation, containing a <see cref="CountTokensResponse"/> with the token counting results.</returns>
+    Task<CountTokensResponse> CountTokensAsync(IEnumerable<Part> parts, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Counts the number of tokens in the content based on the provided <see cref="GenerateContentRequest"/>.
+    /// Counts the number of tokens in the specified content asynchronously.
     /// </summary>
-    /// <param name="generateContentRequest">An instance of <see cref="GenerateContentRequest"/> containing the input data for which the token count is calculated.</param>
-    /// <returns>A task that represents the asynchronous operation, containing a <see cref="CountTokensResponse"/> with token count details.</returns>
-    Task<CountTokensResponse> CountTokensAsync(GenerateContentRequest generateContentRequest);
-
+    /// <param name="generateContentRequest">An instance of <see cref="GenerateContentRequest"/> containing the details of the content for which tokens are to be counted.</param>
+    /// <param name="cancellationToken">A cancellation token that can be used to observe while waiting for the asynchronous operation to complete.</param>
+    /// <returns>A <see cref="CountTokensResponse"/> containing the result of the token count operation.</returns>
+    Task<CountTokensResponse> CountTokensAsync(GenerateContentRequest generateContentRequest,
+        CancellationToken cancellationToken = default);
 
     #endregion
 

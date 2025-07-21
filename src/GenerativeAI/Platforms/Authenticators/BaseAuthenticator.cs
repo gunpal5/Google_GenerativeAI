@@ -62,9 +62,9 @@ public abstract class BaseAuthenticator : IGoogleAuthenticator
     /// <returns>
     /// A valid <see cref="AuthTokens"/> instance with the token data if successful, or null if unsuccessful.
     /// </returns>
-    protected async Task<AuthTokens?> GetTokenInfo(string token)
+    protected static async Task<AuthTokens?> GetTokenInfo(string token)
     {
-        var client = new HttpClient();
+        using var client = new HttpClient();
         var response = await client.GetAsync("https://oauth2.googleapis.com/tokeninfo?access_token=" + token).ConfigureAwait(false);
 
         if (response.IsSuccessStatusCode)
@@ -82,7 +82,7 @@ public abstract class BaseAuthenticator : IGoogleAuthenticator
                 var expiresInStr = expiresIn.GetString();
                 if (expiresInStr == null)
                     return null;
-                expiresInSeconds = int.Parse(expiresInStr);
+                expiresInSeconds = int.Parse(expiresInStr, System.Globalization.CultureInfo.InvariantCulture);
             }
             else
                 return null;

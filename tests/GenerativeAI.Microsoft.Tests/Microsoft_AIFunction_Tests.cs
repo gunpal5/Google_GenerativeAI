@@ -35,7 +35,7 @@ public class Microsoft_AIFunction_Tests:TestBase
         var chatOptions = new ChatOptions();
         
         var message = new ChatMessage(ChatRole.User, "What is the weather in New York?");
-        var response = await chatClient.GetResponseAsync(message,options:chatOptions).ConfigureAwait(false);
+        var response = await chatClient.GetResponseAsync(message,options:chatOptions);
 
         response.Text.Contains("New York", StringComparison.InvariantCultureIgnoreCase)
             .ShouldBeTrue();
@@ -54,7 +54,7 @@ public class Microsoft_AIFunction_Tests:TestBase
         {
             Console.WriteLine(response.Text);
         }
-        // var response = await chatClient.GetResponseAsync(message,options:chatOptions).ConfigureAwait(false);
+        // var response = await chatClient.GetResponseAsync(message,options:chatOptions);
         //
         // response.Text.Contains("New York", StringComparison.InvariantCultureIgnoreCase)
         //     .ShouldBeTrue();
@@ -69,7 +69,7 @@ public class Microsoft_AIFunction_Tests:TestBase
         
         chatOptions.Tools = new List<AITool>{AIFunctionFactory.Create(GetStudentRecordAsync)};
         var message = new ChatMessage(ChatRole.User, "How does student john doe in senior grade is doing this year, enrollment start 01-01-2024 to 01-01-2025?");
-        var response = await chatClient.GetResponseAsync(message,options:chatOptions).ConfigureAwait(false);
+        var response = await chatClient.GetResponseAsync(message,options:chatOptions);
 
         response.Text.Contains("John", StringComparison.InvariantCultureIgnoreCase)
             .ShouldBeTrue();
@@ -89,10 +89,10 @@ public class Microsoft_AIFunction_Tests:TestBase
         
         chatOptions.Tools = new List<AITool>{AIFunctionFactory.Create(GetStudentRecordAsync)};
         var message = new ChatMessage(ChatRole.User, "How does student john doe in senior grade is doing this year, enrollment start 01-01-2024 to 01-01-2025?");
-        //var response = await chatClient.GetResponseAsync(message,options:chatOptions).ConfigureAwait(false);
+        //var response = await chatClient.GetResponseAsync(message,options:chatOptions);
 
         await foreach (var resp in chatClient.GetStreamingResponseAsync(message, options: chatOptions)
-                           .ConfigureAwait(false))
+                           )
         {
             Console.WriteLine(resp.Text);
         }
@@ -123,7 +123,7 @@ public class Microsoft_AIFunction_Tests:TestBase
             null
         )};
         var message = new ChatMessage(ChatRole.User, "what is written on page 96 in the book 'damdamadum'");
-        var response = await chatClient.GetResponseAsync(message,options:chatOptions).ConfigureAwait(false);
+        var response = await chatClient.GetResponseAsync(message,options:chatOptions);
 
         response.Text.ShouldContain("weather",Case.Insensitive);
     }
@@ -150,7 +150,7 @@ public class Microsoft_AIFunction_Tests:TestBase
             null
         )};
         var message = new ChatMessage(ChatRole.User, "what is current date & time");
-        var response = await chatClient.GetResponseAsync(message,options:chatOptions).ConfigureAwait(false);
+        var response = await chatClient.GetResponseAsync(message,options:chatOptions);
 
         response.Text.ShouldContain("date",Case.Insensitive);
     }
@@ -171,7 +171,7 @@ public class Microsoft_AIFunction_Tests:TestBase
 
         chatOptions.Tools = (new Tools([GetCurrentDateTime])).AsMeaiTools();
         var message = new ChatMessage(ChatRole.User, "what is current date & time");
-        var response = await chatClient.GetResponseAsync(message,options:chatOptions).ConfigureAwait(false);
+        var response = await chatClient.GetResponseAsync(message,options:chatOptions);
 
         response.Text.ShouldContain("date",Case.Insensitive);
     }
@@ -192,7 +192,7 @@ public class Microsoft_AIFunction_Tests:TestBase
 
         chatOptions.Tools = (new QuickTools([GetCurrentDateTime])).ToMeaiFunctions();
         var message = new ChatMessage(ChatRole.User, "what is current date & time");
-        var response = await chatClient.GetResponseAsync(message,options:chatOptions).ConfigureAwait(false);
+        var response = await chatClient.GetResponseAsync(message,options:chatOptions);
 
         response.Text.ShouldContain("date",Case.Insensitive);
     }
@@ -219,7 +219,7 @@ public class Microsoft_AIFunction_Tests:TestBase
             null
         )};
         var message = new ChatMessage(ChatRole.User, "what is current date & time");
-        var response = await chatClient.GetResponseAsync(message,options:chatOptions).ConfigureAwait(false);
+        var response = await chatClient.GetResponseAsync(message,options:chatOptions);
 
         response.Text.ShouldContain("date",Case.Insensitive);
     }
@@ -240,7 +240,7 @@ public class Microsoft_AIFunction_Tests:TestBase
 
         chatOptions.Tools = (new Tools([GetCurrentDateTime])).AsMeaiTools();
         var message = new ChatMessage(ChatRole.User, "what is current date & time");
-        var response = await chatClient.GetResponseAsync(message,options:chatOptions).ConfigureAwait(false);
+        var response = await chatClient.GetResponseAsync(message,options:chatOptions);
 
         response.Text.ShouldContain("date",Case.Insensitive);
     }
@@ -261,7 +261,7 @@ public class Microsoft_AIFunction_Tests:TestBase
 
         chatOptions.Tools = (new QuickTools([GetCurrentDateTime])).ToMeaiFunctions();
         var message = new ChatMessage(ChatRole.User, "what is current date & time");
-        var response = await chatClient.GetResponseAsync(message,options:chatOptions).ConfigureAwait(false);
+        var response = await chatClient.GetResponseAsync(message,options:chatOptions);
 
         response.Text.ShouldContain("date",Case.Insensitive);
     }
@@ -279,11 +279,11 @@ public class Microsoft_AIFunction_Tests:TestBase
             
         })};
         var message = new ChatMessage(ChatRole.User, "what is written on page 96 in the book 'damdamadum'");
-        await foreach (var resp in chatClient.GetStreamingResponseAsync(message,options:chatOptions).ConfigureAwait(false))
+        await foreach (var resp in chatClient.GetStreamingResponseAsync(message,options:chatOptions))
         {
             Console.WriteLine(resp.Text);
         }
-        // var response = await chatClient.GetResponseAsync(message,options:chatOptions).ConfigureAwait(false);
+        // var response = await chatClient.GetResponseAsync(message,options:chatOptions);
         //
         // response.Text.ShouldContain("damdamadum",Case.Insensitive);
     }

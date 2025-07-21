@@ -48,7 +48,7 @@ namespace GenerativeAI.Tests.Model
             request.AddText("Give me a really good message.", false);
 
             // Act
-            var response = await model.GenerateContentAsync<SampleJsonClass>(request).ConfigureAwait(false);
+            var response = await model.GenerateContentAsync<SampleJsonClass>(request);
 
             // Assert
             response.ShouldNotBeNull();
@@ -69,7 +69,7 @@ namespace GenerativeAI.Tests.Model
             request.AddText("write a text message for my boss that I'm resigning from the job.", false);
 
             // Act
-            var result = await model.GenerateObjectAsync<SampleJsonClass>(request).ConfigureAwait(false);
+            var result = await model.GenerateObjectAsync<SampleJsonClass>(request);
 
             // Assert
             result.ShouldNotBeNull();
@@ -85,7 +85,7 @@ namespace GenerativeAI.Tests.Model
             var prompt = "I need a birthday message for my wife.";
 
             // Act
-            var result = await model.GenerateObjectAsync<SampleJsonClass>(prompt).ConfigureAwait(false);
+            var result = await model.GenerateObjectAsync<SampleJsonClass>(prompt);
 
             // Assert
             result.ShouldNotBeNull();
@@ -107,7 +107,7 @@ namespace GenerativeAI.Tests.Model
             };
 
             // Act
-            var result = await model.GenerateObjectAsync<SampleJsonClass>(parts).ConfigureAwait(false);
+            var result = await model.GenerateObjectAsync<SampleJsonClass>(parts);
 
             // Assert
             result.ShouldNotBeNull();
@@ -127,7 +127,7 @@ namespace GenerativeAI.Tests.Model
         
             model.Model = GoogleAIModels.Gemini15Flash;
             // Act
-            var response = await model.GenerateContentAsync<ComplexDataTypeClass>(request).ConfigureAwait(false);
+            var response = await model.GenerateContentAsync<ComplexDataTypeClass>(request);
         
             // Assert
             response.ShouldNotBeNull();
@@ -180,7 +180,7 @@ namespace GenerativeAI.Tests.Model
             
             model.Model = GoogleAIModels.Gemini15Flash;
             // Act
-            var response = await model.GenerateObjectAsync<List<Meal>>(request).ConfigureAwait(false);
+            var response = await model.GenerateObjectAsync<List<Meal>>(request);
            
             // Assert
             response.ShouldNotBeNull();
@@ -215,7 +215,7 @@ namespace GenerativeAI.Tests.Model
             request.UseEnumMode<Color>();
            
             // Act
-            var response = await model.GenerateContentAsync(request).ConfigureAwait(false);
+            var response = await model.GenerateContentAsync(request);
            
             // Assert
             response.ShouldNotBeNull();
@@ -223,8 +223,8 @@ namespace GenerativeAI.Tests.Model
             
             color.ShouldBe(expectedColor);
 
-            var color2 = model.GenerateEnumAsync<Color>(prompt);
-            color2.Result.ShouldBe(expectedColor);
+            var color2 = await model.GenerateEnumAsync<Color>(prompt, cancellationToken: TestContext.Current.CancellationToken);
+            color2.ShouldBe(expectedColor);
         }
         
         public enum Color
@@ -253,7 +253,7 @@ namespace GenerativeAI.Tests.Model
         
             model.Model = GoogleAIModels.Gemini15Flash;
             // Act
-            var response = await model.GenerateContentAsync<ComplexJsonClass>(request).ConfigureAwait(false);
+            var response = await model.GenerateContentAsync<ComplexJsonClass>(request);
         
             // Assert
             response.ShouldNotBeNull();

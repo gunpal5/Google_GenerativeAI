@@ -28,10 +28,14 @@ internal abstract class JsonSeparatorNamingPolicy : JsonNamingPolicy
 
     public sealed override string ConvertName(string name)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(name);
+#else
         if (name is null)
         {
             throw new ArgumentNullException(nameof(name));
         }
+#endif
 
         return ConvertNameCore(_separator, _lowercase, name.AsSpan());
     }

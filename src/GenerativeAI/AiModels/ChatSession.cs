@@ -145,7 +145,11 @@ public class ChatSession : GenerativeModel
     /// <inheritdoc />
     protected override void PrepareRequest(GenerateContentRequest request)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
         if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
 
         request.Contents.InsertRange(0, History);
         base.PrepareRequest(request);
@@ -256,7 +260,7 @@ public class ChatSession : GenerativeModel
 
     }
 
-    private bool IsFunctionResponse(GenerateContentRequest request)
+    private static bool IsFunctionResponse(GenerateContentRequest request)
     {
         foreach (var requestContent in request.Contents)
         {

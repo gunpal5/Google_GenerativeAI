@@ -28,7 +28,7 @@ public class ImageModel_Tests:TestBase
         var client = new ImagenModel(GetTestVertexAIPlatform(),model);
         
         
-        var images = await client.GenerateImagesAsync(request);
+        var images = await client.GenerateImagesAsync(request, cancellationToken: TestContext.Current.CancellationToken);
         
         images.ShouldNotBeNull();
         images.Predictions.ShouldNotBeNull();
@@ -72,9 +72,9 @@ public class ImageModel_Tests:TestBase
 
         var client = new ImageTextModel(GetTestVertexAIPlatform());
 
-        var model = "imagen-3.0-generate-002";
+       // var model = "imagen-3.0-generate-002";
         
-        var images = await client.GenerateImageCaptionAsync(request);
+        var images = await client.GenerateImageCaptionAsync(request, cancellationToken: TestContext.Current.CancellationToken);
         images.ShouldNotBeNull();
         images.Predictions.ShouldNotBeNull();
         images.Predictions.Count.ShouldBeGreaterThan(0);
@@ -95,12 +95,12 @@ public class ImageModel_Tests:TestBase
             },
             Prompt = "what do you think about this image?"
         });
-        var model = "imagen-3.0-generate-002";
+        //var model = "imagen-3.0-generate-002";
         var client = new ImageTextModel(GetTestVertexAIPlatform());
 
         
         
-        var images = await client.VisualQuestionAnsweringAsync(request);
+        var images = await client.VisualQuestionAnsweringAsync(request, cancellationToken: TestContext.Current.CancellationToken);
         images.ShouldNotBeNull();
         images.Predictions.ShouldNotBeNull();
         images.Predictions.Count.ShouldBeGreaterThan(0);

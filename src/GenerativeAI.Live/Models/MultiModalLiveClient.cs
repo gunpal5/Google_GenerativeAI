@@ -98,16 +98,23 @@ public class MultiModalLiveClient : IDisposable
     /// <summary>
     /// Gets or sets a value indicating whether Google Search is enabled for the session.
     /// </summary>
-    public bool UseGoogleSearch { get; set; } = false;
+    public bool UseGoogleSearch { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether the code executor is enabled for the session.
     /// </summary>
-    public bool UseCodeExecutor { get; set; } = false;
+    public bool UseCodeExecutor { get; set; }
 
-    public bool InputAudioTranscriptionEnabled { get; set; } = false;
+    /// <summary>
+    /// Gets or sets a value indicating whether input audio transcription is enabled.
+    /// When enabled, audio inputs will be transcribed into text for further processing.
+    /// </summary>
+    public bool InputAudioTranscriptionEnabled { get; set; }
 
-    public bool OutputAudioTranscriptionEnabled { get; set; } = false;
+    /// <summary>
+    /// Indicates whether transcription of output audio is enabled.
+    /// </summary>
+    public bool OutputAudioTranscriptionEnabled { get; set; }
 
     #endregion
 
@@ -123,7 +130,7 @@ public class MultiModalLiveClient : IDisposable
         ILogger? logger = null)
     {
         _platformAdapter = platformAdapter ?? throw new ArgumentNullException(nameof(platformAdapter));
-        ModelName = platformAdapter.GetMultiModalLiveModalName(modelName);
+        ModelName = platformAdapter.GetMultiModalLiveModalName(modelName) ?? throw new InvalidOperationException($"Failed to get multimodal live model name for '{modelName}'");
         Config = config ?? new GenerationConfig()
         {
             ResponseModalities = new List<Modality> { Modality.TEXT }
@@ -445,13 +452,15 @@ public class MultiModalLiveClient : IDisposable
     {
         var functionResponses = new List<FunctionResponse>();
 
-        foreach (var call in responsePayloadToolCall.FunctionCalls)
+        if (responsePayloadToolCall.FunctionCalls != null)
+        {
+            foreach (var call in responsePayloadToolCall.FunctionCalls)
         {
             if (FunctionTools != null)
             {
                 foreach (var tool in FunctionTools)
                 {
-                    if (tool.IsContainFunction(call.Name))
+                    if (call.Name != null && tool.IsContainFunction(call.Name))
                     {
                         _logger?.LogFunctionCall(call.Name);
                         try
@@ -473,6 +482,7 @@ public class MultiModalLiveClient : IDisposable
                 _logger?.LogWarning("No function tools configured, but a tool call was received: {FunctionName}",
                     call.Name);
             }
+        }
         }
 
         if (functionResponses.Count > 0)
@@ -627,6 +637,8 @@ public class MultiModalLiveClient : IDisposable
     public async Task SendSetupAsync(BidiGenerateContentSetup setup, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(setup);
+        if (string.IsNullOrEmpty(setup.Model))
+            throw new ArgumentException("Model name cannot be null or empty.", nameof(setup));
 #if NET6_0_OR_GREATER
         if(!setup.Model.Contains("/", StringComparison.Ordinal))
 #else

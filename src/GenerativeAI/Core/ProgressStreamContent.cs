@@ -41,13 +41,21 @@ public class ProgressStreamContent : HttpContent
 
         while (true)
         {
+#if NET6_0_OR_GREATER
+            var bytesRead = await _stream.ReadAsync(buffer.AsMemory(0, buffer.Length)).ConfigureAwait(false);
+#else
             var bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+#endif
             if (bytesRead == 0)
             {
                 break;
             }
 
+#if NET6_0_OR_GREATER
+            await targetStream.WriteAsync(buffer.AsMemory(0, bytesRead)).ConfigureAwait(false);
+#else
             await targetStream.WriteAsync(buffer, 0, bytesRead).ConfigureAwait(false);
+#endif
 
             uploadedBytes += bytesRead;
 

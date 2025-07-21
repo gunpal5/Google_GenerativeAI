@@ -13,7 +13,7 @@ public class GoogleOAuthAuthenticator:BaseAuthenticator
 {
     private string _clientFile = "client_secret.json";
     
-    private ICredential _credential;
+    private UserCredential _credential;
     private string _tokenFile = "token.json";
     
     /// <summary>
@@ -23,7 +23,7 @@ public class GoogleOAuthAuthenticator:BaseAuthenticator
     public GoogleOAuthAuthenticator(string? credentialFile)
     {
         var secrets = GetClientSecrets(credentialFile??_clientFile);   
-        _credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
+        _credential = (UserCredential)GoogleWebAuthorizationBroker.AuthorizeAsync(
             secrets,
             ScopesConstants.Scopes,
             "user",
@@ -32,9 +32,9 @@ public class GoogleOAuthAuthenticator:BaseAuthenticator
         
     }
     
-    private ClientSecrets GetClientSecrets(string credentialFile)
+    private static ClientSecrets GetClientSecrets(string credentialFile)
     {
-        ClientSecrets clientSecrets = null;
+        ClientSecrets? clientSecrets = null;
        
         if (File.Exists(credentialFile))
         {
@@ -51,7 +51,7 @@ public class GoogleOAuthAuthenticator:BaseAuthenticator
     /// </summary>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A task representing the asynchronous operation that returns access token information.</returns>
-    public override async Task<AuthTokens> GetAccessTokenAsync(CancellationToken cancellationToken = default)
+    public override async Task<AuthTokens?> GetAccessTokenAsync(CancellationToken cancellationToken = default)
     {
         var token = await _credential.GetAccessTokenForRequestAsync(cancellationToken:cancellationToken).ConfigureAwait(false);
 
@@ -69,7 +69,7 @@ public class GoogleOAuthAuthenticator:BaseAuthenticator
     /// <param name="token">The token information to refresh.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A task representing the asynchronous operation that returns refreshed token information.</returns>
-    public override Task<AuthTokens> RefreshAccessTokenAsync(AuthTokens token, CancellationToken cancellationToken = default)
+    public override Task<AuthTokens?> RefreshAccessTokenAsync(AuthTokens token, CancellationToken cancellationToken = default)
     {
         return base.RefreshAccessTokenAsync(token, cancellationToken);
     }

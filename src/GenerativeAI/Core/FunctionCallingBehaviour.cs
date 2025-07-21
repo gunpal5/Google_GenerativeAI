@@ -45,5 +45,5 @@ public class FunctionCallingBehaviour
     /// <remarks>
     /// Useful in scenarios where user-defined functions or external integrations might encounter unexpected failures.
     /// </remarks>
-    public bool AutoHandleBadFunctionCalls { get; set; } = false;
+    public bool AutoHandleBadFunctionCalls { get; set; }
 }

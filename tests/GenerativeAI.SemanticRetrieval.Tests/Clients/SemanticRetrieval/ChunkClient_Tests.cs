@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using GenerativeAI.Clients;
 using GenerativeAI.SemanticRetrieval.Tests;
 using GenerativeAI.Tests.Base;
@@ -35,7 +35,7 @@ public class ChunkClient_Tests : SemanticRetrieverTestBase
         };
 
         // Act
-        var result = await client.CreateChunkAsync(parent, newChunk).ConfigureAwait(false);
+        var result = await client.CreateChunkAsync(parent, newChunk);
 
         // Assert
         result.ShouldNotBeNull();
@@ -52,12 +52,12 @@ public class ChunkClient_Tests : SemanticRetrieverTestBase
         // Arrange
         var client = new ChunkClient(GetTestGooglePlatform());
         var parent = await GetTestDocumentId();
-        var chunkList = await client.ListChunksAsync(parent).ConfigureAwait(false);
+        var chunkList = await client.ListChunksAsync(parent);
         var testChunk = chunkList.Chunks.FirstOrDefault();
         var chunkName = testChunk.Name;
 
         // Act
-        var result = await client.GetChunkAsync(chunkName).ConfigureAwait(false);
+        var result = await client.GetChunkAsync(chunkName);
 
         // Assert
         result.ShouldNotBeNull();
@@ -77,7 +77,7 @@ public class ChunkClient_Tests : SemanticRetrieverTestBase
         var parent = await GetTestDocumentId();
 
         // Act
-        var result = await client.ListChunksAsync(parent, pageSize).ConfigureAwait(false);
+        var result = await client.ListChunksAsync(parent, pageSize);
 
         // Assert
         result.ShouldNotBeNull();
@@ -101,13 +101,13 @@ public class ChunkClient_Tests : SemanticRetrieverTestBase
         // Arrange
         var client = new ChunkClient(GetTestGooglePlatform());
         var parent = await GetTestDocumentId();
-        var chunkList = await client.ListChunksAsync(parent).ConfigureAwait(false);
+        var chunkList = await client.ListChunksAsync(parent);
         var testChunk = chunkList.Chunks.FirstOrDefault();
         testChunk.Data = new ChunkData { StringValue = "Updated Data" };
         const string updateMask = "data";
 
         // Act
-        var result = await client.UpdateChunkAsync(testChunk, updateMask).ConfigureAwait(false);
+        var result = await client.UpdateChunkAsync(testChunk, updateMask);
 
         // Assert
         result.ShouldNotBeNull();
@@ -124,11 +124,11 @@ public class ChunkClient_Tests : SemanticRetrieverTestBase
         // Arrange
         var client = new ChunkClient(GetTestGooglePlatform());
         var parent = await GetTestDocumentId();
-        var chunkList = await client.ListChunksAsync(parent).ConfigureAwait(false);
+        var chunkList = await client.ListChunksAsync(parent);
         var testChunk = chunkList.Chunks.LastOrDefault();
 
         // Act and Assert
-        await Should.NotThrowAsync(async () => await client.DeleteChunkAsync(testChunk.Name).ConfigureAwait(false)).ConfigureAwait(false);
+        await Should.NotThrowAsync(async () => await client.DeleteChunkAsync(testChunk.Name));
         Console.WriteLine($"Deleted Chunk: Name={testChunk.Name}");
     }
 
@@ -166,7 +166,7 @@ public class ChunkClient_Tests : SemanticRetrieverTestBase
         };
 
         // Act
-        var result = await client.BatchCreateChunksAsync(parent, requests).ConfigureAwait(false);
+        var result = await client.BatchCreateChunksAsync(parent, requests);
 
         // Assert
         result.ShouldNotBeNull();
@@ -190,7 +190,7 @@ public class ChunkClient_Tests : SemanticRetrieverTestBase
         const string invalidName = "corpora/test-corpus-id/documents/test-doc-id/chunks/invalid-id";
 
         // Act
-        var exception = await Should.ThrowAsync<Exception>(async () => await client.GetChunkAsync(invalidName).ConfigureAwait(false)).ConfigureAwait(false);
+        var exception = await Should.ThrowAsync<Exception>(async () => await client.GetChunkAsync(invalidName));
 
         // Assert
         exception.Message.ShouldNotBeNullOrEmpty();
@@ -205,7 +205,7 @@ public class ChunkClient_Tests : SemanticRetrieverTestBase
         const string invalidName = "corpora/test-corpus-id/documents/test-doc-id/chunks/invalid-id";
 
         // Act
-        var exception = await Should.ThrowAsync<Exception>(async () => await client.DeleteChunkAsync(invalidName).ConfigureAwait(false)).ConfigureAwait(false);
+        var exception = await Should.ThrowAsync<Exception>(async () => await client.DeleteChunkAsync(invalidName));
 
         // Assert
         exception.Message.ShouldNotBeNullOrEmpty();
@@ -221,16 +221,16 @@ public class ChunkClient_Tests : SemanticRetrieverTestBase
     private async Task<Document> GetTestDocument()
     {
         var documentClient = new DocumentsClient(GetTestGooglePlatform());
-        var testCorpus = await GetTestCorpora().ConfigureAwait(false);
+        var testCorpus = await GetTestCorpora();
         var parent = $"{testCorpus.Name}";
-        var documentList = await documentClient.ListDocumentsAsync(parent).ConfigureAwait(false);
+        var documentList = await documentClient.ListDocumentsAsync(parent);
         var testDocument = documentList.Documents.FirstOrDefault();
         return testDocument;
     }
     private async Task<Corpus> GetTestCorpora()
     {
         var corpusClient = new CorporaClient(GetTestGooglePlatform());
-        var corpus = await corpusClient.ListCorporaAsync().ConfigureAwait(false);
+        var corpus = await corpusClient.ListCorporaAsync();
         
         if(corpus == null || corpus.Corpora == null || corpus.Corpora.Count == 0)
             throw new Exception("No Corpora Found");

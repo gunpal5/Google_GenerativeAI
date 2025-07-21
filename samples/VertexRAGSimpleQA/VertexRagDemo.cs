@@ -34,7 +34,11 @@ public class VertexRagDemo
         // Check if corpus exists, create if not
         _corpus = await GetOrCreateCorpus(corpusName, corpusDescription);
 
-        if (!_corpus.Name.EndsWith(corpusName, StringComparison.OrdinalIgnoreCase))
+#if NET6_0_OR_GREATER
+        if (_corpus.Name == null || !_corpus.Name.EndsWith(corpusName, StringComparison.OrdinalIgnoreCase))
+#else
+        if (_corpus.Name == null || !_corpus.Name.EndsWith(corpusName))
+#endif
         {
             // Scrape and import data
             await ScrapeAndImportData(_documentationUrl);
@@ -94,7 +98,7 @@ public class VertexRagDemo
                 Console.WriteLine($"Uploading file {count}/{textList.Count} data...");
                 var tmp = Path.GetTempFileName() + ".html";
                 await File.WriteAllTextAsync(tmp, text,ct);
-                await _ragManager.UploadLocalFileAsync(_corpus.Name, tmp,cancellationToken:ct);
+                await _ragManager.UploadLocalFileAsync(_corpus.Name ?? throw new InvalidOperationException("Corpus name is null"), tmp,cancellationToken:ct);
             }catch(Exception ex)
             {
                 Console.WriteLine($"Error importing file {count}/{textList.Count}: {ex.Message}");
@@ -112,9 +116,9 @@ public class VertexRagDemo
         while (true)
         {
             Console.Write("Ask a question (or 'exit'): ");
-            string question = Console.ReadLine();
+            string? question = Console.ReadLine();
 
-            if (question.ToLower() == "exit")
+            if (string.IsNullOrWhiteSpace(question) || question.ToLower() == "exit")
             {
                 break;
             }

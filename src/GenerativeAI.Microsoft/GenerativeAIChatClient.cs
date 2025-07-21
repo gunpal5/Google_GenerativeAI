@@ -10,8 +10,11 @@ using Microsoft.Extensions.AI;
 namespace GenerativeAI.Microsoft;
 
 /// <inheritdoc/>
-public class GenerativeAIChatClient : IChatClient
+public sealed class GenerativeAIChatClient : IChatClient
 {
+    /// <summary>
+    /// Gets the underlying GenerativeModel instance.
+    /// </summary>
     public GenerativeModel model { get; }
 
     /// <summary>
@@ -52,6 +55,7 @@ public class GenerativeAIChatClient : IChatClient
     /// <inheritdoc/>
     public void Dispose()
     {
+        GC.SuppressFinalize(this);
     }
 
     /// <inheritdoc/>
@@ -119,8 +123,6 @@ public class GenerativeAIChatClient : IChatClient
         contents.Add(funcContent);
         return await GetResponseAsync(contents.ToChatMessages().ToList(), options, cancellationToken)
             .ConfigureAwait(false);
-
-        return chatResponse;
     }
 
     private async IAsyncEnumerable<ChatResponseUpdate> CallFunctionStreamingAsync(GenerateContentRequest request,
@@ -195,7 +197,7 @@ public class GenerativeAIChatClient : IChatClient
         if (messages == null)
             throw new ArgumentNullException(nameof(messages));
         var request = messages.ToGenerateContentRequest(options);
-        GenerateContentResponse lastResponse = null;
+        GenerateContentResponse? lastResponse = null;
         await foreach (var response in model.StreamContentAsync(request, cancellationToken).ConfigureAwait(false))
         {
             lastResponse = response;
@@ -215,7 +217,7 @@ public class GenerativeAIChatClient : IChatClient
     /// <inheritdoc/>
     public object? GetService(Type serviceType, object? serviceKey = null)
     {
-        if (serviceKey == null && (bool)serviceType?.IsInstanceOfType(this))
+        if (serviceKey == null && serviceType?.IsInstanceOfType(this) == true)
         {
             return this;
         }

@@ -766,12 +766,16 @@ public static class MimeTypeMap
     /// <param name="mimeType">The variable to store the MIME type.</param>
     /// <returns>The MIME type.</returns>
     /// <exception cref="ArgumentNullException" />
-    public static bool TryGetMimeType(string str, out string mimeType)
+    public static bool TryGetMimeType(string str, out string? mimeType)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(str);
+#else
         if (str == null)
         {
             throw new ArgumentNullException(nameof(str));
         }
+#endif
 
         var indexQuestionMark = str.IndexOf(QuestionMark, StringComparison.Ordinal);
         if (indexQuestionMark != -1)
@@ -786,7 +790,11 @@ public static class MimeTypeMap
         if (!str.StartsWith(Dot))
 #endif
         {
+#if NET6_0_OR_GREATER
+            var index = str.LastIndexOf(Dot, StringComparison.Ordinal);
+#else
             var index = str.LastIndexOf(Dot);
+#endif
             if (index != -1 && str.Length > index + 1)
             {
                 str = str.Substring(index + 1);
@@ -806,7 +814,7 @@ public static class MimeTypeMap
     /// <exception cref="ArgumentNullException" />
     public static string GetMimeType(string str)
     {
-        return MimeTypeMap.TryGetMimeType(str, out var result) ? result : DefaultMimeType;
+        return MimeTypeMap.TryGetMimeType(str, out var result) ? result ?? DefaultMimeType : DefaultMimeType;
     }
 
     /// <summary>
@@ -833,7 +841,7 @@ public static class MimeTypeMap
             throw new ArgumentException("Requested mime type is not valid: " + mimeType);
         }
 
-        if (_mappings.Value.TryGetValue(mimeType, out string extension))
+        if (_mappings.Value.TryGetValue(mimeType, out string? extension))
         {
             return extension;
         }

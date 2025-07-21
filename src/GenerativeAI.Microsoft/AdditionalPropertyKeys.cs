@@ -1,6 +1,9 @@
 ﻿namespace GenerativeAI.Microsoft;
 
-public class AdditionalPropertiesKeys
+/// <summary>
+/// Provides constant keys for additional properties used in GenerativeAI Microsoft integration.
+/// </summary>
+public static class AdditionalPropertiesKeys
 {
     /// <summary>
     /// Key used to indicate whether to include thoughts in the response.

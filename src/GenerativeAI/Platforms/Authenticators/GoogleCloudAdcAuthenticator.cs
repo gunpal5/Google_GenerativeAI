@@ -21,7 +21,6 @@ namespace GenerativeAI.Authenticators;
 public class GoogleCloudAdcAuthenticator : BaseAuthenticator
 {
     private ILogger? logger;
-    private string? credentialFile;
 
     /// <summary>
     /// Represents an authenticator that uses Google Cloud Application Default Credentials (ADC)
@@ -34,7 +33,7 @@ public class GoogleCloudAdcAuthenticator : BaseAuthenticator
     /// </remarks>
     public GoogleCloudAdcAuthenticator(string? credentialFile = null, ILogger? logger = null)
     {
-        this.credentialFile = credentialFile;
+        // Note: credentialFile parameter is kept for backward compatibility but is not currently used
         this.logger = logger;
     }
 
@@ -109,7 +108,7 @@ public class GoogleCloudAdcAuthenticator : BaseAuthenticator
     /// <param name="tool">Name or path of the command to run.</param>
     /// <param name="arguments">Arguments to pass to the command, if any.</param>
     /// <returns>The standard output of the invoked process.</returns>
-    private string ExecuteProcess(string tool, string arguments)
+    private static string ExecuteProcess(string tool, string arguments)
     {
         var outputBuilder = new StringBuilder();
         var errorBuilder = new StringBuilder();
@@ -168,7 +167,7 @@ public class GoogleCloudAdcAuthenticator : BaseAuthenticator
                     message.AppendLine(outputBuilder.ToString());
                 }
 
-                throw new Exception(
+                throw new InvalidOperationException(
                     $"Process '{tool} {arguments}' exited with code {proc.ExitCode}: {message}"
                 );
             }

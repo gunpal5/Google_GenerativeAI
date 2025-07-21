@@ -1,4 +1,4 @@
-﻿using Shouldly;
+using Shouldly;
 
 namespace GenerativeAI.Tests.Model;
 
@@ -37,7 +37,7 @@ public class GenerativeAI_Tools_Tests:TestBase
         
 
         // Act
-        var response = await model.GenerateContentAsync(prompt).ConfigureAwait(false);
+        var response = await model.GenerateContentAsync(prompt, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         response.Candidates.ShouldNotBeNull();
@@ -64,7 +64,7 @@ public class GenerativeAI_Tools_Tests:TestBase
         
 
         // Act
-        var response = await model.GenerateContentAsync(prompt).ConfigureAwait(false);
+        var response = await model.GenerateContentAsync(prompt, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         response.Candidates.ShouldNotBeNull();

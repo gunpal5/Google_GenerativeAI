@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -47,7 +47,7 @@ namespace GenerativeAI.Tests.Model
             var content = RequestExtensions.FormatGenerateContentInput("Embed this content", Roles.User);
             
             // Act
-            var response = await model.EmbedContentAsync(content).ConfigureAwait(false);
+            var response = await model.EmbedContentAsync(content, cancellationToken: TestContext.Current.CancellationToken);
 
             // Assert
             response.ShouldNotBeNull();
@@ -71,7 +71,7 @@ namespace GenerativeAI.Tests.Model
             };
 
             // Act
-            var response = await model.EmbedContentAsync(embedRequest).ConfigureAwait(false);
+            var response = await model.EmbedContentAsync(embedRequest, cancellationToken: TestContext.Current.CancellationToken);
 
             // Assert
             response.ShouldNotBeNull();
@@ -87,7 +87,7 @@ namespace GenerativeAI.Tests.Model
             var textToEmbed = "This is a string to embed";
 
             // Act
-            var response = await model.EmbedContentAsync(textToEmbed).ConfigureAwait(false);
+            var response = await model.EmbedContentAsync(textToEmbed, cancellationToken: TestContext.Current.CancellationToken);
 
             // Assert
             response.ShouldNotBeNull();
@@ -107,7 +107,7 @@ namespace GenerativeAI.Tests.Model
             };
 
             // Act
-            var response = await model.EmbedContentAsync(parts).ConfigureAwait(false);
+            var response = await model.EmbedContentAsync(parts, cancellationToken: TestContext.Current.CancellationToken);
 
             // Assert
             response.ShouldNotBeNull();
@@ -127,7 +127,7 @@ namespace GenerativeAI.Tests.Model
             };
 
             // Act
-            var response = await model.EmbedContentAsync(textsToEmbed).ConfigureAwait(false);
+            var response = await model.EmbedContentAsync(textsToEmbed, cancellationToken: TestContext.Current.CancellationToken);
 
             // Assert
             response.ShouldNotBeNull();
@@ -162,7 +162,7 @@ namespace GenerativeAI.Tests.Model
             };
 
             // Act
-            var response = await model.BatchEmbedContentAsync(requests).ConfigureAwait(false);
+            var response = await model.BatchEmbedContentAsync(requests, cancellationToken: TestContext.Current.CancellationToken);
 
             // Assert
             response.ShouldNotBeNull();
@@ -189,7 +189,7 @@ namespace GenerativeAI.Tests.Model
             };
 
             // Act
-            var response = await model.BatchEmbedContentAsync(contents).ConfigureAwait(false);
+            var response = await model.BatchEmbedContentAsync(contents, cancellationToken: TestContext.Current.CancellationToken);
 
             // Assert
             response.ShouldNotBeNull();

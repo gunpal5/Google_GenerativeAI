@@ -19,7 +19,7 @@ public static class GenerateAnswerResponseExtension
         if(response==null)
             throw new ArgumentNullException(nameof(response));
         if(response.Answer == null)
-            throw new ArgumentNullException(nameof(response.Answer));
+            throw new InvalidOperationException("Response answer cannot be null.");
         if(response.Answer.Content == null)
             return string.Empty;
         return string.Join("\r\n", response.Answer.Content.Parts.Select(s => s.Text));

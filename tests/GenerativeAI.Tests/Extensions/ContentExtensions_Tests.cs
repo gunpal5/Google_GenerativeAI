@@ -243,7 +243,7 @@ public class ContentExtensions_Tests
     [InlineData("https://example.com/file.mp4", null, "Remote file MIME type cannot be null or empty.")]
     [InlineData("", "video/mp4", "Remote file URI cannot be null or empty.")]
     public void AddRemoteFile_InvalidRemoteFile_ShouldThrowArgumentException(
-        string uri, string mimeType, string expectedMessage)
+        string? uri, string? mimeType, string expectedMessage)
     {
         // Arrange
         var content = new Content();

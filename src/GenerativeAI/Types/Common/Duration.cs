@@ -80,7 +80,7 @@ public class DurationJsonConverter : JsonConverter<Duration>
     {
         // Parse the duration string (e.g., "3.5s")
         var durationString = reader.GetString();
-        var duration = double.Parse(durationString!.TrimEnd('s'));
+        var duration = double.Parse(durationString!.TrimEnd('s'), System.Globalization.CultureInfo.InvariantCulture);
 
         // Convert the duration to seconds and nanoseconds
         var seconds = (long)duration;

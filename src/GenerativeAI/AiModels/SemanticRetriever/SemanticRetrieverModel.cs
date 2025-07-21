@@ -48,7 +48,7 @@ public partial class SemanticRetrieverModel : BaseModel
     /// Gets or sets the list of safety settings that define harm categories and thresholds
     /// to control the content moderation for model interactions.
     /// </summary>
-    public List<SafetySetting>? SafetySettings { get; set; } = null;
+    public List<SafetySetting>? SafetySettings { get; set; }
 
     /// <summary>
     /// Represents a semantic retriever model designed to interact with a platform to fetch and process semantic data.

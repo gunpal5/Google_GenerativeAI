@@ -35,6 +35,8 @@ public class GenerativeAIService : IGenerativeAiService
         }
         else
         {
+            if (options.Value.Credentials?.ApiKey == null)
+                throw new InvalidOperationException("API Key is required for Google AI configuration.");
             var platformAdapter = new GoogleAIPlatformAdapter(options.Value.Credentials.ApiKey, options.Value.ApiVersion ?? "v1beta",
                 logger: this.Logger);
             _platform = new GoogleAi(platformAdapter, logger: this.Logger);

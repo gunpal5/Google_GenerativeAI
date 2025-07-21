@@ -43,7 +43,11 @@ public class FileManagementClient : BaseClient
             $"{_platform.GetBaseUrl(appendPublisher: false)}/{corpusName.ToRagCorpusId()}/ragFiles:upload?alt=json&uploadType=multipart";
 
         var version = _platform.GetApiVersion();
+#if NET6_0_OR_GREATER
+        url = url.Replace($"/{version}", $"/upload/{version}", StringComparison.Ordinal);
+#else
         url = url.Replace($"/{version}", $"/upload/{version}");
+#endif
         //Validate File
         // ValidateFile(filePath);
 
@@ -69,22 +73,46 @@ public class FileManagementClient : BaseClient
         using var file = File.OpenRead(filePath);
         var httpMessage = new HttpRequestMessage(HttpMethod.Post, url);
         httpMessage.Headers.Add("X-Goog-Upload-Protocol", "multipart");
-        var multipart = new MultipartContent("related");
-        multipart.Add(new StringContent(json, Encoding.UTF8, "application/json"));
-        var content = new ProgressStreamContent(file, progressCallback);
-        content.Headers.ContentType = new MediaTypeHeaderValue(MimeTypeMap.GetMimeType(filePath));
-        content.Headers.ContentLength = file.Length;
-        multipart.Add(content);
-        httpMessage.Content = multipart;
-        await _platform.AddAuthorizationAsync(httpMessage, true, cancellationToken).ConfigureAwait(false);
-        var response = await HttpClient.SendAsync(httpMessage,cancellationToken).ConfigureAwait(false);
-        await CheckAndHandleErrors(response, url).ConfigureAwait(false);
-
-        var fileResponse = await Deserialize<UploadRagFileResponse>(response).ConfigureAwait(false);
-        if (fileResponse != null && fileResponse.Error != null)
-            throw new VertexAIException(fileResponse.Error.Message ?? "Unknown error", fileResponse.Error);
+        MultipartContent? multipart = null;
+        StringContent? stringContent = null;
+        ProgressStreamContent? progressContent = null;
         
-        return fileResponse?.RagFile;
+        try
+        {
+            multipart = new MultipartContent("related");
+            stringContent = new StringContent(json, Encoding.UTF8, "application/json");
+            multipart.Add(stringContent);
+            
+            progressContent = new ProgressStreamContent(file, progressCallback);
+            progressContent.Headers.ContentType = new MediaTypeHeaderValue(MimeTypeMap.GetMimeType(filePath));
+            progressContent.Headers.ContentLength = file.Length;
+            multipart.Add(progressContent);
+            
+            httpMessage.Content = multipart;
+            // After setting content, ownership is transferred to httpMessage
+            multipart = null;
+            stringContent = null;
+            progressContent = null;
+            
+            await _platform.AddAuthorizationAsync(httpMessage, true, cancellationToken).ConfigureAwait(false);
+            var response = await HttpClient.SendAsync(httpMessage, cancellationToken).ConfigureAwait(false);
+            await CheckAndHandleErrors(response, url).ConfigureAwait(false);
+
+            var fileResponse = await Deserialize<UploadRagFileResponse>(response).ConfigureAwait(false);
+            if (fileResponse != null && fileResponse.Error != null)
+                throw new VertexAIException(fileResponse.Error.Message ?? "Unknown error", fileResponse.Error);
+            
+            return fileResponse?.RagFile;
+        }
+        catch
+        {
+            // Dispose only if ownership was not transferred
+            stringContent?.Dispose();
+            progressContent?.Dispose();
+            multipart?.Dispose();
+            httpMessage.Dispose();
+            throw;
+        }
     }
 
     /// <summary>

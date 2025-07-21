@@ -30,7 +30,7 @@ namespace GenerativeAI.Tests.Model
             request.AddText("Identify objects in the image?");
 
             //Act
-            var result = await model.GenerateContentAsync(request).ConfigureAwait(false);
+            var result = await model.GenerateContentAsync(request, cancellationToken: TestContext.Current.CancellationToken);
 
             //Assert
             var text = result.Text();
@@ -48,7 +48,7 @@ namespace GenerativeAI.Tests.Model
             string prompt = "Identify objects in the image?";
 
             //Act
-            var result = await model.GenerateContentAsync(prompt, "image.png").ConfigureAwait(false);
+            var result = await model.GenerateContentAsync(prompt, "image.png", cancellationToken: TestContext.Current.CancellationToken);
 
             //Assert
             result.ShouldNotBeNull();
@@ -67,7 +67,7 @@ namespace GenerativeAI.Tests.Model
             string prompt = "Describe this video?";
 
             //Act
-            var result = await model.GenerateContentAsync(prompt, "TestData/testvideo.mp4").ConfigureAwait(false);
+            var result = await model.GenerateContentAsync(prompt, "TestData/testvideo.mp4", cancellationToken: TestContext.Current.CancellationToken);
 
             //Assert
             result.ShouldNotBeNull();
@@ -86,7 +86,7 @@ namespace GenerativeAI.Tests.Model
             string prompt = "Describe this audio?";
 
             //Act
-            var result = await model.GenerateContentAsync(prompt, "TestData/testaudio.mp3").ConfigureAwait(false);
+            var result = await model.GenerateContentAsync(prompt, "TestData/testaudio.mp3", cancellationToken: TestContext.Current.CancellationToken);
 
             //Assert
             result.ShouldNotBeNull();
@@ -114,7 +114,7 @@ namespace GenerativeAI.Tests.Model
         //     //request.AddRemoteFile("https://www.gutenberg.org/cache/epub/1184/pg1184.txt","text/plain");
         //     request.AddText(prompt);
         //     //Act
-        //     var result = await model.GenerateContentAsync(request).ConfigureAwait(false);
+        //     var result = await model.GenerateContentAsync(request);
         //
         //     //Assert
         //     result.ShouldNotBeNull();
@@ -136,7 +136,7 @@ namespace GenerativeAI.Tests.Model
             var model = CreateInitializedModel();
 
             var responses = new List<string>();
-            await foreach (var response in model.StreamContentAsync(prompt, imageFile).ConfigureAwait(false))
+            await foreach (var response in model.StreamContentAsync(prompt, imageFile, TestContext.Current.CancellationToken))
             {
                 response.ShouldNotBeNull();
                 responses.Add(response.Text() ?? string.Empty);
@@ -147,8 +147,9 @@ namespace GenerativeAI.Tests.Model
         }
 
         [Fact]
-        public async Task ShouldIdentifyImageWithChatAndStreaming()
+        public Task ShouldIdentifyImageWithChatAndStreaming()
         {
+            return Task.CompletedTask;
             // var imageFile = "image.png";
             //
             // string prompt = "Identify objects in the image?";

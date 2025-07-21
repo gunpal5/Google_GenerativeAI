@@ -1,4 +1,4 @@
-﻿using GenerativeAI.Clients;
+using GenerativeAI.Clients;
 using GenerativeAI.Tests.Base;
 using Shouldly;
 
@@ -16,10 +16,10 @@ public class FileClient_Tests : TestBase
     {
          var client = CreateClient();
 
-        var files = await client.ListFilesAsync().ConfigureAwait(false);
+        var files = await client.ListFilesAsync(cancellationToken: TestContext.Current.CancellationToken);
         var fileX = files.Files.FirstOrDefault();
         var fileName = fileX.Name; // Example file name, replace with test data.
-        var file = await client.GetFileAsync(fileName).ConfigureAwait(false);
+        var file = await client.GetFileAsync(fileName, cancellationToken: TestContext.Current.CancellationToken);
 
         file.ShouldNotBeNull();
         file.Name.ShouldBe(fileName);
@@ -42,7 +42,7 @@ public class FileClient_Tests : TestBase
     {
          var client = CreateClient();
 
-        var result = await client.ListFilesAsync(pageSize: 5).ConfigureAwait(false); // Example: Fetch a maximum of 5 files.
+        var result = await client.ListFilesAsync(pageSize: 5, cancellationToken: TestContext.Current.CancellationToken); // Example: Fetch a maximum of 5 files.
 
         result.ShouldNotBeNull();
         result.Files.ShouldNotBeNull();
@@ -84,7 +84,7 @@ public class FileClient_Tests : TestBase
             };
 
             // Act
-            var result = await client.UploadFileAsync(tempFilePath, progressCallback).ConfigureAwait(false);
+            var result = await client.UploadFileAsync(tempFilePath, progressCallback, cancellationToken: TestContext.Current.CancellationToken);
 
             // Assert
             result.ShouldNotBeNull();                           // Check response is not null
@@ -109,12 +109,12 @@ public class FileClient_Tests : TestBase
     {
          var client = CreateClient();
 
-        var files = await client.ListFilesAsync().ConfigureAwait(false);
+        var files = await client.ListFilesAsync(cancellationToken: TestContext.Current.CancellationToken);
         var fileX = files.Files.FirstOrDefault(s=>s.DisplayName.Contains("test-upload-file"));
         
         var fileName = fileX.Name; // Example file ID to delete, replace with test data.
 
-        await Should.NotThrowAsync(async () => await client.DeleteFileAsync(fileName).ConfigureAwait(false)).ConfigureAwait(false);
+        await Should.NotThrowAsync(async () => await client.DeleteFileAsync(fileName, cancellationToken: TestContext.Current.CancellationToken));
         Console.WriteLine($"File {fileName} deleted successfully.");
     }
 
@@ -125,7 +125,7 @@ public class FileClient_Tests : TestBase
 
         var invalidFileName = "files/invalid-id"; // Simulating a bad file ID.
 
-        var exception = await Should.ThrowAsync<Exception>(async () => await client.GetFileAsync(invalidFileName).ConfigureAwait(false)).ConfigureAwait(false);
+        var exception = await Should.ThrowAsync<Exception>(async () => await client.GetFileAsync(invalidFileName, cancellationToken: TestContext.Current.CancellationToken));
         exception.Message.ShouldNotBeNullOrEmpty();
 
         Console.WriteLine($"Handled exception while retrieving file: {exception.Message}");
@@ -138,7 +138,7 @@ public class FileClient_Tests : TestBase
 
         var invalidFileName = "files/invalid-id"; // Simulating a bad file ID.
 
-        var exception = await Should.ThrowAsync<Exception>(async () => await client.DeleteFileAsync(invalidFileName).ConfigureAwait(false)).ConfigureAwait(false);
+        var exception = await Should.ThrowAsync<Exception>(async () => await client.DeleteFileAsync(invalidFileName, cancellationToken: TestContext.Current.CancellationToken));
         exception.Message.ShouldNotBeNullOrEmpty();
 
         Console.WriteLine($"Handled exception while deleting file: {exception.Message}");
@@ -165,7 +165,7 @@ public class FileClient_Tests : TestBase
         };
 
         // Act
-        var result = await client.UploadStreamAsync(stream, displayName, mimeType, progressCallback).ConfigureAwait(false);
+        var result = await client.UploadStreamAsync(stream, displayName, mimeType, progressCallback, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldNotBeNull();                           // Check that the result is not null

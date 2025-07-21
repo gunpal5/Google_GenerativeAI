@@ -99,7 +99,10 @@ public partial class GenerativeModel
     /// <remarks>
     /// The tool is automatically added to the available tools if no other code execution tool is specified.
     /// </remarks>
-    public Tool DefaultCodeExecutionTool = new Tool() { CodeExecution = new CodeExecutionTool() };
+    /// <summary>
+    /// Gets or sets the default code execution tool.
+    /// </summary>
+    public Tool DefaultCodeExecutionTool { get; set; } = new Tool() { CodeExecution = new CodeExecutionTool() };
 
     /// <summary>
     /// Represents a collection of function tools that can be utilized within the generative model.
@@ -270,7 +273,8 @@ public partial class GenerativeModel
         // If enabled, pass the function result back into the model
         if (FunctionCallingBehaviour.AutoReplyFunction)
         {
-            var content = functionResponse.ToFunctionCallContent();
+            var nonNullResponses = functionResponse.Where(r => r != null).Cast<FunctionResponse>().ToList();
+            var content = nonNullResponses.ToFunctionCallContent();
 
             var contents = BeforeRegeneration(originalRequest, response);
             
@@ -310,7 +314,8 @@ public partial class GenerativeModel
         // If enabled, pass the function result back into the model
         if (FunctionCallingBehaviour.AutoReplyFunction)
         {
-            var content = functionResponse.ToFunctionCallContent();
+            var nonNullResponses = functionResponse.Where(r => r != null).Cast<FunctionResponse>().ToList();
+            var content = nonNullResponses.ToFunctionCallContent();
 
             var contents = BeforeRegeneration(originalRequest, response);
 
@@ -426,7 +431,11 @@ public partial class GenerativeModel
     /// <exception cref="NotSupportedException">Thrown when the platform does not support Retrieval Augmentation Generation on Vertex AI.</exception>
     public void UseVertexRetrievalTool(string corpusId, RagRetrievalConfig? retrievalConfig = null)
     {
+#if NET6_0_OR_GREATER
+        if(!this._platform.GetBaseUrl().Contains("aiplatform", StringComparison.Ordinal))
+#else
         if(!this._platform.GetBaseUrl().Contains("aiplatform"))
+#endif
             throw new NotSupportedException("Retrival Augmentation Generation is only supported on Vertex AI");
 
         this.RetrievalTool = new Tool()

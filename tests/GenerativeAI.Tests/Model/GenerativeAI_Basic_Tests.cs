@@ -13,12 +13,12 @@ using Xunit;
 namespace GenerativeAI.Tests.Model
 {
     [TestCaseOrderer(
-        typeof(PriorityOrderer))]
+        ordererType: typeof(PriorityOrderer))]
     public class GenerativeModel_Tests : TestBase
     {
         private const string DefaultTestModelName = GoogleAIModels.Gemini25ProExp0325;
 
-        public GenerativeModel_Tests(ITestOutputHelper helper) : base(helper)
+        public GenerativeModel_Tests(ITestOutputHelper helper) : base(testOutputHelper: helper)
         {
         }
 
@@ -27,33 +27,33 @@ namespace GenerativeAI.Tests.Model
         /// </summary>
         private GenerativeModel CreateInitializedModel()
         {
-            Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+            Assert.SkipUnless(condition: IsGeminiApiKeySet,reason: GeminiTestSkipMessage);
             var platform = GetTestGooglePlatform();
-            return new GenerativeModel(platform, DefaultTestModelName);
+            return new GenerativeModel(platform: platform, model: DefaultTestModelName);
         }
 
         #region Constructors
 
-        [Fact, TestPriority(1)]
+        [Fact, TestPriority(priority: 1)]
         public void ShouldCreateWithBasicConstructor()
         {
             // Arrange
-            var platform = new GoogleAIPlatformAdapter("aldkfhlakjd");
+            var platform = new GoogleAIPlatformAdapter(googleApiKey: "aldkfhlakjd");
 
             // Act
-            var model = new GenerativeModel(platform, DefaultTestModelName);
+            var model = new GenerativeModel(platform: platform, model: DefaultTestModelName);
 
             // Assert
             model.ShouldNotBeNull();
-            model.Model.ShouldBe(DefaultTestModelName);
-            Console.WriteLine($"Model created with basic constructor: {DefaultTestModelName}");
+            model.Model.ShouldBe(expected: DefaultTestModelName);
+            Console.WriteLine(message: $"Model created with basic constructor: {DefaultTestModelName}");
         }
 
-        [Fact, TestPriority(2)]
+        [Fact, TestPriority(priority: 2)]
         public void ShouldCreateWithExtendedConstructor()
         {
             // Arrange
-            var platform = new GoogleAIPlatformAdapter("aldkfhlakjd");
+            var platform = new GoogleAIPlatformAdapter(googleApiKey: "aldkfhlakjd");
             var config = new GenerationConfig
             {
                 /* Configure as needed */
@@ -67,8 +67,8 @@ namespace GenerativeAI.Tests.Model
 
             // Act
             var model = new GenerativeModel(
-                platform,
-                DefaultTestModelName,
+                platform: platform,
+                model: DefaultTestModelName,
                 config: config,
                 safetySettings: safetySettings,
                 systemInstruction: systemContent
@@ -76,13 +76,13 @@ namespace GenerativeAI.Tests.Model
 
             // Assert
             model.ShouldNotBeNull();
-            model.Model.ShouldBe(DefaultTestModelName);
-            model.Config.ShouldBe(config);
-            model.SafetySettings.ShouldBe(safetySettings);
-            Console.WriteLine($"Model created with extended constructor: {DefaultTestModelName}");
+            model.Model.ShouldBe(expected: DefaultTestModelName);
+            model.Config.ShouldBe(expected: config);
+            model.SafetySettings.ShouldBe(expected: safetySettings);
+            Console.WriteLine(message: $"Model created with extended constructor: {DefaultTestModelName}");
         }
 
-        [Fact, TestPriority(3)]
+        [Fact, TestPriority(priority: 3)]
         public void ShouldCreateWithApiKeyConstructor()
         {
             // Arrange
@@ -90,20 +90,20 @@ namespace GenerativeAI.Tests.Model
             var modelParams = new ModelParams { Model = DefaultTestModelName };
 
             // Act
-            var model = new GenerativeModel(apiKey, modelParams);
+            var model = new GenerativeModel(apiKey: apiKey, modelParams: modelParams);
 
             // Assert
             model.ShouldNotBeNull();
-            model.Model.ShouldBe(DefaultTestModelName);
+            model.Model.ShouldBe(expected: DefaultTestModelName);
 
-            Console.WriteLine("Model created with API key constructor.");
+            Console.WriteLine(message: "Model created with API key constructor.");
         }
 
         #endregion
 
         #region GenerateContentAsync Overloads
 
-        [Fact, TestPriority(5)]
+        [Fact, TestPriority(priority: 5)]
         public async Task ShouldGenerateContentWithSingleContentRequest()
         {
             // Arrange
@@ -111,54 +111,54 @@ namespace GenerativeAI.Tests.Model
 
             // Use RequestExtension to format single user content
             var singleContent =
-                RequestExtensions.FormatGenerateContentInput("Write an inspiring paragraph about achieving dreams.");
-            var request = new GenerateContentRequest(singleContent);
+                RequestExtensions.FormatGenerateContentInput(@params: "Write an inspiring paragraph about achieving dreams.");
+            var request = new GenerateContentRequest(content: singleContent);
 
             // Act
-            var response = await model.GenerateContentAsync(request).ConfigureAwait(false);
+            var response = await model.GenerateContentAsync(request: request, cancellationToken: TestContext.Current.CancellationToken);
 
             // Assert
             response.ShouldNotBeNull();
             response.Text().ShouldNotBeNullOrEmpty();
-            Console.WriteLine($"Response: {response.Text()}");
+            Console.WriteLine(message: $"Response: {response.Text()}");
         }
 
-        [Fact, TestPriority(6)]
+        [Fact, TestPriority(priority: 6)]
         public async Task ShouldGenerateContentWithMultipleContentRequest()
         {
             // Arrange
             var model = CreateInitializedModel();
 
             // Use extension to format content from different inputs
-            var content1 = RequestExtensions.FormatGenerateContentInput("Create a futuristic description of life on a space station.");
-            var content2 = RequestExtensions.FormatGenerateContentInput("Explain the concept of time travel in a simple way.");
-            var request = new GenerateContentRequest(new List<Content> { content1, content2 });
+            var content1 = RequestExtensions.FormatGenerateContentInput(@params: "Create a futuristic description of life on a space station.");
+            var content2 = RequestExtensions.FormatGenerateContentInput(@params: "Explain the concept of time travel in a simple way.");
+            var request = new GenerateContentRequest(contents: new List<Content> { content1, content2 });
 
             // Act
-            var response = await model.GenerateContentAsync(request).ConfigureAwait(false);
+            var response = await model.GenerateContentAsync(request: request, cancellationToken: TestContext.Current.CancellationToken);
 
             // Assert
             response.ShouldNotBeNull();
             response.Text().ShouldNotBeNullOrEmpty();
-            Console.WriteLine($"Response: {response.Text()}");
+            Console.WriteLine(message: $"Response: {response.Text()}");
         }
 
-        [Fact, TestPriority(7)]
+        [Fact, TestPriority(priority: 7)]
         public async Task ShouldGenerateContentWithString()
         {
             // Arrange
             var model = CreateInitializedModel();
 
             // Pass a raw string, model internally uses single-argument overload
-            var response = await model.GenerateContentAsync("Generate a poetic description of nature during autumn.").ConfigureAwait(false);
+            var response = await model.GenerateContentAsync(prompt: "Generate a poetic description of nature during autumn.", cancellationToken: TestContext.Current.CancellationToken);
 
             // Assert
             response.ShouldNotBeNull();
             response.Text().ShouldNotBeNullOrEmpty();
-            Console.WriteLine($"Response: {response.Text()}");
+            Console.WriteLine(message: $"Response: {response.Text()}");
         }
 
-        [Fact, TestPriority(8)]
+        [Fact, TestPriority(priority: 8)]
         public async Task ShouldGenerateContentWithParts()
         {
             // Arrange
@@ -170,30 +170,30 @@ namespace GenerativeAI.Tests.Model
             };
 
             // Act
-            var response = await model.GenerateContentAsync(parts).ConfigureAwait(false);
+            var response = await model.GenerateContentAsync(parts: parts, cancellationToken: TestContext.Current.CancellationToken);
 
             // Assert
             response.ShouldNotBeNull();
             response.Text().ShouldNotBeNullOrEmpty();
-            Console.WriteLine($"Response: {response.Text()}");
+            Console.WriteLine(message: $"Response: {response.Text()}");
         }
 
-        [Fact, TestPriority(9)]
+        [Fact, TestPriority(priority: 9)]
         public async Task ShouldStreamContentWithSingleContentRequest()
         {
             // Arrange
             var model = CreateInitializedModel();
             var singleContent =
-                RequestExtensions.FormatGenerateContentInput("Create a short poem about the beauty of the sunset.");
-            var request = new GenerateContentRequest(singleContent);
+                RequestExtensions.FormatGenerateContentInput(@params: "Create a short poem about the beauty of the sunset.");
+            var request = new GenerateContentRequest(content: singleContent);
 
             // Act
             var responses = new List<string>();
-            await foreach (var response in model.StreamContentAsync(request).ConfigureAwait(false))
+            await foreach (var response in model.StreamContentAsync(request: request, cancellationToken: TestContext.Current.CancellationToken))
             {
                 response.ShouldNotBeNull();
-                responses.Add(response.Text() ?? string.Empty);
-                Console.WriteLine($"Chunk: {response.Text()}");
+                responses.Add(item: response.Text() ?? string.Empty);
+                Console.WriteLine(message: $"Chunk: {response.Text()}");
             }
 
             // Assert
@@ -201,24 +201,24 @@ namespace GenerativeAI.Tests.Model
             responses.ShouldNotBeEmpty();
         }
 
-        [Fact, TestPriority(10)]
+        [Fact, TestPriority(priority: 10)]
         public async Task ShouldStreamContentWithMultipleContentRequest()
         {
             // Arrange
             var model = CreateInitializedModel();
             var content1 =
                 RequestExtensions.FormatGenerateContentInput(
-                    "Write a motivational quote for someone starting a new journey.");
-            var content2 = RequestExtensions.FormatGenerateContentInput("Generate fun facts about space exploration.");
+                    @params: "Write a motivational quote for someone starting a new journey.");
+            var content2 = RequestExtensions.FormatGenerateContentInput(@params: "Generate fun facts about space exploration.");
             var contents = new List<Content> { content1, content2 };
 
             // Act
             var responses = new List<string>();
-            await foreach (var response in model.StreamContentAsync(contents).ConfigureAwait(false))
+            await foreach (var response in model.StreamContentAsync(contents: contents, cancellationToken: TestContext.Current.CancellationToken))
             {
                 response.ShouldNotBeNull();
-                responses.Add(response.Text() ?? string.Empty);
-                Console.WriteLine($"Chunk: {response.Text()}");
+                responses.Add(item: response.Text() ?? string.Empty);
+                Console.WriteLine(message: $"Chunk: {response.Text()}");
             }
 
             // Assert
@@ -226,7 +226,7 @@ namespace GenerativeAI.Tests.Model
             responses.ShouldNotBeEmpty();
         }
 
-        [Fact, TestPriority(11)]
+        [Fact, TestPriority(priority: 11)]
         public async Task ShouldStreamContentWithString()
         {
             // Arrange
@@ -235,11 +235,11 @@ namespace GenerativeAI.Tests.Model
 
             // Act
             var responses = new List<string>();
-            await foreach (var response in model.StreamContentAsync(input).ConfigureAwait(false))
+            await foreach (var response in model.StreamContentAsync(prompt: input,cancellationToken: TestContext.Current.CancellationToken))
             {
                 response.ShouldNotBeNull();
-                responses.Add(response.Text() ?? string.Empty);
-                Console.WriteLine($"Chunk: {response.Text()}");
+                responses.Add(item: response.Text() ?? string.Empty);
+                Console.WriteLine(message: $"Chunk: {response.Text()}");
             }
 
             // Assert
@@ -247,7 +247,7 @@ namespace GenerativeAI.Tests.Model
             responses.ShouldNotBeEmpty();
         }
 
-        [Fact, TestPriority(12)]
+        [Fact, TestPriority(priority: 12)]
         public async Task ShouldStreamContentWithParts()
         {
             // Arrange
@@ -261,11 +261,11 @@ namespace GenerativeAI.Tests.Model
 
             // Act
             var responses = new List<string>();
-            await foreach (var response in model.StreamContentAsync(parts).ConfigureAwait(false))
+            await foreach (var response in model.StreamContentAsync(parts: parts, cancellationToken: TestContext.Current.CancellationToken))
             {
                 response.ShouldNotBeNull();
-                responses.Add(response.Text() ?? string.Empty);
-                Console.WriteLine($"Chunk: {response.Text()}");
+                responses.Add(item: response.Text() ?? string.Empty);
+                Console.WriteLine(message: $"Chunk: {response.Text()}");
             }
 
             // Assert
@@ -277,49 +277,49 @@ namespace GenerativeAI.Tests.Model
         
         #region CountTokensAsync Overloads
         
-        [Fact, TestPriority(13)]
+        [Fact, TestPriority(priority: 13)]
         public async Task ShouldCountTokensWithRequest()
         {
             // Arrange
             var model = CreateInitializedModel();
         
             // Create a CountTokensRequest
-            var content = RequestExtensions.FormatGenerateContentInput("Calculate the number of tokens required for this very detailed and comprehensive paragraph that spans across multiple subjects, ideas, and sentences to ensure there are sufficient tokens counted in the response.");
+            var content = RequestExtensions.FormatGenerateContentInput(@params: "Calculate the number of tokens required for this very detailed and comprehensive paragraph that spans across multiple subjects, ideas, and sentences to ensure there are sufficient tokens counted in the response.");
             var request = new CountTokensRequest
             {
                 Contents = new List<Content> { content }
             };
         
             // Act
-            var response = await model.CountTokensAsync(request).ConfigureAwait(false);
+            var response = await model.CountTokensAsync(request: request, cancellationToken: TestContext.Current.CancellationToken);
         
             // Assert
             response.ShouldNotBeNull();
-            response.TotalTokens.ShouldBeGreaterThan(0);
-            Console.WriteLine($"Total Tokens: {response.TotalTokens}");
+            response.TotalTokens.ShouldBeGreaterThan(expected: 0);
+            Console.WriteLine(message: $"Total Tokens: {response.TotalTokens}");
         }
         
-        [Fact, TestPriority(14)]
+        [Fact, TestPriority(priority: 14)]
         public async Task ShouldCountTokensWithContents()
         {
             // Arrange
             var model = CreateInitializedModel();
         
             // Prepare Content objects
-            var content1 = RequestExtensions.FormatGenerateContentInput("First input content for token counting. This content includes a comprehensive explanation of various techniques used in counting tokens in different scenarios and environments.");
-            var content2 = RequestExtensions.FormatGenerateContentInput("Second input content. It describes the significance of token counts in large scale systems, emphasizing the role they play in accurate calculations.");
+            var content1 = RequestExtensions.FormatGenerateContentInput(@params: "First input content for token counting. This content includes a comprehensive explanation of various techniques used in counting tokens in different scenarios and environments.");
+            var content2 = RequestExtensions.FormatGenerateContentInput(@params: "Second input content. It describes the significance of token counts in large scale systems, emphasizing the role they play in accurate calculations.");
             var contents = new List<Content> { content1, content2 };
         
             // Act
-            var response = await model.CountTokensAsync(contents).ConfigureAwait(false);
+            var response = await model.CountTokensAsync(contents: contents, cancellationToken: TestContext.Current.CancellationToken);
         
             // Assert
             response.ShouldNotBeNull();
-            response.TotalTokens.ShouldBeGreaterThan(0);
-            Console.WriteLine($"Total Tokens: {response.TotalTokens}");
+            response.TotalTokens.ShouldBeGreaterThan(expected: 0);
+            Console.WriteLine(message: $"Total Tokens: {response.TotalTokens}");
         }
         
-        [Fact, TestPriority(15)]
+        [Fact, TestPriority(priority: 15)]
         public async Task ShouldCountTokensWithParts()
         {
             // Arrange
@@ -333,32 +333,32 @@ namespace GenerativeAI.Tests.Model
             };
         
             // Act
-            var response = await model.CountTokensAsync(parts).ConfigureAwait(false);
+            var response = await model.CountTokensAsync(parts: parts, cancellationToken: TestContext.Current.CancellationToken);
         
             // Assert
             response.ShouldNotBeNull();
-            response.TotalTokens.ShouldBeGreaterThan(0);
-            Console.WriteLine($"Total Tokens: {response.TotalTokens}");
+            response.TotalTokens.ShouldBeGreaterThan(expected: 0);
+            Console.WriteLine(message: $"Total Tokens: {response.TotalTokens}");
         }
         
-        [Fact, TestPriority(16)]
+        [Fact, TestPriority(priority: 16)]
         public async Task ShouldCountTokensWithGenerateContentRequest()
         {
             // Arrange
             var model = CreateInitializedModel();
         
             // Create a GenerateContentRequest
-            var singleContent = RequestExtensions.FormatGenerateContentInput("Token count should be calculated here for this large piece of content that includes a detailed description, analysis, and examples of how token counting is used in AI-generated responses, particularly in models designed to understand and generate natural language.");
+            var singleContent = RequestExtensions.FormatGenerateContentInput(@params: "Token count should be calculated here for this large piece of content that includes a detailed description, analysis, and examples of how token counting is used in AI-generated responses, particularly in models designed to understand and generate natural language.");
             
-            var generateRequest = new GenerateContentRequest(singleContent);
+            var generateRequest = new GenerateContentRequest(content: singleContent);
             
             // Act
-            var response = await model.CountTokensAsync(generateRequest).ConfigureAwait(false);
+            var response = await model.CountTokensAsync(generateContentRequest: generateRequest, cancellationToken: TestContext.Current.CancellationToken);
         
             // Assert
             response.ShouldNotBeNull();
-            response.TotalTokens.ShouldBeGreaterThan(0);
-            Console.WriteLine($"Total Tokens: {response.TotalTokens}");
+            response.TotalTokens.ShouldBeGreaterThan(expected: 0);
+            Console.WriteLine(message: $"Total Tokens: {response.TotalTokens}");
         }
         
         
@@ -367,7 +367,7 @@ namespace GenerativeAI.Tests.Model
 
         protected override IPlatformAdapter GetTestGooglePlatform()
         {
-            Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+            Assert.SkipUnless(condition: IsGeminiApiKeySet,reason: GeminiTestSkipMessage);
             return base.GetTestGooglePlatform();
         }
     }

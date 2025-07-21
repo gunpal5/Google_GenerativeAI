@@ -17,6 +17,11 @@ public class TextChunkReceivedArgs : EventArgs
     /// </summary>
     public bool IsTurnFinish { get; set; }
 
+    /// <summary>
+    /// Initializes a new instance of the TextChunkReceivedArgs class.
+    /// </summary>
+    /// <param name="text">The text of the received chunk.</param>
+    /// <param name="isTurnFinish">A value indicating whether the turn is finished.</param>
     public TextChunkReceivedArgs(string text, bool isTurnFinish)
     {
         this.Text = text;

@@ -28,7 +28,7 @@ public class VertexAIModel_MultiModel_Tests : TestBase
         request.AddText("Identify objects in the image?");
 
         //Act
-        var result = await model.GenerateContentAsync(request).ConfigureAwait(false);
+        var result = await model.GenerateContentAsync(request, cancellationToken: TestContext.Current.CancellationToken);
 
         //Assert
         var text = result.Text();
@@ -48,7 +48,7 @@ public class VertexAIModel_MultiModel_Tests : TestBase
         var uri =
             "https://images.pexels.com/photos/28587807/pexels-photo-28587807/free-photo-of-traditional-turkish-coffee-brewed-in-istanbul-sand.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1";
         //Act
-        var result = await model.GenerateContentAsync(prompt, uri, "image/jpeg").ConfigureAwait(false);
+        var result = await model.GenerateContentAsync(prompt, uri, "image/jpeg", cancellationToken: TestContext.Current.CancellationToken);
 
         //Assert
         result.ShouldNotBeNull();
@@ -68,7 +68,7 @@ public class VertexAIModel_MultiModel_Tests : TestBase
         string uri = "https://videos.pexels.com/video-files/3192305/3192305-uhd_2560_1440_25fps.mp4";
 
         //Act
-        var result = await model.GenerateContentAsync(prompt, uri, "video/mp4").ConfigureAwait(false);
+        var result = await model.GenerateContentAsync(prompt, uri, "video/mp4", cancellationToken: TestContext.Current.CancellationToken);
 
         //Assert
         result.ShouldNotBeNull();
@@ -79,8 +79,9 @@ public class VertexAIModel_MultiModel_Tests : TestBase
     }
 
     [Fact]
-    public async Task ShouldProcessAudioWithFilePath()
+    public Task ShouldProcessAudioWithFilePath()
     {
+        return Task.CompletedTask;
         //Arrange
         // var model = CreateInitializedModel();
         //
@@ -109,7 +110,7 @@ public class VertexAIModel_MultiModel_Tests : TestBase
         var model = CreateInitializedModel();
 
         var responses = new List<string>();
-        await foreach (var response in model.StreamContentAsync(prompt, imageFile, "image/jpeg").ConfigureAwait(false))
+        await foreach (var response in model.StreamContentAsync(prompt, imageFile, "image/jpeg", TestContext.Current.CancellationToken))
         {
             response.ShouldNotBeNull();
             responses.Add(response.Text() ?? string.Empty);
@@ -120,8 +121,9 @@ public class VertexAIModel_MultiModel_Tests : TestBase
     }
 
     [Fact]
-    public async Task ShouldIdentifyImageWithChatAndStreaming()
+    public Task ShouldIdentifyImageWithChatAndStreaming()
     {
+        return Task.CompletedTask;
         // var imageFile = "image.png";
         //
         // string prompt = "Identify objects in the image?";

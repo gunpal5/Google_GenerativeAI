@@ -35,7 +35,7 @@ public abstract class BaseModel : BaseClient
     /// <param name="response">The <see cref="GenerateContentResponse"/> received from the generative AI model, which may contain content candidates.</param>
     /// <param name="url">The URL of the request made to the generative AI model, used for error reporting.</param>
     /// <exception cref="GenerativeAIException">Thrown if the response is blocked or invalid with details of the error.</exception>
-    protected void CheckBlockedResponse(GenerateContentResponse? response, string url)
+    protected static void CheckBlockedResponse(GenerateContentResponse? response, string url)
     {
         if (response == null || !(response.Candidates is { Length: > 0 }))
         {
@@ -91,16 +91,18 @@ public abstract class BaseModel : BaseClient
     }
 
     /// <summary>
-    /// Counts the number of tokens in a given input using the provided model and request.
+    /// Asynchronously counts the number of tokens in a given input using the specified model and request data.
     /// </summary>
-    /// <param name="model">The name of the <see cref="Model">Generative AI Model</see> to use for counting tokens. Format: `models/{model}`.</param>
+    /// <param name="model">The name of the Generative AI model to use for token counting, in the format `models/{model}`.</param>
     /// <param name="request">The <see cref="CountTokensRequest"/> containing the input data for token counting.</param>
-    /// <returns>The <see cref="CountTokensResponse"/> containing details about the token count.</returns>
-    /// <seealso href="https://ai.google.dev/api/tokens">See Official API Documentation</seealso>
-    protected virtual async Task<CountTokensResponse> CountTokensAsync(string model, CountTokensRequest request)
+    /// <param name="cancellationToken">An optional token to observe while waiting for the task to complete.</param>
+    /// <returns>A <see cref="CountTokensResponse"/> containing details about the token count.</returns>
+    protected virtual async Task<CountTokensResponse> CountTokensAsync(string model, CountTokensRequest request,
+        CancellationToken cancellationToken = default)
     {
         var url = $"{_platform.GetBaseUrl()}/{model.ToModelId()}:{GenerativeModelTasks.CountTokens}";
-        return await SendAsync<CountTokensRequest, CountTokensResponse>(url, request, HttpMethod.Post).ConfigureAwait(false);
+        return await SendAsync<CountTokensRequest, CountTokensResponse>(url, request, HttpMethod.Post,
+            cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
 
@@ -134,7 +136,7 @@ public abstract class BaseModel : BaseClient
         return await SendAsync<BatchEmbedContentRequest, BatchEmbedContentsResponse>(url, request, HttpMethod.Post).ConfigureAwait(false);
     }
 
-    private void ValidateEmbeddingRequest(string model, EmbedContentRequest req)
+    private static void ValidateEmbeddingRequest(string model, EmbedContentRequest req)
     {
         req.Model = req.Model ?? model;
 

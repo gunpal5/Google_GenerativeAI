@@ -50,7 +50,7 @@ public class JsonModeTests
         request.AddText("Give me a really good message.", false);
 
         // Act
-        var response = await model.GenerateContentAsync<SampleJsonClass>(request).ConfigureAwait(false);
+        var response = await model.GenerateContentAsync<SampleJsonClass>(request);
 
         // Assert
         response.ShouldNotBeNull();
@@ -71,7 +71,7 @@ public class JsonModeTests
         request.AddText("write a text message for my boss that I'm resigning from the job.", false);
 
         // Act
-        var result = await model.GenerateObjectAsync<SampleJsonClass>(request).ConfigureAwait(false);
+        var result = await model.GenerateObjectAsync<SampleJsonClass>(request);
 
         // Assert
         result.ShouldNotBeNull();
@@ -87,7 +87,7 @@ public class JsonModeTests
         var prompt = "I need a birthday message for my wife.";
 
         // Act
-        var result = await model.GenerateObjectAsync<SampleJsonClass>(prompt).ConfigureAwait(false);
+        var result = await model.GenerateObjectAsync<SampleJsonClass>(prompt);
 
         // Assert
         result.ShouldNotBeNull();
@@ -109,7 +109,7 @@ public class JsonModeTests
         };
 
         // Act
-        var result = await model.GenerateObjectAsync<SampleJsonClass>(parts).ConfigureAwait(false);
+        var result = await model.GenerateObjectAsync<SampleJsonClass>(parts);
 
         // Assert
         result.ShouldNotBeNull();
@@ -129,7 +129,7 @@ public class JsonModeTests
             false);
 
         // Act
-        var response = await model.GenerateContentAsync<ComplexDataTypeClass>(request).ConfigureAwait(false);
+        var response = await model.GenerateContentAsync<ComplexDataTypeClass>(request);
 
         // Assert
         response.ShouldNotBeNull();
@@ -160,7 +160,7 @@ public class JsonModeTests
         request.AddText("Generate a complex JSON object with nested properties.", false);
 
         // Act
-        var response = await model.GenerateContentAsync<ComplexJsonClass>(request).ConfigureAwait(false);
+        var response = await model.GenerateContentAsync<ComplexJsonClass>(request);
 
         // Assert
         response.ShouldNotBeNull();

@@ -22,7 +22,7 @@ namespace GenerativeAI.IntegrationTests
             
             model.AddFunctionTool(tool);
 
-            var result = await model.GenerateContentAsync("What is the weather in san francisco today?").ConfigureAwait(false);
+            var result = await model.GenerateContentAsync("What is the weather in san francisco today?");
             
             Console.WriteLine(result.Text());
         }
@@ -41,11 +41,11 @@ namespace GenerativeAI.IntegrationTests
             model.AddFunctionTool(tool);
 
             await foreach (var result in model.StreamContentAsync("What is the weather in san francisco today?")
-                               .ConfigureAwait(false))
+                               )
             {
                 Console.WriteLine(result.Text());
             }
-            //var result = await model.StreamContentAsync("What is the weather in san francisco today?").ConfigureAwait(false);
+            //var result = await model.StreamContentAsync("What is the weather in san francisco today?");
             
            // Console.WriteLine(result.Text());
         }
@@ -74,7 +74,7 @@ namespace GenerativeAI.IntegrationTests
             var tool = new GenericFunctionTool(service.AsTools(), service.AsCalls());
             var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.DefaultGeminiModel);
             model.AddFunctionTool(tool);
-            var result = await model.GenerateContentAsync("what is written on page 35 in the book 'abracadabra'").ConfigureAwait(false);
+            var result = await model.GenerateContentAsync("what is written on page 35 in the book 'abracadabra'");
             Console.WriteLine(result.Text());
         }
         
@@ -88,7 +88,7 @@ namespace GenerativeAI.IntegrationTests
             model.AddFunctionTool(tool);
             await foreach (var result in model
                                .StreamContentAsync("what is written on page 35 in the book 'abracadabra'")
-                               .ConfigureAwait(false))
+                               )
             {
                 Console.WriteLine(result.Text());
             }
@@ -105,7 +105,7 @@ namespace GenerativeAI.IntegrationTests
             model.AddFunctionTool(tool);
             await foreach (var result in model
                                .StreamContentAsync("Give me the list of books")
-                               .ConfigureAwait(false))
+                               )
             {
                 Console.WriteLine(result.Text());
             }
@@ -122,7 +122,7 @@ namespace GenerativeAI.IntegrationTests
             model.AddFunctionTool(tool);
             await foreach (var result in model
                                .StreamContentAsync("Give me the list of books")
-                               .ConfigureAwait(false))
+                               )
             {
                 Console.WriteLine(result.Text());
             }
@@ -138,7 +138,7 @@ namespace GenerativeAI.IntegrationTests
             model.AddFunctionTool(tool);
             await foreach (var result in model
                                .StreamContentAsync("Give me the list of books")
-                               .ConfigureAwait(false))
+                               )
             {
                 Console.WriteLine(result.Text());
             }
@@ -154,7 +154,7 @@ namespace GenerativeAI.IntegrationTests
             model.AddFunctionTool(tool);
             await foreach (var result in model
                                .StreamContentAsync("Give me the list of books")
-                               .ConfigureAwait(false))
+                               )
             {
                 Console.WriteLine(result.Text());
             }

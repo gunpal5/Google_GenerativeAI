@@ -13,14 +13,14 @@ public class GoogleAI_Tests:TestBase
 
     [Fact]
     
-    public async Task ShouldThrowException_WhenProjectIdsAreInvalid()
+    public Task ShouldThrowException_WhenProjectIdsAreInvalid()
     {
         Assert.SkipWhen(IsGoogleApiKeySet,"GOOGLE_API_KEY is set in environment variables. this test is not valid."); 
         Should.Throw<Exception>(() =>
         {
             var googleAi = new GoogleAi();
         });
-        
+        return Task.CompletedTask;
         // var model = googleAi.CreateGenerativeModel(GoogleAIModels.Gemini15Flash);
         // var response = await model.GenerateContentAsync("write a poem about the sun");
         //

@@ -32,7 +32,7 @@ public static class StringExtensions
 #if NETSTANDARD2_0 || NET462_OR_GREATER
         if (modelName.Contains("/"))
 #else
-        if (modelName.Contains("/", StringComparison.InvariantCulture))
+        if (modelName.Contains('/'))
 #endif
         {
             if (modelName.StartsWith("models/", StringComparison.InvariantCultureIgnoreCase))
@@ -73,7 +73,7 @@ public static class StringExtensions
 #if NETSTANDARD2_0 || NET462_OR_GREATER
         if (corpusName.Contains("/"))
 #else
-        if (corpusName.Contains("/", StringComparison.InvariantCulture))
+        if (corpusName.Contains('/'))
 #endif
         {
             if (corpusName.StartsWith("ragCorpora/", StringComparison.InvariantCultureIgnoreCase))
@@ -82,7 +82,11 @@ public static class StringExtensions
             }
             else
             {
+#if NET6_0_OR_GREATER
+                if (corpusName.Contains("ragCorpora", StringComparison.Ordinal))
+#else
                 if (corpusName.Contains("ragCorpora"))
+#endif
                 {
                     return $"ragCorpora/{corpusName.Substring(corpusName.LastIndexOf('/') + 1)}";
                 }
@@ -119,7 +123,7 @@ public static class StringExtensions
 #if NETSTANDARD2_0 || NET462_OR_GREATER
         if (fileName.Contains("/"))
 #else
-        if (fileName.Contains("/", StringComparison.InvariantCulture))
+        if (fileName.Contains('/'))
 #endif
         {
             if (fileName.StartsWith("ragCorpora/", StringComparison.InvariantCultureIgnoreCase))
@@ -128,9 +132,17 @@ public static class StringExtensions
             }
             else
             {
+#if NET6_0_OR_GREATER
+                if (fileName.Contains("ragCorpora", StringComparison.Ordinal))
+#else
                 if (fileName.Contains("ragCorpora"))
+#endif
                 {
+#if NET6_0_OR_GREATER
+                    var l = fileName.Substring(fileName.LastIndexOf("ragCorpora/", StringComparison.Ordinal));
+#else
                     var l = fileName.Substring(fileName.LastIndexOf("ragCorpora/"));
+#endif
                     return l;
                 }
                 throw new ArgumentException($"Invalid rag file name. {fileName}");
@@ -159,7 +171,7 @@ public static class StringExtensions
 #if NETSTANDARD2_0 || NET462_OR_GREATER
         if (modelName.Contains("/"))
 #else
-        if (modelName.Contains("/", StringComparison.InvariantCulture))
+        if (modelName.Contains('/'))
 #endif
         {
             if (modelName.StartsWith("tunedModels/", StringComparison.InvariantCulture))
@@ -200,7 +212,7 @@ public static class StringExtensions
 #if NETSTANDARD2_0 || NET462_OR_GREATER
         if (fileName.Contains("/"))
 #else
-        if (fileName.Contains("/", StringComparison.InvariantCulture))
+        if (fileName.Contains('/'))
 #endif
         {
             if (fileName.StartsWith("files/", StringComparison.InvariantCultureIgnoreCase))
@@ -261,9 +273,9 @@ public static class StringExtensions
         if (operationId == null) throw new ArgumentNullException(nameof(operationId));
 #endif
 #if NETSTANDARD2_0 || NET462_OR_GREATER
-        if (operationId.Contains("/"))
+        if (operationId.Contains('/'))
 #else
-        if (operationId.Contains("/", StringComparison.InvariantCulture))
+        if (operationId.Contains('/'))
 #endif
         {
             if (operationId.StartsWith("publishers/", StringComparison.InvariantCultureIgnoreCase))
@@ -272,8 +284,13 @@ public static class StringExtensions
             }
             else
             {
+#if NET6_0_OR_GREATER
+                var opId = operationId.Substring(operationId.LastIndexOf("/publishers", StringComparison.Ordinal) + 1);
+                opId = opId.Remove(opId.IndexOf("/operations", StringComparison.Ordinal));
+#else
                 var opId = operationId.Substring(operationId.LastIndexOf("/publishers") + 1);
                 opId = opId.Remove(opId.IndexOf("/operations"));
+#endif
                 return $"{opId}";
             }
         }

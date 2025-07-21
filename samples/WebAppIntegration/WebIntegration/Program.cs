@@ -16,7 +16,7 @@ builder.Services.AddGenerativeAI(new GenerativeAIOptions()
     Model = GoogleAIModels.Gemini2Flash,
     Credentials = new GoogleAICredentials()
     {
-        ApiKey = EnvironmentVariables.GOOGLE_API_KEY
+        ApiKey = EnvironmentVariables.GOOGLE_API_KEY ?? throw new InvalidOperationException("GOOGLE_API_KEY environment variable is not set")
     }
 }).WithAdc();
 

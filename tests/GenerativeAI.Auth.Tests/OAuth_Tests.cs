@@ -1,4 +1,4 @@
-﻿using GenerativeAI.Authenticators;
+using GenerativeAI.Authenticators;
 using GenerativeAI.Core;
 using GenerativeAI.Tests;
 using Shouldly;
@@ -19,7 +19,7 @@ public class OAuth_Tests:TestBase
         var authenticator = CreateAuthenticatorWithJsonFile();
         
         var vertexAi = new VertexAIModel(authenticator:authenticator);
-        var response = await vertexAi.GenerateContentAsync("write a poem about the sun").ConfigureAwait(false);
+        var response = await vertexAi.GenerateContentAsync("write a poem about the sun", cancellationToken: TestContext.Current.CancellationToken);
         response.ShouldNotBeNull();
         var text = response.Text();
         text.ShouldNotBeNullOrWhiteSpace();

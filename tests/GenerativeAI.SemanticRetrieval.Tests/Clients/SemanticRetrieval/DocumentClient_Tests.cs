@@ -26,7 +26,7 @@ public class DocumentsClient_Tests : SemanticRetrieverTestBase
 
         var corpora = GetTestCorpora();
         
-        var testCorpus = await GetTestCorpora().ConfigureAwait(false);
+        var testCorpus = await GetTestCorpora().ConfigureAwait(true);
         var parent = $"{testCorpus.Name}";
         var newDocument = new Document
         {
@@ -38,7 +38,7 @@ public class DocumentsClient_Tests : SemanticRetrieverTestBase
         };
 
         // Act
-        var result = await client.CreateDocumentAsync(parent, newDocument).ConfigureAwait(false);
+        var result = await client.CreateDocumentAsync(parent, newDocument).ConfigureAwait(true);
 
         // Assert
         result.ShouldNotBeNull();
@@ -51,7 +51,7 @@ public class DocumentsClient_Tests : SemanticRetrieverTestBase
     private async Task<Corpus> GetTestCorpora()
     {
         var corpusClient = new CorporaClient(GetTestGooglePlatform());
-        var corpus = await corpusClient.ListCorporaAsync().ConfigureAwait(false);
+        var corpus = await corpusClient.ListCorporaAsync().ConfigureAwait(true);
         
         if(corpus == null || corpus.Corpora == null || corpus.Corpora.Count == 0)
             throw new Exception("No Corpora Found");
@@ -64,14 +64,14 @@ public class DocumentsClient_Tests : SemanticRetrieverTestBase
     {
         // Arrange
         var client = new DocumentsClient(GetTestGooglePlatform());
-        var testCorpus = await GetTestCorpora().ConfigureAwait(false);
+        var testCorpus = await GetTestCorpora().ConfigureAwait(true);
         var parent = $"{testCorpus.Name}";
-        var documentList = await client.ListDocumentsAsync(parent).ConfigureAwait(false);
+        var documentList = await client.ListDocumentsAsync(parent).ConfigureAwait(true);
         var testDocument = documentList.Documents.FirstOrDefault();
         var documentName = testDocument.Name;
 
         // Act
-        var result = await client.GetDocumentAsync(documentName).ConfigureAwait(false);
+        var result = await client.GetDocumentAsync(documentName).ConfigureAwait(true);
 
         // Assert
         result.ShouldNotBeNull();
@@ -87,11 +87,11 @@ public class DocumentsClient_Tests : SemanticRetrieverTestBase
         // Arrange
         var client = new DocumentsClient(GetTestGooglePlatform());
         const int pageSize = 10;
-        var testCorpus = await GetTestCorpora().ConfigureAwait(false);
+        var testCorpus = await GetTestCorpora().ConfigureAwait(true);
         var parent = $"{testCorpus.Name}";
 
         // Act
-        var result = await client.ListDocumentsAsync(parent, pageSize).ConfigureAwait(false);
+        var result = await client.ListDocumentsAsync(parent, pageSize).ConfigureAwait(true);
 
         // Assert
         result.ShouldNotBeNull();
@@ -113,9 +113,9 @@ public class DocumentsClient_Tests : SemanticRetrieverTestBase
     {
         // Arrange
         var client = new DocumentsClient(GetTestGooglePlatform());
-        var testCorpus = await GetTestCorpora().ConfigureAwait(false);
+        var testCorpus = await GetTestCorpora().ConfigureAwait(true);
         var parent = $"{testCorpus.Name}";
-        var documentList = await client.ListDocumentsAsync(parent).ConfigureAwait(false);
+        var documentList = await client.ListDocumentsAsync(parent).ConfigureAwait(true);
         var testDocument = documentList.Documents.FirstOrDefault();
         var updatedDocument = new Document
         {
@@ -124,7 +124,7 @@ public class DocumentsClient_Tests : SemanticRetrieverTestBase
         const string updateMask = "displayName";
 
         // Act
-        var result = await client.UpdateDocumentAsync(testDocument.Name, updatedDocument, updateMask).ConfigureAwait(false);
+        var result = await client.UpdateDocumentAsync(testDocument.Name, updatedDocument, updateMask).ConfigureAwait(true);
 
         // Assert
         result.ShouldNotBeNull();
@@ -139,13 +139,13 @@ public class DocumentsClient_Tests : SemanticRetrieverTestBase
     {
         // Arrange
         var client = new DocumentsClient(GetTestGooglePlatform());
-        var testCorpus = await GetTestCorpora().ConfigureAwait(false);
+        var testCorpus = await GetTestCorpora().ConfigureAwait(true);
         var parent = $"{testCorpus.Name}";
-        var documentList = await client.ListDocumentsAsync(parent).ConfigureAwait(false);
+        var documentList = await client.ListDocumentsAsync(parent).ConfigureAwait(true);
         var testDocument = documentList.Documents.LastOrDefault();
 
         // Act and Assert
-        await Should.NotThrowAsync(async () => await client.DeleteDocumentAsync(testDocument.Name).ConfigureAwait(false)).ConfigureAwait(false);
+        await Should.NotThrowAsync(async () => await client.DeleteDocumentAsync(testDocument.Name).ConfigureAwait(true)).ConfigureAwait(true);
         Console.WriteLine($"Deleted Document: Name={testDocument.Name}");
     }
 
@@ -154,9 +154,9 @@ public class DocumentsClient_Tests : SemanticRetrieverTestBase
     {
         // Arrange
         var client = new DocumentsClient(GetTestGooglePlatform());
-        var testCorpus = await GetTestCorpora().ConfigureAwait(false);
+        var testCorpus = await GetTestCorpora().ConfigureAwait(true);
         var parent = $"{testCorpus.Name}";
-        var documentList = await client.ListDocumentsAsync(parent).ConfigureAwait(false);
+        var documentList = await client.ListDocumentsAsync(parent).ConfigureAwait(true);
         var testDocument = documentList.Documents.FirstOrDefault();
         var queryRequest = new QueryDocumentRequest
         {
@@ -164,7 +164,7 @@ public class DocumentsClient_Tests : SemanticRetrieverTestBase
         };
 
         // Act
-        var result = await client.QueryDocumentAsync(testDocument.Name, queryRequest).ConfigureAwait(false);
+        var result = await client.QueryDocumentAsync(testDocument.Name, queryRequest).ConfigureAwait(true);
 
         // Assert
         result.ShouldNotBeNull();
@@ -182,7 +182,7 @@ public class DocumentsClient_Tests : SemanticRetrieverTestBase
         const string invalidName = "corpora/test-corpus-id/documents/invalid-id";
 
         // Act
-        var exception = await Should.ThrowAsync<Exception>(async () => await client.GetDocumentAsync(invalidName).ConfigureAwait(false)).ConfigureAwait(false);
+        var exception = await Should.ThrowAsync<Exception>(async () => await client.GetDocumentAsync(invalidName).ConfigureAwait(true)).ConfigureAwait(true);
 
         // Assert
         exception.Message.ShouldNotBeNullOrEmpty();
@@ -197,7 +197,7 @@ public class DocumentsClient_Tests : SemanticRetrieverTestBase
         const string invalidName = "corpora/test-corpus-id/documents/invalid-id";
 
         // Act
-        var exception = await Should.ThrowAsync<Exception>(async () => await client.DeleteDocumentAsync(invalidName).ConfigureAwait(false)).ConfigureAwait(false);
+        var exception = await Should.ThrowAsync<Exception>(async () => await client.DeleteDocumentAsync(invalidName).ConfigureAwait(true)).ConfigureAwait(true);
 
         // Assert
         exception.Message.ShouldNotBeNullOrEmpty();

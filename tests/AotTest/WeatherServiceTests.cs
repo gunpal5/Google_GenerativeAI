@@ -18,7 +18,7 @@ public class WeatherServiceTests
             
         model.AddFunctionTool(tool);
 
-        var result = await model.GenerateContentAsync("What is the weather in san francisco today?").ConfigureAwait(false);
+        var result = await model.GenerateContentAsync("What is the weather in san francisco today?");
             
         Console.WriteLine(result.Text());
     }
@@ -30,7 +30,7 @@ public class WeatherServiceTests
         var tool = new GenericFunctionTool(service.AsTools(), service.AsCalls());
         var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.DefaultGeminiModel);
         model.AddFunctionTool(tool);
-        var result = await model.GenerateContentAsync("what is written on page 35 in the book 'abracadabra'").ConfigureAwait(false);
+        var result = await model.GenerateContentAsync("what is written on page 35 in the book 'abracadabra'");
         Console.WriteLine(result.Text());
     }
     
@@ -40,7 +40,7 @@ public class WeatherServiceTests
         var tool = new GenericFunctionTool(service.AsTools(), service.AsCalls());
         var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.Gemini2Flash);
         model.AddFunctionTool(tool);
-        var result = await model.GenerateContentAsync("how's Deepak Siwach is doing in Senior Grade for enrollment year 01-01-2024 to 01-01-2025").ConfigureAwait(false);
+        var result = await model.GenerateContentAsync("how's Deepak Siwach is doing in Senior Grade for enrollment year 01-01-2024 to 01-01-2025");
         Console.WriteLine(result.Text());
     }
 

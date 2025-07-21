@@ -3,7 +3,7 @@
 /// <summary>
 /// Provides methods to validate files for inline use based on size and MIME type constraints.
 /// </summary>
-public class FileValidator
+public static class FileValidator
 {
     /// <summary>
     /// Validates the specified file for inline use.

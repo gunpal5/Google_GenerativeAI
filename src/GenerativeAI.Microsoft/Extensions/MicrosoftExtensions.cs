@@ -81,8 +81,6 @@ public static class MicrosoftExtensions
             else
                 return schema.ToSchema();
         }
-
-        return null;
     }
 
 
@@ -162,7 +160,8 @@ public static class MicrosoftExtensions
                     {
                         JsonObject o => o,
                         JsonArray a => a,
-                        JsonValue v => v.GetValue<JsonElement>().AsNode()
+                        JsonValue v => v.GetValue<JsonElement>().AsNode(),
+                        _ => n
                     },
                     _ => throw new ArgumentException("Unsupported argument type")
                 };

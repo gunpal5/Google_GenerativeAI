@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using GenerativeAI.Clients;
 using GenerativeAI.Tests.Base;
 using GenerativeAI.Types;
@@ -33,7 +33,7 @@ public class CachingClient_Tests : TestBase
         };
 
         // Act
-        var result = await client.CreateCachedContentAsync(cachedContent).ConfigureAwait(false);
+        var result = await client.CreateCachedContentAsync(cachedContent, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldNotBeNull();
@@ -53,12 +53,12 @@ public class CachingClient_Tests : TestBase
         // Arrange
         
          var client = CreateCachingClient();
-        var cachedItems = await client.ListCachedContentsAsync().ConfigureAwait(false);
+        var cachedItems = await client.ListCachedContentsAsync(cancellationToken: TestContext.Current.CancellationToken);
         var testItem = cachedItems.CachedContents.FirstOrDefault();
         string cachedContentName = testItem.Name; // Replace with a valid test name
 
         // Act
-        var result = await client.GetCachedContentAsync(cachedContentName).ConfigureAwait(false);
+        var result = await client.GetCachedContentAsync(cachedContentName, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldNotBeNull();
@@ -80,7 +80,7 @@ public class CachingClient_Tests : TestBase
         const int pageSize = 5;
 
         // Act
-        var result = await client.ListCachedContentsAsync(pageSize).ConfigureAwait(false);
+        var result = await client.ListCachedContentsAsync(pageSize, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldNotBeNull();
@@ -103,7 +103,7 @@ public class CachingClient_Tests : TestBase
     {
         // Arrange
          var client = CreateCachingClient();
-        var cachedItems = await client.ListCachedContentsAsync().ConfigureAwait(false);
+        var cachedItems = await client.ListCachedContentsAsync(cancellationToken: TestContext.Current.CancellationToken);
         var testItem = cachedItems.CachedContents.FirstOrDefault();
         var updatedContent = new CachedContent
         {
@@ -114,7 +114,7 @@ public class CachingClient_Tests : TestBase
         const string updateMask = "ttl";
 
         // Act
-        var result = await client.UpdateCachedContentAsync(testItem.Name,updatedContent, updateMask).ConfigureAwait(false);
+        var result = await client.UpdateCachedContentAsync(testItem.Name,updatedContent, updateMask, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldNotBeNull();
@@ -130,13 +130,13 @@ public class CachingClient_Tests : TestBase
     {
         // Arrange
          var client = CreateCachingClient();
-        var cachedItems = await client.ListCachedContentsAsync().ConfigureAwait(false);
+        var cachedItems = await client.ListCachedContentsAsync(cancellationToken: TestContext.Current.CancellationToken);
         var testItem = cachedItems.CachedContents.FirstOrDefault();
 
         string cachedContentName = testItem.Name; // Replace with valid test data
 
         // Act and Assert
-        await Should.NotThrowAsync(async () => await client.DeleteCachedContentAsync(cachedContentName).ConfigureAwait(false)).ConfigureAwait(false);
+        await Should.NotThrowAsync(async () => await client.DeleteCachedContentAsync(cachedContentName, cancellationToken: TestContext.Current.CancellationToken));
 
         Console.WriteLine($"Cached Content Deleted: {cachedContentName}");
     }
@@ -149,7 +149,7 @@ public class CachingClient_Tests : TestBase
         const string invalidName = "cachedContents/invalid-id";
 
         // Act
-        var exception = await Should.ThrowAsync<Exception>(async () => await client.GetCachedContentAsync(invalidName).ConfigureAwait(false)).ConfigureAwait(false);
+        var exception = await Should.ThrowAsync<Exception>(async () => await client.GetCachedContentAsync(invalidName, cancellationToken: TestContext.Current.CancellationToken));
 
         // Assert
         exception.Message.ShouldNotBeNullOrEmpty();
@@ -165,7 +165,7 @@ public class CachingClient_Tests : TestBase
 
         // Act
         var exception =
-            await Should.ThrowAsync<Exception>(async () => await client.DeleteCachedContentAsync(invalidName).ConfigureAwait(false)).ConfigureAwait(false);
+            await Should.ThrowAsync<Exception>(async () => await client.DeleteCachedContentAsync(invalidName, cancellationToken: TestContext.Current.CancellationToken));
 
         // Assert
         exception.Message.ShouldNotBeNullOrEmpty();

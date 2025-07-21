@@ -93,9 +93,9 @@ public class VertexRagManager : BaseClient
                     .ConfigureAwait(false);
         }
 
-        if (longRunningOperation?.Done == true && longRunningOperation.Response != null && longRunningOperation.Response.ContainsKey("name"))
+        if (longRunningOperation?.Done == true && longRunningOperation.Response != null && longRunningOperation.Response.TryGetValue("name", out var nameValue))
         {
-            var nameJson = (JsonElement)longRunningOperation.Response["name"];
+            var nameJson = (JsonElement)nameValue;
             var name = nameJson.GetString();
             
             if (name == null)
@@ -285,7 +285,7 @@ public class VertexRagManager : BaseClient
         var longRunning =
             await RagCorpusClient.UpdateRagCorpusAsync(corpus.Name, corpus, cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
-        if (longRunning.Name != null)
+        if (longRunning?.Name != null)
         {
             longRunning = await AwaitForLongRunningOperation(longRunning.Name, cancellationToken: cancellationToken)
                 .ConfigureAwait(false);

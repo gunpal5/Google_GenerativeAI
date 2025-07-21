@@ -19,13 +19,13 @@ public class VertexAI_Tests:TestBase
         {
             var model = new VertexAIModel();
 
-            var response = await model.GenerateContentAsync("write a poem about the sun").ConfigureAwait(false);
+            var response = await model.GenerateContentAsync("write a poem about the sun");
 
             response.ShouldNotBeNull();
             var text = response.Text();
             text.ShouldNotBeNullOrWhiteSpace();
             Console.WriteLine(text);
-        }).ConfigureAwait(false);
+        });
     }
     
     
@@ -33,7 +33,7 @@ public class VertexAI_Tests:TestBase
     {
         var model = new GenerativeModel(new VertextPlatformAdapter(accessToken:"invalid_token",authenticator:new GoogleCloudAdcAuthenticator()), VertexAIModels.Gemini.Gemini15Flash);
 
-        var response = await model.GenerateContentAsync("write a poem about the sun").ConfigureAwait(false);
+        var response = await model.GenerateContentAsync("write a poem about the sun");
 
         response.ShouldNotBeNull();
         var text = response.Text();
@@ -48,13 +48,13 @@ public class VertexAI_Tests:TestBase
 
         await Should.ThrowAsync<AuthenticationException>(async () =>
         {
-            var response = await model.GenerateContentAsync("write a poem about the sun").ConfigureAwait(false);
-        }).ConfigureAwait(false);
+            var response = await model.GenerateContentAsync("write a poem about the sun");
+        });
 
     }
     
     [RunnableInDebugOnly]
-    public async Task InitializeFromEnvironmentVariables()
+    public Task InitializeFromEnvironmentVariables()
     {
         var platform = new VertextPlatformAdapter();
         platform.Region.ShouldBe("test");
@@ -63,6 +63,7 @@ public class VertexAI_Tests:TestBase
         platform.Credentials.ApiKey.ShouldContain("test");
         platform.CredentialFile.ShouldContain("gcloud");
         
+        return Task.CompletedTask;
         // var model = new GenerativeModel(platform, VertexAIModels.Gemini.Gemini15Flash);
         //
         // var response = await model.GenerateContentAsync("write a poem about the sun");

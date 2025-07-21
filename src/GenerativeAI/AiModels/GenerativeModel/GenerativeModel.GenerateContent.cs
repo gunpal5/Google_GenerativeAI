@@ -242,35 +242,41 @@ public partial class GenerativeModel
     /// Counts tokens asynchronously based on the provided request.
     /// </summary>
     /// <param name="request">An instance of <see cref="CountTokensRequest"/> containing the details of contents or generation parameters for counting tokens.</param>
+    /// <param name="cancellationToken">Token to monitor for cancellation requests during the operation.</param>
     /// <returns>A task that represents the asynchronous operation, containing a <see cref="CountTokensResponse"/> with the token count details.</returns>
-    public async Task<CountTokensResponse> CountTokensAsync(CountTokensRequest request)
+    public async Task<CountTokensResponse> CountTokensAsync(CountTokensRequest request,
+        CancellationToken cancellationToken = default)
     {
-        return await base.CountTokensAsync(Model, request).ConfigureAwait(false);
+        return await base.CountTokensAsync(Model, request, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
-    /// Asynchronously counts the tokens in the given contents.
+    /// Asynchronously counts the tokens in the provided contents.
     /// </summary>
-    /// <param name="contents">A collection of <see cref="Content"/> objects representing the input for which tokens need to be counted.</param>
-    /// <returns>A task representing the asynchronous operation, containing the <see cref="CountTokensResponse"/> with the resulting token count.</returns>
-    public async Task<CountTokensResponse> CountTokensAsync(IEnumerable<Content> contents)
+    /// <param name="contents">A collection of <see cref="Content"/> objects for which the token count needs to be determined.</param>
+    /// <param name="cancellationToken">Token to monitor for cancellation requests.</param>
+    /// <returns>A task representing the asynchronous operation, containing the <see cref="CountTokensResponse"/> with the token count for the provided contents.</returns>
+    public async Task<CountTokensResponse> CountTokensAsync(IEnumerable<Content> contents,
+        CancellationToken cancellationToken = default)
     {
         var request = new CountTokensRequest { Contents = contents.ToList() };
 
-        return await base.CountTokensAsync(Model, request).ConfigureAwait(false);
+        return await base.CountTokensAsync(Model, request, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
     /// Asynchronously counts the tokens in the provided collection of parts.
     /// </summary>
     /// <param name="parts">A collection of <see cref="Part"/> objects representing the input data for token counting.</param>
+    /// <param name="cancellationToken">Token to monitor for cancellation requests.</param>
     /// <returns>A task representing the asynchronous operation, containing the <see cref="CountTokensResponse"/> with the token counting results.</returns>
-    public async Task<CountTokensResponse> CountTokensAsync(IEnumerable<Part> parts)
+    public async Task<CountTokensResponse> CountTokensAsync(IEnumerable<Part> parts,
+        CancellationToken cancellationToken = default)
     {
         var request = new CountTokensRequest
             { Contents = new List<Content> { RequestExtensions.FormatGenerateContentInput(parts) } };
 
-        return await base.CountTokensAsync(Model, request).ConfigureAwait(false);
+        return await base.CountTokensAsync(Model, request,cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -278,12 +284,12 @@ public partial class GenerativeModel
     /// </summary>
     /// <param name="generateContentRequest">An instance of <see cref="GenerateContentRequest"/> containing the input data for which the token count is calculated.</param>
     /// <returns>A task that represents the asynchronous operation, containing a <see cref="CountTokensResponse"/> with token count details.</returns>
-    public async Task<CountTokensResponse> CountTokensAsync(GenerateContentRequest generateContentRequest)
+    public async Task<CountTokensResponse> CountTokensAsync(GenerateContentRequest generateContentRequest, CancellationToken cancellationToken = default)
     {
        
         var request = new CountTokensRequest { GenerateContentRequest = new GenerateContentRequestForCountToken(Model.ToModelId(),generateContentRequest) };
 
-        return await base.CountTokensAsync(Model, request).ConfigureAwait(false);
+        return await base.CountTokensAsync(Model, request, cancellationToken).ConfigureAwait(false);
     }
 
     #endregion

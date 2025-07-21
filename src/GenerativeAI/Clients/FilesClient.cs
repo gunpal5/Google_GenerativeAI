@@ -62,25 +62,50 @@ public class FileClient : BaseClient
         //Upload File
         using var file = File.OpenRead(filePath);
         var httpMessage = new HttpRequestMessage(HttpMethod.Post, url);
-        var multipart = new MultipartContent("related");
-        multipart.Add(new StringContent(json, Encoding.UTF8, "application/json"));
-        multipart.Add(new ProgressStreamContent(file, progressCallback)
+        MultipartContent? multipart = null;
+        StringContent? stringContent = null;
+        ProgressStreamContent? progressContent = null;
+        
+        try
         {
-            Headers =
+            multipart = new MultipartContent("related");
+            stringContent = new StringContent(json, Encoding.UTF8, "application/json");
+            multipart.Add(stringContent);
+            
+            progressContent = new ProgressStreamContent(file, progressCallback)
             {
-                ContentType = new MediaTypeHeaderValue(MimeTypeMap.GetMimeType(filePath)),
-                ContentLength = file.Length
-            }
-        });
-        httpMessage.Content = multipart;
-        await _platform.AddAuthorizationAsync(httpMessage, false, cancellationToken).ConfigureAwait(false);
-        var response = await HttpClient.SendAsync(httpMessage,cancellationToken).ConfigureAwait(false);
-        await CheckAndHandleErrors(response, url).ConfigureAwait(false);
+                Headers =
+                {
+                    ContentType = new MediaTypeHeaderValue(MimeTypeMap.GetMimeType(filePath)),
+                    ContentLength = file.Length
+                }
+            };
+            multipart.Add(progressContent);
+            
+            httpMessage.Content = multipart;
+            // After setting content, ownership is transferred to httpMessage
+            multipart = null;
+            stringContent = null;
+            progressContent = null;
+            
+            await _platform.AddAuthorizationAsync(httpMessage, false, cancellationToken).ConfigureAwait(false);
+            var response = await HttpClient.SendAsync(httpMessage, cancellationToken).ConfigureAwait(false);
+            await CheckAndHandleErrors(response, url).ConfigureAwait(false);
 
-        var fileResponse = await Deserialize<UploadFileResponse>(response).ConfigureAwait(false);
-        if (fileResponse?.File == null)
-            throw new InvalidOperationException("Failed to upload file. The server response did not contain file information.");
-        return fileResponse.File;
+            var fileResponse = await Deserialize<UploadFileResponse>(response).ConfigureAwait(false);
+            if (fileResponse?.File == null)
+                throw new InvalidOperationException("Failed to upload file. The server response did not contain file information.");
+            return fileResponse.File;
+        }
+        catch
+        {
+            // Dispose only if ownership was not transferred
+            stringContent?.Dispose();
+            progressContent?.Dispose();
+            multipart?.Dispose();
+            httpMessage.Dispose();
+            throw;
+        }
     }
 
     /// <summary>
@@ -126,29 +151,51 @@ public class FileClient : BaseClient
             throw new InvalidOperationException($"Could not get type info for {request.GetType()}");
         var json = JsonSerializer.Serialize(request, typeInfo);
         //Upload File
-
-        using var httpMessage = new HttpRequestMessage(HttpMethod.Post, url);
-        using var multipart = new MultipartContent("related");
-        using var content2 = new StringContent(json, Encoding.UTF8, "application/json");
-        multipart.Add(content2);
-        using var content = new ProgressStreamContent(stream, progressCallback)
+        var httpMessage = new HttpRequestMessage(HttpMethod.Post, url);
+        MultipartContent? multipart = null;
+        StringContent? stringContent = null;
+        ProgressStreamContent? progressContent = null;
+        
+        try
         {
-            Headers =
+            multipart = new MultipartContent("related");
+            stringContent = new StringContent(json, Encoding.UTF8, "application/json");
+            multipart.Add(stringContent);
+            
+            progressContent = new ProgressStreamContent(stream, progressCallback)
             {
-                ContentType = new MediaTypeHeaderValue(mimeType),
-                ContentLength = stream.Length
-            }
-        };
-        multipart.Add(content);
-        httpMessage.Content = multipart;
-        await _platform.AddAuthorizationAsync(httpMessage, false, cancellationToken).ConfigureAwait(false);
-        var response = await HttpClient.SendAsync(httpMessage, cancellationToken).ConfigureAwait(false);
-        await CheckAndHandleErrors(response, url).ConfigureAwait(false);
+                Headers =
+                {
+                    ContentType = new MediaTypeHeaderValue(mimeType),
+                    ContentLength = stream.Length
+                }
+            };
+            multipart.Add(progressContent);
+            
+            httpMessage.Content = multipart;
+            // After setting content, ownership is transferred to httpMessage
+            multipart = null;
+            stringContent = null;
+            progressContent = null;
+            
+            await _platform.AddAuthorizationAsync(httpMessage, false, cancellationToken).ConfigureAwait(false);
+            var response = await HttpClient.SendAsync(httpMessage, cancellationToken).ConfigureAwait(false);
+            await CheckAndHandleErrors(response, url).ConfigureAwait(false);
 
-        var fileResponse = await Deserialize<UploadFileResponse>(response).ConfigureAwait(false);
-        if (fileResponse?.File == null)
-            throw new InvalidOperationException("Failed to upload file. The server response did not contain file information.");
-        return fileResponse.File;
+            var fileResponse = await Deserialize<UploadFileResponse>(response).ConfigureAwait(false);
+            if (fileResponse?.File == null)
+                throw new InvalidOperationException("Failed to upload file. The server response did not contain file information.");
+            return fileResponse.File;
+        }
+        catch
+        {
+            // Dispose only if ownership was not transferred
+            stringContent?.Dispose();
+            progressContent?.Dispose();
+            multipart?.Dispose();
+            httpMessage.Dispose();
+            throw;
+        }
     }
 
     private void ValidateStream(Stream stream, string mimeType)
@@ -176,7 +223,7 @@ public class FileClient : BaseClient
     /// <exception cref="NotSupportedException">
     /// Thrown when the provided MIME type is not recognized as a supported type.
     /// </exception>
-    private void ValidateMimeType(string mimeType)
+    private static void ValidateMimeType(string mimeType)
     {
         if (mimeType == null)
         {
@@ -208,13 +255,14 @@ public class FileClient : BaseClient
     }
 
     /// <summary>
-    /// Lists the metadata for <see cref="RemoteFile"/>s owned by the requesting project.
+    /// Asynchronously retrieves a list of metadata for <see cref="RemoteFile"/>s owned by the requesting project.
     /// </summary>
-    /// <param name="pageSize">Maximum number of <see cref="RemoteFile"/>s to return per page. If unspecified, defaults to 10. Maximum <paramref name="pageSize"/> is 100.</param>
-    /// <param name="pageToken">A page token from a previous <see cref="ListFilesAsync"/> call.</param>
-    /// <returns>A list of <see cref="RemoteFile"/>s.</returns>
-    /// <seealso href="https://ai.google.dev/api/files#method:-files.list">See Official API Documentation</seealso>
-    public async Task<ListFilesResponse> ListFilesAsync(int? pageSize = null, string? pageToken = null)
+    /// <param name="pageSize">The maximum number of <see cref="RemoteFile"/>s to return per request. Defaults to 10 if not specified, with a maximum limit of 100.</param>
+    /// <param name="pageToken">An optional token for retrieving the next page of <see cref="RemoteFile"/>s from a previous call.</param>
+    /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+    /// <returns>A task that represents the asynchronous operation. The result contains a <see cref="ListFilesResponse"/> object with the list of <see cref="RemoteFile"/>s and associated metadata.</returns>
+    public async Task<ListFilesResponse> ListFilesAsync(int? pageSize = null, string? pageToken = null,
+        CancellationToken cancellationToken = default)
     {
         var queryParams = new List<string>();
 
@@ -231,20 +279,21 @@ public class FileClient : BaseClient
         var queryString = queryParams.Count > 0 ? "?" + string.Join("&", queryParams) : string.Empty;
         var url = $"{_platform.GetBaseUrl()}/files{queryString}";
 
-        return await GetAsync<ListFilesResponse>(url).ConfigureAwait(false);
+        return await GetAsync<ListFilesResponse>(url, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
-    /// Deletes the <see cref="RemoteFile"/>.
+    /// Deletes a remote file by its name asynchronously.
     /// </summary>
-    /// <param name="name">The name of the <see cref="RemoteFile"/> to delete.</param>
-    /// <seealso href="https://ai.google.dev/api/files#method:-files.delete">See Official API Documentation</seealso>
-    public async Task DeleteFileAsync(string name)
+    /// <param name="name">The name of the remote file to be deleted.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>A task that represents the asynchronous delete operation.</returns>
+    public async Task DeleteFileAsync(string name, CancellationToken cancellationToken = default)
     {
         var baseUrl = _platform.GetBaseUrl();
 
         var url = $"{baseUrl}/{name.ToFileId()}";
-        await DeleteAsync(url).ConfigureAwait(false);
+        await DeleteAsync(url,cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>

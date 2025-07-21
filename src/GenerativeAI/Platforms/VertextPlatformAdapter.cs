@@ -83,7 +83,7 @@ public class VertextPlatformAdapter : IPlatformAdapter
         this.Region = region;
         this.ApiVersion = apiVersion;
         if (authenticator == null)
-            throw new Exception("Authenticator is required for Vertex AI.");
+            throw new ArgumentNullException(nameof(authenticator), "Authenticator is required for Vertex AI.");
         this.Authenticator = authenticator;
     }
 
@@ -135,7 +135,7 @@ public class VertextPlatformAdapter : IPlatformAdapter
         {
             var configuration = GetCredentialsFromFile(credentialsFile);
             if (configuration == null)
-                throw new Exception("No configuration found for Vertex AI.");
+                throw new InvalidOperationException("No configuration found for Vertex AI.");
             projectId = configuration.ProjectId;
             this.ProjectId = projectId;
             this.CredentialFile = credentialsFile;
@@ -144,7 +144,7 @@ public class VertextPlatformAdapter : IPlatformAdapter
         if (expressMode == true)
         {
             if (string.IsNullOrEmpty(apiKey))
-                throw new Exception("API Key is required for Vertex AI Express.");
+                throw new ArgumentException("API Key is required for Vertex AI Express.", nameof(apiKey));
         }
 
         if (authenticator == null)
@@ -166,7 +166,7 @@ public class VertextPlatformAdapter : IPlatformAdapter
     /// </summary>
     /// <param name="credentialsFile">Path to the credentials file.</param>
     /// <returns>A CredentialConfiguration object if successful, otherwise null.</returns>
-    private CredentialConfiguration? GetCredentialsFromFile(string? credentialsFile)
+    private static CredentialConfiguration? GetCredentialsFromFile(string? credentialsFile)
     {
         if (string.IsNullOrEmpty(credentialsFile))
             return null;
@@ -184,6 +184,13 @@ public class VertextPlatformAdapter : IPlatformAdapter
         }
 
         return credentials;
+    }
+
+  
+    /// <inheritdoc/>
+    public string GetApiVersion()
+    {
+        return this.ApiVersion;
     }
 
     /// <summary>
@@ -249,7 +256,7 @@ public class VertextPlatformAdapter : IPlatformAdapter
     public async Task ValidateCredentialsAsync(CancellationToken cancellationToken = default)
     {
         if (this.Credentials == null)
-            throw new Exception("Credentials are required for Vertex AI.");
+            throw new InvalidOperationException("Credentials are required for Vertex AI.");
         if (ValidateAccessToken && this.Credentials.AuthToken != null &&
             !this.Credentials.AuthToken.ExpiryTime.HasValue)
         {
@@ -372,14 +379,6 @@ public class VertextPlatformAdapter : IPlatformAdapter
         return $"{GetBaseUrl()}/{modelId.ToTunedModelId()}:{task}";
     }
 
-    /// <summary>
-    /// Retrieves the current API version being used.
-    /// </summary>
-    /// <returns>The API version as a string.</returns>
-    public string GetApiVersion()
-    {
-        return this.ApiVersion;
-    }
 
     /// <summary>
     /// Retrieves the API version specifically for file operations.

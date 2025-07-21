@@ -233,7 +233,7 @@ public class QuickTool_Tests : TestBase
             
         model.AddFunctionTool(tool);
 
-        var result = await model.GenerateContentAsync("How's Amit Rana is doing in Senior Grade? in enrollment year 01-01-2024 to 01-01-2025").ConfigureAwait(false);
+        var result = await model.GenerateContentAsync("How's Amit Rana is doing in Senior Grade? in enrollment year 01-01-2024 to 01-01-2025");
         
         result.Text().ShouldContain("Amit Rana",Case.Insensitive);
         Console.WriteLine(result.Text());

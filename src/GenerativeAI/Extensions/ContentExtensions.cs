@@ -199,11 +199,11 @@ public static class ContentExtensions
     {
         var jsonBlocks = ExtractJsonBlocks(content);
 
-        if (jsonBlocks.Any())
+        if (jsonBlocks.Count > 0)
         {
             foreach (var block in jsonBlocks)
             {
-                return block.ToObject<T?>(options);
+                return block.ToObject<T>(options);
             }
         }
 

@@ -18,7 +18,6 @@ public class GoogleServiceAccountAuthenticator : BaseAuthenticator
     ];
 
     private string _clientFile = "client_secret.json";
-    private string _tokenFile = "token.json";
     private string _certificateFile = "key.p12";
     private string _certificatePassphrase = null!;
 
@@ -33,15 +32,24 @@ public class GoogleServiceAccountAuthenticator : BaseAuthenticator
     public GoogleServiceAccountAuthenticator(string serviceAccountEmail, string? certificate = null,
         string? passphrase = null)
     {
-        var x509Certificate = new X509Certificate2(
-            certificate ?? _certificateFile,
-            passphrase ?? _certificatePassphrase,
-            X509KeyStorageFlags.Exportable);
-        _credential = new ServiceAccountCredential(
-            new ServiceAccountCredential.Initializer(serviceAccountEmail)
-            {
-                Scopes = _scopes
-            }.FromCertificate(x509Certificate));
+        X509Certificate2? x509Certificate = null;
+        try
+        {
+            x509Certificate = new X509Certificate2(
+                certificate ?? _certificateFile,
+                passphrase ?? _certificatePassphrase,
+                X509KeyStorageFlags.Exportable);
+            _credential = new ServiceAccountCredential(
+                new ServiceAccountCredential.Initializer(serviceAccountEmail)
+                {
+                    Scopes = _scopes
+                }.FromCertificate(x509Certificate));
+        }
+        catch
+        {
+            x509Certificate?.Dispose();
+            throw;
+        }
     }
     
     /// <summary>
@@ -54,13 +62,18 @@ public class GoogleServiceAccountAuthenticator : BaseAuthenticator
         _credential.Scopes = _scopes;
     }
 
+    /// <summary>
+    /// Initializes a new instance of the GoogleServiceAccountAuthenticator class using a stream containing service account data.
+    /// </summary>
+    /// <param name="stream">Stream containing the service account JSON data.</param>
     public GoogleServiceAccountAuthenticator(Stream stream)
     {
         _credential = ServiceAccountCredential.FromServiceAccountData(stream);
         _credential.Scopes = _scopes;
     }
 
-    public override async Task<AuthTokens> GetAccessTokenAsync(CancellationToken cancellationToken = default)
+    /// <inheritdoc/>
+    public override async Task<AuthTokens?> GetAccessTokenAsync(CancellationToken cancellationToken = default)
     {
         var token = await _credential.GetAccessTokenForRequestAsync(cancellationToken:cancellationToken).ConfigureAwait(false);
 
@@ -72,7 +85,8 @@ public class GoogleServiceAccountAuthenticator : BaseAuthenticator
         return tokenInfo;
     }
 
-    public override async Task<AuthTokens> RefreshAccessTokenAsync(AuthTokens token, CancellationToken cancellationToken = default)
+    /// <inheritdoc/>
+    public override async Task<AuthTokens?> RefreshAccessTokenAsync(AuthTokens token, CancellationToken cancellationToken = default)
     {
         return await GetAccessTokenAsync(cancellationToken:cancellationToken).ConfigureAwait(false);
     }

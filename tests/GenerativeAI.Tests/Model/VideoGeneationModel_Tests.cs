@@ -1,4 +1,4 @@
-﻿using GenerativeAI.Authenticators;
+using GenerativeAI.Authenticators;
 using GenerativeAI.Core;
 using GenerativeAI.Types;
 using GenerativeAI.Types.RagEngine;
@@ -34,7 +34,7 @@ public class VideoGeneationModel_Tests:TestBase
         };
         var operation = await model.GenerateVideosAsync( request);
         
-        var response = await model.AwaitForLongRunningOperation(operation.Name,(int) TimeSpan.FromMinutes(10).TotalMilliseconds).ConfigureAwait(false);
+        var response = await model.AwaitForLongRunningOperation(operation.Name,(int) TimeSpan.FromMinutes(10).TotalMilliseconds);
 
         if (response.Done == true)
         {

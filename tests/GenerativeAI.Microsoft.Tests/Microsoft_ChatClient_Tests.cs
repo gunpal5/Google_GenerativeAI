@@ -1,4 +1,4 @@
-ï»¿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -92,8 +92,8 @@ public class Microsoft_ChatClient_Tests : TestBase
         // Act & Assert
         await Should.ThrowAsync<ArgumentNullException>(async () =>
         {
-            await client.GetResponseAsync((string)null!).ConfigureAwait(false);
-        }).ConfigureAwait(false);
+            await client.GetResponseAsync((string)null!);
+        });
         Console.WriteLine("CompleteAsync threw ArgumentNullException as expected when chatMessages was null.");
     }
 
@@ -111,12 +111,12 @@ public class Microsoft_ChatClient_Tests : TestBase
             new ChatMessage(ChatRole.User, "What's wrong with hitler?")
         };
 
-        // Weâ€™ll stub out the modelâ€™s behavior by providing a minimal response
+        // We’ll stub out the model’s behavior by providing a minimal response
         // This would normally be mocked more extensively.
         // For demonstration, we assume GenerateContentAsync(...) works.
 
         // Act
-        var result = await client.GetResponseAsync(messages).ConfigureAwait(false);
+        var result = await client.GetResponseAsync(messages);
 
         // Assert
         result.ShouldNotBeNull();
@@ -141,12 +141,12 @@ public class Microsoft_ChatClient_Tests : TestBase
         // Act & Assert
         await Should.ThrowAsync<ArgumentNullException>(async () =>
         {
-            await foreach (var _ in client.GetStreamingResponseAsync((string)null!).ConfigureAwait(false))
+            await foreach (var _ in client.GetStreamingResponseAsync((string)null!))
             {
                 // Should never get here
                 Console.WriteLine(_.Text ?? "null");
             }
-        }).ConfigureAwait(false);
+        });
         Console.WriteLine("CompleteStreamingAsync threw ArgumentNullException as expected when chatMessages was null.");
     }
 
@@ -164,7 +164,7 @@ public class Microsoft_ChatClient_Tests : TestBase
 
         // Act
         var updates = new List<ChatResponseUpdate>();
-        await foreach (var update in client.GetStreamingResponseAsync(messages).ConfigureAwait(false))
+        await foreach (var update in client.GetStreamingResponseAsync(messages))
         {
             updates.Add(update);
             Console.WriteLine(update.Text ?? "null");

@@ -84,7 +84,7 @@ public class TimestampJsonConverter: JsonConverter<Timestamp>
         var timestampString = reader.GetString();
         if (timestampString == null)
             throw new JsonException("Timestamp string cannot be null");
-        return Timestamp.FromDateTime(DateTime.Parse(timestampString));
+        return Timestamp.FromDateTime(DateTime.Parse(timestampString, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.RoundtripKind));
     }
 
     /// <inheritdoc/>

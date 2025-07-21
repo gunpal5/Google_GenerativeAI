@@ -7,7 +7,9 @@ namespace GenerativeAI.Types;
 /// </summary>
 /// <seealso href="https://ai.google.dev/api/semantic-retrieval/corpora#Operator">See Official API Documentation</seealso>
 [JsonConverter(typeof(JsonStringEnumConverter<Operator>))]
+#pragma warning disable CA1716 // Identifiers should not match keywords
 public enum Operator
+#pragma warning restore CA1716 // Identifiers should not match keywords
 {
     /// <summary>
     /// The default value. This value is unused.

@@ -1,4 +1,4 @@
-﻿using GenerativeAI.Authenticators;
+using GenerativeAI.Authenticators;
 using GenerativeAI.Core;
 using GenerativeAI.Tests;
 using Shouldly;
@@ -18,7 +18,7 @@ public class ServiceAccount_Tests:TestBase
     { 
         Assert.SkipWhen(SkipVertexAITests,VertextTestSkipMesaage);
         var authenticator = CreateAuthenticatorWithKey();
-        var token = await authenticator.GetAccessTokenAsync().ConfigureAwait(false);
+        var token = await authenticator.GetAccessTokenAsync();
 
         token.AccessToken.ShouldNotBeNull();
     }
@@ -40,7 +40,7 @@ public class ServiceAccount_Tests:TestBase
         var authenticator = CreateAuthenticatorWithKey();
         
         var vertexAi = new VertexAIModel(authenticator:authenticator);
-        var response = await vertexAi.GenerateContentAsync("write a poem about the sun").ConfigureAwait(false);
+        var response = await vertexAi.GenerateContentAsync("write a poem about the sun", cancellationToken: TestContext.Current.CancellationToken);
         response.ShouldNotBeNull();
         var text = response.Text();
         text.ShouldNotBeNullOrWhiteSpace();
@@ -54,7 +54,7 @@ public class ServiceAccount_Tests:TestBase
         var authenticator = CreateAuthenticatorWithJsonFile();
         
         var vertexAi = new VertexAIModel(authenticator:authenticator);
-        var response = await vertexAi.GenerateContentAsync("write a poem about the sun").ConfigureAwait(false);
+        var response = await vertexAi.GenerateContentAsync("write a poem about the sun", cancellationToken: TestContext.Current.CancellationToken);
         response.ShouldNotBeNull();
         var text = response.Text();
         text.ShouldNotBeNullOrWhiteSpace();

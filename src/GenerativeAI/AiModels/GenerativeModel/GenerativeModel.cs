@@ -39,7 +39,7 @@ namespace GenerativeAI
         /// on content generation. This property is used to enforce specified safety rules
         /// to ensure the generated content aligns with predetermined guidelines or restrictions.
         /// </summary>
-        public List<SafetySetting>? SafetySettings { get; set; } = null;
+        public List<SafetySetting>? SafetySettings { get; set; }
 
         /// <summary>
         /// Gets or sets preloaded or previously generated content associated with the generative model.

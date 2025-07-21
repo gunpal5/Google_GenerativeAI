@@ -30,7 +30,17 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
     /// Gets or sets the API version used for constructing API request URLs in the integration
     /// with the Google AI platform. This property must be set to a valid version string defined in <see cref="ApiVersions"/>.
     /// </summary>
-    public string ApiVersion { get; set; } = ApiVersions.v1Beta;
+    private string _apiVersion = ApiVersions.v1Beta;
+    
+    /// <summary>
+    /// Gets or sets the API version used for constructing API request URLs in the integration
+    /// with the Google AI platform. This property must be set to a valid version string defined in <see cref="ApiVersions"/>.
+    /// </summary>
+    public string ApiVersion 
+    { 
+        get => string.IsNullOrEmpty(_apiVersion) ? ApiVersions.v1Beta : _apiVersion;
+        set => _apiVersion = value;
+    }
 
     /// <summary>
     /// Gets or sets the authenticator used for handling Google API authentication.
@@ -48,7 +58,7 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
     {
         googleApiKey = googleApiKey ?? EnvironmentVariables.GOOGLE_API_KEY;
         if(string.IsNullOrEmpty(googleApiKey))
-            throw new Exception("API Key is required for Google Gemini AI.");
+            throw new ArgumentException("API Key is required for Google Gemini AI.", nameof(googleApiKey));
         Credentials = new GoogleAICredentials(googleApiKey!);
         this.ApiVersion = apiVersion;
         this.Authenticator = authenticator;
@@ -127,7 +137,7 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
         else
         {
             if (this.Credentials == null)
-                throw new Exception("Credentials are required for Google Gemini AI.");
+                throw new InvalidOperationException("Credentials are required for Google Gemini AI.");
             if (ValidateAccessToken && this.Credentials.AuthToken != null &&
                 !this.Credentials.AuthToken.ExpiryTime.HasValue)
             {
@@ -170,6 +180,14 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
     }
 
     /// <inheritdoc/>
+    public string GetApiVersion()
+    {
+        if(string.IsNullOrEmpty(ApiVersion))
+            ApiVersion = ApiVersions.v1Beta;
+        return ApiVersion;
+    }
+
+    /// <inheritdoc/>
     public async Task AuthorizeAsync(CancellationToken cancellationToken = default)
     {
         //Authorize Through ADC
@@ -201,7 +219,7 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
     public string GetBaseUrl(bool appendVesion = true, bool appendPublisher = true)
     {
         if (appendVesion)
-            return $"{BaseUrl}/{GetApiVersion()}";
+            return $"{BaseUrl}/{ApiVersion}";
         return BaseUrl;
     }
     /// <inheritdoc/>
@@ -222,13 +240,6 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
         return $"{GetBaseUrl()}/{modelId.ToTunedModelId()}:{task}";
     }
 
-    /// <inheritdoc/>
-    public string GetApiVersion()
-    {
-        if(string.IsNullOrEmpty(ApiVersion))
-            ApiVersion = ApiVersions.v1Beta;
-        return ApiVersion;
-    }
 
    
     /// <inheritdoc/>

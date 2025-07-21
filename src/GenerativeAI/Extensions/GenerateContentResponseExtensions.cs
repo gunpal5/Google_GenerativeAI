@@ -88,7 +88,7 @@ public static class GenerateContentResponseExtensions
         if (part == null || part.FunctionCall == null)
             return null;
 
-        var funcs = candidate.Content.Parts.Where(p => p.FunctionCall != null).Select(p => p.FunctionCall).ToList();
+        var funcs = candidate.Content.Parts.Where(p => p.FunctionCall != null).Select(p => p.FunctionCall!).ToList();
         
         return funcs.Count>0 ? funcs : null;
     }

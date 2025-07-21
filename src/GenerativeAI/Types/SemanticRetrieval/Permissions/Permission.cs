@@ -17,7 +17,9 @@ namespace GenerativeAI.Types;
 /// </ul>
 /// <seealso href="https://ai.google.dev/api/semantic-retrieval/permissions#Permission">See Official API Documentation</seealso>
 /// </summary>
+#pragma warning disable CA1711 // Identifiers should not have incorrect suffix
 public class Permission
+#pragma warning restore CA1711 // Identifiers should not have incorrect suffix
 {
     /// <summary>
     /// Output only. Identifier. The permission name. A unique name will be generated on create.

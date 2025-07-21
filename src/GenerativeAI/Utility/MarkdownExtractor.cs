@@ -10,7 +10,7 @@ namespace GenerativeAI.Utility;
 /// with specified programming languages and indented code blocks. It also supports
 /// filtering by programming language.
 /// </summary>
-public class MarkdownExtractor
+public static class MarkdownExtractor
 {
     /// <summary>
     /// Extracts code blocks from a given markdown text, optionally filtering by programming language.
@@ -41,7 +41,9 @@ public class MarkdownExtractor
             Regex.Matches(markdown, @"```([a-zA-Z0-9+#-]*)\n(.*?)\n```", RegexOptions.Singleline);
         foreach (Match codeMatch in codeMatches)
         {
-            string language = codeMatch.Groups[1].Value.Trim().ToLower(); // Group 1: Language
+#pragma warning disable CA1308 // Normalize strings to uppercase
+            string language = codeMatch.Groups[1].Value.Trim().ToLowerInvariant(); // Group 1: Language
+#pragma warning restore CA1308 // Normalize strings to uppercase
             string code = codeMatch.Groups[2].Value.Trim(); // Group 2: Code
 
             if (LanguageMatches(language, languageFilter))
@@ -302,7 +304,7 @@ public class MarkdownExtractor
                 return doc != null; // If parsing is successful, it's valid JSON
             }
         }
-        catch
+        catch (JsonException)
         {
             return false; // If an exception is thrown, it's not valid JSON
         }

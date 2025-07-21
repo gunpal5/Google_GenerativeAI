@@ -20,7 +20,7 @@ public class MEAITests
         var tools = new Tools([GetCurrentWeatherAsync]);
         chatOptions.Tools = tools.AsMeaiTools();
         var message = new ChatMessage(ChatRole.User, "What is the weather in New York in celsius?");
-        var response = await chatClient.GetResponseAsync(message,options:chatOptions).ConfigureAwait(false);
+        var response = await chatClient.GetResponseAsync(message,options:chatOptions);
 
         Console.WriteLine(response.Text);
         response.Text.Contains("New York", StringComparison.InvariantCultureIgnoreCase);
@@ -35,7 +35,7 @@ public class MEAITests
         chatOptions.Tools = [new QuickTool(GetCurrentWeatherAsync).AsMeaiTool()];
         
         var message = new ChatMessage(ChatRole.User, "What is the weather in New York in celsius?");
-        var response = await chatClient.GetResponseAsync(message,options:chatOptions).ConfigureAwait(false);
+        var response = await chatClient.GetResponseAsync(message,options:chatOptions);
         Console.WriteLine(response.Text);
     }
     
@@ -49,7 +49,7 @@ public class MEAITests
         chatOptions.Tools = tools.AsMeaiTools();
        
         var message = new ChatMessage(ChatRole.User, "what is written on page 96 in the book 'damdamadum'");
-        var response = await chatClient.GetResponseAsync(message,options:chatOptions).ConfigureAwait(false);
+        var response = await chatClient.GetResponseAsync(message,options:chatOptions);
 
         response.Text.ShouldContain("damdamadum",Case.Insensitive);
     }
