@@ -37,15 +37,12 @@ public class Duration
     /// Implicitly converts a <see cref="Duration"/> object to a <see cref="TimeSpan"/> object.
     /// </summary>
     /// <param name="duration">The <see cref="Duration"/> object to convert.</param>
+    #pragma warning disable CA1062
     public static implicit operator TimeSpan(Duration duration)
     {
-#if NET6_0_OR_GREATER
-        ArgumentNullException.ThrowIfNull(duration);
-#else
-        if (duration == null) throw new ArgumentNullException(nameof(duration));
-#endif
         return duration.ToTimeSpan();
     }
+    #pragma warning restore CA1062
 
     /// <summary>
     /// Converts this <see cref="Duration"/> object to a <see cref="TimeSpan"/> object.

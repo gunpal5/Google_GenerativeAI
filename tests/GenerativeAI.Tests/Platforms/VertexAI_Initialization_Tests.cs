@@ -69,7 +69,7 @@ namespace GenerativeAI.Tests.Platforms
             adapter.Credentials.AuthToken.AccessToken.ShouldBe(testAccessToken);
             adapter.ExpressMode.ShouldBe(expressMode);
             adapter.Credentials.ApiKey.ShouldBe(testApiKey);
-            adapter.ApiVersion.ShouldBe(testApiVersion);
+            adapter.DefaultApiVersion.ShouldBe(testApiVersion);
             
             // adapter.Authenticator.ShouldBeSameAs(mockAuthenticator);
             //

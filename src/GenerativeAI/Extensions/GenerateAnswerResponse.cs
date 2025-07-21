@@ -16,8 +16,12 @@ public static class GenerateAnswerResponseExtension
     /// <exception cref="ArgumentNullException">Thrown when the response or answer is null.</exception>
     public static string GetAnswer(this GenerateAnswerResponse? response)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(response);
+#else
         if(response==null)
             throw new ArgumentNullException(nameof(response));
+#endif
         if(response.Answer == null)
             throw new InvalidOperationException("Response answer cannot be null.");
         if(response.Answer.Content == null)

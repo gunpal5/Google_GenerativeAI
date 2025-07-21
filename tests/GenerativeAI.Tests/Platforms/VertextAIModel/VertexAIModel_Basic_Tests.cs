@@ -217,7 +217,7 @@ public class VertexAIModel_Basic_Tests : TestBase
         };
 
         // Act
-        var response = await model.CountTokensAsync(request);
+        var response = await model.CountTokensAsync(request, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         response.ShouldNotBeNull();
@@ -239,7 +239,7 @@ public class VertexAIModel_Basic_Tests : TestBase
         var contents = new List<Content> { content1, content2 };
 
         // Act
-        var response = await model.CountTokensAsync(contents);
+        var response = await model.CountTokensAsync(contents, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         response.ShouldNotBeNull();
@@ -269,7 +269,7 @@ public class VertexAIModel_Basic_Tests : TestBase
         };
 
         // Act
-        var response = await model.CountTokensAsync(parts);
+        var response = await model.CountTokensAsync(parts, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         response.ShouldNotBeNull();

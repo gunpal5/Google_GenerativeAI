@@ -4,6 +4,7 @@ using GenerativeAI.Tests;
 using GenerativeAI.Tools;
 using GenerativeAI.Types;
 using Shouldly;
+using Xunit;
 
 namespace GenerativeAI.IntegrationTests;
 
@@ -17,7 +18,7 @@ public class QuickTool_Tests : TestBase
     public async Task ShouldCreateQuickTool_Async()
     {
         var func =
-            (async ([Description("Student Name")] string studentName,
+            ( ([Description("Student Name")] string studentName,
                 [Description("Student Grade")] GradeLevel grade) =>
             {
                 return
@@ -33,7 +34,7 @@ public class QuickTool_Tests : TestBase
         {
             Name = "GetStudentRecordAsync",
             Args = args
-        });
+        }, cancellationToken: TestContext.Current.CancellationToken);
 
         (res.Response as JsonNode)["content"].GetValue<string>().ShouldContain("John");
     }
@@ -57,7 +58,7 @@ public class QuickTool_Tests : TestBase
         {
             Name = "GetStudentRecordAsync",
             Args = args
-        });
+        }, cancellationToken: TestContext.Current.CancellationToken);
         (res.Response as JsonNode)["content"].GetValue<string>().ShouldContain("John");
     }
 
@@ -83,7 +84,7 @@ public class QuickTool_Tests : TestBase
         {
             Name = "GetStudentRecordAsync",
             Args = args
-        });
+        }, cancellationToken: TestContext.Current.CancellationToken);
         invoked.ShouldBeTrue();
         (res.Response as JsonNode)["content"].GetValue<string>().ShouldBeEmpty();
     }
@@ -97,7 +98,7 @@ public class QuickTool_Tests : TestBase
         {
             var str =
                 $"{studentName} in {grade} grade is achieving remarkable scores in math and physics, showcasing outstanding progress.";
-            await Task.Delay(100);
+            await Task.Delay(100, cancellationToken: TestContext.Current.CancellationToken);
             invoked = true;
         });
 
@@ -110,7 +111,7 @@ public class QuickTool_Tests : TestBase
         {
             Name = "GetStudentRecordAsync",
             Args = args
-        });
+        }, cancellationToken: TestContext.Current.CancellationToken);
         invoked.ShouldBeTrue();
         (res.Response as JsonNode)["content"].GetValue<string>().ShouldBeEmpty();
 
@@ -131,9 +132,9 @@ public class QuickTool_Tests : TestBase
     [Fact]
     public async Task ShouldCreateQuickTool_ComplexDataTypes()
     {
-        var func = (async ([Description("Request to query student record")] QueryStudentRecordRequest query) =>
+        var func = (([Description("Request to query student record")] QueryStudentRecordRequest query) =>
         {
-            return new StudentRecord
+            return Task.FromResult(new StudentRecord
             {
                 StudentId = "12345",
                 FullName = "John Doe",
@@ -147,7 +148,7 @@ public class QuickTool_Tests : TestBase
                 },
                 EnrollmentDate = new DateTime(2023, 1, 10),
                 IsActive = true
-            };
+            });
         });
         
         
@@ -161,7 +162,7 @@ public class QuickTool_Tests : TestBase
         {
             Name = "GetStudentRecordAsync",
             Args = args
-        });
+        }, cancellationToken: TestContext.Current.CancellationToken);
 
         var content = res.Response as JsonNode;
         content = content["content"] as JsonObject;
@@ -206,9 +207,9 @@ public class QuickTool_Tests : TestBase
     {
         Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
         
-        var func = (async ([Description("Request to query student record")] QueryStudentRecordRequest query) =>
+        var func = (([Description("Request to query student record")] QueryStudentRecordRequest query) =>
         {
-            return new StudentRecord
+            return Task.FromResult(new StudentRecord
             {
                 StudentId = "12345",
                 FullName = query.FullName,
@@ -222,7 +223,7 @@ public class QuickTool_Tests : TestBase
                 },
                 EnrollmentDate = new DateTime(2023, 1, 10),
                 IsActive = true
-            };
+            });
         });
         
         var quickFt = new QuickTool(func, "GetStudentRecordAsync", "Return student record for the year");
@@ -233,7 +234,7 @@ public class QuickTool_Tests : TestBase
             
         model.AddFunctionTool(tool);
 
-        var result = await model.GenerateContentAsync("How's Amit Rana is doing in Senior Grade? in enrollment year 01-01-2024 to 01-01-2025");
+        var result = await model.GenerateContentAsync("How's Amit Rana is doing in Senior Grade? in enrollment year 01-01-2024 to 01-01-2025", cancellationToken: TestContext.Current.CancellationToken);
         
         result.Text().ShouldContain("Amit Rana",Case.Insensitive);
         Console.WriteLine(result.Text());

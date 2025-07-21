@@ -58,6 +58,9 @@ public class MultiModalLiveClient : IDisposable
 
     #region Properties
 
+    /// <summary>
+    /// Gets the WebSocket client used to communicate with the Gemini Multimodal Live API.
+    /// </summary>
     public IWebsocketClient? Client => _client;
 
     /// <summary>
@@ -129,7 +132,12 @@ public class MultiModalLiveClient : IDisposable
         bool inputAudioTranscriptionEnabled = false, bool outputAudioTranscriptionEnabled = false,
         ILogger? logger = null)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(platformAdapter);
+        _platformAdapter = platformAdapter;
+#else
         _platformAdapter = platformAdapter ?? throw new ArgumentNullException(nameof(platformAdapter));
+#endif
         ModelName = platformAdapter.GetMultiModalLiveModalName(modelName) ?? throw new InvalidOperationException($"Failed to get multimodal live model name for '{modelName}'");
         Config = config ?? new GenerationConfig()
         {
@@ -147,7 +155,7 @@ public class MultiModalLiveClient : IDisposable
     #endregion
 
     #region Events
-
+#pragma warning disable CA1003
     /// <summary>
     /// Event triggered when an audio chunk is received.
     /// </summary>
@@ -196,6 +204,7 @@ public class MultiModalLiveClient : IDisposable
     /// <summary>
     /// An event triggered when an output transcription is received from the system.
     /// </summary>
+    
     public event EventHandler<Transcription>? OutputTranscriptionReceived;
 
     /// <summary>
@@ -204,7 +213,9 @@ public class MultiModalLiveClient : IDisposable
     /// This is often used for graceful shutdown or when the server is no longer able to
     /// process requests on the current stream.
     /// </summary>
+
     public event EventHandler<LiveServerGoAway>? GoAwayReceived;
+
 
     /// <summary>
     /// Occurs when the server sends an update that allows the current session to be resumed.
@@ -212,7 +223,7 @@ public class MultiModalLiveClient : IDisposable
     /// an existing session without starting over.
     /// </summary>
     public event EventHandler<LiveServerSessionResumptionUpdate>? SessionResumableUpdateReceived; 
-
+#pragma warning restore CA1003
     #endregion
 
     #region Private Methods
@@ -267,10 +278,14 @@ public class MultiModalLiveClient : IDisposable
 
     private void ProcessTextChunk(BidiResponsePayload responsePayload)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(responsePayload);
+#else
         if (responsePayload == null)
         {
             throw new ArgumentNullException(nameof(responsePayload));
         }
+#endif
 
         if (responsePayload.ServerContent?.ModelTurn != null)
         {
@@ -366,14 +381,16 @@ public class MultiModalLiveClient : IDisposable
         {
             _logger?.LogError(ex, "Error decoding base64 audio data for connection {ConnectionId}", _connectionId);
         }
+#pragma warning disable CA1031 // Do not catch general exception types
         catch (Exception ex)
         {
             _logger?.LogError(ex, "Unexpected error processing audio blob for connection {ConnectionId}",
                 _connectionId);
         }
+#pragma warning restore CA1031
     }
 
-    private int ExtractSampleRate(string? mimeType)
+    private static int ExtractSampleRate(string? mimeType)
     {
 #if NET6_0_OR_GREATER
         if (mimeType != null && mimeType.Contains("rate=", StringComparison.Ordinal))
@@ -469,11 +486,13 @@ public class MultiModalLiveClient : IDisposable
                             if(functionResponse != null)
                                 functionResponses.Add(functionResponse);
                         }
+#pragma warning disable CA1031 // Do not catch general exception types
                         catch (Exception ex)
                         {
                             _logger?.LogError(ex, "Error calling function {FunctionName} for connection {ConnectionId}",
                                 call.Name, _connectionId);
                         }
+#pragma warning restore CA1031
                     }
                 }
             }
@@ -508,12 +527,16 @@ public class MultiModalLiveClient : IDisposable
         _logger?.LogConnectionAttempt();
 
         var url = _platformAdapter.GetMultiModalLiveUrl();
+#pragma warning disable CA2000 // Dispose objects before losing scope - object is disposed in Dispose method
         var socketClient = await GetClient().ConfigureAwait(false);
         _client = socketClient.WithReconnect(url); // Use the factory and an extension method for clarity
+#pragma warning restore CA2000
 
         _client.ReconnectionHappened.Subscribe(info =>
         {
+#pragma warning disable CA2254 // Template should be a static expression
             _logger?.LogInformation($"Reconnection happened: {info.Type}");
+#pragma warning restore CA2254
             // Consider re-sending setup or other state restoration here
         });
 
@@ -609,6 +632,7 @@ public class MultiModalLiveClient : IDisposable
                 //Use close status and description.
                 await _client.Stop(WebSocketCloseStatus.NormalClosure, "Client Disconnecting").ConfigureAwait(false);
             }
+#pragma warning disable CA1031 // Do not catch general exception types
             catch (Exception ex)
             {
                 _logger?.LogError(ex, "Error during disconnect for connection {ConnectionId}", _connectionId);
@@ -616,6 +640,7 @@ public class MultiModalLiveClient : IDisposable
 
                 // Don't re-throw; we're trying to disconnect
             }
+#pragma warning restore CA1031
             finally
             {
                 _client.Dispose();
@@ -626,21 +651,28 @@ public class MultiModalLiveClient : IDisposable
 
 
     /// <summary>
-    /// Sends a setup message to configure the multi-modal live client with the provided generation settings and tools.
+    /// Configures the multi-modal live client by sending setup details including generation settings, tools, and model configurations asynchronously.
     /// </summary>
+    /// <param name="setup">The setup configuration for the bidirectional generate content session.</param>
     /// <param name="cancellationToken">
-    /// A cancellation token that can be used to cancel the operation.
+    /// A cancellation token that may be used to cancel the asynchronous operation prior to its completion.
     /// </param>
     /// <returns>
-    /// A task representing the asynchronous operation.
+    /// A task that represents the asynchronous operation.
     /// </returns>
     public async Task SendSetupAsync(BidiGenerateContentSetup setup, CancellationToken cancellationToken = default)
     {
+#if NET6_0_OR_GREATER
         ArgumentNullException.ThrowIfNull(setup);
+#else
+        if (setup == null) throw new ArgumentNullException(nameof(setup));
+#endif
         if (string.IsNullOrEmpty(setup.Model))
             throw new ArgumentException("Model name cannot be null or empty.", nameof(setup));
 #if NET6_0_OR_GREATER
-        if(!setup.Model.Contains("/", StringComparison.Ordinal))
+#pragma warning disable CA1307 // Specify StringComparison for clarity
+        if(!setup.Model.Contains('/'))
+#pragma warning restore CA1307
 #else
         if(!setup.Model.Contains("/"))
 #endif
@@ -769,8 +801,12 @@ public class MultiModalLiveClient : IDisposable
 
     #region IDisposable
 
-    private bool _disposed = false;
+    private bool _disposed;
 
+    /// <summary>
+    /// Releases the unmanaged resources used by the MultiModalLiveClient and optionally releases the managed resources.
+    /// </summary>
+    /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
     protected virtual void Dispose(bool disposing)
     {
         if (!_disposed)
@@ -785,6 +821,9 @@ public class MultiModalLiveClient : IDisposable
         }
     }
 
+    /// <summary>
+    /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+    /// </summary>
     public void Dispose()
     {
         Dispose(true);

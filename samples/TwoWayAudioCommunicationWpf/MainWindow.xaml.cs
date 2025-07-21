@@ -65,8 +65,8 @@ public partial class MainWindow : FluentWindow, INotifyPropertyChanged
 
     private CancellationTokenSource? _cancellationTokenSource;
     private bool _isRecording = false;
-    private string _inputTranscript;
-    private string _outputTranscript;
+    private string _inputTranscript = string.Empty;
+    private string _outputTranscript = string.Empty;
 
     /// <summary>
     /// Gets or sets the collection of model responses displayed in the UI.

@@ -33,10 +33,10 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
     private string _apiVersion = ApiVersions.v1Beta;
     
     /// <summary>
-    /// Gets or sets the API version used for constructing API request URLs in the integration
+    /// Gets or sets the default API version used for constructing API request URLs in the integration
     /// with the Google AI platform. This property must be set to a valid version string defined in <see cref="ApiVersions"/>.
     /// </summary>
-    public string ApiVersion 
+    public string DefaultApiVersion 
     { 
         get => string.IsNullOrEmpty(_apiVersion) ? ApiVersions.v1Beta : _apiVersion;
         set => _apiVersion = value;
@@ -60,7 +60,7 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
         if(string.IsNullOrEmpty(googleApiKey))
             throw new ArgumentException("API Key is required for Google Gemini AI.", nameof(googleApiKey));
         Credentials = new GoogleAICredentials(googleApiKey!);
-        this.ApiVersion = apiVersion;
+        this.DefaultApiVersion = apiVersion;
         this.Authenticator = authenticator;
         if (!string.IsNullOrEmpty(accessToken))
             Credentials.AuthToken = new AuthTokens(accessToken!);
@@ -182,9 +182,9 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
     /// <inheritdoc/>
     public string GetApiVersion()
     {
-        if(string.IsNullOrEmpty(ApiVersion))
-            ApiVersion = ApiVersions.v1Beta;
-        return ApiVersion;
+        if(string.IsNullOrEmpty(DefaultApiVersion))
+            DefaultApiVersion = ApiVersions.v1Beta;
+        return DefaultApiVersion;
     }
 
     /// <inheritdoc/>
@@ -219,7 +219,7 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
     public string GetBaseUrl(bool appendVesion = true, bool appendPublisher = true)
     {
         if (appendVesion)
-            return $"{BaseUrl}/{ApiVersion}";
+            return $"{BaseUrl}/{DefaultApiVersion}";
         return BaseUrl;
     }
     /// <inheritdoc/>
@@ -245,7 +245,7 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
     /// <inheritdoc/>
     public string GetApiVersionForFile()
     {
-        return ApiVersion;
+        return DefaultApiVersion;
     }
 
   

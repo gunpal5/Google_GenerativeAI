@@ -35,10 +35,18 @@ public class GoogleServiceAccountAuthenticator : BaseAuthenticator
         X509Certificate2? x509Certificate = null;
         try
         {
+#pragma warning disable CA2000 // Certificate ownership is transferred to ServiceAccountCredential
+#if NET9_0_OR_GREATER
+#pragma warning disable SYSLIB0057 // X509Certificate2 constructor is obsolete
+#endif
             x509Certificate = new X509Certificate2(
                 certificate ?? _certificateFile,
                 passphrase ?? _certificatePassphrase,
                 X509KeyStorageFlags.Exportable);
+#if NET9_0_OR_GREATER
+#pragma warning restore SYSLIB0057
+#endif
+#pragma warning restore CA2000
             _credential = new ServiceAccountCredential(
                 new ServiceAccountCredential.Initializer(serviceAccountEmail)
                 {

@@ -5,6 +5,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace GenerativeAI.Web;
 
+/// <summary>
+/// Extension methods for configuring GenerativeAI services in dependency injection.
+/// </summary>
 public static class ServiceCollectionExtension
 {
     /// <summary>
@@ -14,7 +17,11 @@ public static class ServiceCollectionExtension
     /// <returns>The updated <see cref="IServiceCollection" /> for chaining additional calls.</returns>
     public static IServiceCollection AddGenerativeAI(this IServiceCollection services)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(services);
+#else
         if (services == null) throw new ArgumentNullException(nameof(services));
+#endif
 
         bool isVertex = !string.IsNullOrEmpty(EnvironmentVariables.GOOGLE_PROJECT_ID);
         services.AddOptions<GenerativeAIOptions>().Configure(s =>
@@ -42,8 +49,16 @@ public static class ServiceCollectionExtension
     public static IServiceCollection AddGenerativeAI(this IServiceCollection services,
         IConfiguration namedConfigurationSection)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(services);
+#else
         if (services == null) throw new ArgumentNullException(nameof(services));
+#endif
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(namedConfigurationSection);
+#else
         if (namedConfigurationSection == null) throw new ArgumentNullException(nameof(namedConfigurationSection));
+#endif
 
         services.Configure<GenerativeAIOptions>(namedConfigurationSection);
         services.AddGenerativeAI();
@@ -59,8 +74,16 @@ public static class ServiceCollectionExtension
     /// <returns>The updated <see cref="IServiceCollection" /> for chaining additional calls.</returns>
     public static IServiceCollection AddGenerativeAI(this IServiceCollection services, GenerativeAIOptions options)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(services);
+#else
         if (services == null) throw new ArgumentNullException(nameof(services));
+#endif
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(options);
+#else
         if (options == null) throw new ArgumentNullException(nameof(options));
+#endif
 
         services.AddOptions<GenerativeAIOptions>()
             .Configure(o =>
@@ -150,6 +173,11 @@ public static class ServiceCollectionExtension
         });
     }
     
+    /// <summary>
+    /// Configures GenerativeAI options for the service collection.
+    /// </summary>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="setupAction">The action to configure GenerativeAI options.</param>
     public static void ConfigureGenerativeAI(this IServiceCollection services, Action<GenerativeAIOptions> setupAction)
     {
         services.Configure(setupAction);
@@ -164,8 +192,16 @@ public static class ServiceCollectionExtension
     public static IServiceCollection AddGenerativeAI(this IServiceCollection services,
         Action<GenerativeAIOptions> setupAction)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(services);
+#else
         if (services == null) throw new ArgumentNullException(nameof(services));
+#endif
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(setupAction);
+#else
         if (setupAction == null) throw new ArgumentNullException(nameof(setupAction));
+#endif
 
         services.AddGenerativeAI();
         services.ConfigureGenerativeAI(setupAction);

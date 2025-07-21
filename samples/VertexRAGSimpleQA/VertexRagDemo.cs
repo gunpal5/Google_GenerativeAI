@@ -12,12 +12,12 @@ public class VertexRagDemo
 {
     private readonly VertexAI _vertexAi;
     private readonly VertexRagManager _ragManager;
-    private RagCorpus _corpus;
-    private GenerativeModel _model;
+    private RagCorpus? _corpus;
+    private GenerativeModel? _model;
     private readonly string _projectId;
     private readonly string _region;
     
-    private string _documentationUrl;
+    private string? _documentationUrl;
 
     public VertexRagDemo(string projectId, string region, string serviceAccountFilePath)
     {
@@ -70,7 +70,7 @@ public class VertexRagDemo
             Console.WriteLine($"Corpus '{newCorpus.Name}' created.");
             return newCorpus;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             var newCorpus = await _ragManager.CreateCorpusAsync(corpusName, corpusDescription);
             if (newCorpus == null)
@@ -98,7 +98,7 @@ public class VertexRagDemo
                 Console.WriteLine($"Uploading file {count}/{textList.Count} data...");
                 var tmp = Path.GetTempFileName() + ".html";
                 await File.WriteAllTextAsync(tmp, text,ct);
-                await _ragManager.UploadLocalFileAsync(_corpus.Name ?? throw new InvalidOperationException("Corpus name is null"), tmp,cancellationToken:ct);
+                await _ragManager.UploadLocalFileAsync(_corpus!.Name!, tmp,cancellationToken:ct);
             }catch(Exception ex)
             {
                 Console.WriteLine($"Error importing file {count}/{textList.Count}: {ex.Message}");
@@ -111,7 +111,7 @@ public class VertexRagDemo
 
     private async Task StartQaChat()
     {
-        var chat = _model.StartChat();
+        var chat = _model!.StartChat()!;
         
         while (true)
         {

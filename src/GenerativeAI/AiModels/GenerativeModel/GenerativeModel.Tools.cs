@@ -432,9 +432,9 @@ public partial class GenerativeModel
     public void UseVertexRetrievalTool(string corpusId, RagRetrievalConfig? retrievalConfig = null)
     {
 #if NET6_0_OR_GREATER
-        if(!this._platform.GetBaseUrl().Contains("aiplatform", StringComparison.Ordinal))
+        if(!this.Platform.GetBaseUrl().Contains("aiplatform", StringComparison.Ordinal))
 #else
-        if(!this._platform.GetBaseUrl().Contains("aiplatform"))
+        if(!this.Platform.GetBaseUrl().Contains("aiplatform"))
 #endif
             throw new NotSupportedException("Retrival Augmentation Generation is only supported on Vertex AI");
 

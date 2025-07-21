@@ -178,7 +178,7 @@ public class FileClient_Tests : TestBase
     
     public FileClient CreateClient()
     {
-        Assert.SkipUnless(IsGeminiApiKeySet, GeminiTestSkipMessage);
+        Assert.SkipUnless(IsGoogleApiKeySet, GoogleTestSkipMessage);
         return new FileClient(GetTestGooglePlatform());
     }
 }

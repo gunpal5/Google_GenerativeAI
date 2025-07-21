@@ -22,7 +22,7 @@ public class ParallelWebCrawler
         _baseUrlPattern = baseUrl.Substring(0, baseUrl.LastIndexOf('/'));
     }
 
-    public async Task<List<string>> CrawlUrlsParallel(string startUrl)
+    public Task<List<string>> CrawlUrlsParallel(string startUrl)
     {
         var urlsToCrawl = new ConcurrentQueue<string>();
         urlsToCrawl.Enqueue(startUrl);
@@ -84,7 +84,7 @@ public class ParallelWebCrawler
             });
         }
        
-        return _allText.ToList();
+        return Task.FromResult(_allText.ToList());
     }
 
     private string? GetAbsoluteUrl(string baseUrl, string relativeUrl)

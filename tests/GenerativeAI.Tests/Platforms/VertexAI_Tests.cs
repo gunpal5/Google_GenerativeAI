@@ -1,7 +1,7 @@
 ﻿using System.Security.Authentication;
-using GenerativeAI.Authenticators;
 using GenerativeAI.Core;
 using Shouldly;
+using Xunit;
 
 namespace GenerativeAI.Tests.Platforms;
 
@@ -19,7 +19,7 @@ public class VertexAI_Tests:TestBase
         {
             var model = new VertexAIModel();
 
-            var response = await model.GenerateContentAsync("write a poem about the sun");
+            var response = await model.GenerateContentAsync("write a poem about the sun", cancellationToken: TestContext.Current.CancellationToken);
 
             response.ShouldNotBeNull();
             var text = response.Text();
@@ -27,19 +27,7 @@ public class VertexAI_Tests:TestBase
             Console.WriteLine(text);
         });
     }
-    
-    
-    public async Task ShouldNotThrowException_WhenCredentialsAreInvalid_AuthencatorProvided()
-    {
-        var model = new GenerativeModel(new VertextPlatformAdapter(accessToken:"invalid_token",authenticator:new GoogleCloudAdcAuthenticator()), VertexAIModels.Gemini.Gemini15Flash);
 
-        var response = await model.GenerateContentAsync("write a poem about the sun");
-
-        response.ShouldNotBeNull();
-        var text = response.Text();
-        text.ShouldNotBeNullOrWhiteSpace();
-        Console.WriteLine(text);
-    }
 
     [Fact]
     public async Task ShouldThrowException_WhenCredentialsAreInvalid_NoAuthencatorProvided()
@@ -48,7 +36,7 @@ public class VertexAI_Tests:TestBase
 
         await Should.ThrowAsync<AuthenticationException>(async () =>
         {
-            var response = await model.GenerateContentAsync("write a poem about the sun");
+            var response = await model.GenerateContentAsync("write a poem about the sun", cancellationToken: TestContext.Current.CancellationToken);
         });
 
     }

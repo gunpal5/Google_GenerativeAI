@@ -33,7 +33,7 @@ public class CorporaClient_Tests : SemanticRetrieverTestBase
         };
 
         // Act
-        var result = await client.CreateCorpusAsync(newCorpus).ConfigureAwait(true);
+        var result = await client.CreateCorpusAsync(newCorpus, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
         // Assert
         result.ShouldNotBeNull();
@@ -49,12 +49,12 @@ public class CorporaClient_Tests : SemanticRetrieverTestBase
     {
         // Arrange
         var client = new CorporaClient(GetTestGooglePlatform());
-        var corporaList = await client.ListCorporaAsync().ConfigureAwait(true);
+        var corporaList = await client.ListCorporaAsync(cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
         var testCorpus = corporaList.Corpora.FirstOrDefault();
         var corpusName = testCorpus.Name;
 
         // Act
-        var result = await client.GetCorpusAsync(corpusName).ConfigureAwait(true);
+        var result = await client.GetCorpusAsync(corpusName, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
         // Assert
         result.ShouldNotBeNull();
@@ -73,7 +73,7 @@ public class CorporaClient_Tests : SemanticRetrieverTestBase
         const int pageSize = 10;
 
         // Act
-        var result = await client.ListCorporaAsync(pageSize).ConfigureAwait(true);
+        var result = await client.ListCorporaAsync(pageSize, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
         // Assert
         result.ShouldNotBeNull();
@@ -95,7 +95,7 @@ public class CorporaClient_Tests : SemanticRetrieverTestBase
     {
         // Arrange
         var client = new CorporaClient(GetTestGooglePlatform());
-        var corporaList = await client.ListCorporaAsync().ConfigureAwait(true);
+        var corporaList = await client.ListCorporaAsync(cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
         var testCorpus = corporaList.Corpora.FirstOrDefault();
         var updatedCorpus = new Corpus
         {
@@ -104,7 +104,7 @@ public class CorporaClient_Tests : SemanticRetrieverTestBase
         const string updateMask = "displayName";
 
         // Act
-        var result = await client.UpdateCorpusAsync(testCorpus.Name, updatedCorpus, updateMask).ConfigureAwait(true);
+        var result = await client.UpdateCorpusAsync(testCorpus.Name, updatedCorpus, updateMask, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
         // Assert
         result.ShouldNotBeNull();
@@ -119,11 +119,11 @@ public class CorporaClient_Tests : SemanticRetrieverTestBase
     {
         // Arrange
         var client = new CorporaClient(GetTestGooglePlatform());
-        var corporaList = await client.ListCorporaAsync().ConfigureAwait(true);
+        var corporaList = await client.ListCorporaAsync(cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
         var testCorpus = corporaList.Corpora.LastOrDefault();
 
         // Act and Assert
-        await Should.NotThrowAsync(async () => await client.DeleteCorpusAsync(testCorpus.Name).ConfigureAwait(true)).ConfigureAwait(true);
+        await Should.NotThrowAsync(async () => await client.DeleteCorpusAsync(testCorpus.Name, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true)).ConfigureAwait(true);
         Console.WriteLine($"Deleted Corpus: Name={testCorpus.Name}");
     }
 
@@ -132,7 +132,7 @@ public class CorporaClient_Tests : SemanticRetrieverTestBase
     {
         // Arrange
         var client = new CorporaClient(GetTestGooglePlatform());
-        var corporaList = await client.ListCorporaAsync().ConfigureAwait(true);
+        var corporaList = await client.ListCorporaAsync(cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
         var testCorpus = corporaList.Corpora.FirstOrDefault();
         var queryRequest = new QueryCorpusRequest
         {
@@ -141,7 +141,7 @@ public class CorporaClient_Tests : SemanticRetrieverTestBase
         };
         
         // Act
-        var result = await client.QueryCorpusAsync(testCorpus.Name, queryRequest).ConfigureAwait(true);
+        var result = await client.QueryCorpusAsync(testCorpus.Name, queryRequest, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
         // Assert
         result.ShouldNotBeNull();
@@ -159,7 +159,7 @@ public class CorporaClient_Tests : SemanticRetrieverTestBase
         const string invalidName = "corpora/invalid-id";
 
         // Act
-        var exception = await Should.ThrowAsync<Exception>(async () => await client.GetCorpusAsync(invalidName).ConfigureAwait(true)).ConfigureAwait(true);
+        var exception = await Should.ThrowAsync<Exception>(async () => await client.GetCorpusAsync(invalidName, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true)).ConfigureAwait(true);
 
         // Assert
         exception.Message.ShouldNotBeNullOrEmpty();
@@ -174,7 +174,7 @@ public class CorporaClient_Tests : SemanticRetrieverTestBase
         const string invalidName = "corpora/invalid-id";
 
         // Act
-        var exception = await Should.ThrowAsync<Exception>(async () => await client.DeleteCorpusAsync(invalidName).ConfigureAwait(true)).ConfigureAwait(true);
+        var exception = await Should.ThrowAsync<Exception>(async () => await client.DeleteCorpusAsync(invalidName, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true)).ConfigureAwait(true);
 
         // Assert
         exception.Message.ShouldNotBeNullOrEmpty();

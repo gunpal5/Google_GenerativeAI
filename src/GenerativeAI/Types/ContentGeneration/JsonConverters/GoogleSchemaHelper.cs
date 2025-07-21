@@ -186,6 +186,12 @@ public static class GoogleSchemaHelper
     public static Schema ConvertToSchema(Type type, JsonSerializerOptions? jsonOptions = null,
         Dictionary<string, string>? descriptionTable = null)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(type);
+#else
+        if (type == null) throw new ArgumentNullException(nameof(type));
+#endif
+
 #if NET8_0_OR_GREATER || NET462_OR_GREATER || NETSTANDARD2_0
      
         if (jsonOptions == null)

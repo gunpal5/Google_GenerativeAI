@@ -62,7 +62,7 @@ public static class MarkdownExtractor
 #if NET6_0_OR_GREATER
             if (line.StartsWith("```", StringComparison.Ordinal))
 #else
-            if (line.StartsWith("```"))
+            if (line.StartsWith("```", StringComparison.Ordinal))
 #endif
             {
                 insideFencedBlock = !insideFencedBlock;

@@ -34,7 +34,7 @@ public class ParallelFunctionCallingTests : TestBase
         };
 
         var message = new ChatMessage(ChatRole.User, "What's the weather and time in New York?");
-        var response = await chatClient.GetResponseAsync(message, options: chatOptions);
+        var response = await chatClient.GetResponseAsync(message, options: chatOptions, cancellationToken: TestContext.Current.CancellationToken);
 
         response.Text.ShouldContain("weather", Case.Insensitive);
         response.Text.ShouldContain("time", Case.Insensitive);
@@ -58,7 +58,7 @@ public class ParallelFunctionCallingTests : TestBase
         var message = new ChatMessage(ChatRole.User, "What's the weather and time in New York?");
         var responseText = new StringBuilder();
         
-        await foreach (var response in chatClient.GetStreamingResponseAsync(message, options: chatOptions))
+        await foreach (var response in chatClient.GetStreamingResponseAsync(message, options: chatOptions, cancellationToken: TestContext.Current.CancellationToken))
         {
             Console.WriteLine(response.Text);
             responseText.Append(response.Text);
@@ -84,7 +84,7 @@ public class ParallelFunctionCallingTests : TestBase
         };
 
         var message = new ChatMessage(ChatRole.User, "What's the weather and time in New York, and what's the current price of AAPL stock?");
-        var response = await chatClient.GetResponseAsync(message, options: chatOptions);
+        var response = await chatClient.GetResponseAsync(message, options: chatOptions, cancellationToken: TestContext.Current.CancellationToken);
 
         response.Text.ShouldContain("weather", Case.Insensitive);
         response.Text.ShouldContain("time", Case.Insensitive);
@@ -106,7 +106,7 @@ public class ParallelFunctionCallingTests : TestBase
         };
 
         var message = new ChatMessage(ChatRole.User, "I want to plan a trip to Paris. What flights and hotels are available?");
-        var response = await chatClient.GetResponseAsync(message, options: chatOptions);
+        var response = await chatClient.GetResponseAsync(message, options: chatOptions, cancellationToken: TestContext.Current.CancellationToken);
 
         response.Text.ShouldContain("flight", Case.Insensitive);
         response.Text.ShouldContain("hotel", Case.Insensitive);
@@ -137,7 +137,7 @@ public class ParallelFunctionCallingTests : TestBase
     [Description("Get weather information for a location")]
     public string GetWeatherInfo(string location)
     {
-        return $"The weather in {location} is sunny and 75°F.";
+        return $"The weather in {location} is sunny and 75ï¿½F.";
     }
 
     [Description("Get current time for a location")]

@@ -59,8 +59,14 @@ public class QuickTools : GoogleFunctionTool
         return _tools.Any(s => s.FunctionDeclaration.Name == name);
     }
 
+    /// <summary>
+    /// Converts the tools to Microsoft Extensions AI tool format.
+    /// </summary>
+    /// <returns>A read-only collection of AITool objects for Microsoft Extensions AI integration.</returns>
+    #pragma warning disable CA1002
     public List<AITool> ToMeaiFunctions()
     {
         return this._tools.Select(s => s.AsMeaiTool()).ToList();
     }
+    #pragma warning restore CA1002
 }

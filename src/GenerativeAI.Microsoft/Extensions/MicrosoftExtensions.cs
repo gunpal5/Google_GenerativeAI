@@ -138,7 +138,9 @@ public static class MicrosoftExtensions
     /// </summary>
     /// <param name="args">The dictionary containing the arguments to be transformed.</param>
     /// <returns>A <see cref="JsonNode"/> instance representing the provided dictionary.</returns>
+    #pragma warning disable CA1859 // Use concrete types when possible for improved performance
     private static JsonNode ToJsonNode(this IDictionary<string, object?>? args)
+    #pragma warning restore CA1859
     {
         var node = new JsonObject();
         foreach (var arg in args!)
@@ -339,7 +341,11 @@ public static class MicrosoftExtensions
     /// <returns>A new <see cref="ChatResponseUpdate"/> object reflecting the data in the provided <see cref="GenerateContentResponse"/>.</returns>
     public static ChatResponseUpdate ToChatResponseUpdate(this GenerateContentResponse? response)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(response);
+#else
         if (response == null) throw new ArgumentNullException(nameof(response));
+#endif
 
         if (response.Candidates != null)
         {
@@ -363,7 +369,7 @@ public static class MicrosoftExtensions
 
     /// <summary>
     /// Converts an <see cref="EmbedContentRequest"/> and an <see cref="EmbedContentResponse"/>
-    /// into a <see cref="GeneratedEmbeddings{T}"/> instance containing embeddings of type <see cref="Embedding{float}"/>.
+    /// into a <see cref="GeneratedEmbeddings{T}"/> instance containing embeddings of type Embedding&lt;float&gt;.
     /// </summary>
     /// <param name="request">The request containing the embedding parameters and metadata.</param>
     /// <param name="response">The response containing the embedding result.</param>
@@ -371,8 +377,16 @@ public static class MicrosoftExtensions
     public static GeneratedEmbeddings<Embedding<float>> ToGeneratedEmbeddings(EmbedContentRequest request,
         EmbedContentResponse response)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
         if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(response);
+#else
         if (response == null) throw new ArgumentNullException(nameof(response));
+#endif
 
         AdditionalPropertiesDictionary? responseProps = null;
         UsageDetails? usage = null;
@@ -520,7 +534,9 @@ public static class MicrosoftExtensions
     /// </summary>
     /// <param name="functionCallArgs">The arguments of the function call, potentially in a serialized JSON format.</param>
     /// <returns>A dictionary where the keys represent argument names and values represent their corresponding data, or null if conversion is not possible.</returns>
+    #pragma warning disable CA1859 // Use concrete types when possible for improved performance
     private static IDictionary<string, object?>? ConvertFunctionCallArg(JsonNode? functionCallArgs)
+    #pragma warning restore CA1859
     {
         if (functionCallArgs == null)
             return null;
@@ -572,7 +588,9 @@ public static class MicrosoftExtensions
     /// </summary>
     /// <param name="response">The <see cref="ChatResponse"/> object containing the messages and their associated contents.</param>
     /// <returns>A <see cref="FunctionCallContent"/> object if a function call is present; otherwise, null.</returns>
+    #pragma warning disable CA1002 // Do not expose generic lists
     public static List<FunctionCallContent>? GetFunctions(this ChatResponse response)
+    #pragma warning restore CA1002
     {
         if (response == null)
             return null;

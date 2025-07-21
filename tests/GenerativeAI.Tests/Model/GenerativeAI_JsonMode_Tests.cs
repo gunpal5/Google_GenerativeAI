@@ -48,7 +48,7 @@ namespace GenerativeAI.Tests.Model
             request.AddText("Give me a really good message.", false);
 
             // Act
-            var response = await model.GenerateContentAsync<SampleJsonClass>(request);
+            var response = await model.GenerateContentAsync<SampleJsonClass>(request, cancellationToken: TestContext.Current.CancellationToken);
 
             // Assert
             response.ShouldNotBeNull();
@@ -69,7 +69,7 @@ namespace GenerativeAI.Tests.Model
             request.AddText("write a text message for my boss that I'm resigning from the job.", false);
 
             // Act
-            var result = await model.GenerateObjectAsync<SampleJsonClass>(request);
+            var result = await model.GenerateObjectAsync<SampleJsonClass>(request, cancellationToken: TestContext.Current.CancellationToken);
 
             // Assert
             result.ShouldNotBeNull();
@@ -85,7 +85,7 @@ namespace GenerativeAI.Tests.Model
             var prompt = "I need a birthday message for my wife.";
 
             // Act
-            var result = await model.GenerateObjectAsync<SampleJsonClass>(prompt);
+            var result = await model.GenerateObjectAsync<SampleJsonClass>(prompt, cancellationToken: TestContext.Current.CancellationToken);
 
             // Assert
             result.ShouldNotBeNull();
@@ -107,7 +107,7 @@ namespace GenerativeAI.Tests.Model
             };
 
             // Act
-            var result = await model.GenerateObjectAsync<SampleJsonClass>(parts);
+            var result = await model.GenerateObjectAsync<SampleJsonClass>(parts, cancellationToken: TestContext.Current.CancellationToken);
 
             // Assert
             result.ShouldNotBeNull();
@@ -127,7 +127,7 @@ namespace GenerativeAI.Tests.Model
         
             model.Model = GoogleAIModels.Gemini15Flash;
             // Act
-            var response = await model.GenerateContentAsync<ComplexDataTypeClass>(request);
+            var response = await model.GenerateContentAsync<ComplexDataTypeClass>(request, cancellationToken: TestContext.Current.CancellationToken);
         
             // Assert
             response.ShouldNotBeNull();
@@ -180,7 +180,7 @@ namespace GenerativeAI.Tests.Model
             
             model.Model = GoogleAIModels.Gemini15Flash;
             // Act
-            var response = await model.GenerateObjectAsync<List<Meal>>(request);
+            var response = await model.GenerateObjectAsync<List<Meal>>(request, cancellationToken: TestContext.Current.CancellationToken);
            
             // Assert
             response.ShouldNotBeNull();
@@ -215,7 +215,7 @@ namespace GenerativeAI.Tests.Model
             request.UseEnumMode<Color>();
            
             // Act
-            var response = await model.GenerateContentAsync(request);
+            var response = await model.GenerateContentAsync(request, cancellationToken: TestContext.Current.CancellationToken);
            
             // Assert
             response.ShouldNotBeNull();
@@ -253,7 +253,7 @@ namespace GenerativeAI.Tests.Model
         
             model.Model = GoogleAIModels.Gemini15Flash;
             // Act
-            var response = await model.GenerateContentAsync<ComplexJsonClass>(request);
+            var response = await model.GenerateContentAsync<ComplexJsonClass>(request, cancellationToken: TestContext.Current.CancellationToken);
         
             // Assert
             response.ShouldNotBeNull();

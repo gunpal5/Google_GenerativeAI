@@ -62,9 +62,9 @@ public class VertexRagManager : BaseClient
     public VertexRagManager(IPlatformAdapter platform, HttpClient? httpClient, ILogger? logger = null) : base(platform,
         httpClient, logger)
     {
-        this.FileManager = new FileManagementClient(_platform, HttpClient, Logger);
-        this.RagCorpusClient = new RagCorpusClient(_platform, HttpClient, Logger);
-        this.OperationsClient = new OperationsClient(_platform, HttpClient, Logger);
+        this.FileManager = new FileManagementClient(Platform, HttpClient, Logger);
+        this.RagCorpusClient = new RagCorpusClient(Platform, HttpClient, Logger);
+        this.OperationsClient = new OperationsClient(Platform, HttpClient, Logger);
     }
 
    

@@ -37,7 +37,7 @@ public class ModelClient : BaseClient
     /// <seealso href="https://ai.google.dev/api/models#method:-models.get">See Official API Documentation</seealso>
     public async Task<Model> GetModelAsync(string name, CancellationToken cancellationToken = default)
     {
-        var baseUrl = _platform.GetBaseUrl();
+        var baseUrl = Platform.GetBaseUrl();
 
         var url = $"{baseUrl}/{name.ToModelId()}";
         return await GetAsync<Model>(url, cancellationToken).ConfigureAwait(false);
@@ -67,7 +67,7 @@ public class ModelClient : BaseClient
         }
 
         var queryString = queryParams.Count > 0 ? "?" + string.Join("&", queryParams) : string.Empty;
-        var url = $"{_platform.GetBaseUrl()}/models{queryString}";
+        var url = $"{Platform.GetBaseUrl()}/models{queryString}";
 
         return await GetAsync<ListModelsResponse>(url,cancellationToken).ConfigureAwait(false);
     }

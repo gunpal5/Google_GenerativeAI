@@ -38,7 +38,7 @@ public class DocumentsClient_Tests : SemanticRetrieverTestBase
         };
 
         // Act
-        var result = await client.CreateDocumentAsync(parent, newDocument).ConfigureAwait(true);
+        var result = await client.CreateDocumentAsync(parent, newDocument, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
         // Assert
         result.ShouldNotBeNull();
@@ -66,12 +66,12 @@ public class DocumentsClient_Tests : SemanticRetrieverTestBase
         var client = new DocumentsClient(GetTestGooglePlatform());
         var testCorpus = await GetTestCorpora().ConfigureAwait(true);
         var parent = $"{testCorpus.Name}";
-        var documentList = await client.ListDocumentsAsync(parent).ConfigureAwait(true);
+        var documentList = await client.ListDocumentsAsync(parent, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
         var testDocument = documentList.Documents.FirstOrDefault();
         var documentName = testDocument.Name;
 
         // Act
-        var result = await client.GetDocumentAsync(documentName).ConfigureAwait(true);
+        var result = await client.GetDocumentAsync(documentName, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
         // Assert
         result.ShouldNotBeNull();
@@ -91,7 +91,7 @@ public class DocumentsClient_Tests : SemanticRetrieverTestBase
         var parent = $"{testCorpus.Name}";
 
         // Act
-        var result = await client.ListDocumentsAsync(parent, pageSize).ConfigureAwait(true);
+        var result = await client.ListDocumentsAsync(parent, pageSize, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
         // Assert
         result.ShouldNotBeNull();
@@ -115,7 +115,7 @@ public class DocumentsClient_Tests : SemanticRetrieverTestBase
         var client = new DocumentsClient(GetTestGooglePlatform());
         var testCorpus = await GetTestCorpora().ConfigureAwait(true);
         var parent = $"{testCorpus.Name}";
-        var documentList = await client.ListDocumentsAsync(parent).ConfigureAwait(true);
+        var documentList = await client.ListDocumentsAsync(parent, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
         var testDocument = documentList.Documents.FirstOrDefault();
         var updatedDocument = new Document
         {
@@ -124,7 +124,7 @@ public class DocumentsClient_Tests : SemanticRetrieverTestBase
         const string updateMask = "displayName";
 
         // Act
-        var result = await client.UpdateDocumentAsync(testDocument.Name, updatedDocument, updateMask).ConfigureAwait(true);
+        var result = await client.UpdateDocumentAsync(testDocument.Name, updatedDocument, updateMask, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
         // Assert
         result.ShouldNotBeNull();
@@ -141,11 +141,11 @@ public class DocumentsClient_Tests : SemanticRetrieverTestBase
         var client = new DocumentsClient(GetTestGooglePlatform());
         var testCorpus = await GetTestCorpora().ConfigureAwait(true);
         var parent = $"{testCorpus.Name}";
-        var documentList = await client.ListDocumentsAsync(parent).ConfigureAwait(true);
+        var documentList = await client.ListDocumentsAsync(parent, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
         var testDocument = documentList.Documents.LastOrDefault();
 
         // Act and Assert
-        await Should.NotThrowAsync(async () => await client.DeleteDocumentAsync(testDocument.Name).ConfigureAwait(true)).ConfigureAwait(true);
+        await Should.NotThrowAsync(async () => await client.DeleteDocumentAsync(testDocument.Name, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true)).ConfigureAwait(true);
         Console.WriteLine($"Deleted Document: Name={testDocument.Name}");
     }
 
@@ -156,7 +156,7 @@ public class DocumentsClient_Tests : SemanticRetrieverTestBase
         var client = new DocumentsClient(GetTestGooglePlatform());
         var testCorpus = await GetTestCorpora().ConfigureAwait(true);
         var parent = $"{testCorpus.Name}";
-        var documentList = await client.ListDocumentsAsync(parent).ConfigureAwait(true);
+        var documentList = await client.ListDocumentsAsync(parent, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
         var testDocument = documentList.Documents.FirstOrDefault();
         var queryRequest = new QueryDocumentRequest
         {
@@ -164,7 +164,7 @@ public class DocumentsClient_Tests : SemanticRetrieverTestBase
         };
 
         // Act
-        var result = await client.QueryDocumentAsync(testDocument.Name, queryRequest).ConfigureAwait(true);
+        var result = await client.QueryDocumentAsync(testDocument.Name, queryRequest, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
         // Assert
         result.ShouldNotBeNull();
@@ -182,7 +182,7 @@ public class DocumentsClient_Tests : SemanticRetrieverTestBase
         const string invalidName = "corpora/test-corpus-id/documents/invalid-id";
 
         // Act
-        var exception = await Should.ThrowAsync<Exception>(async () => await client.GetDocumentAsync(invalidName).ConfigureAwait(true)).ConfigureAwait(true);
+        var exception = await Should.ThrowAsync<Exception>(async () => await client.GetDocumentAsync(invalidName, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true)).ConfigureAwait(true);
 
         // Assert
         exception.Message.ShouldNotBeNullOrEmpty();
@@ -197,7 +197,7 @@ public class DocumentsClient_Tests : SemanticRetrieverTestBase
         const string invalidName = "corpora/test-corpus-id/documents/invalid-id";
 
         // Act
-        var exception = await Should.ThrowAsync<Exception>(async () => await client.DeleteDocumentAsync(invalidName).ConfigureAwait(true)).ConfigureAwait(true);
+        var exception = await Should.ThrowAsync<Exception>(async () => await client.DeleteDocumentAsync(invalidName, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true)).ConfigureAwait(true);
 
         // Assert
         exception.Message.ShouldNotBeNullOrEmpty();

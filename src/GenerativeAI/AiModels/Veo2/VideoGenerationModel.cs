@@ -53,7 +53,7 @@ namespace GenerativeAI
             if (request == null) throw new ArgumentNullException(nameof(request));
 #endif
             var modelId = this.ModelName.ToModelId();
-            var url = $"{_platform.GetBaseUrl()}/{modelId}:predictLongRunning";
+            var url = $"{Platform.GetBaseUrl()}/{modelId}:predictLongRunning";
 
             var payload = new VertexGenerateVideosPayload()
             {

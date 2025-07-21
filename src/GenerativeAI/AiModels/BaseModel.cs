@@ -58,7 +58,7 @@ public abstract class BaseModel : BaseClient
     /// <seealso href="https://ai.google.dev/gemini-api/docs/text-generation">See Official API Documentation</seealso>
     protected virtual async Task<GenerateContentResponse> GenerateContentAsync(string model, GenerateContentRequest request)
     {
-        var url = $"{_platform.GetBaseUrl()}/{model.ToModelId()}:{GenerativeModelTasks.GenerateContent}";
+        var url = $"{Platform.GetBaseUrl()}/{model.ToModelId()}:{GenerativeModelTasks.GenerateContent}";
 
         var response = await SendAsync<GenerateContentRequest, GenerateContentResponse>(url, request, HttpMethod.Post).ConfigureAwait(false);
         CheckBlockedResponse(response, url);
@@ -84,7 +84,7 @@ public abstract class BaseModel : BaseClient
         [System.Runtime.CompilerServices.EnumeratorCancellation]
         CancellationToken cancellationToken = default)
     {
-        var url = $"{_platform.GetBaseUrl()}/{model.ToModelId()}:{GenerativeModelTasks.StreamGenerateContent}";
+        var url = $"{Platform.GetBaseUrl()}/{model.ToModelId()}:{GenerativeModelTasks.StreamGenerateContent}";
 
         await foreach (var response in StreamAsync<GenerateContentRequest, GenerateContentResponse>(url, request, cancellationToken).ConfigureAwait(false))
             yield return response;
@@ -100,7 +100,7 @@ public abstract class BaseModel : BaseClient
     protected virtual async Task<CountTokensResponse> CountTokensAsync(string model, CountTokensRequest request,
         CancellationToken cancellationToken = default)
     {
-        var url = $"{_platform.GetBaseUrl()}/{model.ToModelId()}:{GenerativeModelTasks.CountTokens}";
+        var url = $"{Platform.GetBaseUrl()}/{model.ToModelId()}:{GenerativeModelTasks.CountTokens}";
         return await SendAsync<CountTokensRequest, CountTokensResponse>(url, request, HttpMethod.Post,
             cancellationToken: cancellationToken).ConfigureAwait(false);
     }
@@ -125,7 +125,7 @@ public abstract class BaseModel : BaseClient
 #else
         if (request == null) throw new ArgumentNullException(nameof(request));
 #endif
-        var url = $"{_platform.GetBaseUrl()}/{model.ToModelId()}:{GenerativeModelTasks.BatchEmbedContents}";
+        var url = $"{Platform.GetBaseUrl()}/{model.ToModelId()}:{GenerativeModelTasks.BatchEmbedContents}";
         if (request.Requests != null)
         {
             foreach (var req in request.Requests)
@@ -166,7 +166,7 @@ public abstract class BaseModel : BaseClient
 #else
         if (request == null) throw new ArgumentNullException(nameof(request));
 #endif
-        var url = $"{_platform.GetBaseUrl()}/{model.ToModelId()}:{GenerativeModelTasks.EmbedContent}";
+        var url = $"{Platform.GetBaseUrl()}/{model.ToModelId()}:{GenerativeModelTasks.EmbedContent}";
         ValidateEmbeddingRequest(model, request);
         return await SendAsync<EmbedContentRequest, EmbedContentResponse>(url, request, HttpMethod.Post).ConfigureAwait(false);
     }
@@ -181,7 +181,7 @@ public abstract class BaseModel : BaseClient
     /// <seealso href="https://ai.google.dev/gemini-api/docs/question_answering#method:-models.generateanswer">See Official API Documentation</seealso>
     protected async Task<GenerateAnswerResponse> GenerateAnswerAsync(string model, GenerateAnswerRequest request, CancellationToken cancellationToken = default)
     {
-        var url = $"{_platform.GetBaseUrl()}/{model.ToModelId()}:{GenerativeModelTasks.GenerateAnswer}";
+        var url = $"{Platform.GetBaseUrl()}/{model.ToModelId()}:{GenerativeModelTasks.GenerateAnswer}";
 
         return await SendAsync<GenerateAnswerRequest, GenerateAnswerResponse>(url, request, HttpMethod.Post, cancellationToken).ConfigureAwait(false);
     }

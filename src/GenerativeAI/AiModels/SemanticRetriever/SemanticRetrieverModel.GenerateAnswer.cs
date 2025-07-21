@@ -26,7 +26,7 @@ public partial class SemanticRetrieverModel
 
         if (request.InlinePassages == null && request.SemanticRetriever == null)
         {
-            throw new ArgumentNullException(nameof(request.InlinePassages), "Grounding source is required. either InlinePassages or SemanticRetriever set.");
+            throw new ArgumentNullException(nameof(request), "Grounding source is required. either InlinePassages or SemanticRetriever set.");
         }
 
         var answer = await GenerateAnswerAsync(this.ModelName, request, cancellationToken).ConfigureAwait(false);

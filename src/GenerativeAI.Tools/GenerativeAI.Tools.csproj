@@ -23,7 +23,7 @@
         <FileVersion>2.7.1</FileVersion>
         <SignAssembly>True</SignAssembly>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-      
+        <NoWarn>NU5104</NoWarn>
     </PropertyGroup>
     <ItemGroup>
         <None Include="..\..\favicon.png" Pack="True" PackagePath="" />

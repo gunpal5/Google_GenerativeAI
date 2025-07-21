@@ -7,6 +7,7 @@ namespace GenerativeAI;
 /// </summary>
 public static class StringExtensions
 {
+    private static readonly char[] SplitChars = { ' ', '_', '-' };
     /// <summary>
     /// Converts a model name string into a standardized model identifier.
     /// </summary>
@@ -32,7 +33,7 @@ public static class StringExtensions
 #if NETSTANDARD2_0 || NET462_OR_GREATER
         if (modelName.Contains("/"))
 #else
-        if (modelName.Contains('/'))
+        if (modelName.Contains('/', StringComparison.Ordinal))
 #endif
         {
             if (modelName.StartsWith("models/", StringComparison.InvariantCultureIgnoreCase))
@@ -73,7 +74,7 @@ public static class StringExtensions
 #if NETSTANDARD2_0 || NET462_OR_GREATER
         if (corpusName.Contains("/"))
 #else
-        if (corpusName.Contains('/'))
+        if (corpusName.Contains('/', StringComparison.Ordinal))
 #endif
         {
             if (corpusName.StartsWith("ragCorpora/", StringComparison.InvariantCultureIgnoreCase))
@@ -121,9 +122,9 @@ public static class StringExtensions
         if (fileName == null) throw new ArgumentNullException(nameof(fileName));
 #endif
 #if NETSTANDARD2_0 || NET462_OR_GREATER
-        if (fileName.Contains("/"))
-#else
         if (fileName.Contains('/'))
+#else
+        if (fileName.Contains('/', StringComparison.Ordinal))
 #endif
         {
             if (fileName.StartsWith("ragCorpora/", StringComparison.InvariantCultureIgnoreCase))
@@ -141,7 +142,7 @@ public static class StringExtensions
 #if NET6_0_OR_GREATER
                     var l = fileName.Substring(fileName.LastIndexOf("ragCorpora/", StringComparison.Ordinal));
 #else
-                    var l = fileName.Substring(fileName.LastIndexOf("ragCorpora/"));
+                    var l = fileName.Substring(fileName.LastIndexOf("ragCorpora/", StringComparison.Ordinal));
 #endif
                     return l;
                 }
@@ -171,7 +172,7 @@ public static class StringExtensions
 #if NETSTANDARD2_0 || NET462_OR_GREATER
         if (modelName.Contains("/"))
 #else
-        if (modelName.Contains('/'))
+        if (modelName.Contains('/', StringComparison.Ordinal))
 #endif
         {
             if (modelName.StartsWith("tunedModels/", StringComparison.InvariantCulture))
@@ -212,7 +213,7 @@ public static class StringExtensions
 #if NETSTANDARD2_0 || NET462_OR_GREATER
         if (fileName.Contains("/"))
 #else
-        if (fileName.Contains('/'))
+        if (fileName.Contains('/', StringComparison.Ordinal))
 #endif
         {
             if (fileName.StartsWith("files/", StringComparison.InvariantCultureIgnoreCase))
@@ -243,7 +244,7 @@ public static class StringExtensions
 #if NETSTANDARD2_0 || NET462_OR_GREATER
         if (operationId.Contains("/"))
 #else
-        if (operationId.Contains("/", StringComparison.InvariantCulture))
+        if (operationId.Contains('/', StringComparison.Ordinal))
 #endif
         {
             if (operationId.StartsWith("operations/", StringComparison.InvariantCultureIgnoreCase))
@@ -273,9 +274,9 @@ public static class StringExtensions
         if (operationId == null) throw new ArgumentNullException(nameof(operationId));
 #endif
 #if NETSTANDARD2_0 || NET462_OR_GREATER
-        if (operationId.Contains('/'))
+        if (operationId.Contains("/"))
 #else
-        if (operationId.Contains('/'))
+        if (operationId.Contains('/', StringComparison.Ordinal))
 #endif
         {
             if (operationId.StartsWith("publishers/", StringComparison.InvariantCultureIgnoreCase))
@@ -288,8 +289,8 @@ public static class StringExtensions
                 var opId = operationId.Substring(operationId.LastIndexOf("/publishers", StringComparison.Ordinal) + 1);
                 opId = opId.Remove(opId.IndexOf("/operations", StringComparison.Ordinal));
 #else
-                var opId = operationId.Substring(operationId.LastIndexOf("/publishers") + 1);
-                opId = opId.Remove(opId.IndexOf("/operations"));
+                var opId = operationId.Substring(operationId.LastIndexOf("/publishers", StringComparison.Ordinal) + 1);
+                opId = opId.Remove(opId.IndexOf("/operations", StringComparison.Ordinal));
 #endif
                 return $"{opId}";
             }
@@ -323,7 +324,7 @@ public static class StringExtensions
 #if NETSTANDARD2_0 || NET462_OR_GREATER
         if (contentName.Contains("/"))
 #else
-        if (contentName.Contains("/", StringComparison.InvariantCulture))
+        if (contentName.Contains('/', StringComparison.Ordinal))
 #endif
         {
             if (contentName.StartsWith("cachedContents/", StringComparison.InvariantCultureIgnoreCase))
@@ -365,7 +366,7 @@ public static class StringExtensions
 #if NETSTANDARD2_0 || NET462_OR_GREATER
         if (corporaName.Contains("/"))
 #else
-        if (corporaName.Contains("/", StringComparison.InvariantCulture))
+        if (corporaName.Contains('/', StringComparison.Ordinal))
 #endif
         {
             if (corporaName.StartsWith("corpora/", StringComparison.InvariantCultureIgnoreCase))
@@ -428,7 +429,7 @@ public static class StringExtensions
             return string.Empty;
         }
 
-        var words = input.Split(new[] { ' ', '_', '-' }, StringSplitOptions.RemoveEmptyEntries);
+        var words = input.Split(SplitChars, StringSplitOptions.RemoveEmptyEntries);
 
         for (int i = 1; i < words.Length; i++)
         {

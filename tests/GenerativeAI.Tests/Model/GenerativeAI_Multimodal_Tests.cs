@@ -5,12 +5,12 @@ namespace GenerativeAI.Tests.Model
 {
     public class GenerativeAI_Multimodal_Tests : TestBase
     {
-        private ITestOutputHelper Console;
+        private  ITestOutputHelper _console;
         private const string TestModel = GoogleAIModels.Gemini2Flash;
 
         public GenerativeAI_Multimodal_Tests(ITestOutputHelper helper)
         {
-            this.Console = helper;
+            this._console = helper;
         }
 
         private GeminiModel CreateInitializedModel()
@@ -36,7 +36,7 @@ namespace GenerativeAI.Tests.Model
             var text = result.Text();
             text.ShouldNotBeNull();
             text.ShouldContain("blueberry", Case.Insensitive);
-            Console.WriteLine(result.Text());
+            _console.WriteLine(result.Text());
         }
 
         [Fact]
@@ -55,7 +55,7 @@ namespace GenerativeAI.Tests.Model
             var text = result.Text();
             text.ShouldNotBeNull();
             text.ShouldContain("blueberry", Case.Insensitive);
-            Console.WriteLine(result.Text());
+            _console.WriteLine(result.Text());
         }
 
         [Fact]
@@ -74,7 +74,7 @@ namespace GenerativeAI.Tests.Model
             var text = result.Text();
             text.ShouldNotBeNull();
             text.ShouldContain("meeting", Case.Insensitive);
-            Console.WriteLine(result.Text());
+            _console.WriteLine(result.Text());
         }
 
         [Fact]
@@ -94,7 +94,7 @@ namespace GenerativeAI.Tests.Model
             text.ShouldNotBeNull();
             // if(!text.Contains("theological",StringComparison.InvariantCultureIgnoreCase) && !text.Contains("Friedrich",StringComparison.InvariantCultureIgnoreCase))
             //     text.ShouldContain("theological", Case.Insensitive);
-            Console.WriteLine(result.Text());
+            _console.WriteLine(result.Text());
         }
         
         // [Fact]
@@ -140,7 +140,7 @@ namespace GenerativeAI.Tests.Model
             {
                 response.ShouldNotBeNull();
                 responses.Add(response.Text() ?? string.Empty);
-                Console.WriteLine($"Chunk: {response.Text()}");
+                _console.WriteLine($"Chunk: {response.Text()}");
             }
 
             responses.Count.ShouldBeGreaterThan(0);

@@ -73,7 +73,7 @@ public class GoogleCloudAdcAuthenticator : BaseAuthenticator
     /// Reference: https://cloud.google.com/docs/authentication
     /// </summary>
     /// <returns>A string containing the access token.</returns>
-    private string AcquireGcpAccessToken()
+    private static string AcquireGcpAccessToken()
     {
         // Detect if running on Windows; adjust command accordingly.
         #if NET462_OR_GREATER
@@ -140,10 +140,14 @@ public class GoogleCloudAdcAuthenticator : BaseAuthenticator
                 proc.BeginErrorReadLine();
                 proc.WaitForExit();
             }
-            catch (Exception)
+            catch (System.ComponentModel.Win32Exception)
             {
-                // Log as needed
-                // e.g. Logger.LogRunExternalExe("Execution failed: " + ex.Message);
+                // Process execution failed (e.g., file not found)
+                return string.Empty;
+            }
+            catch (InvalidOperationException)
+            {
+                // Process operation failed
                 return string.Empty;
             }
 

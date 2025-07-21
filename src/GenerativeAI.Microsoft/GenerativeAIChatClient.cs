@@ -62,8 +62,11 @@ public sealed class GenerativeAIChatClient : IChatClient
     public async Task<ChatResponse> GetResponseAsync(IEnumerable<ChatMessage> messages, ChatOptions? options = null,
         CancellationToken cancellationToken = default)
     {
-        if (messages == null)
-            throw new ArgumentNullException(nameof(messages));
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(messages);
+#else
+        if (messages == null) throw new ArgumentNullException(nameof(messages));
+#endif
         var request = messages.ToGenerateContentRequest(options);
         var response = await model.GenerateContentAsync(request, cancellationToken).ConfigureAwait(false);
 
@@ -126,7 +129,7 @@ public sealed class GenerativeAIChatClient : IChatClient
     }
 
     private async IAsyncEnumerable<ChatResponseUpdate> CallFunctionStreamingAsync(GenerateContentRequest request,
-        GenerateContentResponse response, ChatOptions? options, CancellationToken cancellationToken)
+        GenerateContentResponse response, ChatOptions? options, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         var chatResponse = response.ToChatResponse() ?? throw new GenerativeAIException("Failed to generate content",
             "The generative model response was null or could not be processed. Verify the API key, model name, input messages, and options for any issues.");
@@ -194,8 +197,11 @@ public sealed class GenerativeAIChatClient : IChatClient
         ChatOptions? options = null,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        if (messages == null)
-            throw new ArgumentNullException(nameof(messages));
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(messages);
+#else
+        if (messages == null) throw new ArgumentNullException(nameof(messages));
+#endif
         var request = messages.ToGenerateContentRequest(options);
         GenerateContentResponse? lastResponse = null;
         await foreach (var response in model.StreamContentAsync(request, cancellationToken).ConfigureAwait(false))

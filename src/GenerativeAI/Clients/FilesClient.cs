@@ -36,8 +36,8 @@ public class FileClient : BaseClient
     public async Task<RemoteFile> UploadFileAsync(string filePath, Action<double>? progressCallback = null,
         CancellationToken cancellationToken = default)
     {
-        var baseUrl = _platform.GetBaseUrl(false);
-        var apiVersion = _platform.GetApiVersion();
+        var baseUrl = Platform.GetBaseUrl(false);
+        var apiVersion = Platform.GetApiVersion();
         var url = $"{baseUrl}/upload/{apiVersion}/files?alt=json&uploadType=multipart";
 
         //Validate File
@@ -61,17 +61,18 @@ public class FileClient : BaseClient
         var json = JsonSerializer.Serialize(request, typeInfo);
         //Upload File
         using var file = File.OpenRead(filePath);
+#pragma warning disable CA2000 // Objects are disposed properly via HttpRequestMessage ownership transfer
         var httpMessage = new HttpRequestMessage(HttpMethod.Post, url);
         MultipartContent? multipart = null;
         StringContent? stringContent = null;
         ProgressStreamContent? progressContent = null;
-        
+
         try
         {
             multipart = new MultipartContent("related");
             stringContent = new StringContent(json, Encoding.UTF8, "application/json");
             multipart.Add(stringContent);
-            
+
             progressContent = new ProgressStreamContent(file, progressCallback)
             {
                 Headers =
@@ -81,31 +82,30 @@ public class FileClient : BaseClient
                 }
             };
             multipart.Add(progressContent);
-            
+
             httpMessage.Content = multipart;
             // After setting content, ownership is transferred to httpMessage
             multipart = null;
             stringContent = null;
             progressContent = null;
-            
-            await _platform.AddAuthorizationAsync(httpMessage, false, cancellationToken).ConfigureAwait(false);
+
+            await Platform.AddAuthorizationAsync(httpMessage, false, cancellationToken).ConfigureAwait(false);
             var response = await HttpClient.SendAsync(httpMessage, cancellationToken).ConfigureAwait(false);
             await CheckAndHandleErrors(response, url).ConfigureAwait(false);
 
             var fileResponse = await Deserialize<UploadFileResponse>(response).ConfigureAwait(false);
             if (fileResponse?.File == null)
-                throw new InvalidOperationException("Failed to upload file. The server response did not contain file information.");
+                throw new InvalidOperationException(
+                    "Failed to upload file. The server response did not contain file information.");
             return fileResponse.File;
         }
         catch
         {
-            // Dispose only if ownership was not transferred
-            stringContent?.Dispose();
-            progressContent?.Dispose();
-            multipart?.Dispose();
+            // HttpRequestMessage disposal will handle content disposal
             httpMessage.Dispose();
             throw;
         }
+#pragma warning restore CA2000
     }
 
     /// <summary>
@@ -127,8 +127,8 @@ public class FileClient : BaseClient
 #else
         if (stream == null) throw new ArgumentNullException(nameof(stream));
 #endif
-        var baseUrl = _platform.GetBaseUrl(false);
-        var apiVersion = _platform.GetApiVersion();
+        var baseUrl = Platform.GetBaseUrl(false);
+        var apiVersion = Platform.GetApiVersion();
         var url = $"{baseUrl}/upload/{apiVersion}/files?alt=json&uploadType=multipart";
 
         //Validate File
@@ -151,6 +151,7 @@ public class FileClient : BaseClient
             throw new InvalidOperationException($"Could not get type info for {request.GetType()}");
         var json = JsonSerializer.Serialize(request, typeInfo);
         //Upload File
+#pragma warning disable CA2000 // Objects are disposed properly via HttpRequestMessage ownership transfer
         var httpMessage = new HttpRequestMessage(HttpMethod.Post, url);
         MultipartContent? multipart = null;
         StringContent? stringContent = null;
@@ -178,7 +179,7 @@ public class FileClient : BaseClient
             stringContent = null;
             progressContent = null;
             
-            await _platform.AddAuthorizationAsync(httpMessage, false, cancellationToken).ConfigureAwait(false);
+            await Platform.AddAuthorizationAsync(httpMessage, false, cancellationToken).ConfigureAwait(false);
             var response = await HttpClient.SendAsync(httpMessage, cancellationToken).ConfigureAwait(false);
             await CheckAndHandleErrors(response, url).ConfigureAwait(false);
 
@@ -189,23 +190,21 @@ public class FileClient : BaseClient
         }
         catch
         {
-            // Dispose only if ownership was not transferred
-            stringContent?.Dispose();
-            progressContent?.Dispose();
-            multipart?.Dispose();
+            // HttpRequestMessage disposal will handle content disposal
             httpMessage.Dispose();
             throw;
         }
+#pragma warning restore CA2000
     }
 
-    private void ValidateStream(Stream stream, string mimeType)
+    private static void ValidateStream(Stream stream, string mimeType)
     {
         if (stream.Length > FilesConstants.MaxUploadFileSize)
             throw new FileTooLargeException("stream");
         ValidateMimeType(mimeType);
     }
 
-    private void ValidateFile(string filePath)
+    private static void ValidateFile(string filePath)
     {
         var fileInfo = new FileInfo(filePath);
         if (!fileInfo.Exists)
@@ -248,7 +247,7 @@ public class FileClient : BaseClient
     /// <seealso href="https://ai.google.dev/api/files#method:-files.get">See Official API Documentation</seealso>
     public async Task<RemoteFile> GetFileAsync(string name,CancellationToken cancellationToken = default)
     {
-        var baseUrl = _platform.GetBaseUrl();
+        var baseUrl = Platform.GetBaseUrl();
 
         var url = $"{baseUrl}/{name.ToFileId()}";
         return await GetAsync<RemoteFile>(url,cancellationToken).ConfigureAwait(false);
@@ -277,7 +276,7 @@ public class FileClient : BaseClient
         }
 
         var queryString = queryParams.Count > 0 ? "?" + string.Join("&", queryParams) : string.Empty;
-        var url = $"{_platform.GetBaseUrl()}/files{queryString}";
+        var url = $"{Platform.GetBaseUrl()}/files{queryString}";
 
         return await GetAsync<ListFilesResponse>(url, cancellationToken).ConfigureAwait(false);
     }
@@ -290,7 +289,7 @@ public class FileClient : BaseClient
     /// <returns>A task that represents the asynchronous delete operation.</returns>
     public async Task DeleteFileAsync(string name, CancellationToken cancellationToken = default)
     {
-        var baseUrl = _platform.GetBaseUrl();
+        var baseUrl = Platform.GetBaseUrl();
 
         var url = $"{baseUrl}/{name.ToFileId()}";
         await DeleteAsync(url,cancellationToken).ConfigureAwait(false);

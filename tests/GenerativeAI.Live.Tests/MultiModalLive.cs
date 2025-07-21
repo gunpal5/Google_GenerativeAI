@@ -51,15 +51,17 @@ public class MultiModalLive_Tests
             }
         };
         multiModalLive.UseGoogleSearch = true;
-        await multiModalLive.ConnectAsync();
+        await multiModalLive.ConnectAsync(cancellationToken: CancellationToken.None);
         do
         {
             System.Console.WriteLine("Enter your message:");
             var content = System.Console.ReadLine();
+            if (content?.ToLower() == "exit") break;
+            
             var clientContent = new BidiGenerateContentClientContent();
             clientContent.Turns = new[] { new Content(content, Roles.User) };
             clientContent.TurnComplete = true;
-            await multiModalLive.SendClientContentAsync(clientContent);
+            await multiModalLive.SendClientContentAsync(clientContent, CancellationToken.None);
         } while (true);
 
         exitEvent.WaitOne();

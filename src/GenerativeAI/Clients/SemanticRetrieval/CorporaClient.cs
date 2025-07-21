@@ -31,7 +31,7 @@ public class CorporaClient : BaseClient
     /// <seealso href="https://ai.google.dev/api/semantic-retrieval/corpora#method:-corpora.create">See Official API Documentation</seealso>
     public async Task<Corpus?> CreateCorpusAsync(Corpus corpus, CancellationToken cancellationToken = default)
     {
-        var url = $"{_platform.GetBaseUrl()}/corpora";
+        var url = $"{Platform.GetBaseUrl()}/corpora";
         return await SendAsync<Corpus, Corpus>(url, corpus, HttpMethod.Post, cancellationToken).ConfigureAwait(false);
     }
 
@@ -45,7 +45,7 @@ public class CorporaClient : BaseClient
     /// <seealso href="https://ai.google.dev/api/semantic-retrieval/corpora#method:-corpora.query">See Official API Documentation</seealso>
     public async Task<QueryCorpusResponse?> QueryCorpusAsync(string name, QueryCorpusRequest queryCorpusRequest, CancellationToken cancellationToken = default)
     {
-        var baseUrl = _platform.GetBaseUrl();
+        var baseUrl = Platform.GetBaseUrl();
         var url = $"{baseUrl}/{name.ToCorpusId()}:query";
         return await SendAsync<QueryCorpusRequest, QueryCorpusResponse>(url, queryCorpusRequest, HttpMethod.Post, cancellationToken).ConfigureAwait(false);
     }
@@ -73,7 +73,7 @@ public class CorporaClient : BaseClient
         }
 
         var queryString = queryParams.Count > 0 ? "?" + string.Join("&", queryParams) : string.Empty;
-        var url = $"{_platform.GetBaseUrl()}/corpora{queryString}";
+        var url = $"{Platform.GetBaseUrl()}/corpora{queryString}";
 
         return await GetAsync<ListCorporaResponse>(url, cancellationToken).ConfigureAwait(false);
     }
@@ -87,7 +87,7 @@ public class CorporaClient : BaseClient
     /// <seealso href="https://ai.google.dev/api/semantic-retrieval/corpora#method:-corpora.get">See Official API Documentation</seealso>
     public async Task<Corpus?> GetCorpusAsync(string name, CancellationToken cancellationToken = default)
     {
-        var baseUrl = _platform.GetBaseUrl();
+        var baseUrl = Platform.GetBaseUrl();
         var url = $"{baseUrl}/{name.ToCorpusId()}";
         return await GetAsync<Corpus>(url, cancellationToken).ConfigureAwait(false);
     }
@@ -103,7 +103,7 @@ public class CorporaClient : BaseClient
     /// <seealso href="https://ai.google.dev/api/semantic-retrieval/corpora#method:-corpora.patch">See Official API Documentation</seealso>
     public async Task<Corpus?> UpdateCorpusAsync(string corpusName, Corpus corpus, string updateMask, CancellationToken cancellationToken = default)
     {
-        var baseUrl = _platform.GetBaseUrl();
+        var baseUrl = Platform.GetBaseUrl();
         var url = $"{baseUrl}/{corpusName.ToCorpusId()}";
 
         var queryParams = new List<string>
@@ -126,7 +126,7 @@ public class CorporaClient : BaseClient
     /// <seealso href="https://ai.google.dev/api/semantic-retrieval/corpora#method:-corpora.delete">See Official API Documentation</seealso>
     public async Task DeleteCorpusAsync(string name, bool? force = null, CancellationToken cancellationToken = default)
     {
-        var baseUrl = _platform.GetBaseUrl();
+        var baseUrl = Platform.GetBaseUrl();
         var url = $"{baseUrl}/{name.ToCorpusId()}";
 
         var queryParams = new List<string>();
@@ -142,7 +142,7 @@ public class CorporaClient : BaseClient
     }
 
     ///<inheritdoc/>
-    protected override Task AddAuthorizationHeader(HttpRequestMessage request, bool requiredAccessToken = false,
+    protected override Task AddAuthorizationHeader(HttpRequestMessage request, bool requireAccessToken = false,
         CancellationToken cancellationToken = default)
     {
         return base.AddAuthorizationHeader(request, true, cancellationToken);

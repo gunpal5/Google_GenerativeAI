@@ -2,7 +2,7 @@
 
 namespace GenerativeAI.Core;
 
-internal class ResponseHelper
+internal static class ResponseHelper
 {
     /// <summary>
     /// Format Error Message
@@ -23,7 +23,7 @@ internal class ResponseHelper
             message = FormatErrorMessage(response.PromptFeedback!.BlockReason!.Value);
            
         }
-        else if (response.Candidates?[0] != null)
+        else if (response.Candidates[0] != null)
         {
             var firstCandidate = response.Candidates[0];
             if (firstCandidate.FinishReason.HasValue && HadBadFinishReason(firstCandidate))

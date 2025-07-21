@@ -2,6 +2,7 @@ using GenerativeAI.Authenticators;
 using GenerativeAI.Core;
 using GenerativeAI.Tests;
 using Shouldly;
+using Xunit;
 
 namespace GenerativeAI.Auth;
 
@@ -18,7 +19,7 @@ public class ServiceAccount_Tests:TestBase
     { 
         Assert.SkipWhen(SkipVertexAITests,VertextTestSkipMesaage);
         var authenticator = CreateAuthenticatorWithKey();
-        var token = await authenticator.GetAccessTokenAsync();
+        var token = await authenticator.GetAccessTokenAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         token.AccessToken.ShouldNotBeNull();
     }

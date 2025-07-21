@@ -64,7 +64,7 @@ public class GoogleAIPlatformAdapterTests:TestBase
         var adapter = new GoogleAIPlatformAdapter("TEST_API_KEY", apiVersion: customVersion);
 
         // Assert
-        adapter.ApiVersion.ShouldBe(customVersion);
+        adapter.DefaultApiVersion.ShouldBe(customVersion);
     }
 
     [Fact]

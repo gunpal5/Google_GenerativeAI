@@ -34,7 +34,7 @@ public class ParallelFunctionCallingTests : TestBase
                         "What's the weather forecast for the next few days in Paris?";
         
         // Execute the request
-        var result = await model.GenerateContentAsync(prompt);
+        var result = await model.GenerateContentAsync(prompt, cancellationToken: TestContext.Current.CancellationToken);
         
         // Output the response
         Console.WriteLine(result.Text());
@@ -62,7 +62,7 @@ public class ParallelFunctionCallingTests : TestBase
                         "What's the weather forecast for the next few days in Paris?";
         
         // Execute the streaming request
-        await foreach (var result in model.StreamContentAsync(prompt))
+        await foreach (var result in model.StreamContentAsync(prompt, cancellationToken: TestContext.Current.CancellationToken))
         {
             Console.WriteLine(result.Text());
         }
@@ -94,7 +94,7 @@ public class ParallelFunctionCallingTests : TestBase
 Please provide all this information organized in a clear way.";
         
         // Execute the request
-        var result = await model.GenerateContentAsync(prompt);
+        var result = await model.GenerateContentAsync(prompt, cancellationToken: TestContext.Current.CancellationToken);
         
         // Output the response
         Console.WriteLine(result.Text());

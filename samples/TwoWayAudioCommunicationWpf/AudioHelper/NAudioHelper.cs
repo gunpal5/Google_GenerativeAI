@@ -5,7 +5,7 @@ namespace TwoWayAudioCommunicationWpf.AudioHelper;
 
 public class NAudioHelper
 {
-    public event EventHandler<byte[]> AudioDataReceived;
+    public event EventHandler<byte[]>? AudioDataReceived;
     private BufferedWaveProvider? bufferedWaveProvider = null; //new BufferedWaveProvider(new WaveFormat(16000, 16, 1));
     private WaveOutEvent? waveOut = null;
 
@@ -50,8 +50,7 @@ public class NAudioHelper
         this.bufferedWaveProvider = null;
     }
     
-    private WaveInEvent waveIn;
-    private WaveFileWriter writer;
+    private WaveInEvent? waveIn;
 
     public void StartRecording(int deviceIndex, int sampleRate = 16000, int channels = 1, int bitsPerSample = 16)
     {
@@ -71,7 +70,7 @@ public class NAudioHelper
         IsRecording = false;
     }
 
-    private void WaveIn_DataAvailable(object sender, WaveInEventArgs e)
+    private void WaveIn_DataAvailable(object? sender, WaveInEventArgs e)
     {
         //Detect Voice and Send Event
        // if(DetectVoice(e))
@@ -104,7 +103,7 @@ public class NAudioHelper
         return Math.Sqrt(mean);
     }
 
-    private void WaveIn_RecordingStopped(object sender, StoppedEventArgs e)
+    private void WaveIn_RecordingStopped(object? sender, StoppedEventArgs e)
     {
         
     }

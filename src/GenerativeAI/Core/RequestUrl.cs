@@ -83,13 +83,10 @@ public class RequestUrl
     /// Defines an implicit conversion from a RequestUrl instance to its string representation.
     /// </summary>
     /// <param name="d">The RequestUrl instance.</param>
+    #pragma warning disable CA1062
     public static implicit operator string(RequestUrl d)
     {
-#if NET6_0_OR_GREATER
-        ArgumentNullException.ThrowIfNull(d);
-#else
-        if (d == null) throw new ArgumentNullException(nameof(d));
-#endif
         return d.ToString(d.ApiKey);
     }
+    #pragma warning restore CA1062
 }

@@ -28,7 +28,7 @@ public class CorpusPermissionClient : BaseClient
     /// <seealso href="https://ai.google.dev/api/rest/v1beta/corpora.permissions/create">See Official API Documentation</seealso>
     public async Task<Permission?> CreatePermissionAsync(string parent, Permission permission, CancellationToken cancellationToken = default)
     {
-        var url = $"{_platform.GetBaseUrl()}/{parent.ToCorpusId()}/permissions";
+        var url = $"{Platform.GetBaseUrl()}/{parent.ToCorpusId()}/permissions";
         return await SendAsync<Permission, Permission>(url, permission, HttpMethod.Post, cancellationToken).ConfigureAwait(false);
     }
 
@@ -56,7 +56,7 @@ public class CorpusPermissionClient : BaseClient
         }
 
         var queryString = queryParams.Count > 0 ? "?" + string.Join("&", queryParams) : string.Empty;
-        var url = $"{_platform.GetBaseUrl()}/{parent.ToCorpusId()}/permissions{queryString}";
+        var url = $"{Platform.GetBaseUrl()}/{parent.ToCorpusId()}/permissions{queryString}";
 
         return await GetAsync<ListPermissionsResponse>(url, cancellationToken).ConfigureAwait(false);
     }
@@ -70,7 +70,7 @@ public class CorpusPermissionClient : BaseClient
     /// <seealso href="https://ai.google.dev/api/rest/v1beta/corpora.permissions/get">See Official API Documentation</seealso>
     public async Task<Permission?> GetPermissionAsync(string name, CancellationToken cancellationToken = default)
     {
-        var baseUrl = _platform.GetBaseUrl();
+        var baseUrl = Platform.GetBaseUrl();
         var url = $"{baseUrl}/{name}";
         return await GetAsync<Permission>(url, cancellationToken).ConfigureAwait(false);
     }
@@ -86,7 +86,7 @@ public class CorpusPermissionClient : BaseClient
     /// <seealso href="https://ai.google.dev/api/rest/v1beta/corpora.permissions/patch">See Official API Documentation</seealso>
     public async Task<Permission?> UpdatePermissionAsync(string permissionName, Permission permission, string? updateMask = null, CancellationToken cancellationToken = default)
     {
-        var baseUrl = _platform.GetBaseUrl();
+        var baseUrl = Platform.GetBaseUrl();
         var url = $"{baseUrl}/{permissionName}";
 
         var queryParams = new List<string>();
@@ -110,13 +110,13 @@ public class CorpusPermissionClient : BaseClient
     /// <seealso href="https://ai.google.dev/api/rest/v1beta/corpora.permissions/delete">See Official API Documentation</seealso>
     public async Task DeletePermissionAsync(string name, CancellationToken cancellationToken = default)
     {
-        var baseUrl = _platform.GetBaseUrl();
+        var baseUrl = Platform.GetBaseUrl();
         var url = $"{baseUrl}/{name}";
         await DeleteAsync(url, cancellationToken).ConfigureAwait(false);
     }
 
     ///<inheritdoc/>
-    protected override Task AddAuthorizationHeader(HttpRequestMessage request, bool requiredAccessToken = false,
+    protected override Task AddAuthorizationHeader(HttpRequestMessage request, bool requireAccessToken = false,
         CancellationToken cancellationToken = default)
     {
         return base.AddAuthorizationHeader(request, true, cancellationToken);

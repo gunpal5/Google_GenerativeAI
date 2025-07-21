@@ -18,6 +18,13 @@ public abstract class TestBase
     public const string GeminiTestSkipMessage =
         "Gemini tests skipped. Add Environment variable 'GEMINI_API_KEY' to run these tests.";
 
+    
+    /// <summary>
+    /// Message displayed when Gemini tests are skipped.
+    /// </summary>
+    public const string GoogleTestSkipMessage =
+        "Gemini tests skipped. Add Environment variable 'GOOGLE_API_KEY' to run these tests.";
+
     /// <summary>
     /// Message displayed when Vertex AI tests are skipped.
     /// </summary>
@@ -113,7 +120,7 @@ public abstract class TestBase
     protected virtual IPlatformAdapter GetTestGooglePlatform()
     {
         //return GetTestVertexAIPlatform();
-        var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+        var apiKey = EnvironmentVariables.GOOGLE_API_KEY;// Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
 
         return new GoogleAIPlatformAdapter(apiKey);
     }

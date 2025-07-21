@@ -39,7 +39,7 @@ public class DocumentsClient : BaseClient
         if (parent == null) throw new ArgumentNullException(nameof(parent));
         if (document == null) throw new ArgumentNullException(nameof(document));
 #endif
-        var url = $"{_platform.GetBaseUrl()}/{parent.ToCorpusId()}/documents";
+        var url = $"{Platform.GetBaseUrl()}/{parent.ToCorpusId()}/documents";
         return await SendAsync<Document, Document>(url, document, HttpMethod.Post, cancellationToken).ConfigureAwait(false);
     }
 
@@ -53,7 +53,7 @@ public class DocumentsClient : BaseClient
     /// <seealso href="https://ai.google.dev/api/semantic-retrieval/documents#method:-corpora.documents.query">See Official API Documentation</seealso>
     public async Task<QueryDocumentResponse?> QueryDocumentAsync(string name, QueryDocumentRequest queryDocumentRequest, CancellationToken cancellationToken = default)
     {
-        var url = $"{_platform.GetBaseUrl()}/{name}:query";
+        var url = $"{Platform.GetBaseUrl()}/{name}:query";
         return await SendAsync<QueryDocumentRequest, QueryDocumentResponse>(url, queryDocumentRequest, HttpMethod.Post, cancellationToken).ConfigureAwait(false);
     }
 
@@ -81,7 +81,7 @@ public class DocumentsClient : BaseClient
         }
 
         var queryString = queryParams.Count > 0 ? "?" + string.Join("&", queryParams) : string.Empty;
-        var url = $"{_platform.GetBaseUrl()}/{parent}/documents{queryString}";
+        var url = $"{Platform.GetBaseUrl()}/{parent}/documents{queryString}";
 
         return await GetAsync<ListDocumentsResponse>(url, cancellationToken).ConfigureAwait(false);
     }
@@ -95,7 +95,7 @@ public class DocumentsClient : BaseClient
     /// <seealso href="https://ai.google.dev/api/semantic-retrieval/documents#method:-corpora.documents.get">See Official API Documentation</seealso>
     public async Task<Document?> GetDocumentAsync(string name, CancellationToken cancellationToken = default)
     {
-        var url = $"{_platform.GetBaseUrl()}/{name}";
+        var url = $"{Platform.GetBaseUrl()}/{name}";
         return await GetAsync<Document>(url, cancellationToken).ConfigureAwait(false);
     }
 
@@ -110,7 +110,7 @@ public class DocumentsClient : BaseClient
     /// <seealso href="https://ai.google.dev/api/semantic-retrieval/documents#method:-corpora.documents.patch">See Official API Documentation</seealso>
     public async Task<Document?> UpdateDocumentAsync(string name, Document document, string updateMask, CancellationToken cancellationToken = default)
     {
-        var url = $"{_platform.GetBaseUrl()}/{name}";
+        var url = $"{Platform.GetBaseUrl()}/{name}";
 
         var queryParams = new List<string>
         {
@@ -132,7 +132,7 @@ public class DocumentsClient : BaseClient
     /// <seealso href="https://ai.google.dev/api/semantic-retrieval/documents#method:-corpora.documents.delete">See Official API Documentation</seealso>
     public async Task DeleteDocumentAsync(string name, bool? force = null, CancellationToken cancellationToken = default)
     {
-        var url = $"{_platform.GetBaseUrl()}/{name}";
+        var url = $"{Platform.GetBaseUrl()}/{name}";
 
         var queryParams = new List<string>();
 
@@ -150,10 +150,10 @@ public class DocumentsClient : BaseClient
     /// Adds the authorization header to the HTTP request.
     /// </summary>
     /// <param name="request">The HTTP request message.</param>
-    /// <param name="requiredAccessToken">Whether an access token is required.</param>
+    /// <param name="requireAccessToken">Whether an access token is required.</param>
     /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    protected override Task AddAuthorizationHeader(HttpRequestMessage request, bool requiredAccessToken = false,
+    protected override Task AddAuthorizationHeader(HttpRequestMessage request, bool requireAccessToken = false,
         CancellationToken cancellationToken = default)
     {
         return base.AddAuthorizationHeader(request, true, cancellationToken);

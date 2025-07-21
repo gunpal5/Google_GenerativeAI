@@ -35,7 +35,7 @@ namespace GenerativeAI.Tests.Clients.SemanticRetrieval
             };
 
             // Act
-            var result = await client.CreatePermissionAsync(TestCorpus, newPermission);
+            var result = await client.CreatePermissionAsync(TestCorpus, newPermission, cancellationToken: TestContext.Current.CancellationToken);
 
             // Assert
             result.ShouldNotBeNull();
@@ -55,7 +55,7 @@ namespace GenerativeAI.Tests.Clients.SemanticRetrieval
             _createdPermissionName.ShouldNotBeNullOrEmpty();
 
             // Act
-            var result = await client.GetPermissionAsync(_createdPermissionName);
+            var result = await client.GetPermissionAsync(_createdPermissionName, cancellationToken: TestContext.Current.CancellationToken);
 
             // Assert
             result.ShouldNotBeNull();
@@ -73,7 +73,7 @@ namespace GenerativeAI.Tests.Clients.SemanticRetrieval
             const int pageSize = 10;
 
             // Act
-            var result = await client.ListPermissionsAsync(TestCorpus, pageSize);
+            var result = await client.ListPermissionsAsync(TestCorpus, pageSize, cancellationToken: TestContext.Current.CancellationToken);
 
             // Assert
             result.ShouldNotBeNull();
@@ -105,7 +105,7 @@ namespace GenerativeAI.Tests.Clients.SemanticRetrieval
             const string updateMask = "role"; // Example update mask
 
             // Act
-            var result = await client.UpdatePermissionAsync(_createdPermissionName, updatedPermission, updateMask);
+            var result = await client.UpdatePermissionAsync(_createdPermissionName, updatedPermission, updateMask, cancellationToken: TestContext.Current.CancellationToken);
 
             // Assert
             result.ShouldNotBeNull();
@@ -123,10 +123,10 @@ namespace GenerativeAI.Tests.Clients.SemanticRetrieval
             _createdPermissionName.ShouldNotBeNullOrEmpty();
 
             // Act
-            await client.DeletePermissionAsync(_createdPermissionName);
+            await client.DeletePermissionAsync(_createdPermissionName, cancellationToken: TestContext.Current.CancellationToken);
 
             // Assert - optionally confirm via retrieval
-            var getResult = await client.GetPermissionAsync(_createdPermissionName);
+            var getResult = await client.GetPermissionAsync(_createdPermissionName, cancellationToken: TestContext.Current.CancellationToken);
             getResult.ShouldBeNull();
 
             Console.WriteLine($"Deleted Permission: Name={_createdPermissionName}");

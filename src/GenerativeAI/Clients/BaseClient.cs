@@ -13,7 +13,7 @@ public class BaseClient : ApiBase
     /// <summary>
     /// 
     /// </summary>
-    protected readonly IPlatformAdapter _platform;
+    private readonly IPlatformAdapter _platform;
 
     /// <summary>
     /// Gets the platform adapter associated with the client.
@@ -43,9 +43,9 @@ public class BaseClient : ApiBase
 
    
     /// <inheritdoc/>
-    protected override async Task AddAuthorizationHeader(HttpRequestMessage request, bool requiredAccessToken = false,
+    protected override async Task AddAuthorizationHeader(HttpRequestMessage request, bool requireAccessToken = false,
         CancellationToken cancellationToken = default)
     {
-        await _platform.AddAuthorizationAsync(request, requiredAccessToken, cancellationToken).ConfigureAwait(false);
+        await _platform.AddAuthorizationAsync(request, requireAccessToken, cancellationToken).ConfigureAwait(false);
     }
 }

@@ -31,9 +31,9 @@ public class VertextPlatformAdapter : IPlatformAdapter
     public bool? ExpressMode { get; private set; }
 
     /// <summary>
-    /// The API version to use when making requests.
+    /// The default API version to use when making requests.
     /// </summary>
-    public string ApiVersion { get; set; }
+    public string DefaultApiVersion { get; set; }
 
     /// <summary>
     /// Publisher information, defaulting to "google".
@@ -81,7 +81,7 @@ public class VertextPlatformAdapter : IPlatformAdapter
     {
         this.ProjectId = projectId;
         this.Region = region;
-        this.ApiVersion = apiVersion;
+        this.DefaultApiVersion = apiVersion;
         if (authenticator == null)
             throw new ArgumentNullException(nameof(authenticator), "Authenticator is required for Vertex AI.");
         this.Authenticator = authenticator;
@@ -112,7 +112,7 @@ public class VertextPlatformAdapter : IPlatformAdapter
         this.ProjectId = projectId ?? EnvironmentVariables.GOOGLE_PROJECT_ID;
         this.Region = region ?? EnvironmentVariables.GOOGLE_REGION;
         this.ExpressMode = expressMode;
-        this.ApiVersion = apiVersion;
+        this.DefaultApiVersion = apiVersion;
         this.Authenticator = authenticator;
         accessToken = accessToken ?? EnvironmentVariables.GOOGLE_ACCESS_TOKEN;
         apiKey = apiKey ?? EnvironmentVariables.GOOGLE_API_KEY;
@@ -190,7 +190,7 @@ public class VertextPlatformAdapter : IPlatformAdapter
     /// <inheritdoc/>
     public string GetApiVersion()
     {
-        return this.ApiVersion;
+        return this.DefaultApiVersion;
     }
 
     /// <summary>
@@ -330,17 +330,17 @@ public class VertextPlatformAdapter : IPlatformAdapter
         if (ExpressMode == true)
         {
             if(appendPublisher)
-                return $"{BaseUrls.VertexAIExpress}/{ApiVersion}/publishers/{Publisher}";
-            else return $"{BaseUrls.VertexAIExpress}/{ApiVersion}";
+                return $"{BaseUrls.VertexAIExpress}/{DefaultApiVersion}/publishers/{Publisher}";
+            else return $"{BaseUrls.VertexAIExpress}/{DefaultApiVersion}";
         }
 #if NETSTANDARD2_0 || NET462_OR_GREATER
         var url = this.BaseUrl.Replace("{region}", Region)
             .Replace("{projectId}", ProjectId)
-            .Replace("{version}", ApiVersion);
+            .Replace("{version}", DefaultApiVersion);
 #else
         var url = this.BaseUrl.Replace("{region}", Region, StringComparison.InvariantCultureIgnoreCase)
             .Replace("{projectId}", ProjectId, StringComparison.InvariantCultureIgnoreCase)
-            .Replace("{version}", ApiVersion, StringComparison.InvariantCultureIgnoreCase);
+            .Replace("{version}", DefaultApiVersion, StringComparison.InvariantCultureIgnoreCase);
 #endif
 
         if(appendPublisher)

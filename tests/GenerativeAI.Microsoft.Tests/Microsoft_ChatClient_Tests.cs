@@ -92,7 +92,7 @@ public class Microsoft_ChatClient_Tests : TestBase
         // Act & Assert
         await Should.ThrowAsync<ArgumentNullException>(async () =>
         {
-            await client.GetResponseAsync((string)null!);
+            await client.GetResponseAsync((string)null!, cancellationToken: TestContext.Current.CancellationToken);
         });
         Console.WriteLine("CompleteAsync threw ArgumentNullException as expected when chatMessages was null.");
     }
@@ -111,12 +111,12 @@ public class Microsoft_ChatClient_Tests : TestBase
             new ChatMessage(ChatRole.User, "What's wrong with hitler?")
         };
 
-        // We’ll stub out the model’s behavior by providing a minimal response
+        // Weï¿½ll stub out the modelï¿½s behavior by providing a minimal response
         // This would normally be mocked more extensively.
         // For demonstration, we assume GenerateContentAsync(...) works.
 
         // Act
-        var result = await client.GetResponseAsync(messages);
+        var result = await client.GetResponseAsync(messages, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldNotBeNull();
@@ -141,7 +141,7 @@ public class Microsoft_ChatClient_Tests : TestBase
         // Act & Assert
         await Should.ThrowAsync<ArgumentNullException>(async () =>
         {
-            await foreach (var _ in client.GetStreamingResponseAsync((string)null!))
+            await foreach (var _ in client.GetStreamingResponseAsync((string)null!, cancellationToken: TestContext.Current.CancellationToken))
             {
                 // Should never get here
                 Console.WriteLine(_.Text ?? "null");
@@ -164,7 +164,7 @@ public class Microsoft_ChatClient_Tests : TestBase
 
         // Act
         var updates = new List<ChatResponseUpdate>();
-        await foreach (var update in client.GetStreamingResponseAsync(messages))
+        await foreach (var update in client.GetStreamingResponseAsync(messages, cancellationToken: TestContext.Current.CancellationToken))
         {
             updates.Add(update);
             Console.WriteLine(update.Text ?? "null");

@@ -283,6 +283,7 @@ public partial class GenerativeModel
     /// Counts the number of tokens in the content based on the provided <see cref="GenerateContentRequest"/>.
     /// </summary>
     /// <param name="generateContentRequest">An instance of <see cref="GenerateContentRequest"/> containing the input data for which the token count is calculated.</param>
+    /// <param name="cancellationToken">A cancellation token that can be used to cancel the operation.</param>
     /// <returns>A task that represents the asynchronous operation, containing a <see cref="CountTokensResponse"/> with token count details.</returns>
     public async Task<CountTokensResponse> CountTokensAsync(GenerateContentRequest generateContentRequest, CancellationToken cancellationToken = default)
     {

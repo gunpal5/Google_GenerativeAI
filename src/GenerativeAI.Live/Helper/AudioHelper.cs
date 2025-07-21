@@ -19,10 +19,14 @@ public static class AudioHelper
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="audioData"/> is null.</exception>
     public static byte[] AddWaveHeader(byte[] audioData, int numberOfChannels, int sampleRate, int bitsPerSample2)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(audioData);
+#else
         if (audioData == null)
         {
             throw new ArgumentNullException(nameof(audioData));
         }
+#endif
 
         var numChannels =(ushort) BitConverter.ToUInt16(BitConverter.GetBytes(numberOfChannels));
         var bitsPerSample =(ushort) BitConverter.ToUInt16(BitConverter.GetBytes(bitsPerSample2));
@@ -115,10 +119,12 @@ public static class AudioHelper
 
                 return true; 
             }
+#pragma warning disable CA1031 // Do not catch general exception types
             catch (Exception)
             {
                 return false; 
             }
+#pragma warning restore CA1031
         }
     }
 }

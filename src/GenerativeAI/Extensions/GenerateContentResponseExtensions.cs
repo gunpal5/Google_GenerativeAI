@@ -17,11 +17,15 @@ public static class GenerateContentResponseExtensions
     /// <returns>The text if found; otherwise null.</returns>
     public static string? Text(this GenerateContentResponse response)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(response);
+#else
         if (response == null)
             throw new ArgumentNullException(nameof(response));
+#endif
 
         StringBuilder sb = new StringBuilder();
-        if (response?.Candidates != null)
+        if (response.Candidates != null)
         {
             foreach (var candidate in response.Candidates)
             {

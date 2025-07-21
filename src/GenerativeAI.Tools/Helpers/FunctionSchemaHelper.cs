@@ -6,8 +6,18 @@ using GenerativeAI.Utility;
 
 namespace GenerativeAI.Tools.Helpers;
 
+/// <summary>
+/// Helper class for creating function schemas and declarations.
+/// </summary>
 public static class FunctionSchemaHelper
 {
+    /// <summary>
+    /// Creates a function declaration from a delegate.
+    /// </summary>
+    /// <param name="func">The delegate to create a declaration from.</param>
+    /// <param name="name">Optional custom name for the function.</param>
+    /// <param name="description">Optional custom description for the function.</param>
+    /// <returns>A FunctionDeclaration representing the delegate.</returns>
     public static FunctionDeclaration CreateFunctionDecleration(Delegate func, string? name, string? description)
     {
 #if NET6_0_OR_GREATER

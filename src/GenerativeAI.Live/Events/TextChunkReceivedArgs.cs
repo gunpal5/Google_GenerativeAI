@@ -5,6 +5,7 @@ namespace GenerativeAI.Live;
 /// <summary>
 /// Contains the arguments for the event when a text chunk is received.
 /// </summary>
+#pragma warning disable CA1710 // Identifiers should have correct suffix
 public class TextChunkReceivedArgs : EventArgs
 {
     /// <summary>

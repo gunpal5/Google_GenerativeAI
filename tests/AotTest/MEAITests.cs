@@ -20,7 +20,7 @@ public class MEAITests
         var tools = new Tools([GetCurrentWeatherAsync]);
         chatOptions.Tools = tools.AsMeaiTools();
         var message = new ChatMessage(ChatRole.User, "What is the weather in New York in celsius?");
-        var response = await chatClient.GetResponseAsync(message,options:chatOptions);
+        var response = await chatClient.GetResponseAsync(message,options:chatOptions, cancellationToken: CancellationToken.None);
 
         Console.WriteLine(response.Text);
         response.Text.Contains("New York", StringComparison.InvariantCultureIgnoreCase);
@@ -35,7 +35,7 @@ public class MEAITests
         chatOptions.Tools = [new QuickTool(GetCurrentWeatherAsync).AsMeaiTool()];
         
         var message = new ChatMessage(ChatRole.User, "What is the weather in New York in celsius?");
-        var response = await chatClient.GetResponseAsync(message,options:chatOptions);
+        var response = await chatClient.GetResponseAsync(message,options:chatOptions, cancellationToken: CancellationToken.None);
         Console.WriteLine(response.Text);
     }
     
@@ -49,7 +49,7 @@ public class MEAITests
         chatOptions.Tools = tools.AsMeaiTools();
        
         var message = new ChatMessage(ChatRole.User, "what is written on page 96 in the book 'damdamadum'");
-        var response = await chatClient.GetResponseAsync(message,options:chatOptions);
+        var response = await chatClient.GetResponseAsync(message,options:chatOptions, cancellationToken: CancellationToken.None);
 
         response.Text.ShouldContain("damdamadum",Case.Insensitive);
     }
@@ -63,15 +63,15 @@ public class MEAITests
     
     [FunctionTool(MeaiFunctionTool = true)]
     [System.ComponentModel.Description("Get the current weather in a given location")]
-    public async Task<Weather> GetCurrentWeatherAsync(string location, Unit unit = Unit.Celsius, CancellationToken cancellationToken = default)
+    public Task<Weather> GetCurrentWeatherAsync(string location, Unit unit = Unit.Celsius, CancellationToken cancellationToken = default)
     {
-        return new Weather
+        return Task.FromResult(new Weather
         {
             Location = location,
             Temperature = 30.0,
             Unit = unit,
             Description = "Sunny",
-        };
+        });
     }
     public enum Unit
     {

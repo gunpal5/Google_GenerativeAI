@@ -4,19 +4,41 @@ using Microsoft.Extensions.Options;
 
 namespace GenerativeAI.Web;
 
+/// <summary>
+/// Interface for GenerativeAI service that provides access to AI models.
+/// </summary>
 public interface IGenerativeAiService
 {
+    /// <summary>
+    /// Gets the underlying GenerativeAI platform instance.
+    /// </summary>
     IGenerativeAI Platform { get; }
 
+    /// <summary>
+    /// Creates a generative model instance.
+    /// </summary>
+    /// <param name="modelName">The name of the model to create.</param>
+    /// <returns>A generative model instance.</returns>
     IGenerativeModel CreateInstance(string modelName = GoogleAIModels.DefaultGeminiModel);
 }
 
+/// <summary>
+/// Service implementation for GenerativeAI that provides access to AI models.
+/// </summary>
 public class GenerativeAIService : IGenerativeAiService
 {
     private readonly IGenerativeAI _platform;
     private readonly IGoogleAuthenticator? _authenticator;
+    
+    /// <summary>
+    /// Gets or sets the logger instance.
+    /// </summary>
     public ILogger? Logger { get; set; }
 
+    /// <summary>
+    /// Initializes a new instance of the GenerativeAIService class.
+    /// </summary>
+    /// <param name="options">The configuration options for GenerativeAI.</param>
     public GenerativeAIService(IOptions<GenerativeAIOptions> options)
     {
 #if NET6_0_OR_GREATER
@@ -43,9 +65,16 @@ public class GenerativeAIService : IGenerativeAiService
         }
     }
 
+    /// <summary>
+    /// Gets the underlying GenerativeAI platform instance.
+    /// </summary>
     public IGenerativeAI Platform { get => _platform; }
-  
 
+    /// <summary>
+    /// Creates a generative model instance.
+    /// </summary>
+    /// <param name="modelName">The name of the model to create.</param>
+    /// <returns>A generative model instance.</returns>
     public IGenerativeModel CreateInstance(string modelName = GoogleAIModels.DefaultGeminiModel)
     {
         return _platform.CreateGenerativeModel(modelName);

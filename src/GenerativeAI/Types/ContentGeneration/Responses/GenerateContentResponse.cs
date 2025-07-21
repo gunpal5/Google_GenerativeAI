@@ -66,7 +66,7 @@ public class GenerateContentResponse
                 $"GenerateContentResponse {{ Candidates = [{candidatesStr}], PromptFeedback = {feedbackStr}, UsageMetadata = {metadataStr}, ModelVersion = {versionStr} }}";
         }
 
-        return text ?? string.Empty;
+        return text!;
     }
 
     /// <summary>

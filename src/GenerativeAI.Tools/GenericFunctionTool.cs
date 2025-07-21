@@ -26,7 +26,14 @@ public class GenericFunctionTool:GoogleFunctionTool
         Calls = calls;
         Tools = tools.ToList();
     }
+    /// <summary>
+    /// Gets the dictionary of function calls mapped by function name.
+    /// </summary>
     public IReadOnlyDictionary<string, Func<string, CancellationToken, Task<string>>> Calls { get; private set; }
+    
+    /// <summary>
+    /// Gets the list of tools available for this generic function tool.
+    /// </summary>
     public IReadOnlyList<CSharpToJsonSchema.Tool> Tools { get; private set; }
     
    
@@ -44,7 +51,7 @@ public class GenericFunctionTool:GoogleFunctionTool
         };
     }
 
-    private Schema? ToSchema(object parameters)
+    private static Schema? ToSchema(object parameters)
     {
         var param = JsonSerializer.Serialize(parameters, OpenApiSchemaSourceGenerationContext.Default.OpenApiSchema);
         return JsonSerializer.Deserialize(param,SchemaSourceGenerationContext.Default.Schema);
@@ -58,7 +65,7 @@ public class GenericFunctionTool:GoogleFunctionTool
 #else
         if (functionCall == null) throw new ArgumentNullException(nameof(functionCall));
 #endif
-        #pragma disable warning IL2026, IL3050
+        #pragma warning disable IL2026, IL3050
         if (this.Calls.TryGetValue(functionCall.Name, out var call))
         {
             string? args = null;
@@ -90,7 +97,7 @@ public class GenericFunctionTool:GoogleFunctionTool
                 
                 Response = responseNode,
             };
-#pragma restore warning IL2026, IL3050
+#pragma warning restore IL2026, IL3050
         }
         return null;
     }

@@ -39,7 +39,7 @@ public class ImagenModel : BaseClient
 #else
         if (request == null) throw new ArgumentNullException(nameof(request));
 #endif
-        var url = $"{_platform.GetBaseUrl()}/{_modelName.ToModelId()}:predict";
+        var url = $"{Platform.GetBaseUrl()}/{_modelName.ToModelId()}:predict";
         return await SendAsync<GenerateImageRequest, GenerateImageResponse>(url, request, HttpMethod.Post,cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 

@@ -120,10 +120,12 @@ public abstract class GenAI
     /// URL creation, and API version management, for interacting with the underlying platform.
     /// </summary>
     /// <returns>The platform adapter instance implementing <see cref="IPlatformAdapter"/>.</returns>
+    #pragma warning disable CA1024
     public IPlatformAdapter GetPlatformAdapter()
     {
         return this.Platform;
     }
+    #pragma warning restore CA1024
 
     /// <summary>
     /// Creates and initializes an image generation model for use with the Imagen image generation API.

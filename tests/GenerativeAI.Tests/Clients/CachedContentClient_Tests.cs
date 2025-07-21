@@ -21,8 +21,8 @@ public class CachingClient_Tests : TestBase
     public async Task ShouldCreateCachedContentAsync()
     {
         // Arrange
-        var httpClient = new WebClient();
-        var file = httpClient.DownloadString("https://storage.googleapis.com/generativeai-downloads/data/a11.txt");
+        using var httpClient = new HttpClient();
+        var file = await httpClient.GetStringAsync("https://storage.googleapis.com/generativeai-downloads/data/a11.txt",TestContext.Current.CancellationToken);
          var client = CreateCachingClient();
         var cachedContent = new CachedContent
         {

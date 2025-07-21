@@ -9,10 +9,10 @@ public static class MimeTypeMap
     private const string QuestionMark = "?";
     private const string DefaultMimeType = "application/octet-stream";
 
-    private static readonly Lazy<IDictionary<string, string>> _mappings =
-        new Lazy<IDictionary<string, string>>(BuildMappings);
+    private static readonly Lazy<Dictionary<string, string>> _mappings =
+        new Lazy<Dictionary<string, string>>(BuildMappings);
 
-    private static IDictionary<string, string> BuildMappings()
+    private static Dictionary<string, string> BuildMappings()
     {
         var mappings = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
@@ -787,13 +787,13 @@ public static class MimeTypeMap
 #if NET6_0_OR_GREATER
         if (!str.StartsWith(Dot, StringComparison.Ordinal))
 #else
-        if (!str.StartsWith(Dot))
+        if (!str.StartsWith(Dot, StringComparison.Ordinal))
 #endif
         {
 #if NET6_0_OR_GREATER
             var index = str.LastIndexOf(Dot, StringComparison.Ordinal);
 #else
-            var index = str.LastIndexOf(Dot);
+            var index = str.LastIndexOf(Dot, StringComparison.Ordinal);
 #endif
             if (index != -1 && str.Length > index + 1)
             {
@@ -827,15 +827,19 @@ public static class MimeTypeMap
     /// <exception cref="ArgumentException" />
     public static string GetExtension(string mimeType, bool throwErrorIfNotFound = true)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(mimeType);
+#else
         if (mimeType == null)
         {
             throw new ArgumentNullException(nameof(mimeType));
         }
+#endif
 
 #if NET6_0_OR_GREATER
         if (mimeType.StartsWith(Dot, StringComparison.Ordinal))
 #else
-        if (mimeType.StartsWith(Dot))
+        if (mimeType.StartsWith(Dot, StringComparison.Ordinal))
 #endif
         {
             throw new ArgumentException("Requested mime type is not valid: " + mimeType);

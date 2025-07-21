@@ -13,7 +13,7 @@ namespace CodeExecutor;
 /// </summary>
 public class JavascriptCodeExecutor : IJavascriptCodeExecutor
 {
-    public async Task<object?> ExecuteJavascriptCodeAsync(string code, CancellationToken cancellationToken = default)
+    public Task<object?> ExecuteJavascriptCodeAsync(string code, CancellationToken cancellationToken = default)
     {
         using var engine = new Engine();
         var sb = new StringBuilder();
@@ -37,7 +37,7 @@ public class JavascriptCodeExecutor : IJavascriptCodeExecutor
 
         var evaluationResult = engine.Evaluate(code);
 
-        return evaluationResult.Type switch
+        var result = evaluationResult.Type switch
         {
             Types.Null => sb.ToString(),
             _ when evaluationResult.IsArray() => evaluationResult.AsArray()
@@ -46,6 +46,8 @@ public class JavascriptCodeExecutor : IJavascriptCodeExecutor
                 .ToList(),
             _ => evaluationResult.ToObject()
         };
+
+        return Task.FromResult(result);
     }
 }
 

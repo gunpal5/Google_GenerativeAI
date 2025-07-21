@@ -40,9 +40,9 @@ public class FileManagementClient : BaseClient
         Action<double>? progressCallback = null, CancellationToken cancellationToken = default)
     {
         var url =
-            $"{_platform.GetBaseUrl(appendPublisher: false)}/{corpusName.ToRagCorpusId()}/ragFiles:upload?alt=json&uploadType=multipart";
+            $"{Platform.GetBaseUrl(appendPublisher: false)}/{corpusName.ToRagCorpusId()}/ragFiles:upload?alt=json&uploadType=multipart";
 
-        var version = _platform.GetApiVersion();
+        var version = Platform.GetApiVersion();
 #if NET6_0_OR_GREATER
         url = url.Replace($"/{version}", $"/upload/{version}", StringComparison.Ordinal);
 #else
@@ -71,6 +71,7 @@ public class FileManagementClient : BaseClient
         var json = JsonSerializer.Serialize(request, typeInfo);
         //Upload File
         using var file = File.OpenRead(filePath);
+#pragma warning disable CA2000 // Objects are disposed properly via HttpRequestMessage ownership transfer
         var httpMessage = new HttpRequestMessage(HttpMethod.Post, url);
         httpMessage.Headers.Add("X-Goog-Upload-Protocol", "multipart");
         MultipartContent? multipart = null;
@@ -94,7 +95,7 @@ public class FileManagementClient : BaseClient
             stringContent = null;
             progressContent = null;
             
-            await _platform.AddAuthorizationAsync(httpMessage, true, cancellationToken).ConfigureAwait(false);
+            await Platform.AddAuthorizationAsync(httpMessage, true, cancellationToken).ConfigureAwait(false);
             var response = await HttpClient.SendAsync(httpMessage, cancellationToken).ConfigureAwait(false);
             await CheckAndHandleErrors(response, url).ConfigureAwait(false);
 
@@ -106,13 +107,11 @@ public class FileManagementClient : BaseClient
         }
         catch
         {
-            // Dispose only if ownership was not transferred
-            stringContent?.Dispose();
-            progressContent?.Dispose();
-            multipart?.Dispose();
+            // HttpRequestMessage disposal will handle content disposal
             httpMessage.Dispose();
             throw;
         }
+#pragma warning restore CA2000
     }
 
     /// <summary>
@@ -125,7 +124,7 @@ public class FileManagementClient : BaseClient
     public async Task<GoogleLongRunningOperation> ImportRagFilesAsync(string parent, ImportRagFilesRequest request,
         CancellationToken cancellationToken = default)
     {
-        var url = $"{_platform.GetBaseUrl(appendPublisher:false)}/{parent.ToRagCorpusId()}/ragFiles:import";
+        var url = $"{Platform.GetBaseUrl(appendPublisher:false)}/{parent.ToRagCorpusId()}/ragFiles:import";
 
         return await SendAsync<ImportRagFilesRequest, GoogleLongRunningOperation>(url, request, HttpMethod.Post,
             cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -155,7 +154,7 @@ public class FileManagementClient : BaseClient
         }
     
         var queryString = queryParams.Count > 0 ? "?" + string.Join("&", queryParams) : string.Empty;
-        var url = $"{_platform.GetBaseUrl(appendPublisher:false)}/{parent.ToRagCorpusId()}/ragFiles{queryString}";
+        var url = $"{Platform.GetBaseUrl(appendPublisher:false)}/{parent.ToRagCorpusId()}/ragFiles{queryString}";
     
         return await GetAsync<ListRagFilesResponse>(url, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
@@ -169,7 +168,7 @@ public class FileManagementClient : BaseClient
     /// <seealso href="https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/rag-api">See Official API Documentation</seealso>
     public async Task<RagFile?> GetRagFileAsync(string name, CancellationToken cancellationToken = default)
     {
-        var baseUrl = _platform.GetBaseUrl(appendPublisher:false);
+        var baseUrl = Platform.GetBaseUrl(appendPublisher:false);
         var url = $"{baseUrl}/{name.ToRagFileId()}";
         return await GetAsync<RagFile>(url, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
@@ -183,7 +182,7 @@ public class FileManagementClient : BaseClient
     /// <seealso href="https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/rag-api">See Official API Documentation</seealso>
     public async Task DeleteRagFileAsync(string name, CancellationToken cancellationToken = default)
     {
-        var baseUrl = _platform.GetBaseUrl(appendPublisher:false);
+        var baseUrl = Platform.GetBaseUrl(appendPublisher:false);
         var url = $"{baseUrl}/{name.ToRagFileId()}";
         await DeleteAsync(url, cancellationToken: cancellationToken).ConfigureAwait(false);
     }

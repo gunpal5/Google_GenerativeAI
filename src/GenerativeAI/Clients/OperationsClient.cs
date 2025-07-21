@@ -49,7 +49,7 @@ public class OperationsClient : BaseClient
         }
 
         var queryString = queryParams.Count > 0 ? "?" + string.Join("&", queryParams) : string.Empty;
-        var url = $"{_platform.GetBaseUrl(appendPublisher:false)}/{name.RecoverOperationId()}/operations{queryString}";
+        var url = $"{Platform.GetBaseUrl(appendPublisher:false)}/{name.RecoverOperationId()}/operations{queryString}";
 
         return await GetAsync<GoogleLongRunningListOperationsResponse>(url, cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -64,7 +64,7 @@ public class OperationsClient : BaseClient
     public async Task<GoogleLongRunningOperation?> GetOperationAsync(string name,
         CancellationToken cancellationToken = default)
     {
-        var url = $"{_platform.GetBaseUrl(appendPublisher:false)}/{name.RecoverOperationId()}";
+        var url = $"{Platform.GetBaseUrl(appendPublisher:false)}/{name.RecoverOperationId()}";
         return await GetAsync<GoogleLongRunningOperation>(url, cancellationToken: cancellationToken)
             .ConfigureAwait(false);
     }
@@ -77,7 +77,7 @@ public class OperationsClient : BaseClient
     /// <returns>A task representing the asynchronous operation.</returns>
     public async Task DeleteOperationAsync(string name, CancellationToken cancellationToken = default)
     {
-        var url = $"{_platform.GetBaseUrl(appendPublisher:false)}/{name.RecoverOperationId()}";
+        var url = $"{Platform.GetBaseUrl(appendPublisher:false)}/{name.RecoverOperationId()}";
         await DeleteAsync(url, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
@@ -89,7 +89,7 @@ public class OperationsClient : BaseClient
     /// <returns>A task representing the asynchronous operation.</returns>
     public async Task CancelOperationAsync(string name, CancellationToken cancellationToken = default)
     {
-        var url = $"{_platform.GetBaseUrl(appendPublisher:false)}/{name.RecoverOperationId()}:cancel";
+        var url = $"{Platform.GetBaseUrl(appendPublisher:false)}/{name.RecoverOperationId()}:cancel";
         await GetAsync<dynamic>(url, cancellationToken).ConfigureAwait(false);
     }
 
@@ -101,7 +101,7 @@ public class OperationsClient : BaseClient
     /// <returns>The current status of the long-running operation.</returns>
     public async Task<GoogleLongRunningOperation> FetchOperationStatusAsync(string operationId, CancellationToken cancellationToken)
     {
-        var url = $"{_platform.GetBaseUrl(appendPublisher:false)}/{operationId.RecoverModelIdFromOperationId()}:fetchPredictOperation";
+        var url = $"{Platform.GetBaseUrl(appendPublisher:false)}/{operationId.RecoverModelIdFromOperationId()}:fetchPredictOperation";
 
         GoogleLongRunningOperation post = new GoogleLongRunningOperation()
         {

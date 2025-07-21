@@ -1,4 +1,4 @@
-using Shouldly;
+﻿using Shouldly;
 
 namespace GenerativeAI.Tests.Model;
 
@@ -14,7 +14,7 @@ public class GenerativeAI_Tools_Tests:TestBase
         bool useGrounding = false,
         bool useCodeExecutionTool = false)
     {
-        Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+        Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
 
         return new GenerativeModel(
             platform: GetTestGooglePlatform()!,

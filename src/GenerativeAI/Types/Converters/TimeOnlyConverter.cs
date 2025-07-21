@@ -11,7 +11,6 @@ using System.Text.Json.Serialization;
 /// </summary>
 public class TimeOnlyJsonConverter : JsonConverter<TimeOnly>
 {
-    private const string TimeFormat = "O";
 
     // Reads JSON and converts it to TimeOnly
     /// <summary>

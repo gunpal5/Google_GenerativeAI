@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <RootNamespace>GenerativeAI.Samples.CodeExecutor</RootNamespace>
+    <NoWarn>$(NoWarn);CS8604;CS8602</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

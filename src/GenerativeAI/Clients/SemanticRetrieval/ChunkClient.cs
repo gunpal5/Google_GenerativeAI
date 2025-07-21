@@ -31,7 +31,7 @@ public class ChunkClient : BaseClient
     /// <seealso href="https://ai.google.dev/api/rest/v1beta/corpora.documents.chunks/create">See Official API Documentation</seealso>
     public async Task<Chunk?> CreateChunkAsync(string parent, Chunk chunk, CancellationToken cancellationToken = default)
     {
-        var url = $"{_platform.GetBaseUrl()}/{parent}/chunks";
+        var url = $"{Platform.GetBaseUrl()}/{parent}/chunks";
         return await SendAsync<Chunk, Chunk>(url, chunk, HttpMethod.Post, cancellationToken).ConfigureAwait(false);
     }
 
@@ -59,7 +59,7 @@ public class ChunkClient : BaseClient
         }
 
         var queryString = queryParams.Count > 0 ? "?" + string.Join("&", queryParams) : string.Empty;
-        var url = $"{_platform.GetBaseUrl()}/{parent}/chunks{queryString}";
+        var url = $"{Platform.GetBaseUrl()}/{parent}/chunks{queryString}";
 
         return await GetAsync<ListChunksResponse>(url, cancellationToken).ConfigureAwait(false);
     }
@@ -85,7 +85,7 @@ public class ChunkClient : BaseClient
     /// <seealso href="https://ai.google.dev/api/rest/v1beta/corpora.documents.chunks/get">See Official API Documentation</seealso>
     public async Task<Chunk?> GetChunkAsync(string name, CancellationToken cancellationToken = default)
     {
-        var url = $"{_platform.GetBaseUrl()}/{name}";
+        var url = $"{Platform.GetBaseUrl()}/{name}";
         return await GetAsync<Chunk>(url, cancellationToken).ConfigureAwait(false);
     }
 
@@ -104,7 +104,7 @@ public class ChunkClient : BaseClient
 #else
         if (chunk == null) throw new ArgumentNullException(nameof(chunk));
 #endif
-        var url = $"{_platform.GetBaseUrl()}/{chunk.Name}";
+        var url = $"{Platform.GetBaseUrl()}/{chunk.Name}";
 
         var queryParams = new List<string>
         {
@@ -125,7 +125,7 @@ public class ChunkClient : BaseClient
     /// <seealso href="https://ai.google.dev/api/rest/v1beta/corpora.documents.chunks/delete">See Official API Documentation</seealso>
     public async Task DeleteChunkAsync(string name, CancellationToken cancellationToken = default)
     {
-        var url = $"{_platform.GetBaseUrl()}/{name}";
+        var url = $"{Platform.GetBaseUrl()}/{name}";
         await DeleteAsync(url, cancellationToken).ConfigureAwait(false);
     }
 
@@ -144,7 +144,7 @@ public class ChunkClient : BaseClient
 #else
         if (requests == null) throw new ArgumentNullException(nameof(requests));
 #endif
-        var url = $"{_platform.GetBaseUrl()}/{parent}/chunks:batchCreate";
+        var url = $"{Platform.GetBaseUrl()}/{parent}/chunks:batchCreate";
         foreach (var request in requests)
         {
             if(string.IsNullOrEmpty(request.Parent))
@@ -169,7 +169,7 @@ public class ChunkClient : BaseClient
     /// <seealso href="https://ai.google.dev/api/rest/v1beta/corpora.documents.chunks/batchUpdate">See Official API Documentation</seealso>
     public async Task<BatchUpdateChunksResponse?> BatchUpdateChunksAsync(string parent, List<UpdateChunkRequest> requests, CancellationToken cancellationToken = default)
     {
-        var url = $"{_platform.GetBaseUrl()}/{parent}/chunks:batchUpdate";
+        var url = $"{Platform.GetBaseUrl()}/{parent}/chunks:batchUpdate";
         var requestBody = new { requests };
         return await SendAsync<object, BatchUpdateChunksResponse>(url, requestBody, HttpMethod.Post, cancellationToken).ConfigureAwait(false);
     }
@@ -184,7 +184,7 @@ public class ChunkClient : BaseClient
     /// <seealso href="https://ai.google.dev/api/rest/v1beta/corpora.documents.chunks/batchDelete">See Official API Documentation</seealso>
     public async Task BatchDeleteChunksAsync(string parent, List<DeleteChunkRequest> requests, CancellationToken cancellationToken = default)
     {
-        var url = $"{_platform.GetBaseUrl()}/{parent}/chunks:batchDelete";
+        var url = $"{Platform.GetBaseUrl()}/{parent}/chunks:batchDelete";
         var requestBody = new BatchDeleteChunksRequest(requests);
         await SendAsync<BatchDeleteChunksRequest, object?>(url, requestBody, HttpMethod.Post, cancellationToken).ConfigureAwait(false);
     }

@@ -22,7 +22,7 @@ namespace GenerativeAI.IntegrationTests
             
             model.AddFunctionTool(tool);
 
-            var result = await model.GenerateContentAsync("What is the weather in san francisco today?");
+            var result = await model.GenerateContentAsync("What is the weather in san francisco today?", cancellationToken: TestContext.Current.CancellationToken);
             
             Console.WriteLine(result.Text());
         }
@@ -40,7 +40,7 @@ namespace GenerativeAI.IntegrationTests
             
             model.AddFunctionTool(tool);
 
-            await foreach (var result in model.StreamContentAsync("What is the weather in san francisco today?")
+            await foreach (var result in model.StreamContentAsync("What is the weather in san francisco today?", cancellationToken: TestContext.Current.CancellationToken)
                                )
             {
                 Console.WriteLine(result.Text());
@@ -51,7 +51,7 @@ namespace GenerativeAI.IntegrationTests
         }
 
         [Fact]
-        public async Task ShouldInvokeWetherService2()
+        public Task ShouldInvokeWetherService2()
         {
             // WeatherService service = new WeatherService();
             // var functions = service.AsGoogleFunctions();
@@ -64,6 +64,7 @@ namespace GenerativeAI.IntegrationTests
             // var result = await model.GenerateContentAsync("What is the weather in san francisco today?");
             //
             // Console.WriteLine(result);
+            return Task.CompletedTask;
         }
         
         [Fact]
@@ -74,7 +75,7 @@ namespace GenerativeAI.IntegrationTests
             var tool = new GenericFunctionTool(service.AsTools(), service.AsCalls());
             var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.DefaultGeminiModel);
             model.AddFunctionTool(tool);
-            var result = await model.GenerateContentAsync("what is written on page 35 in the book 'abracadabra'");
+            var result = await model.GenerateContentAsync("what is written on page 35 in the book 'abracadabra'", cancellationToken: TestContext.Current.CancellationToken);
             Console.WriteLine(result.Text());
         }
         
@@ -87,7 +88,7 @@ namespace GenerativeAI.IntegrationTests
             var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.DefaultGeminiModel);
             model.AddFunctionTool(tool);
             await foreach (var result in model
-                               .StreamContentAsync("what is written on page 35 in the book 'abracadabra'")
+                               .StreamContentAsync("what is written on page 35 in the book 'abracadabra'", cancellationToken: TestContext.Current.CancellationToken)
                                )
             {
                 Console.WriteLine(result.Text());
@@ -104,7 +105,7 @@ namespace GenerativeAI.IntegrationTests
             var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.DefaultGeminiModel);
             model.AddFunctionTool(tool);
             await foreach (var result in model
-                               .StreamContentAsync("Give me the list of books")
+                               .StreamContentAsync("Give me the list of books", cancellationToken: TestContext.Current.CancellationToken)
                                )
             {
                 Console.WriteLine(result.Text());
@@ -121,7 +122,7 @@ namespace GenerativeAI.IntegrationTests
             var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.DefaultGeminiModel);
             model.AddFunctionTool(tool);
             await foreach (var result in model
-                               .StreamContentAsync("Give me the list of books")
+                               .StreamContentAsync("Give me the list of books", cancellationToken: TestContext.Current.CancellationToken)
                                )
             {
                 Console.WriteLine(result.Text());
@@ -137,7 +138,7 @@ namespace GenerativeAI.IntegrationTests
             var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.DefaultGeminiModel);
             model.AddFunctionTool(tool);
             await foreach (var result in model
-                               .StreamContentAsync("Give me the list of books")
+                               .StreamContentAsync("Give me the list of books", cancellationToken: TestContext.Current.CancellationToken)
                                )
             {
                 Console.WriteLine(result.Text());
@@ -153,7 +154,7 @@ namespace GenerativeAI.IntegrationTests
             var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.DefaultGeminiModel);
             model.AddFunctionTool(tool);
             await foreach (var result in model
-                               .StreamContentAsync("Give me the list of books")
+                               .StreamContentAsync("Give me the list of books", cancellationToken: TestContext.Current.CancellationToken)
                                )
             {
                 Console.WriteLine(result.Text());

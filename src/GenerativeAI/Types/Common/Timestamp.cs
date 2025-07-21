@@ -42,7 +42,7 @@ public class Timestamp
 #if NET6_0_OR_GREATER
         ArgumentNullException.ThrowIfNull(timestamp);
 #else
-        if (timestamp == null) throw new ArgumentNullException(nameof(timestamp));
+        if (timestamp == null) return DateTime.Now;
 #endif
         return timestamp.ToDateTime();
     }

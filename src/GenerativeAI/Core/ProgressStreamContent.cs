@@ -25,15 +25,15 @@ public class ProgressStreamContent : HttpContent
     /// Serializes the content of the stream to a target stream asynchronously
     /// while tracking and reporting the upload progress.
     /// </summary>
-    /// <param name="targetStream">The target stream where the content will be serialized.</param>
+    /// <param name="stream">The stream where the content will be serialized.</param>
     /// <param name="context">An optional transport context that provides additional information about the stream operation.</param>
     /// <returns>A task representing the asynchronous operation of writing the content to the target stream.</returns>
-    protected override async Task SerializeToStreamAsync(Stream targetStream, TransportContext? context)
+    protected override async Task SerializeToStreamAsync(Stream stream, TransportContext? context)
     {
 #if NET6_0_OR_GREATER
-        ArgumentNullException.ThrowIfNull(targetStream);
+        ArgumentNullException.ThrowIfNull(stream);
 #else
-        if (targetStream == null) throw new ArgumentNullException(nameof(targetStream));
+        if (stream == null) throw new ArgumentNullException(nameof(stream));
 #endif
         var buffer = new byte[81920]; // 80 KB buffer size
         var totalBytes = _stream.Length;
@@ -52,9 +52,9 @@ public class ProgressStreamContent : HttpContent
             }
 
 #if NET6_0_OR_GREATER
-            await targetStream.WriteAsync(buffer.AsMemory(0, bytesRead)).ConfigureAwait(false);
+            await stream.WriteAsync(buffer.AsMemory(0, bytesRead)).ConfigureAwait(false);
 #else
-            await targetStream.WriteAsync(buffer, 0, bytesRead).ConfigureAwait(false);
+            await stream.WriteAsync(buffer, 0, bytesRead).ConfigureAwait(false);
 #endif
 
             uploadedBytes += bytesRead;

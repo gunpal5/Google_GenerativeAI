@@ -39,7 +39,7 @@ public class ImageTextModel: BaseClient
 #else
         if (request == null) throw new ArgumentNullException(nameof(request));
 #endif
-        var url = $"{_platform.GetBaseUrl()}/models/imagetext:predict";
+        var url = $"{Platform.GetBaseUrl()}/models/imagetext:predict";
         
         return await SendAsync<ImageCaptioningRequest, ImageCaptioningResponse>(url, request, HttpMethod.Post, cancellationToken).ConfigureAwait(false);
     }
@@ -58,7 +58,7 @@ public class ImageTextModel: BaseClient
 #else
         if (request == null) throw new ArgumentNullException(nameof(request));
 #endif
-        var url = $"{_platform.GetBaseUrl()}/models/imagetext:predict";
+        var url = $"{Platform.GetBaseUrl()}/models/imagetext:predict";
         
         return await SendAsync<VqaRequest, VqaResponse>(url, request, HttpMethod.Post, cancellationToken).ConfigureAwait(false);
     }

@@ -30,7 +30,7 @@ public class RagCorpusClient : BaseClient
     /// <seealso href="https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/rag-api">See Official API Documentation</seealso>
     public async Task<GoogleLongRunningOperation?> CreateRagCorpusAsync(RagCorpus ragCorpus, CancellationToken cancellationToken = default)
     {
-        var url = $"{_platform.GetBaseUrl(appendPublisher:false)}/ragCorpora";
+        var url = $"{Platform.GetBaseUrl(appendPublisher:false)}/ragCorpora";
         return await SendAsync<RagCorpus, GoogleLongRunningOperation>(url, ragCorpus, HttpMethod.Post, cancellationToken).ConfigureAwait(false);
     }
 
@@ -57,7 +57,7 @@ public class RagCorpusClient : BaseClient
         }
 
         var queryString = queryParams.Count > 0 ? "?" + string.Join("&", queryParams) : string.Empty;
-        var url = $"{_platform.GetBaseUrl(appendPublisher:false)}/ragCorpora{queryString}";
+        var url = $"{Platform.GetBaseUrl(appendPublisher:false)}/ragCorpora{queryString}";
 
         return await GetAsync<ListRagCorporaResponse>(url, cancellationToken).ConfigureAwait(false);
     }
@@ -71,7 +71,7 @@ public class RagCorpusClient : BaseClient
     /// <seealso href="https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/rag-api">See Official API Documentation</seealso>
     public async Task<RagCorpus?> GetRagCorpusAsync(string name, CancellationToken cancellationToken = default)
     {
-        var baseUrl = _platform.GetBaseUrl(appendPublisher:false);
+        var baseUrl = Platform.GetBaseUrl(appendPublisher:false);
         var url = $"{baseUrl}/{name.ToRagCorpusId()}";
         return await GetAsync<RagCorpus>(url, cancellationToken).ConfigureAwait(false);
     }
@@ -87,7 +87,7 @@ public class RagCorpusClient : BaseClient
     /// <seealso href="https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/rag-api">See Official API Documentation</seealso>
     public async Task<GoogleLongRunningOperation?> UpdateRagCorpusAsync(string corpusName, RagCorpus ragCorpus, string? updateMask = null, CancellationToken cancellationToken = default)
     {
-        var baseUrl = _platform.GetBaseUrl(appendPublisher:false);
+        var baseUrl = Platform.GetBaseUrl(appendPublisher:false);
         var url = $"{baseUrl}/{corpusName.ToRagCorpusId()}";
 
         var queryParams = new List<string>();
@@ -111,7 +111,7 @@ public class RagCorpusClient : BaseClient
     /// <seealso href="https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/rag-api">See Official API Documentation</seealso>
     public async Task DeleteRagCorpusAsync(string name, CancellationToken cancellationToken = default)
     {
-        var baseUrl = _platform.GetBaseUrl(appendPublisher:false);
+        var baseUrl = Platform.GetBaseUrl(appendPublisher:false);
         var url = $"{baseUrl}/{name.ToRagCorpusId()}";
         await DeleteAsync(url, cancellationToken).ConfigureAwait(false);
     }

@@ -35,7 +35,7 @@ public class ChunkClient_Tests : SemanticRetrieverTestBase
         };
 
         // Act
-        var result = await client.CreateChunkAsync(parent, newChunk);
+        var result = await client.CreateChunkAsync(parent, newChunk, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldNotBeNull();
@@ -52,12 +52,12 @@ public class ChunkClient_Tests : SemanticRetrieverTestBase
         // Arrange
         var client = new ChunkClient(GetTestGooglePlatform());
         var parent = await GetTestDocumentId();
-        var chunkList = await client.ListChunksAsync(parent);
+        var chunkList = await client.ListChunksAsync(parent, cancellationToken: TestContext.Current.CancellationToken);
         var testChunk = chunkList.Chunks.FirstOrDefault();
         var chunkName = testChunk.Name;
 
         // Act
-        var result = await client.GetChunkAsync(chunkName);
+        var result = await client.GetChunkAsync(chunkName, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldNotBeNull();
@@ -77,7 +77,7 @@ public class ChunkClient_Tests : SemanticRetrieverTestBase
         var parent = await GetTestDocumentId();
 
         // Act
-        var result = await client.ListChunksAsync(parent, pageSize);
+        var result = await client.ListChunksAsync(parent, pageSize, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldNotBeNull();
@@ -101,13 +101,13 @@ public class ChunkClient_Tests : SemanticRetrieverTestBase
         // Arrange
         var client = new ChunkClient(GetTestGooglePlatform());
         var parent = await GetTestDocumentId();
-        var chunkList = await client.ListChunksAsync(parent);
+        var chunkList = await client.ListChunksAsync(parent, cancellationToken: TestContext.Current.CancellationToken);
         var testChunk = chunkList.Chunks.FirstOrDefault();
         testChunk.Data = new ChunkData { StringValue = "Updated Data" };
         const string updateMask = "data";
 
         // Act
-        var result = await client.UpdateChunkAsync(testChunk, updateMask);
+        var result = await client.UpdateChunkAsync(testChunk, updateMask, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldNotBeNull();
@@ -124,11 +124,11 @@ public class ChunkClient_Tests : SemanticRetrieverTestBase
         // Arrange
         var client = new ChunkClient(GetTestGooglePlatform());
         var parent = await GetTestDocumentId();
-        var chunkList = await client.ListChunksAsync(parent);
+        var chunkList = await client.ListChunksAsync(parent, cancellationToken: TestContext.Current.CancellationToken);
         var testChunk = chunkList.Chunks.LastOrDefault();
 
         // Act and Assert
-        await Should.NotThrowAsync(async () => await client.DeleteChunkAsync(testChunk.Name));
+        await Should.NotThrowAsync(async () => await client.DeleteChunkAsync(testChunk.Name, cancellationToken: TestContext.Current.CancellationToken));
         Console.WriteLine($"Deleted Chunk: Name={testChunk.Name}");
     }
 
@@ -166,7 +166,7 @@ public class ChunkClient_Tests : SemanticRetrieverTestBase
         };
 
         // Act
-        var result = await client.BatchCreateChunksAsync(parent, requests);
+        var result = await client.BatchCreateChunksAsync(parent, requests, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldNotBeNull();
@@ -190,7 +190,7 @@ public class ChunkClient_Tests : SemanticRetrieverTestBase
         const string invalidName = "corpora/test-corpus-id/documents/test-doc-id/chunks/invalid-id";
 
         // Act
-        var exception = await Should.ThrowAsync<Exception>(async () => await client.GetChunkAsync(invalidName));
+        var exception = await Should.ThrowAsync<Exception>(async () => await client.GetChunkAsync(invalidName, cancellationToken: TestContext.Current.CancellationToken));
 
         // Assert
         exception.Message.ShouldNotBeNullOrEmpty();
@@ -205,7 +205,7 @@ public class ChunkClient_Tests : SemanticRetrieverTestBase
         const string invalidName = "corpora/test-corpus-id/documents/test-doc-id/chunks/invalid-id";
 
         // Act
-        var exception = await Should.ThrowAsync<Exception>(async () => await client.DeleteChunkAsync(invalidName));
+        var exception = await Should.ThrowAsync<Exception>(async () => await client.DeleteChunkAsync(invalidName, cancellationToken: TestContext.Current.CancellationToken));
 
         // Assert
         exception.Message.ShouldNotBeNullOrEmpty();

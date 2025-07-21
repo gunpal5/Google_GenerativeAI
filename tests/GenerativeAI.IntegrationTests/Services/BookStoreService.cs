@@ -45,9 +45,9 @@ public class BookStoreService : IBookStoreService
         return Task.FromResult("this is a cool weather out there, and I am stuck at home.");
     }
 
-    public async Task<string> GetBookListAsync(CancellationToken cancellationToken = default)
+    public Task<string> GetBookListAsync(CancellationToken cancellationToken = default)
     {
-        return "Five point someone, Two States";
+        return Task.FromResult("Five point someone, Two States");
     }
 
     public string GetBookList()

@@ -251,11 +251,8 @@ public class ChatSession : GenerativeModel
         if (response.Candidates is { Length: > 0 } && response.Candidates[0].Content != null)
         {
             var lastRequestContent = request.Contents.Last();
-            var lastResponseContent = response.Candidates?[0].Content;
-            if (lastResponseContent != null)
-            {
-                UpdateHistory(lastRequestContent, lastResponseContent);
-            }
+            var lastResponseContent = response.Candidates[0].Content!;
+            UpdateHistory(lastRequestContent, lastResponseContent);
         }
 
     }

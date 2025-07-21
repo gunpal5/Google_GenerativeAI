@@ -9,7 +9,7 @@ public class ModelResponse:INotifyPropertyChanged
     {
         Text = text;
     }
-    string _text;
+    string _text = string.Empty;
     private bool _isSpeaking;
     private bool _isInterrupted;
     private bool _isFinished;

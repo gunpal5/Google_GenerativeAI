@@ -32,7 +32,7 @@ public class CachingClient : BaseClient
     public async Task<CachedContent> CreateCachedContentAsync(CachedContent cachedContent,
         CancellationToken cancellationToken = default)
     {
-        var url = $"{_platform.GetBaseUrl()}/cachedContents";
+        var url = $"{Platform.GetBaseUrl()}/cachedContents";
         return await SendAsync<CachedContent, CachedContent>(url, cachedContent, HttpMethod.Post, cancellationToken).ConfigureAwait(false);
     }
 
@@ -60,7 +60,7 @@ public class CachingClient : BaseClient
         }
 
         var queryString = queryParams.Count > 0 ? "?" + string.Join("&", queryParams) : string.Empty;
-        var url = $"{_platform.GetBaseUrl()}/cachedContents{queryString}";
+        var url = $"{Platform.GetBaseUrl()}/cachedContents{queryString}";
 
         return await GetAsync<ListCachedContentsResponse>(url, cancellationToken).ConfigureAwait(false);
     }
@@ -74,7 +74,7 @@ public class CachingClient : BaseClient
     /// <seealso href="https://ai.google.dev/api/caching#method:-cachedcontents.get">See Official API Documentation</seealso>
     public async Task<CachedContent?> GetCachedContentAsync(string name, CancellationToken cancellationToken = default)
     {
-        var baseUrl = _platform.GetBaseUrl();
+        var baseUrl = Platform.GetBaseUrl();
         var url = $"{baseUrl}/{name.ToCachedContentId()}";
         return await GetAsync<CachedContent>(url, cancellationToken).ConfigureAwait(false);
     }
@@ -91,7 +91,7 @@ public class CachingClient : BaseClient
     public async Task<CachedContent?> UpdateCachedContentAsync(string cacheName, CachedContent cachedContent,
         string? updateMask = null, CancellationToken cancellationToken = default)
     {
-        var baseUrl = _platform.GetBaseUrl();
+        var baseUrl = Platform.GetBaseUrl();
         var url = $"{baseUrl}/{cacheName.ToCachedContentId()}";
 
         var queryParams = new List<string>();
@@ -115,7 +115,7 @@ public class CachingClient : BaseClient
     /// <seealso href="https://ai.google.dev/api/caching#method:-cachedcontents.delete">See Official API Documentation</seealso>
     public async Task DeleteCachedContentAsync(string name, CancellationToken cancellationToken = default)
     {
-        var baseUrl = _platform.GetBaseUrl();
+        var baseUrl = Platform.GetBaseUrl();
         var url = $"{baseUrl}/{name.ToCachedContentId()}";
         await DeleteAsync(url, cancellationToken).ConfigureAwait(false);
     }
