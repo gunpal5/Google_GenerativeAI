@@ -38,4 +38,18 @@ public class QueryDocumentRequest
     /// </summary>
     [JsonPropertyName("metadataFilters")]
     public List<MetadataFilter>? MetadataFilters { get; set; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="QueryDocumentRequest"/> class with the specified query.
+    /// </summary>
+    /// <param name="query">Query string to perform semantic search.</param>
+    public QueryDocumentRequest(string query)
+    {
+        Query = query;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="QueryDocumentRequest"/> class for JSON deserialization.
+    /// </summary>
+    public QueryDocumentRequest() : this("") { }
 }

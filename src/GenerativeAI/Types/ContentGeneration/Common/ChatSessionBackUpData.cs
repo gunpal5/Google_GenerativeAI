@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using GenerativeAI.Core;
 
 namespace GenerativeAI.Types;
@@ -97,4 +98,22 @@ public class ChatSessionBackUpData
     /// </summary>
     [JsonPropertyName("toolConfig")]
     public ToolConfig? ToolConfig { get; set; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ChatSessionBackUpData"/> class with the specified required properties.
+    /// </summary>
+    /// <param name="history">The history of the chat session.</param>
+    /// <param name="model">The model used in the chat session.</param>
+    /// <param name="functionCallingBehaviour">The function calling behavior for the chat session.</param>
+    public ChatSessionBackUpData(List<Content> history, string model, FunctionCallingBehaviour functionCallingBehaviour)
+    {
+        History = history;
+        Model = model;
+        FunctionCallingBehaviour = functionCallingBehaviour;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ChatSessionBackUpData"/> class for JSON deserialization.
+    /// </summary>
+    public ChatSessionBackUpData() : this(new List<Content>(), "",new FunctionCallingBehaviour()) { }
 }

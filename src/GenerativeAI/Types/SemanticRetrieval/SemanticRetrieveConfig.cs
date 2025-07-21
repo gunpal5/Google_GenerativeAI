@@ -39,4 +39,18 @@ public class SemanticRetrieverConfig
     /// </summary>
     [JsonPropertyName("minimumRelevanceScore")]
     public double? MinimumRelevanceScore { get; set; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SemanticRetrieverConfig"/> class with the specified query.
+    /// </summary>
+    /// <param name="query">Query to use for matching chunks by similarity.</param>
+    public SemanticRetrieverConfig(Content query)
+    {
+        Query = query;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SemanticRetrieverConfig"/> class for JSON deserialization.
+    /// </summary>
+    public SemanticRetrieverConfig() : this(new Content()) { }
 }

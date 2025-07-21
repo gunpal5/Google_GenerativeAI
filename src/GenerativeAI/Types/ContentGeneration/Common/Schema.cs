@@ -18,6 +18,20 @@ public class Schema
     public string Type { get; set; }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="Schema"/> class with the specified type.
+    /// </summary>
+    /// <param name="type">The data type for the schema.</param>
+    public Schema(string type)
+    {
+        Type = type;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Schema"/> class for JSON deserialization.
+    /// </summary>
+    public Schema() : this("") { }
+
+    /// <summary>
     /// Optional. The format of the data. This is used only for primitive datatypes.
     /// Supported formats:
     /// for NUMBER type: float, double

@@ -62,24 +62,12 @@ public class VertexRagManager : BaseClient
     public VertexRagManager(IPlatformAdapter platform, HttpClient? httpClient, ILogger? logger = null) : base(platform,
         httpClient, logger)
     {
-        InitializeClients();
-    }
-
-    /// <summary>
-    /// Initializes the clients used by the VertexRagManager, including the FileManager and RagCorpus properties.
-    /// </summary>
-    /// <remarks>
-    /// This method is responsible for instantiating and assigning the specialized client objects:
-    /// - FileManager: Handles file management operations.
-    /// - RagCorpus: Manages operations related to the RAG corpus.
-    /// This ensures the VertexRagManager has access to the necessary client subsystems for RAG resource management.
-    /// </remarks>
-    private void InitializeClients()
-    {
         this.FileManager = new FileManagementClient(_platform, HttpClient, Logger);
         this.RagCorpusClient = new RagCorpusClient(_platform, HttpClient, Logger);
         this.OperationsClient = new OperationsClient(_platform, HttpClient, Logger);
     }
+
+   
 
     #region Create Corpus
 

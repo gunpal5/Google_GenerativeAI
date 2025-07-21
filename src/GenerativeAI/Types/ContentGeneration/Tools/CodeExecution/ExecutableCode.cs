@@ -21,4 +21,20 @@ public class ExecutableCode
     /// </summary>
     [JsonPropertyName("code")]
     public string Code { get; set; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ExecutableCode"/> class with the specified code and language.
+    /// </summary>
+    /// <param name="code">The code to be executed.</param>
+    /// <param name="language">The programming language of the code.</param>
+    public ExecutableCode(string code, Language language = Language.LANGUAGE_UNSPECIFIED)
+    {
+        Code = code;
+        Language = language;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ExecutableCode"/> class for JSON deserialization.
+    /// </summary>
+    public ExecutableCode() : this("") { }
 }

@@ -31,4 +31,18 @@ public class FunctionCall
     [JsonPropertyName("args")]
     public JsonNode? Args { get; set; }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FunctionCall"/> class with the specified function name.
+    /// </summary>
+    /// <param name="name">The name of the function to call.</param>
+    public FunctionCall(string name)
+    {
+        Name = name;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FunctionCall"/> class for JSON deserialization.
+    /// </summary>
+    public FunctionCall() : this("") { }
+
 }

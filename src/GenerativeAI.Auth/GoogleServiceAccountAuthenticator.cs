@@ -20,7 +20,7 @@ public class GoogleServiceAccountAuthenticator : BaseAuthenticator
     private string _clientFile = "client_secret.json";
     private string _tokenFile = "token.json";
     private string _certificateFile = "key.p12";
-    private string _certificatePassphrase;
+    private string _certificatePassphrase = null!;
 
     private ServiceAccountCredential _credential;
 

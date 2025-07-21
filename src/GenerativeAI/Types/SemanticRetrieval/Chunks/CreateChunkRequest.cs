@@ -20,4 +20,20 @@ public class CreateChunkRequest
     /// </summary>
     [JsonPropertyName("chunk")]
     public Chunk Chunk { get; set; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CreateChunkRequest"/> class with the specified parent and chunk.
+    /// </summary>
+    /// <param name="parent">The name of the document where this chunk will be created.</param>
+    /// <param name="chunk">The chunk to create.</param>
+    public CreateChunkRequest(string parent, Chunk chunk)
+    {
+        Parent = parent;
+        Chunk = chunk;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CreateChunkRequest"/> class for JSON deserialization.
+    /// </summary>
+    public CreateChunkRequest() : this("", new Chunk()) { }
 }

@@ -31,4 +31,18 @@ public class CustomMetadata
     /// </summary>
     [JsonPropertyName("numericValue")]
     public double? NumericValue { get; set; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CustomMetadata"/> class with the specified key.
+    /// </summary>
+    /// <param name="key">The key of the metadata to store.</param>
+    public CustomMetadata(string key)
+    {
+        Key = key;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CustomMetadata"/> class for JSON deserialization.
+    /// </summary>
+    public CustomMetadata() : this("") { }
 }

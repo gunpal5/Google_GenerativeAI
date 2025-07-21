@@ -32,4 +32,18 @@ public class FunctionResponse
     /// </summary>
     [JsonPropertyName("response")]
     public JsonNode? Response { get; set; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FunctionResponse"/> class with the specified function name.
+    /// </summary>
+    /// <param name="name">The name of the function this response is for.</param>
+    public FunctionResponse(string name)
+    {
+        Name = name;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FunctionResponse"/> class for JSON deserialization.
+    /// </summary>
+    public FunctionResponse() : this("") { }
 }

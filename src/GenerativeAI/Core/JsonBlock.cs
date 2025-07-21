@@ -41,7 +41,7 @@ public class JsonBlock
     /// <summary>
     /// Represents a block of JSON data along with its associated line number
     /// </summary>
-    public JsonBlock()
+    public JsonBlock():this("")
     {
         
     }
