@@ -34,29 +34,29 @@ public class GenerateVideosOperation : GoogleLongRunningOperation
 
             if (operation.Response != null)
             {
-                if (operation.Response.ContainsKey("generatedVideos"))
-                    Result.GeneratedVideos = (operation.Response["generatedVideos"] as JsonElement?)
+                if (operation.Response.TryGetValue("generatedVideos", out var value))
+                    Result.GeneratedVideos = (value as JsonElement?)
                         ?.Deserialize<List<Video>>();
-                if (operation.Response.ContainsKey("raiMediaFilteredCount"))
+                if (operation.Response.TryGetValue("raiMediaFilteredCount", out var value1))
                     Result.RaiMediaFilteredCount =
-                        (operation.Response["raiMediaFilteredCount"] as JsonElement?)?.GetInt32();
-                if (operation.Response.ContainsKey("raiMediaFilteredReasons"))
+                        (value1 as JsonElement?)?.GetInt32();
+                if (operation.Response.TryGetValue("raiMediaFilteredReasons", out var value2))
                     Result.RaiMediaFilteredReasons =
-                        (operation.Response["raiMediaFilteredReasons"] as JsonElement?)?.Deserialize<List<string>>();
+                        (value2 as JsonElement?)?.Deserialize<List<string>>();
                 
-                if (operation.Response.ContainsKey("videos"))
-                    Result.GeneratedVideos = (operation.Response["videos"] as JsonElement?)
+                if (operation.Response.TryGetValue("videos", out var value3))
+                    Result.GeneratedVideos = (value3 as JsonElement?)
                         ?.Deserialize<List<Video>>();
                 
-                if (operation.Response.ContainsKey("generated_videos"))
-                    Result.GeneratedVideos = (operation.Response["generated_videos"] as JsonElement?)
+                if (operation.Response.TryGetValue("generated_videos", out var value4))
+                    Result.GeneratedVideos = (value4 as JsonElement?)
                         ?.Deserialize<List<Video>>();
-                if (operation.Response.ContainsKey("rai_media_filtered_count"))
+                if (operation.Response.TryGetValue("rai_media_filtered_count", out var value5))
                     Result.RaiMediaFilteredCount =
-                        (operation.Response["rai_media_filtered_count"] as JsonElement?)?.GetInt32();
-                if (operation.Response.ContainsKey("rai_media_filtered_reasons"))
+                        (value5 as JsonElement?)?.GetInt32();
+                if (operation.Response.TryGetValue("rai_media_filtered_reasons", out var value6))
                     Result.RaiMediaFilteredReasons =
-                        (operation.Response["rai_media_filtered_reasons"] as JsonElement?)?.Deserialize<List<string>>();
+                        (value6 as JsonElement?)?.Deserialize<List<string>>();
             }
         }
     }

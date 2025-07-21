@@ -618,6 +618,7 @@ public class MultiModalLiveClient : IDisposable
     /// </returns>
     public async Task SendSetupAsync(BidiGenerateContentSetup setup, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(setup);
         if(!setup.Model.Contains("/"))
             throw new ArgumentException("Please provide a valid model name such as 'models/gemini-2.0-flash-live-001'.");
         var payload = new BidiClientPayload { Setup = setup };

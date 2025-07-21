@@ -55,6 +55,11 @@ public class QuickTool : GoogleFunctionTool
         string? name = null, string? description = null,
         JsonSerializerOptions? options = null)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(func);
+#else
+        if (func == null) throw new ArgumentNullException(nameof(func));
+#endif
         _options = options ?? DefaultSerializerOptions.GenerateObjectJsonOptions;
         this._func = func;
         this.FunctionDeclaration = FunctionSchemaHelper.CreateFunctionDecleration(func, name, description);
@@ -74,6 +79,11 @@ public class QuickTool : GoogleFunctionTool
     public override async Task<FunctionResponse?> CallAsync(FunctionCall functionCall,
         CancellationToken cancellationToken = default)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(functionCall);
+#else
+        if (functionCall == null) throw new ArgumentNullException(nameof(functionCall));
+#endif
         if (FunctionDeclaration.Name != functionCall.Name)
             throw new ArgumentException("Function name does not match");
         object?[]? param = MarshalParameters(functionCall.Args, cancellationToken);

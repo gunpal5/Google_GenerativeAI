@@ -10,6 +10,11 @@ public static class FunctionSchemaHelper
 {
     public static FunctionDeclaration CreateFunctionDecleration(Delegate func, string? name, string? description)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(func);
+#else
+        if (func == null) throw new ArgumentNullException(nameof(func));
+#endif
         var parameters = func.Method.GetParameters();
         Schema parametersSchema = new Schema();
         var options = DefaultSerializerOptions.GenerateObjectJsonOptions;

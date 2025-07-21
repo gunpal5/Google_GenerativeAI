@@ -15,6 +15,31 @@ public class VertexAIException:Exception
     /// Gets or sets the detailed RPC status information about the error.
     /// </summary>
     public GoogleRpcStatus Status { get; set; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="VertexAIException"/> class.
+    /// </summary>
+    public VertexAIException() : this("A Vertex AI error occurred", new GoogleRpcStatus())
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="VertexAIException"/> class with a specified error message.
+    /// </summary>
+    /// <param name="message">The error message that explains the reason for the exception.</param>
+    public VertexAIException(string message) : this(message, new GoogleRpcStatus())
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="VertexAIException"/> class with a specified error message and inner exception.
+    /// </summary>
+    /// <param name="message">The error message that explains the reason for the exception.</param>
+    /// <param name="innerException">The exception that is the cause of the current exception.</param>
+    public VertexAIException(string message, Exception innerException) : this(message, new GoogleRpcStatus())
+    {
+    }
+
     /// <summary>
     /// Initializes a new instance of the <see cref="VertexAIException"/> class.
     /// </summary>
@@ -24,5 +49,4 @@ public class VertexAIException:Exception
     {
         Status = status;
     }
-    
 }

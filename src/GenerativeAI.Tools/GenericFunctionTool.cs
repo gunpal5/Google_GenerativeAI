@@ -53,6 +53,11 @@ public class GenericFunctionTool:GoogleFunctionTool
     /// <inheritdoc/>
     public override async Task<FunctionResponse?> CallAsync(FunctionCall functionCall, CancellationToken cancellationToken = default)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(functionCall);
+#else
+        if (functionCall == null) throw new ArgumentNullException(nameof(functionCall));
+#endif
         #pragma disable warning IL2026, IL3050
         if (this.Calls.TryGetValue(functionCall.Name, out var call))
         {

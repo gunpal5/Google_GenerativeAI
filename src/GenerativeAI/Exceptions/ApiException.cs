@@ -41,6 +41,30 @@ public class ApiException : Exception
     public string ErrorStatus { get; }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="ApiException"/> class.
+    /// </summary>
+    public ApiException() : this(0, "An API error occurred", "Unknown")
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ApiException"/> class with a specified error message.
+    /// </summary>
+    /// <param name="message">The error message that explains the reason for the exception.</param>
+    public ApiException(string message) : this(0, message, "Unknown")
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ApiException"/> class with a specified error message and inner exception.
+    /// </summary>
+    /// <param name="message">The error message that explains the reason for the exception.</param>
+    /// <param name="innerException">The exception that is the cause of the current exception.</param>
+    public ApiException(string message, Exception innerException) : this(0, message, "Unknown")
+    {
+    }
+
+    /// <summary>
     /// Represents an exception that occurs when a platform-specific API operation fails.
     /// </summary>
     /// <remarks>
@@ -54,5 +78,4 @@ public class ApiException : Exception
         ErrorMessage = errorMessage;
         ErrorStatus = errorStatus;
     }
-    
 }

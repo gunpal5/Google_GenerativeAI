@@ -48,7 +48,7 @@
 	</PropertyGroup>
 	<PropertyGroup>
 		<!-- If you already have some warnings disabled, just add ";CS8618" -->
-		<NoWarn>$(NoWarn);CA1707;CA1002;CA2227;CA1819;CA1054;CA1056;CA1712;CA1034;</NoWarn>
+		<NoWarn>$(NoWarn);CA1707;CA1002;CA2227;CA1819;CA1054;CA1056;CA1712;CA1034;CA1055;CA1720</NoWarn>
 	</PropertyGroup>
 
 </Project>

@@ -11,6 +11,7 @@ public static class GenerativeModelExtensions
         string? systemInstruction = null,
         ILogger? logger = null)
     {
+        ArgumentNullException.ThrowIfNull(generativeModel);
         var client = new MultiModalLiveClient(generativeModel.Platform, generativeModel.Model, config ?? generativeModel.Config, safetySettings ?? generativeModel.SafetySettings, systemInstruction ?? generativeModel.SystemInstruction);
 
         client.AddFunctionTools(generativeModel.FunctionTools, generativeModel.ToolConfig);
