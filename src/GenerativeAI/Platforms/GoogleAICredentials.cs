@@ -9,6 +9,16 @@ namespace GenerativeAI;
 public class GoogleAICredentials : ICredentials
 {
     /// <summary>
+    /// Represents the credentials required to authenticate with Google AI Generative APIs.
+    /// Manages the API key and optional authentication tokens for secure API access.
+    /// </summary>
+    public GoogleAICredentials(string apiKey, AuthTokens? authToken)
+    {
+        ApiKey = apiKey;
+        AuthToken = authToken;
+    }
+
+    /// <summary>
     /// Gets the API Key used to authenticate requests to Google AI Generative APIs.
     /// The API Key provides an easy way to access public resources or perform
     /// authorized operations without requiring OAuth2 tokens.

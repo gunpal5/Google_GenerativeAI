@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Runtime.CompilerServices;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using GenerativeAI.Core;
 using GenerativeAI.Exceptions;
@@ -40,6 +41,13 @@ public partial class GenerativeModel
     /// </remarks>
     public bool UseCodeExecutionTool { get; set; } = false;
     
+    /// <summary>
+    /// Gets the retrieval tool configuration for the model, if any.
+    /// </summary>
+    /// <value>
+    /// The retrieval tool that enables the model to access external data sources,
+    /// or <c>null</c> if no retrieval tool is configured.
+    /// </value>
     public Tool? RetrievalTool { get; protected set; }
 
 
@@ -132,6 +140,12 @@ public partial class GenerativeModel
         }
     }
 
+    /// <summary>
+    /// Adds a Google function tool to the generative model.
+    /// </summary>
+    /// <param name="tool">The Google function tool to be added.</param>
+    /// <param name="toolConfig">Optional configuration for the tool.</param>
+    /// <param name="functionCallingBehaviour">Optional behavior configuration for function calling.</param>
     public void AddFunctionTool(GoogleFunctionTool tool, ToolConfig? toolConfig = null,FunctionCallingBehaviour? functionCallingBehaviour=null)
     {
         AddFunctionTool((IFunctionTool)tool, toolConfig, functionCallingBehaviour);
@@ -275,7 +289,7 @@ public partial class GenerativeModel
     protected virtual async IAsyncEnumerable<GenerateContentResponse> CallFunctionStreamingAsync(
         GenerateContentRequest originalRequest,
         GenerateContentResponse response,
-        CancellationToken cancellationToken)
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         var functionCalls = response.GetFunctions();
         
@@ -310,7 +324,6 @@ public partial class GenerativeModel
         foreach (var functionCall in functionCalls)
         { 
             var name = functionCall.Name ?? string.Empty;
-            string jsonResult;
 
             var tool = FunctionTools.FirstOrDefault(s => s.IsContainFunction(name));
             FunctionResponse functionResponse;

@@ -2,6 +2,9 @@ using System.Text.Json.Serialization;
 
 namespace GenerativeAI.Types;
 
+/// <summary>
+/// Represents a bidirectional response payload containing various types of server responses in a multimodal live session.
+/// </summary>
 public class BidiResponsePayload
 {
     /// <summary>

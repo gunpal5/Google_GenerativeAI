@@ -100,6 +100,12 @@ public class Schema
         GoogleSchemaHelper.ConvertToSchema(value.GetType(), options);
 
 
+    /// <summary>
+    /// Creates a schema from an enum type.
+    /// </summary>
+    /// <typeparam name="T">The enum type to create a schema from.</typeparam>
+    /// <param name="options">Optional JSON serializer options.</param>
+    /// <returns>A schema representing the enum type, or null if conversion fails.</returns>
     public static Schema? FromEnum<T>(JsonSerializerOptions? options = null) where T : Enum
     {
         return GoogleSchemaHelper.ConvertToSchema(typeof(T), options);

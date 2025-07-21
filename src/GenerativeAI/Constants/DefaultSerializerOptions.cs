@@ -48,7 +48,7 @@ public class DefaultSerializerOptions
         {
             if (JsonSerializer.IsReflectionEnabledByDefault)
             {
-#pragma disable warning IL2026, IL3050
+#pragma warning disable IL2026, IL3050
                 var options = new JsonSerializerOptions
                 {
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -59,7 +59,7 @@ public class DefaultSerializerOptions
                     UnknownTypeHandling = JsonUnknownTypeHandling.JsonElement
                 };
                 options.TypeInfoResolverChain.Add(new DefaultJsonTypeInfoResolver());
-#pragma restore warning IL2026, IL3050
+#pragma warning restore IL2026, IL3050
 
                 AddConverters(options);
                 return options;
@@ -102,7 +102,7 @@ public class DefaultSerializerOptions
 
             if (JsonSerializer.IsReflectionEnabledByDefault)
             {
-#pragma disable warning IL2026, IL3050
+#pragma warning disable IL2026, IL3050
                 // Keep in sync with the JsonSourceGenerationOptions attribute on JsonContext below.
                 options = new(JsonSerializerDefaults.Web)
                 {
@@ -114,7 +114,7 @@ public class DefaultSerializerOptions
 
                 AddCustomResolvers(options);
                 options.TypeInfoResolverChain.Add(new DefaultJsonTypeInfoResolver());
-#pragma restore warning IL2026, IL3050
+#pragma warning restore IL2026, IL3050
             }
             else
             {

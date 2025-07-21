@@ -23,6 +23,7 @@ public partial class GeminiModel
     public async Task<RemoteFile> UploadFileAsync(string filePath, Action<double>? progressCallback,
         CancellationToken cancellationToken = default)
     {
+        if (Files == null) throw new InvalidOperationException("Files client is not initialized.");
         return await Files.UploadFileAsync(filePath, progressCallback, cancellationToken).ConfigureAwait(false);
     }
 
@@ -35,6 +36,7 @@ public partial class GeminiModel
     public async Task<RemoteFile> GetFileAsync(string fileId, 
         CancellationToken cancellationToken = default)
     {
+        if (Files == null) throw new InvalidOperationException("Files client is not initialized.");
         return await Files.GetFileAsync(fileId, cancellationToken).ConfigureAwait(false);
     }
 
@@ -47,6 +49,7 @@ public partial class GeminiModel
     /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task AwaitForFileStateActive(RemoteFile file, int maxSeconds = 5 * 60, CancellationToken cancellationToken = default)
     {
+        if (Files == null) throw new InvalidOperationException("Files client is not initialized.");
         await Files.AwaitForFileStateActiveAsync(file, maxSeconds, cancellationToken).ConfigureAwait(false);
     }
 

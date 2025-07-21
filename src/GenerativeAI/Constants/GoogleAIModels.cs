@@ -235,13 +235,22 @@ public static class GoogleAIModels
         /// Imagen 3 model names.
         /// </summary>
         public const string Imagen3Generate001 = "imagen-3.0-generate-001";
+        /// <summary>
+        /// Imagen 3 fast generation model for quick image generation.
+        /// </summary>
         public const string Imagen3FastGenerate001 = "imagen-3.0-fast-generate-001";
 
+        /// <summary>
+        /// Imagen 3 generation model version 002.
+        /// </summary>
         public const string Imagen3Generate002 = "imagen-3.0-generate-002";
         /// <summary>
         /// Imagen 2 model names.
         /// </summary>
         public const string ImageGeneration006 = "imagegeneration@006";
+        /// <summary>
+        /// Imagen 2 image generation model version 005.
+        /// </summary>
         public const string ImageGeneration005 = "imagegeneration@005";
 
         /// <summary>

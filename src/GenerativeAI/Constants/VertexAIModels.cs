@@ -197,8 +197,14 @@ public static class VertexAIModels
         public const string MultimodalEmbedding = "multimodalembedding";
     }
 
+    /// <summary>
+    /// Provides constants for video generation model names.
+    /// </summary>
     public static class Video
     {
+        /// <summary>
+        /// Veo 2 video generation model.
+        /// </summary>
         public const string Veo2Generate001 = "veo-2.0-generate-001";
     }
 
@@ -211,12 +217,18 @@ public static class VertexAIModels
         /// Imagen 3 model names.
         /// </summary>
         public const string Imagen3Generate001 = "imagen-3.0-generate-001";
+        /// <summary>
+        /// Imagen 3 fast generation model for quick image generation.
+        /// </summary>
         public const string Imagen3FastGenerate001 = "imagen-3.0-fast-generate-001";
 
         /// <summary>
         /// Imagen 2 model names.
         /// </summary>
         public const string ImageGeneration006 = "imagegeneration@006";
+        /// <summary>
+        /// Imagen 2 image generation model version 005.
+        /// </summary>
         public const string ImageGeneration005 = "imagegeneration@005";
 
         /// <summary>

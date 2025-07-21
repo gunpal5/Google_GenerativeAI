@@ -16,6 +16,9 @@ namespace GenerativeAI.Types;
 /// <seealso href="https://ai.google.dev/api/generate-content#generatecontentresponse">See Official API Documentation</seealso>
 public class GenerateContentResponse
 {
+    /// <summary>
+    /// Gets the text content from the last candidate's response parts, joined by newlines.
+    /// </summary>
     public string Text => string.Join("\r\n", Candidates?.LastOrDefault()?.Content?.Parts?.Select(s => s.Text) ?? Array.Empty<string?>()) ??
                           string.Empty;
 

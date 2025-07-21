@@ -77,6 +77,12 @@ public static class RagCorpusExtensions
         };
     }
 
+    /// <summary>
+    /// Adds an embedding model configuration to the RAG corpus.
+    /// </summary>
+    /// <param name="corpus">The RAG corpus to configure.</param>
+    /// <param name="embeddingModelName">The name of the embedding model to use.</param>
+    /// <exception cref="ArgumentNullException">Thrown when embeddingModelName is null.</exception>
     public static void AddEmbeddingModel(this RagCorpus corpus, string embeddingModelName)
     {
         if (embeddingModelName == null)

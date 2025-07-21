@@ -181,6 +181,13 @@ public static class GenerateContentResponseExtensions
         return objects;
     }
 
+    /// <summary>
+    /// Converts the response text to an enum value.
+    /// </summary>
+    /// <typeparam name="T">The enum type to convert to.</typeparam>
+    /// <param name="response">The response containing the text to convert.</param>
+    /// <param name="options">Optional JSON serializer options (not used in this implementation).</param>
+    /// <returns>The parsed enum value, or the default value if parsing fails.</returns>
     public static T? ToEnum<T>(this GenerateContentResponse response, JsonSerializerOptions? options = null)
         where T : Enum
     {

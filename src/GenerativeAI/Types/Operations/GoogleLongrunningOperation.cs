@@ -32,6 +32,9 @@ public class GoogleLongRunningOperation
     [JsonPropertyName("name")]
     public string? Name { get; set; } 
     
+    /// <summary>
+    /// Gets or sets the operation name for tracking purposes.
+    /// </summary>
     [JsonPropertyName("operationName")]
     public string? OperationName { get; set; }
 

@@ -16,6 +16,9 @@ namespace GenerativeAI.Core
     {
         private readonly HttpClient _httpClient;
         private readonly ILogger? _logger;
+        /// <summary>
+        /// Gets the logger instance for diagnostic and error logging.
+        /// </summary>
         protected ILogger? Logger => _logger;
 
         /// <summary>

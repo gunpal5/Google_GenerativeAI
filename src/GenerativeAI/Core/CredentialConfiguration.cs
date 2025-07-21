@@ -5,7 +5,38 @@
 /// </summary>
 public sealed class CredentialConfiguration : ClientSecrets
 {
-    private string _projectId;
+    private string _projectId = string.Empty;
+
+    /// <summary>
+    /// Represents a configuration for client credentials used in API authentication.
+    /// </summary>
+    /// <remarks>
+    /// Encapsulates detailed information including web and installed application credentials, account details, and additional parameters like refresh tokens and domains.
+    /// This class supports scenarios requiring user or service account authentication for API access.
+    /// </remarks>
+  
+    public CredentialConfiguration(ClientSecrets web, ClientSecrets installed, string account, string refreshToken, string type, string universeDomain)
+    {
+        Web = web;
+        Installed = installed;
+        Account = account;
+        RefreshToken = refreshToken;
+        Type = type;
+        UniverseDomain = universeDomain;
+    }
+
+    /// <summary>
+    /// Represents the configuration for API authentication credentials.
+    /// </summary>
+    /// <remarks>
+    /// This class is used to encapsulate various properties required for authentication such as
+    /// client secrets for web and installed applications, account details, and token information.
+    /// It supports both user-based and service account authentication scenarios in API integrations.
+    /// </remarks>
+    public CredentialConfiguration()
+    {
+        
+    }
 
     /// <summary>
     /// Client secrets configured for web-based OAuth 2.0 flows.
@@ -61,6 +92,36 @@ public sealed class CredentialConfiguration : ClientSecrets
 /// </summary>
 public class ClientSecrets
 {
+    /// <summary>
+    /// Represents the essential OAuth 2.0 client credentials required for authentication.
+    /// </summary>
+    /// <remarks>
+    /// Includes client identifier, client secret, redirect URIs, and token-related endpoints.
+    /// This class encapsulates the details necessary to authenticate requests against an API or service.
+    /// </remarks>
+    public ClientSecrets(string clientId, string clientSecret, string[] redirectUris, string authUri, string authProviderX509CertUrl, string tokenUri)
+    {
+        ClientId = clientId;
+        ClientSecret = clientSecret;
+        RedirectUris = redirectUris;
+        AuthUri = authUri;
+        AuthProviderX509CertUrl = authProviderX509CertUrl;
+        TokenUri = tokenUri;
+    }
+
+    /// <summary>
+    /// Encapsulates OAuth 2.0 client secret configurations required for authenticating against APIs or services.
+    /// </summary>
+    /// <remarks>
+    /// This class holds critical authentication details including client ID, client secret, redirect URIs,
+    /// authorization URI, certificate URL of the authentication provider, and token endpoint.
+    /// These details are often used for secure communication with external services.
+    /// </remarks>
+    public ClientSecrets()
+    {
+        
+    }
+
     /// <summary>
     /// A unique identifier for the client within an OAuth 2.0 flow.
     /// </summary>

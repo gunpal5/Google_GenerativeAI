@@ -101,7 +101,7 @@ public class GoogleAi : GenAI,IGenerativeAI
     /// <exception cref="GenerativeAIException">
     /// Thrown when no authenticator is provided, and the platform's authenticator is not set.
     /// </exception>
-    public SemanticRetrieverModel CreatSemanticRetrieverModel(string modelName, ICollection<SafetySetting> safetyRatings = null, IGoogleAuthenticator? authenticator = null)
+    public SemanticRetrieverModel CreatSemanticRetrieverModel(string modelName, ICollection<SafetySetting>? safetyRatings = null, IGoogleAuthenticator? authenticator = null)
     {
         if (this.Platform.Authenticator == null)
         {

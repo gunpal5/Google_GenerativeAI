@@ -11,6 +11,12 @@ namespace GenerativeAI.Types.RagEngine;
 /// <seealso href="https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/rag-api">See Official API Documentation</seealso>
 public class RagCorpusClient : BaseClient
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RagCorpusClient"/> class.
+    /// </summary>
+    /// <param name="platform">The platform adapter for API communication.</param>
+    /// <param name="httpClient">Optional HTTP client for API requests.</param>
+    /// <param name="logger">Optional logger for diagnostic output.</param>
     public RagCorpusClient(IPlatformAdapter platform, HttpClient? httpClient = null, ILogger? logger = null) : base(platform, httpClient, logger)
     {
     }

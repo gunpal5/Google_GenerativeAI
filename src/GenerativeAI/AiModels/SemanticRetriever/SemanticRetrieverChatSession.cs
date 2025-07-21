@@ -105,7 +105,7 @@ public class SemanticRetrieverChatSession
 
         request.AnswerStyle = _answerStyle;
         request.SafetySettings = _safetySettings;
-        var response = await _model.GenerateAnswerAsync(request, cancellationToken);
+        var response = await _model.GenerateAnswerAsync(request, cancellationToken).ConfigureAwait(false);
         UpdateHistory(request, response);
         return response;
     }

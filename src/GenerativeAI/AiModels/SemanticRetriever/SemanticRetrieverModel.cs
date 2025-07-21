@@ -63,6 +63,14 @@ public partial class SemanticRetrieverModel : BaseModel
         
     }
 
+    /// <summary>
+    /// Creates a new chat session for semantic retrieval.
+    /// </summary>
+    /// <param name="corpusName">The name of the corpus to query.</param>
+    /// <param name="answerStyle">The style of answers to generate.</param>
+    /// <param name="history">Optional conversation history.</param>
+    /// <param name="safetySettings">Optional safety settings for the session.</param>
+    /// <returns>A new <see cref="SemanticRetrieverChatSession"/> instance.</returns>
     public SemanticRetrieverChatSession CreateChatSession(string corpusName, AnswerStyle answerStyle = AnswerStyle.VERBOSE, List<Content>? history = null,List<SafetySetting>? safetySettings =null)
     {
         var chatSession = new SemanticRetrieverChatSession(this, corpusName, answerStyle, history, safetySettings??this.SafetySettings);

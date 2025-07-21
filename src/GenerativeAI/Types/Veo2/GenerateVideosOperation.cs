@@ -9,10 +9,17 @@ namespace GenerativeAI.Types;
 /// </summary>
 public class GenerateVideosOperation : GoogleLongRunningOperation
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="GenerateVideosOperation"/> class.
+    /// </summary>
     public GenerateVideosOperation()
     {
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="GenerateVideosOperation"/> class from a Google long-running operation.
+    /// </summary>
+    /// <param name="operation">The base Google long-running operation to convert.</param>
     public GenerateVideosOperation(GoogleLongRunningOperation operation)
     {
         this.Name = operation.Name;

@@ -79,11 +79,13 @@ public class GoogleCloudAdcAuthenticator : BaseAuthenticator
         // Detect if running on Windows; adjust command accordingly.
         #if NET462_OR_GREATER
         //NET 4.6.2 is windows only!
-        if(true)
+        return ExecuteProcess(
+            "cmd.exe",
+            "/c gcloud auth application-default print-access-token"
+        ).TrimEnd();
         #else
         if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(
                 System.Runtime.InteropServices.OSPlatform.Windows))
-        #endif
         {
             return ExecuteProcess(
                 "cmd.exe",
@@ -97,6 +99,7 @@ public class GoogleCloudAdcAuthenticator : BaseAuthenticator
                 "auth application-default print-access-token"
             ).TrimEnd();
         }
+        #endif
     }
 
     /// <summary>
@@ -138,7 +141,7 @@ public class GoogleCloudAdcAuthenticator : BaseAuthenticator
                 proc.BeginErrorReadLine();
                 proc.WaitForExit();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Log as needed
                 // e.g. Logger.LogRunExternalExe("Execution failed: " + ex.Message);

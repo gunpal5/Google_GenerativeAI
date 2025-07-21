@@ -5,6 +5,7 @@
         <Nullable>enable</Nullable>
          <LangVersion>latest</LangVersion>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+        <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
         <PackageId>Google_$(AssemblyName)</PackageId>
         <Title>.NET Web Application Integration for Google Generative AI SDK</Title>
         <Authors>Gunpal Jain</Authors>
