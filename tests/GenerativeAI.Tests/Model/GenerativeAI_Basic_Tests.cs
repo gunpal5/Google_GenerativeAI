@@ -16,7 +16,7 @@ namespace GenerativeAI.Tests.Model
         ordererType: typeof(PriorityOrderer))]
     public class GenerativeModel_Tests : TestBase
     {
-        private const string DefaultTestModelName = GoogleAIModels.Gemini25ProExp0325;
+        private const string DefaultTestModelName = "gemini-2.5-flash";
 
         public GenerativeModel_Tests(ITestOutputHelper helper) : base(testOutputHelper: helper)
         {
@@ -27,7 +27,7 @@ namespace GenerativeAI.Tests.Model
         /// </summary>
         private GenerativeModel CreateInitializedModel()
         {
-            Assert.SkipUnless(condition: IsGeminiApiKeySet,reason: GeminiTestSkipMessage);
+            Assert.SkipUnless(condition: IsGoogleApiKeySet,reason: GoogleTestSkipMessage);
             var platform = GetTestGooglePlatform();
             return new GenerativeModel(platform: platform, model: DefaultTestModelName);
         }
@@ -367,7 +367,7 @@ namespace GenerativeAI.Tests.Model
 
         protected override IPlatformAdapter GetTestGooglePlatform()
         {
-            Assert.SkipUnless(condition: IsGeminiApiKeySet,reason: GeminiTestSkipMessage);
+            Assert.SkipUnless(condition: IsGoogleApiKeySet,reason: GoogleTestSkipMessage);
             return base.GetTestGooglePlatform();
         }
     }

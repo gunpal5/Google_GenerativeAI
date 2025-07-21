@@ -12,11 +12,11 @@ public abstract class TestBase
     public const string SemanticTestsDisabledMessage =
         "Semantic tests disabled. Add Environment variable 'SEMANTIC_TESTS_ENABLED=true' with proper ADC configuration to run these tests.";
 
-    /// <summary>
-    /// Message displayed when Gemini tests are skipped.
-    /// </summary>
-    public const string GeminiTestSkipMessage =
-        "Gemini tests skipped. Add Environment variable 'GEMINI_API_KEY' to run these tests.";
+    // /// <summary>
+    // /// Message displayed when Gemini tests are skipped.
+    // /// </summary>
+    // public const string GoogleTestSkipMessage =
+    //     "Gemini tests skipped. Add Environment variable 'GEMINI_API_KEY' to run these tests.";
 
     
     /// <summary>
@@ -69,13 +69,13 @@ public abstract class TestBase
         }
     }
 
-    /// <summary>
-    /// Checks if the Gemini API key is set in the environment variables.
-    /// </summary>
-    public static bool IsGeminiApiKeySet
-    {
-        get { return !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("GEMINI_API_KEY")); }
-    }
+    // /// <summary>
+    // /// Checks if the Gemini API key is set in the environment variables.
+    // /// </summary>
+    // public static bool IsGoogleApiKeySet
+    // {
+    //     get { return !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("GEMINI_API_KEY")); }
+    // }
 
     /// <summary>
     /// Checks if the Google API key is set in the environment variables.

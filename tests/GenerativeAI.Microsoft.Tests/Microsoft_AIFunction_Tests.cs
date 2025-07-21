@@ -29,7 +29,7 @@ public class Microsoft_AIFunction_Tests:TestBase
     [Fact]
     public async Task ShouldWorkWithTools()
     {
-        Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+        Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
         var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
         var chatClient = new GenerativeAIChatClient(apiKey);
         var chatOptions = new ChatOptions();
@@ -44,7 +44,7 @@ public class Microsoft_AIFunction_Tests:TestBase
     [Fact]
     public async Task ShouldWorkWithTools_with_Streaming()
     {
-        Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+        Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
         var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
         var chatClient = new GenerativeAIChatClient(apiKey);
         var chatOptions = new ChatOptions();
@@ -62,7 +62,7 @@ public class Microsoft_AIFunction_Tests:TestBase
     [Fact]
     public async Task ShouldWorkWithComplexClasses()
     {
-        Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+        Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
         var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
         var chatClient = new GenerativeAIChatClient(apiKey, modelName:"models/gemini-2.0-flash");
         var chatOptions = new ChatOptions();
@@ -79,7 +79,7 @@ public class Microsoft_AIFunction_Tests:TestBase
     [Fact]
     public async Task ShouldWorkWithComplexClasses_Streaming()
     {
-        Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+        Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
         var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
         var chatClient = new GenerativeAIChatClient(apiKey, modelName: "models/gemini-2.0-flash")
         {
@@ -104,7 +104,7 @@ public class Microsoft_AIFunction_Tests:TestBase
     [Fact]
     public async Task ShouldWorkWith_BookStoreService()
     {
-        Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+        Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
         var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
         var chatClient = new GenerativeAIChatClient(apiKey,GoogleAIModels.Gemini2Flash,false).AsBuilder().UseFunctionInvocation().Build();
         var chatOptions = new ChatOptions();
@@ -131,7 +131,7 @@ public class Microsoft_AIFunction_Tests:TestBase
     [Fact]
     public async Task ShouldWorkWith_NoParameters_FunctionFactory()
     {
-        Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+        Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
         var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
         var chatClient = new GenerativeAIChatClient(apiKey,GoogleAIModels.Gemini2Flash,false).AsBuilder().UseFunctionInvocation().Build();
         var chatOptions = new ChatOptions();
@@ -158,7 +158,7 @@ public class Microsoft_AIFunction_Tests:TestBase
     [Fact]
     public async Task ShouldWorkWith_NoParameters_MeaiTools()
     {
-        Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+        Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
         var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
         var chatClient = new GenerativeAIChatClient(apiKey,GoogleAIModels.Gemini2Flash,false).AsBuilder().UseFunctionInvocation().Build();
         var chatOptions = new ChatOptions();
@@ -179,7 +179,7 @@ public class Microsoft_AIFunction_Tests:TestBase
     [Fact]
     public async Task ShouldWorkWith_NoParameters_QuickTools()
     {
-        Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+        Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
         var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
         var chatClient = new GenerativeAIChatClient(apiKey,GoogleAIModels.Gemini2Flash,false).AsBuilder().UseFunctionInvocation().Build();
         var chatOptions = new ChatOptions();
@@ -200,7 +200,7 @@ public class Microsoft_AIFunction_Tests:TestBase
      [Fact]
     public async Task ShouldWorkWith_NoParameters_FunctionFactory_SelfInvoking()
     {
-        Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+        Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
         var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
         var chatClient = new GenerativeAIChatClient(apiKey,GoogleAIModels.Gemini2Flash,false).AsBuilder().UseFunctionInvocation().Build();
         var chatOptions = new ChatOptions();
@@ -227,7 +227,7 @@ public class Microsoft_AIFunction_Tests:TestBase
     [Fact]
     public async Task ShouldWorkWith_NoParameters_MeaiTools_SelfInvoking()
     {
-        Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+        Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
         var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
         var chatClient = new GenerativeAIChatClient(apiKey,GoogleAIModels.Gemini2Flash);
         var chatOptions = new ChatOptions();
@@ -248,7 +248,7 @@ public class Microsoft_AIFunction_Tests:TestBase
     [Fact]
     public async Task ShouldWorkWith_NoParameters_QuickTools_SelfInvoking()
     {
-        Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+        Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
         var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
         var chatClient = new GenerativeAIChatClient(apiKey,GoogleAIModels.Gemini2Flash);
         var chatOptions = new ChatOptions();
@@ -269,7 +269,7 @@ public class Microsoft_AIFunction_Tests:TestBase
     [Fact]
     public async Task ShouldWorkWith_BookStoreService_with_Streaming()
     {
-        Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+        Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
         var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
         var chatClient = new GenerativeAIChatClient(apiKey);
         var chatOptions = new ChatOptions();

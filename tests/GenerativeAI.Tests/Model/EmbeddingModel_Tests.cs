@@ -23,7 +23,7 @@ namespace GenerativeAI.Tests.Model
 
         protected override IPlatformAdapter GetTestGooglePlatform()
         {
-            Assert.SkipWhen(!IsGeminiApiKeySet,GeminiTestSkipMessage); 
+            Assert.SkipWhen(!IsGoogleApiKeySet,GoogleTestSkipMessage); 
 
             return base.GetTestGooglePlatform();
         }

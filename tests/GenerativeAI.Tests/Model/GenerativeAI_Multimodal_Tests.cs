@@ -15,7 +15,7 @@ namespace GenerativeAI.Tests.Model
 
         private GeminiModel CreateInitializedModel()
         {
-            Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+            Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
 
             return new GeminiModel(GetTestGooglePlatform(), TestModel);
         }

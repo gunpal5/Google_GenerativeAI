@@ -29,7 +29,7 @@ namespace GenerativeAI.Tests.Model
         /// </summary>
         private GenerativeModel CreateInitializedModel()
         {
-            Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+            Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
 
             var platform = GetTestGooglePlatform();
             return new GenerativeModel(platform, DefaultTestModelName);

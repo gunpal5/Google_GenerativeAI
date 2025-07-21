@@ -12,7 +12,7 @@ namespace GenerativeAI.IntegrationTests
         [Fact]
         public async Task ShouldInvokeWetherService()
         {
-            Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+            Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
             WeatherService service = new WeatherService();
             var tools = service.AsTools();
             var calls = service.AsCalls();
@@ -30,7 +30,7 @@ namespace GenerativeAI.IntegrationTests
         [Fact]
         public async Task ShouldInvokeWeatherService_WithStreaming()
         {
-            Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+            Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
             WeatherService service = new WeatherService();
             var tools = service.AsTools();
             var calls = service.AsCalls();
@@ -70,7 +70,7 @@ namespace GenerativeAI.IntegrationTests
         [Fact]
         public async Task ShouldWorkWith_BookStoreService()
         {
-            Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+            Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
             var service = new BookStoreService();
             var tool = new GenericFunctionTool(service.AsTools(), service.AsCalls());
             var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.DefaultGeminiModel);
@@ -82,7 +82,7 @@ namespace GenerativeAI.IntegrationTests
         [Fact]
         public async Task ShouldWorkWith_BookStoreService_with_streaming()
         {
-            Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+            Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
             var service = new BookStoreService();
             var tool = new GenericFunctionTool(service.AsTools(), service.AsCalls());
             var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.DefaultGeminiModel);
@@ -99,7 +99,7 @@ namespace GenerativeAI.IntegrationTests
         [Fact]
         public async Task ShouldWorkWithoutParameters_Interface()
         {
-            Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+            Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
             var service = new BookStoreService();
             var tool = new GenericFunctionTool(service.AsTools(), service.AsCalls());
             var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.DefaultGeminiModel);
@@ -116,7 +116,7 @@ namespace GenerativeAI.IntegrationTests
         [Fact]
         public async Task ShouldWorkWithoutParametersAsync_QuickTool()
         {
-            Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+            Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
             var service = new BookStoreService();
             var tool = new QuickTool(service.GetBookListAsync);
             var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.DefaultGeminiModel);
@@ -132,7 +132,7 @@ namespace GenerativeAI.IntegrationTests
         [Fact]
         public async Task ShouldWorkWithoutParameters_QuickTool()
         {
-            Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+            Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
             var service = new BookStoreService();
             var tool = new QuickTool(service.GetBookList);
             var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.DefaultGeminiModel);
@@ -148,7 +148,7 @@ namespace GenerativeAI.IntegrationTests
         [Fact]
         public async Task ShouldWorkWithoutParameters_Method()
         {
-            Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+            Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
             var service = new MethodTools();
             var tool = new Tools([service.GetBookList2]);
             var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.DefaultGeminiModel);

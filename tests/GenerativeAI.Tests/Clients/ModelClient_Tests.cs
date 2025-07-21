@@ -69,7 +69,7 @@ namespace GenerativeAI.Tests.Clients
         
         public ModelClient CreateClient()
         {
-            Assert.SkipUnless(IsGeminiApiKeySet, GeminiTestSkipMessage);
+            Assert.SkipUnless(IsGoogleApiKeySet, GoogleTestSkipMessage);
             return new ModelClient(GetTestGooglePlatform());
         }
     }

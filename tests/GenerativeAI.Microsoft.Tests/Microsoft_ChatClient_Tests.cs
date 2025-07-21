@@ -100,7 +100,7 @@ public class Microsoft_ChatClient_Tests : TestBase
     [Fact, TestPriority(4)]
     public async Task ShouldReturnChatCompletionOnValidInput()
     {
-        Assert.SkipWhen(!IsGeminiApiKeySet, GeminiTestSkipMessage);
+        Assert.SkipWhen(!IsGoogleApiKeySet, GoogleTestSkipMessage);
         // Arrange
         var adapter = GetTestGooglePlatform();
         var client = new GenerativeAIChatClient(adapter);
@@ -231,7 +231,7 @@ public class Microsoft_ChatClient_Tests : TestBase
 
     protected override IPlatformAdapter GetTestGooglePlatform()
     {
-        Assert.SkipWhen(!IsGeminiApiKeySet, GeminiTestSkipMessage);
+        Assert.SkipWhen(!IsGoogleApiKeySet, GoogleTestSkipMessage);
         return new GoogleAIPlatformAdapter(EnvironmentVariables.GOOGLE_API_KEY);
     }
 }

@@ -27,7 +27,7 @@ public class CachingClient_Tests : TestBase
         var cachedContent = new CachedContent
         {
             DisplayName = "Test Cached Content",
-            Model = "models/gemini-1.5-flash-001",
+            Model = "models/gemini-2.0-flash",
             Contents = new List<Content>
                 { RequestExtensions.FormatGenerateContentInput(file), },
         };
@@ -38,7 +38,7 @@ public class CachingClient_Tests : TestBase
         // Assert
         result.ShouldNotBeNull();
         result.Name.ShouldNotBeNullOrEmpty();
-        result.Model.ShouldBe("models/gemini-1.5-flash-001");
+        result.Model.ShouldBe("models/gemini-20-flash");
         //result.DisplayName.ShouldBe("Test Cached Content");
         result.CreateTime.ShouldNotBeNull();
         result.UsageMetadata.ShouldNotBeNull();
@@ -174,7 +174,7 @@ public class CachingClient_Tests : TestBase
 
     public CachingClient CreateCachingClient()
     {
-        Assert.SkipUnless(IsGeminiApiKeySet, GeminiTestSkipMessage);
+        Assert.SkipUnless(IsGoogleApiKeySet, GoogleTestSkipMessage);
         return new CachingClient(GetTestGooglePlatform());
     }
 }

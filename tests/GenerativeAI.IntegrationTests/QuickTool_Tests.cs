@@ -205,7 +205,7 @@ public class QuickTool_Tests : TestBase
     [Fact]
     public async Task ShouldInvokeWetherService()
     {
-        Assert.SkipUnless(IsGeminiApiKeySet,GeminiTestSkipMessage);
+        Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
         
         var func = (([Description("Request to query student record")] QueryStudentRecordRequest query) =>
         {

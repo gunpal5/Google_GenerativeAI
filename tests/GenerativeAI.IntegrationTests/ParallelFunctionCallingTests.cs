@@ -15,7 +15,7 @@ public class ParallelFunctionCallingTests : TestBase
     [Fact]
     public async Task ShouldInvokeMultipleFunctions()
     {
-        Assert.SkipUnless(IsGeminiApiKeySet, GeminiTestSkipMessage);
+        Assert.SkipUnless(IsGoogleApiKeySet, GoogleTestSkipMessage);
         
         // Set up the service with multiple functions
         var service = new MultiService();
@@ -43,7 +43,7 @@ public class ParallelFunctionCallingTests : TestBase
     [Fact]
     public async Task ShouldInvokeMultipleFunctions_WithStreaming()
     {
-        Assert.SkipUnless(IsGeminiApiKeySet, GeminiTestSkipMessage);
+        Assert.SkipUnless(IsGoogleApiKeySet, GoogleTestSkipMessage);
         
         // Set up the service with multiple functions
         var service = new MultiService();
@@ -71,7 +71,7 @@ public class ParallelFunctionCallingTests : TestBase
     [Fact]
     public async Task ShouldInvokeMultipleFunctions_ComplexRequest()
     {
-        Assert.SkipUnless(IsGeminiApiKeySet, GeminiTestSkipMessage);
+        Assert.SkipUnless(IsGoogleApiKeySet, GoogleTestSkipMessage);
         
         // Set up the service with multiple functions
         var service = new MultiService();
