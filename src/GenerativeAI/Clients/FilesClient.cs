@@ -140,7 +140,7 @@ public class FileClient : BaseClient
         multipart.Add(content);
         httpMessage.Content = multipart;
         await _platform.AddAuthorizationAsync(httpMessage, false, cancellationToken).ConfigureAwait(false);
-        var response = await HttpClient.SendAsync(httpMessage).ConfigureAwait(false);
+        var response = await HttpClient.SendAsync(httpMessage, cancellationToken).ConfigureAwait(false);
         await CheckAndHandleErrors(response, url).ConfigureAwait(false);
 
         var fileResponse = await Deserialize<UploadFileResponse>(response).ConfigureAwait(false);

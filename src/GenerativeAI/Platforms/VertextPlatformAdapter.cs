@@ -33,7 +33,7 @@ public class VertextPlatformAdapter : IPlatformAdapter
     /// <summary>
     /// The API version to use when making requests.
     /// </summary>
-    public string ApiVersion { get; set; }
+    private string ApiVersion { get; set; }
 
     /// <summary>
     /// Publisher information, defaulting to "google".
@@ -399,7 +399,11 @@ public class VertextPlatformAdapter : IPlatformAdapter
     /// <inheritdoc />
     public string GetMultiModalLiveUrl(string version = "v1alpha")
     {
+#if NET6_0_OR_GREATER
+        return BaseUrls.VertexMultiModalLive.Replace("{version}", "v1beta1", StringComparison.Ordinal).Replace("{location}", Region, StringComparison.Ordinal).Replace("{projectId}", ProjectId, StringComparison.Ordinal);
+#else
         return BaseUrls.VertexMultiModalLive.Replace("{version}", "v1beta1").Replace("{location}", Region).Replace("{projectId}",ProjectId);
+#endif
     }
 
     
@@ -419,7 +423,11 @@ public class VertextPlatformAdapter : IPlatformAdapter
         var transformed = "projects/{project}/locations/{location}/publishers/google/{model}";
 //        var transformed = "publishers/google/{model}";
         //var transformed = "{model}";
+#if NET6_0_OR_GREATER
+        var id = transformed.Replace("{project}", ProjectId, StringComparison.Ordinal).Replace("{location}", Region, StringComparison.Ordinal).Replace("{model}", modelName.ToModelId(), StringComparison.Ordinal);
+#else
         var id = transformed.Replace("{project}", ProjectId).Replace("{location}", Region).Replace("{model}", modelName.ToModelId());
+#endif
         return id;
 
     }

@@ -57,7 +57,11 @@ public class MarkdownExtractor
             string line = lines[i];
 
             // Detect fenced code block start
+#if NET6_0_OR_GREATER
+            if (line.StartsWith("```", StringComparison.Ordinal))
+#else
             if (line.StartsWith("```"))
+#endif
             {
                 insideFencedBlock = !insideFencedBlock;
                 continue;

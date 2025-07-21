@@ -298,7 +298,11 @@ public class MultiModalLiveClient : IDisposable
         if (responsePayload.ServerContent?.ModelTurn?.Parts != null)
         {
             var audioBlobs = responsePayload.ServerContent.ModelTurn.Parts
+#if NET6_0_OR_GREATER
+                .Where(p => p.InlineData?.MimeType?.Contains("audio", StringComparison.Ordinal) == true)
+#else
                 .Where(p => p.InlineData?.MimeType?.Contains("audio") == true)
+#endif
                 
                 .ToList();
 
@@ -364,7 +368,11 @@ public class MultiModalLiveClient : IDisposable
 
     private int ExtractSampleRate(string? mimeType)
     {
+#if NET6_0_OR_GREATER
+        if (mimeType != null && mimeType.Contains("rate=", StringComparison.Ordinal))
+#else
         if (mimeType != null && mimeType.Contains("rate="))
+#endif
         {
             if (int.TryParse(mimeType.Split("rate=")[1].Split(";")[0], out var rate))
             {
@@ -619,7 +627,11 @@ public class MultiModalLiveClient : IDisposable
     public async Task SendSetupAsync(BidiGenerateContentSetup setup, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(setup);
+#if NET6_0_OR_GREATER
+        if(!setup.Model.Contains("/", StringComparison.Ordinal))
+#else
         if(!setup.Model.Contains("/"))
+#endif
             throw new ArgumentException("Please provide a valid model name such as 'models/gemini-2.0-flash-live-001'.");
         var payload = new BidiClientPayload { Setup = setup };
         await SendAsync(payload, cancellationToken).ConfigureAwait(false);

@@ -780,7 +780,11 @@ public static class MimeTypeMap
         }
 
 
+#if NET6_0_OR_GREATER
+        if (!str.StartsWith(Dot, StringComparison.Ordinal))
+#else
         if (!str.StartsWith(Dot))
+#endif
         {
             var index = str.LastIndexOf(Dot);
             if (index != -1 && str.Length > index + 1)
@@ -820,7 +824,11 @@ public static class MimeTypeMap
             throw new ArgumentNullException(nameof(mimeType));
         }
 
+#if NET6_0_OR_GREATER
+        if (mimeType.StartsWith(Dot, StringComparison.Ordinal))
+#else
         if (mimeType.StartsWith(Dot))
+#endif
         {
             throw new ArgumentException("Requested mime type is not valid: " + mimeType);
         }

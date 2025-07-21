@@ -247,7 +247,11 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
     /// <inheritdoc />
     public string GetMultiModalLiveUrl(string version = "v1alpha")
     {
+#if NET6_0_OR_GREATER
+        return $"{BaseUrls.GoogleMultiModalLive.Replace("{version}", version, StringComparison.Ordinal)}?key={this.Credentials.ApiKey}";
+#else
         return $"{BaseUrls.GoogleMultiModalLive.Replace("{version}",version)}?key={this.Credentials.ApiKey}";
+#endif
     }
     
     /// <inheritdoc />

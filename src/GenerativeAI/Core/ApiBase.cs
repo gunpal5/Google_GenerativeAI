@@ -32,7 +32,7 @@ namespace GenerativeAI.Core
         /// </summary>
         /// <param name="httpClient">HTTP client used for API requests.</param>
         /// <param name="logger">Optional. The logger instance for logging API interactions.</param>
-        public ApiBase(HttpClient? httpClient, ILogger? logger = null)
+        protected ApiBase(HttpClient? httpClient, ILogger? logger = null)
         {
             _httpClient = httpClient ?? new HttpClient()
             {
@@ -85,13 +85,17 @@ namespace GenerativeAI.Core
 
                 var request = new HttpRequestMessage(HttpMethod.Get, new Uri(url));
 
-                await AddAuthorizationHeader(request).ConfigureAwait(false);
+                await AddAuthorizationHeader(request, false, cancellationToken).ConfigureAwait(false);
 
                 // Send GET request
                 var response = await _httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
                 await CheckAndHandleErrors(response, url).ConfigureAwait(false);
+#if NET5_0_OR_GREATER
+                var content = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+#else
                 var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+#endif
                 _logger?.LogSuccessfulGetResponse(url, content);
 
                 // Deserialize and return the response
@@ -151,7 +155,7 @@ namespace GenerativeAI.Core
                     Content = new StringContent(jsonPayload, System.Text.Encoding.UTF8, "application/json")
                 };
 
-                await AddAuthorizationHeader(request).ConfigureAwait(false);
+                await AddAuthorizationHeader(request, false, cancellationToken).ConfigureAwait(false);
 
                 // Send HTTP request
                 var response = await _httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
@@ -272,7 +276,7 @@ namespace GenerativeAI.Core
 
                 using var request = new HttpRequestMessage(HttpMethod.Delete, url);
 
-                await AddAuthorizationHeader(request).ConfigureAwait(false);
+                await AddAuthorizationHeader(request, false, cancellationToken).ConfigureAwait(false);
 
                 // Send DELETE request
                 var response = await _httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
@@ -358,7 +362,7 @@ namespace GenerativeAI.Core
                     Content = form
                 };
 
-                await AddAuthorizationHeader(request).ConfigureAwait(false);
+                await AddAuthorizationHeader(request, false, cancellationToken).ConfigureAwait(false);
 
                 var response = await _httpClient
                     .SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken)
@@ -371,7 +375,11 @@ namespace GenerativeAI.Core
                         $"File upload to {url.MaskApiKey()} failed with status code {response.StatusCode}");
                 }
 
+#if NET5_0_OR_GREATER
+                var responseContent = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+#else
                 var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+#endif
                 _logger?.LogSuccessfulHttpResponse(url, responseContent);
 
                 return responseContent;
@@ -421,7 +429,7 @@ namespace GenerativeAI.Core
             using var requestContent = new StreamContent(ms);
             requestContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             request.Content = requestContent;
-            await AddAuthorizationHeader(request).ConfigureAwait(false);
+            await AddAuthorizationHeader(request, false, cancellationToken).ConfigureAwait(false);
             // Call your existing SendAsync method (assumed to handle HttpCompletionOption, etc.)
             using var response = await HttpClient
                 .SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
