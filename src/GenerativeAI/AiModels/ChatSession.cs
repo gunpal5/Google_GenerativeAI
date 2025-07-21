@@ -173,20 +173,28 @@ public class ChatSession : GenerativeModel
     /// <inheritdoc />
     public override async IAsyncEnumerable<GenerateContentResponse> StreamContentAsync(GenerateContentRequest request, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
+        var historyCountBeforeRequest = this.History.Count;
         var sb = new StringBuilder();
-        await foreach (var response in base.StreamContentAsync(request,cancellationToken).ConfigureAwait(false))
+        await foreach (var response in base.StreamContentAsync(request, cancellationToken).ConfigureAwait(false))
         {
             if (cancellationToken.IsCancellationRequested)
                 yield break;
-            
             sb.Append(response.Text());
             yield return response;
         }
-
-        var lastRequestContent = request.Contents.Last();
-        var lastResponseContent = RequestExtensions.FormatGenerateContentInput(sb.ToString(), Roles.Model);
-        
-        UpdateHistory(lastRequestContent, lastResponseContent);
+        var finalModelResponseContent = RequestExtensions.FormatGenerateContentInput(sb.ToString(), Roles.Model);
+        var userPromptContent = request.Contents
+            .Skip(historyCountBeforeRequest)
+            .FirstOrDefault(c => c.Role?.Equals(Roles.User, StringComparison.OrdinalIgnoreCase) == true && 
+                                 c.Parts.All(p => p.FunctionResponse == null));
+        if (userPromptContent != null)
+        {
+            UpdateHistory(userPromptContent, finalModelResponseContent);
+        }
+        else
+        {
+            this.LastResponseContent = finalModelResponseContent;
+        }
     }
 
     private void UpdateHistory(GenerateContentRequest request, GenerateContentResponse response)
