@@ -47,9 +47,19 @@ public sealed class GenerativeAIChatClient : IChatClient
     }
 
     /// <inheritdoc/>
-    public GenerativeAIChatClient(IPlatformAdapter adapter, string modelName = GoogleAIModels.DefaultGeminiModel)
+    public GenerativeAIChatClient(IPlatformAdapter adapter, string modelName = GoogleAIModels.DefaultGeminiModel, bool autoCallFunction = true)
     {
-        model = new GenerativeModel(adapter, modelName);
+        model = new GenerativeModel(adapter, modelName)
+        {
+            FunctionCallingBehaviour = new FunctionCallingBehaviour()
+            {
+                FunctionEnabled = true,
+                AutoCallFunction = false,
+                AutoHandleBadFunctionCalls = false,
+                AutoReplyFunction = false
+            }
+        };
+        AutoCallFunction = autoCallFunction;
     }
 
     /// <inheritdoc/>
