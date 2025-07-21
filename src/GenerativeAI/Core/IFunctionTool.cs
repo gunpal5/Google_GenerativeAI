@@ -23,6 +23,7 @@ public interface IFunctionTool
     /// <see cref="FunctionResponse"/> containing any output from the function execution.
     /// </summary>
     /// <param name="functionCall">The <see cref="FunctionCall"/> instance containing the name and arguments required for the function execution.</param>
+    /// <param name="cancellationToken">Token to monitor for cancellation requests.</param>
     /// <returns>A task representing the asynchronous operation, which, upon completion, provides a <see cref="FunctionResponse"/> with the execution results.</returns>
     Task<FunctionResponse?> CallAsync(FunctionCall functionCall, CancellationToken cancellationToken = default);
 

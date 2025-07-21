@@ -59,7 +59,12 @@ public class FileManagementClient : BaseClient
         if (progressCallback == null)
             progressCallback = d => { };
 
-        var json = JsonSerializer.Serialize(request, SerializerOptions.GetTypeInfo(request.GetType()));
+        if (SerializerOptions == null)
+            throw new InvalidOperationException("SerializerOptions is not initialized");
+        var typeInfo = SerializerOptions.GetTypeInfo(request.GetType());
+        if (typeInfo == null)
+            throw new InvalidOperationException($"Could not get type info for {request.GetType()}");
+        var json = JsonSerializer.Serialize(request, typeInfo);
         //Upload File
         using var file = File.OpenRead(filePath);
         var httpMessage = new HttpRequestMessage(HttpMethod.Post, url);
@@ -76,9 +81,10 @@ public class FileManagementClient : BaseClient
         await CheckAndHandleErrors(response, url).ConfigureAwait(false);
 
         var fileResponse = await Deserialize<UploadRagFileResponse>(response).ConfigureAwait(false);
-        if (fileResponse.Error != null)
-            throw new VertexAIException(fileResponse.Error.Message, fileResponse.Error);
-        return fileResponse.RagFile;
+        if (fileResponse != null && fileResponse.Error != null)
+            throw new VertexAIException(fileResponse.Error.Message ?? "Unknown error", fileResponse.Error);
+        
+        return fileResponse?.RagFile;
     }
 
     /// <summary>

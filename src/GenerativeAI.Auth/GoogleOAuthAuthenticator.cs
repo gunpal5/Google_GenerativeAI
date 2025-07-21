@@ -6,12 +6,20 @@ using ClientSecrets = Google.Apis.Auth.OAuth2.ClientSecrets;
 
 namespace GenerativeAI.Authenticators;
 
+/// <summary>
+/// Authenticator that uses Google OAuth2 for authentication with Google services.
+/// </summary>
 public class GoogleOAuthAuthenticator:BaseAuthenticator
 {
     private string _clientFile = "client_secret.json";
     
     private ICredential _credential;
     private string _tokenFile = "token.json";
+    
+    /// <summary>
+    /// Initializes a new instance of the GoogleOAuthAuthenticator class with the specified credential file.
+    /// </summary>
+    /// <param name="credentialFile">Path to the client secret JSON file. If null, uses default "client_secret.json".</param>
     public GoogleOAuthAuthenticator(string? credentialFile)
     {
         var secrets = GetClientSecrets(credentialFile??_clientFile);   
@@ -38,6 +46,11 @@ public class GoogleOAuthAuthenticator:BaseAuthenticator
         return clientSecrets;
     }
 
+    /// <summary>
+    /// Gets an access token asynchronously using the configured OAuth2 credentials.
+    /// </summary>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A task representing the asynchronous operation that returns access token information.</returns>
     public override async Task<AuthTokens> GetAccessTokenAsync(CancellationToken cancellationToken = default)
     {
         var token = await _credential.GetAccessTokenForRequestAsync(cancellationToken:cancellationToken).ConfigureAwait(false);
@@ -50,6 +63,12 @@ public class GoogleOAuthAuthenticator:BaseAuthenticator
         return tokenInfo;
     }
 
+    /// <summary>
+    /// Refreshes an access token asynchronously using the provided token information.
+    /// </summary>
+    /// <param name="token">The token information to refresh.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A task representing the asynchronous operation that returns refreshed token information.</returns>
     public override Task<AuthTokens> RefreshAccessTokenAsync(AuthTokens token, CancellationToken cancellationToken = default)
     {
         return base.RefreshAccessTokenAsync(token, cancellationToken);

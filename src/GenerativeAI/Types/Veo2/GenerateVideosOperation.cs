@@ -63,7 +63,7 @@ public class GenerateVideosOperation : GoogleLongRunningOperation
 
     /// <summary>
     /// Convenience property potentially containing the typed result of the video generation if the operation succeeded.
-    /// This field might be populated by SDK logic by parsing the <see cref="Response"/> dictionary.
+    /// This field might be populated by SDK logic by parsing the Response dictionary.
     /// </summary>
     [JsonPropertyName("result")]
     public GenerateVideosResponse? Result { get; set; }

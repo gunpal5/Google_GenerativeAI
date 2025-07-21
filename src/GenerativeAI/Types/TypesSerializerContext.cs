@@ -6,6 +6,9 @@ using GenerativeAI.Types.RagEngine;
 
 namespace GenerativeAI.Types;
 
+/// <summary>
+/// JSON serializer context for GenerativeAI types, providing source-generated serialization metadata.
+/// </summary>
 [JsonSerializable(typeof(CachedContent))]
 [JsonSerializable(typeof(ListCachedContentsResponse))]
 [JsonSerializable(typeof(Duration))]
@@ -244,9 +247,7 @@ namespace GenerativeAI.Types;
 [JsonSerializable(typeof(AudioTranscriptionConfig))]
 
 [JsonSourceGenerationOptions(WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull, UseStringEnumConverter = true)]
-/// <summary>
-/// JSON serializer context for GenerativeAI types, providing source-generated serialization metadata.
-/// </summary>
+
 public partial class TypesSerializerContext : JsonSerializerContext
 {
 }

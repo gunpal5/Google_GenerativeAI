@@ -79,6 +79,7 @@ public interface IGenerativeModel
     /// </summary>
     /// <param name="prompt">The input text prompt used for generating content.</param>
     /// <param name="fileUri">The URI to an file that should be included in the content generation request.</param>
+    /// <param name="mimeType">The MIME type of the file specified in fileUri.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A task that represents the asynchronous operation, containing the <see cref="GenerateContentResponse"/> or null if content generation fails.</returns>
     /// <seealso href="https://ai.google.dev/gemini-api/docs/vision">See Official API Documentation For Vision Capabilities</seealso>

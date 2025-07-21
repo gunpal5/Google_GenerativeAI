@@ -28,11 +28,12 @@ public partial class SemanticRetrieverModel : BaseModel
     /// </summary>
     /// <param name="modelName">The name of the semantic retriever model.</param>
     /// <param name="platform">The platform adapter providing necessary infrastructure, including authentication.</param>
+    /// <param name="safetySettings">Optional collection of safety settings to apply to the model.</param>
     /// <param name="httpClient">The optional HTTP client for making requests.</param>
     /// <param name="logger">The optional logger for logging events and debugging information.</param>
     /// <exception cref="GenerativeAIException">Thrown when the platform authenticator is not provided.</exception>
     public SemanticRetrieverModel(IPlatformAdapter platform,
-        string? modelName,
+        string modelName,
         ICollection<SafetySetting>? safetySettings = null,
         HttpClient? httpClient = null,
         ILogger? logger = null

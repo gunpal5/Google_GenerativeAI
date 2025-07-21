@@ -145,6 +145,7 @@ public static class GenerateContentResponseExtensions
     /// Extracts all JSON blocks from the provided GenerateContentResponse.
     /// </summary>
     /// <param name="response">The GenerateContentResponse containing potential JSON blocks.</param>
+    /// <param name="options">Optional JSON serializer options to use for deserialization.</param>
     /// <returns>A list of JsonBlock objects extracted from the response. Returns an empty list if no JSON blocks are found.</returns>
     public static T? ToObject<T>(this GenerateContentResponse response, JsonSerializerOptions? options = null)
         where T : class
@@ -164,6 +165,7 @@ public static class GenerateContentResponseExtensions
     /// Converts JSON blocks contained within the GenerateContentResponse into objects of the specified type.
     /// </summary>
     /// <param name="response">The GenerateContentResponse containing JSON blocks to convert.</param>
+    /// <param name="options">Optional JSON serializer options to use for deserialization.</param>
     /// <typeparam name="T">The type to which the JSON blocks are converted.</typeparam>
     /// <returns>A list of objects of type T. Returns an empty list if no JSON blocks are found or successfully converted.</returns>
     public static List<T> ToObjects<T>(this GenerateContentResponse response, JsonSerializerOptions? options = null)

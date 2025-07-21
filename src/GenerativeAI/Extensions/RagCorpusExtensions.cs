@@ -11,7 +11,7 @@ public static class RagCorpusExtensions
     /// Configures the <see cref="RagCorpus"/> to use Pinecone as the vector database.
     /// </summary>
     /// <param name="corpus">The <see cref="RagCorpus"/> instance to configure.</param>
-    /// <param name="config">The <see cref="PineconeConfig"/> containing Pinecone-specific settings.</param>
+    /// <param name="config">The <see cref="RagVectorDbConfigPinecone"/> containing Pinecone-specific settings.</param>
     /// <param name="apiKeySecretResourceName">The resource name of the secret containing the Pinecone API key.<br/>Format: projects/{PROJECT_NUMBER}/secrets/{SECRET_ID}/versions/{VERSION_ID}</param>
     public static void AddPinecone(this RagCorpus corpus, RagVectorDbConfigPinecone config,
         string apiKeySecretResourceName)
@@ -85,14 +85,21 @@ public static class RagCorpusExtensions
     /// <exception cref="ArgumentNullException">Thrown when embeddingModelName is null.</exception>
     public static void AddEmbeddingModel(this RagCorpus corpus, string embeddingModelName)
     {
-        if (embeddingModelName == null)
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(embeddingModelName);
+        ArgumentNullException.ThrowIfNull(corpus);
+#else
+        if(embeddingModelName == null)
             throw new ArgumentNullException(nameof(embeddingModelName));
-        
+         if(corpus == null)
+            throw new ArgumentNullException(nameof(corpus));
+#endif
+
         corpus.VectorDbConfig ??= new RagVectorDbConfig();
 
         corpus.VectorDbConfig.RagEmbeddingModelConfig = new RagEmbeddingModelConfig()
         {
-            VertexPredictionEndpoint =
+            VertexPredictionEndpoint = new RagEmbeddingModelConfigVertexPredictionEndpoint()
             {
                 Endpoint = embeddingModelName
             }

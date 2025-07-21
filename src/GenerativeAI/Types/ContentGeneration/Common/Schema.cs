@@ -113,7 +113,7 @@ public class Schema
 }
 
 /// <summary>
-/// The <see cref="SourceGenerationContext">SourceGenerationContext</see> class is a custom
+/// The SchemaSourceGenerationContext class is a custom
 /// source generation context for improving the performance of JSON serialization and deserialization.
 /// This is achieved by leveraging the <see cref="System.Text.Json.Serialization.JsonSourceGenerationOptionsAttribute"/>
 /// to configure source generation options and define types for serialization at compile-time.

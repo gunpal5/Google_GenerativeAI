@@ -20,6 +20,8 @@ public static class GenerateAnswerResponseExtension
             throw new ArgumentNullException(nameof(response));
         if(response.Answer == null)
             throw new ArgumentNullException(nameof(response.Answer));
+        if(response.Answer.Content == null)
+            return string.Empty;
         return string.Join("\r\n", response.Answer.Content.Parts.Select(s => s.Text));
     }
 }

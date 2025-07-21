@@ -19,7 +19,7 @@ namespace GenerativeAI;
 /// for generalized behavior, or see related documentation for leveraging the Vertex AI platform.
 /// </example>
 /// <seealso cref="GenerativeModel" />
-/// <seealso cref="BaseClient" />
+/// <seealso cref="BaseModel" />
 /// <seealso cref="IPlatformAdapter" />
 public class VertexAIModel:GenerativeModel
 {

@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 namespace GenerativeAI.Types;
 
 /// <summary>
-/// Response from <see cref="ListPermissions"/> containing a paginated list of permissions.
+/// Response from ListPermissions containing a paginated list of permissions.
 /// <seealso href="https://ai.google.dev/api/semantic-retrieval/permissions#response-body_1">See Official API Documentation</seealso>
 /// </summary>
 public class ListPermissionsResponse

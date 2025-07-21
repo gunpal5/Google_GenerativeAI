@@ -26,7 +26,7 @@ public class BidiResponsePayload
     public BidiGenerateContentToolCall? ToolCall { get; set; }
 
     /// <summary>
-    /// Gets or sets a notification for the client that a previously issued <see cref="BidiGenerateContentToolCall"/> with the specified <see cref="Id"/> should have been not executed and should be cancelled.
+    /// Gets or sets a notification for the client that a previously issued <see cref="BidiGenerateContentToolCall"/> with the specified ID should have been not executed and should be cancelled.
     /// </summary>
     [JsonPropertyName("toolCallCancellation")]
     public BidiGenerateContentToolCallCancellation? ToolCallCancellation { get; set; }

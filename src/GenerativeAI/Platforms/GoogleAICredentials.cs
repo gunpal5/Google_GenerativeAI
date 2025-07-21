@@ -40,7 +40,7 @@ public class GoogleAICredentials : ICredentials
     {
         this.ApiKey = apiKey;
         if(!string.IsNullOrEmpty(accessToken))
-            this.AuthToken = new AuthTokens(accessToken, expiryTime:expiry);
+            this.AuthToken = new AuthTokens(accessToken!, expiryTime:expiry);
     }
 
     /// <summary>

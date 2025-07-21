@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 namespace GenerativeAI.Types;
 
 /// <summary>
-/// A fine-tuned model created using <see cref="ModelService"/>.CreateTunedModel.
+/// A fine-tuned model created using ModelService.CreateTunedModel.
 /// </summary>
 /// <seealso href="https://developers.generativeai.google/api/tuning#TunedModel">See Official API Documentation</seealso>
 public class TunedModel

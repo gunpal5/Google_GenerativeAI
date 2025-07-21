@@ -18,7 +18,7 @@ public partial class GenerativeModel
     /// <remarks>
     /// Use Google Search Tool for Latest Models
     /// </remarks>
-    public bool UseGrounding { get; set; } = false;
+    public bool UseGrounding { get; set; }
 
     /// <summary>
     /// Specifies whether the Google Search integration is enabled.
@@ -29,7 +29,7 @@ public partial class GenerativeModel
     /// Enabling this property incorporates Google Search as a tool for the generative model,
     /// providing dynamic search support based on the requested content needs.
     /// </remarks>
-    public bool UseGoogleSearch { get; set; } = false;
+    public bool UseGoogleSearch { get; set; }
 
     /// <summary>
     /// Indicates whether the code execution tool is enabled. The code execution tool facilitates the integration
@@ -39,7 +39,7 @@ public partial class GenerativeModel
     /// Use the Code Execution Tool for tasks requiring direct code evaluation or execution within the generative model.
     /// This feature is incompatible with JSON mode or cached content mode.
     /// </remarks>
-    public bool UseCodeExecutionTool { get; set; } = false;
+    public bool UseCodeExecutionTool { get; set; }
     
     /// <summary>
     /// Gets the retrieval tool configuration for the model, if any.
@@ -317,16 +317,16 @@ public partial class GenerativeModel
         }
     }
 
-    private async Task<List<FunctionResponse>> ExecuteFunctionsAsync(List<FunctionCall> functionCalls, GenerateContentResponse response)
+    private async Task<List<FunctionResponse?>> ExecuteFunctionsAsync(List<FunctionCall> functionCalls, GenerateContentResponse response)
     {
-        List<FunctionResponse> functionResponses = new List<FunctionResponse>();
+        List<FunctionResponse?> functionResponses = new List<FunctionResponse?>();
         List<Task> tasks = new List<Task>();
         foreach (var functionCall in functionCalls)
         { 
             var name = functionCall.Name ?? string.Empty;
 
             var tool = FunctionTools.FirstOrDefault(s => s.IsContainFunction(name));
-            FunctionResponse functionResponse;
+            FunctionResponse? functionResponse;
             
             if (tool == null)
             {
@@ -338,9 +338,14 @@ public partial class GenerativeModel
                 }
 
                 // Marking the function name as invalid in the response
-                if (response.Candidates.Length > 0)
+                if (response.Candidates != null && response.Candidates.Length > 0 && 
+                    response.Candidates[0].Content is { Parts.Count: > 0 } &&
+                    response.Candidates[0].Content!.Parts[0].FunctionCall != null)
                 {
-                    response.Candidates[0].Content.Parts[0].FunctionCall!.Name = "InvalidName";
+                    var content = response.Candidates[0].Content;
+                    var call = content?.Parts[0].FunctionCall;
+                    if (call != null)
+                        call.Name = "InvalidName";
                 }
 
                 name = "InvalidName";
@@ -357,7 +362,7 @@ public partial class GenerativeModel
                 
                 var task = Task.Run(async () =>
                 {
-                    functionResponse = await tool.CallAsync(functionCall).ConfigureAwait(false);
+                    functionResponse = await tool.CallAsync(functionCall!).ConfigureAwait(false);
                     functionResponses.Add(functionResponse);
                 });
                 tasks.Add(task);
@@ -383,9 +388,13 @@ public partial class GenerativeModel
             contents.AddRange(originalRequest.Contents);
         }
         // Add the AI's function-call message
-        if (response.Candidates.Length > 0)
+        if (response.Candidates != null && response.Candidates.Length > 0)
         {
-            contents.Add(new Content(response.Candidates[0].Content.Parts, response.Candidates[0].Content.Role));
+            var candidate = response.Candidates[0];
+            if (candidate.Content != null)
+            {
+                contents.Add(new Content(candidate.Content.Parts, candidate.Content.Role));
+            }
         }
         return contents;
     }

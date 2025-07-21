@@ -84,7 +84,7 @@ public class GenerationConfig
     /// tokens to consider, while Nucleus sampling limits the number of tokens based on
     /// the cumulative probability.
     /// Note: The default value varies by <see cref="Model"/> and is specified by the
-    /// <see cref="Model.TopP"/> attribute returned from the <see cref="getModel"/> function.
+    /// <see cref="Model.TopP"/> attribute returned from the model information.
     /// An empty <see cref="TopK"/> attribute indicates that the model doesn't apply top-k sampling
     /// and doesn't allow setting <see cref="TopK"/> on requests.
     /// </summary>
@@ -97,7 +97,7 @@ public class GenerationConfig
     /// sampling. Top-k sampling considers the set of <see cref="TopK"/> most probable tokens.
     /// Models running with nucleus sampling don't allow TopK setting.
     /// Note: The default value varies by <see cref="Model"/> and is specified by the
-    /// <see cref="Model.TopP"/> attribute returned from the <see cref="getModel"/> function.
+    /// <see cref="Model.TopP"/> attribute returned from the model information.
     /// An empty <see cref="TopK"/> attribute indicates that the model doesn't apply top-k sampling
     /// and doesn't allow setting <see cref="TopK"/> on requests.
     /// </summary>

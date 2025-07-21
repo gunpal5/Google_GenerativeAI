@@ -78,7 +78,12 @@ public abstract class BaseAuthenticator : IGoogleAuthenticator
             if (expiresIn.ValueKind == JsonValueKind.Number)
                 expiresInSeconds = (int)expiresIn.GetInt32();
             else if (expiresIn.ValueKind == JsonValueKind.String)
-                expiresInSeconds = int.Parse(expiresIn.GetString());
+            {
+                var expiresInStr = expiresIn.GetString();
+                if (expiresInStr == null)
+                    return null;
+                expiresInSeconds = int.Parse(expiresInStr);
+            }
             else
                 return null;
             return new AuthTokens(token, expiryTime: DateTime.UtcNow.AddSeconds(expiresInSeconds));

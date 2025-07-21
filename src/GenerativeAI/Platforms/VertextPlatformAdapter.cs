@@ -1,8 +1,9 @@
 ﻿using System.Text.Json;
-using GenerativeAI;
 using GenerativeAI.Authenticators;
 using GenerativeAI.Core;
 using Microsoft.Extensions.Logging;
+
+namespace GenerativeAI;
 
 /// <summary>
 /// The VertextPlatformAdapter class provides authentication, configuration, and utility methods for interacting with Vertex AI.
@@ -156,7 +157,7 @@ public class VertextPlatformAdapter : IPlatformAdapter
 
         if (!string.IsNullOrEmpty(accessToken) || !string.IsNullOrEmpty(apiKey))
         {
-            this.Credentials = new GoogleAICredentials(apiKey, accessToken);
+            this.Credentials = new GoogleAICredentials(apiKey ?? string.Empty, accessToken);
         }
     }
 
@@ -173,11 +174,11 @@ public class VertextPlatformAdapter : IPlatformAdapter
         if (File.Exists(credentialsFile))
         {
             var options = DefaultSerializerOptions.Options;
-            #if NET7_0_OR_GREATER
+#if NET7_0_OR_GREATER
             options.PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower;
-            #elif NET6_0 || NET5_0
+#elif NET6_0 || NET5_0
             options.PropertyNamingPolicy = new JsonSnakeCaseLowerNamingPolicy();
-            #endif 
+#endif 
             var file = File.ReadAllText(credentialsFile);
             credentials = JsonSerializer.Deserialize<CredentialConfiguration>(file, options);
         }
@@ -223,7 +224,7 @@ public class VertextPlatformAdapter : IPlatformAdapter
 
         if (Credentials != null && !string.IsNullOrEmpty(Credentials.ApiKey))
             request.Headers.Add("x-goog-api-key", Credentials.ApiKey);
-        if (this.Credentials.AuthToken != null && !string.IsNullOrEmpty(Credentials.AuthToken.AccessToken))
+        if (Credentials != null && Credentials.AuthToken != null && !string.IsNullOrEmpty(Credentials.AuthToken.AccessToken))
             request.Headers.Add("Authorization", "Bearer " + Credentials.AuthToken.AccessToken);
         if (!string.IsNullOrEmpty(ProjectId))
         {
@@ -250,12 +251,12 @@ public class VertextPlatformAdapter : IPlatformAdapter
             if (this.Authenticator == null)
             {
                 var adcAuthenticator = new GoogleCloudAdcAuthenticator();
-                var token = await adcAuthenticator.ValidateAccessTokenAsync(Credentials.AuthToken.AccessToken, true, cancellationToken).ConfigureAwait(false);
+                var token = await adcAuthenticator.ValidateAccessTokenAsync(Credentials.AuthToken.AccessToken ?? string.Empty, true, cancellationToken).ConfigureAwait(false);
                 this.Credentials.AuthToken.ExpiryTime = token?.ExpiryTime;
             }
             else
             {
-                var token = await this.Authenticator.ValidateAccessTokenAsync(Credentials.AuthToken.AccessToken, false, cancellationToken).ConfigureAwait(false);
+                var token = await this.Authenticator.ValidateAccessTokenAsync(Credentials.AuthToken.AccessToken ?? string.Empty, false, cancellationToken).ConfigureAwait(false);
                 if (token != null)
                 {
                     this.Credentials.AuthToken.ExpiryTime = token.ExpiryTime;
@@ -310,6 +311,7 @@ public class VertextPlatformAdapter : IPlatformAdapter
     /// Constructs the base URL for API requests, optionally appending the version.
     /// </summary>
     /// <param name="appendVesion">Indicates whether to append the version to the URL.</param>
+    /// <param name="appendPublisher">Indicates whether to append the publisher to the URL.</param>
     /// <returns>The constructed base URL string.</returns>
     public string GetBaseUrl(bool appendVesion = true, bool appendPublisher = true)
     {
@@ -401,15 +403,15 @@ public class VertextPlatformAdapter : IPlatformAdapter
     {
         if(this.Credentials == null || this.Credentials.AuthToken == null)
             await this.AuthorizeAsync(cancellationToken).ConfigureAwait(false);
-        if(this.Credentials.AuthToken != null && this.Credentials.AuthToken.Validate() == false)
+        if(this.Credentials?.AuthToken != null && this.Credentials.AuthToken.Validate() == false)
             throw new UnauthorizedAccessException("Unable to get access token. Please try again.");
-        return this.Credentials.AuthToken;
+        return this.Credentials?.AuthToken;
     }
 
     /// <inheritdoc />
     public string? GetMultiModalLiveModalName(string modelName)
     {
-       var transformed = "projects/{project}/locations/{location}/publishers/google/{model}";
+        var transformed = "projects/{project}/locations/{location}/publishers/google/{model}";
 //        var transformed = "publishers/google/{model}";
         //var transformed = "{model}";
         var id = transformed.Replace("{project}", ProjectId).Replace("{location}", Region).Replace("{model}", modelName.ToModelId());

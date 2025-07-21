@@ -83,8 +83,8 @@ public class GenerativeAIChatClient : IChatClient
         List<FunctionResponse> functionResponses = new List<FunctionResponse>();
         foreach (var functionCall in functionCalls)
         {
-            var tool = (AIFunction?)options.Tools?.Where(s => s is AIFunction)
-                .FirstOrDefault(s => s.Name == functionCall.Name);
+            var tool = options?.Tools?.OfType<AIFunction>()
+                .FirstOrDefault(s => s?.Name == functionCall.Name);
             if (tool != null)
             {
                 var result = await tool.InvokeAsync(new AIFunctionArguments(functionCall.Arguments), cancellationToken)
@@ -96,7 +96,9 @@ public class GenerativeAIChatClient : IChatClient
                         contents.Add(content);
                     var responseObject = new JsonObject();
                     responseObject["name"] = functionCall.Name;
-                    responseObject["content"] = ((JsonElement)result).AsNode().DeepClone();
+                    var node = ((JsonElement)result).AsNode();
+                    if (node != null)
+                        responseObject["content"] = node.DeepClone();
                     //responseObject["content"] = result as JsonNode;
                     var functionResponse = new FunctionResponse()
                     {
@@ -139,8 +141,8 @@ public class GenerativeAIChatClient : IChatClient
         var contents = request.Contents;
         foreach (var functionCall in functionCalls)
         {
-            var tool = (AIFunction?)options.Tools?.Where(s => s is AIFunction)
-                .FirstOrDefault(s => s.Name == functionCall.Name);
+            var tool = options?.Tools?.OfType<AIFunction>()
+                .FirstOrDefault(s => s?.Name == functionCall.Name);
             if (tool != null)
             {
                 var result = await tool.InvokeAsync(new AIFunctionArguments(functionCall.Arguments), cancellationToken)
@@ -152,7 +154,9 @@ public class GenerativeAIChatClient : IChatClient
                         contents.Add(content);
                     var responseObject = new JsonObject();
                     responseObject["name"] = functionCall.Name;
-                    responseObject["content"] = ((JsonElement)result).AsNode().DeepClone();
+                    var node = ((JsonElement)result).AsNode();
+                    if (node != null)
+                        responseObject["content"] = node.DeepClone();
                     //responseObject["content"] = result as JsonNode;
                     var functionResponse = new FunctionResponse()
                     {

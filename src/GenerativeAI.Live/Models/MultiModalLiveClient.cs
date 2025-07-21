@@ -223,6 +223,11 @@ public class MultiModalLiveClient : IDisposable
             }
             else
             {
+                if (msg.Text == null)
+                {
+                    _logger?.LogWarning("Received null text message");
+                    return;
+                }
                 responsePayload = JsonSerializer.Deserialize(msg.Text,(JsonTypeInfo<BidiResponsePayload>) DefaultSerializerOptions.Options.GetTypeInfo(typeof(BidiResponsePayload)));
             }
 
@@ -321,6 +326,11 @@ public class MultiModalLiveClient : IDisposable
     {
         try
         {
+            if (blob.Data == null)
+            {
+                _logger?.LogWarning("Received blob with null data");
+                return;
+            }
             var audioBuffer = Convert.FromBase64String(blob.Data);
             int sampleRate = ExtractSampleRate(blob.MimeType);
             bool hasHeader = AudioHelper.IsValidWaveHeader(audioBuffer);

@@ -20,7 +20,7 @@ public class GenerateContentRequestForCountToken: GenerateContentRequest
     /// </summary>
     /// <param name="modelName">The name of the model to use.</param>
     /// <param name="baseRequest">The base <see cref="GenerateContentRequest"/>.</param>
-    /// <exception cref="ArgumentException">Thrown when the <paramref name="model"/> is null or empty.</exception>
+    /// <exception cref="ArgumentException">Thrown when the <paramref name="modelName"/> is null or empty.</exception>
     public GenerateContentRequestForCountToken(string modelName, GenerateContentRequest baseRequest)
     {
         if (string.IsNullOrWhiteSpace(modelName))

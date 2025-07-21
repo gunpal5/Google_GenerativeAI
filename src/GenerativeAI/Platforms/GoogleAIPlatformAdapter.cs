@@ -48,11 +48,11 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
         googleApiKey = googleApiKey ?? EnvironmentVariables.GOOGLE_API_KEY;
         if(string.IsNullOrEmpty(googleApiKey))
             throw new Exception("API Key is required for Google Gemini AI.");
-        Credentials = new GoogleAICredentials(googleApiKey);
+        Credentials = new GoogleAICredentials(googleApiKey!);
         this.ApiVersion = apiVersion;
         this.Authenticator = authenticator;
         if (!string.IsNullOrEmpty(accessToken))
-            Credentials.AuthToken = new AuthTokens(accessToken);
+            Credentials.AuthToken = new AuthTokens(accessToken!);
         this.ValidateAccessToken = validateAccessToken;
         this.Logger = logger;
     }
@@ -99,7 +99,7 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
             await this.ValidateCredentialsAsync(true, cancellationToken).ConfigureAwait(false);
 
             if (!string.IsNullOrEmpty(Credentials?.ApiKey))
-                request.Headers.Add("x-goog-api-key", Credentials.ApiKey);
+                request.Headers.Add("x-goog-api-key", Credentials!.ApiKey);
             if (this.Credentials?.AuthToken != null && !string.IsNullOrEmpty(Credentials.AuthToken.AccessToken))
                 request.Headers.Add("Authorization", "Bearer " + Credentials.AuthToken.AccessToken);
         }
@@ -128,14 +128,14 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
                 if (this.Authenticator == null)
                 {
                     var adcAuthenticator = new GoogleCloudAdcAuthenticator();
-                    var token = await adcAuthenticator.ValidateAccessTokenAsync(Credentials.AuthToken.AccessToken, true,
+                    var token = await adcAuthenticator.ValidateAccessTokenAsync(Credentials.AuthToken.AccessToken ?? string.Empty, true,
                         cancellationToken).ConfigureAwait(false);
                     // this.Credentials.AuthToken.AccessToken = token.AccessToken;
                     this.Credentials.AuthToken.ExpiryTime = token?.ExpiryTime;
                 }
                 else
                 {
-                    var token = await this.Authenticator.ValidateAccessTokenAsync(Credentials.AuthToken.AccessToken,
+                    var token = await this.Authenticator.ValidateAccessTokenAsync(Credentials.AuthToken.AccessToken ?? string.Empty,
                         false, cancellationToken).ConfigureAwait(false);
                     if (token != null)
                     {
@@ -174,16 +174,19 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
 
         var token = await Authenticator.GetAccessTokenAsync(cancellationToken).ConfigureAwait(false);
 
-        if (this.Credentials == null)
-            this.Credentials = new GoogleAICredentials("", token.AccessToken, token.ExpiryTime);
-        else
+        if (token != null)
         {
-            if (this.Credentials.AuthToken == null)
-                this.Credentials.AuthToken = token;
+            if (this.Credentials == null)
+                this.Credentials = new GoogleAICredentials("", token.AccessToken, token.ExpiryTime);
             else
             {
-                this.Credentials.AuthToken.AccessToken = token.AccessToken;
-                this.Credentials.AuthToken.ExpiryTime = token.ExpiryTime;
+                if (this.Credentials.AuthToken == null)
+                    this.Credentials.AuthToken = token;
+                else
+                {
+                    this.Credentials.AuthToken.AccessToken = token.AccessToken;
+                    this.Credentials.AuthToken.ExpiryTime = token.ExpiryTime;
+                }
             }
         }
     }

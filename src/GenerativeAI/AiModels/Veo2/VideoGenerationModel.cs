@@ -129,13 +129,13 @@ namespace GenerativeAI
                 longRunningOperation =
                     await GetVideoGenerationStatusAsync(operationId, timeOut, cancellationToken).ConfigureAwait(false);
 
-                if(longRunningOperation.Done == false)
+                if(longRunningOperation?.Done == false)
                     await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
-            } while (longRunningOperation.Done != true && sw.ElapsedMilliseconds < LongRunningOperationTimeout);
+            } while (longRunningOperation?.Done != true && sw.ElapsedMilliseconds < LongRunningOperationTimeout);
 
-            if (longRunningOperation.Done == true && longRunningOperation.Error != null)
+            if (longRunningOperation != null && longRunningOperation.Done == true && longRunningOperation.Error != null)
             {
-                throw new VertexAIException(longRunningOperation.Error.Message, longRunningOperation.Error);
+                throw new VertexAIException(longRunningOperation.Error.Message ?? "Unknown error", longRunningOperation.Error);
             }
 
             return longRunningOperation;

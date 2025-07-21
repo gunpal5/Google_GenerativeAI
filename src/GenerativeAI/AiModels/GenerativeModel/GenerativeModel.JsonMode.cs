@@ -13,7 +13,7 @@ public partial class GenerativeModel
     /// JSON mode is incompatible with grounding, Google Search, and code execution tools.
     /// Enabling this mode will override other response formats with "application/json".
     /// </remarks>
-    public bool UseJsonMode { get; set; } = false;
+    public bool UseJsonMode { get; set; }
 
     private JsonSerializerOptions _jsonSerializerOptions = DefaultSerializerOptions.GenerateObjectJsonOptions;
 

@@ -174,9 +174,13 @@ public class ChatSession : GenerativeModel
             }
         }
         // Add the AI's function-call message
-        if (response.Candidates.Length > 0 && response.Candidates[0].Content != null)
+        if (response.Candidates != null && response.Candidates.Length > 0)
         {
-            contents.Add(new Content(response.Candidates[0].Content.Parts, response.Candidates[0].Content.Role));
+            var candidate = response.Candidates[0];
+            if (candidate.Content != null)
+            {
+                contents.Add(new Content(candidate.Content.Parts, candidate.Content.Role));
+            }
         }
 
         UpdateHistory(originalRequest, response);

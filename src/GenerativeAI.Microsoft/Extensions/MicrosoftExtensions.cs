@@ -191,7 +191,11 @@ public static class MicrosoftExtensions
                 if (el.ValueKind != JsonValueKind.Object && el.ValueKind != JsonValueKind.Array)
                 {
                     var jObj = new JsonObject();
-                    jObj.Add("content", el.AsNode().DeepClone());
+                    var node = el.AsNode();
+                    if (node != null)
+                    {
+                        jObj.Add("content", node.DeepClone());
+                    }
                     return jObj;
                 }
                 else
@@ -203,9 +207,9 @@ public static class MicrosoftExtensions
             }
         }
 
-        if (response is JsonNode node)
+        if (response is JsonNode node2)
         {
-            return node;
+            return node2;
         }
         else
         {

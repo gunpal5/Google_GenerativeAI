@@ -39,7 +39,7 @@ public abstract class BaseModel : BaseClient
     {
         if (response == null || !(response.Candidates is { Length: > 0 }))
         {
-            var blockErrorMessage = ResponseHelper.FormatBlockErrorMessage(response);
+            var blockErrorMessage = response != null ? ResponseHelper.FormatBlockErrorMessage(response) : "Response was null";
             if (!string.IsNullOrEmpty(blockErrorMessage))
             {
                 throw new GenerativeAIException(

@@ -70,6 +70,8 @@ public class CorporaManager : BaseClient
     public async Task<Corpus?> CreateCorpusAsync(string displayName, CancellationToken cancellationToken = default)
     {
         var corpus = new Corpus { DisplayName = displayName };
+        if (CorporaClient == null)
+            throw new InvalidOperationException("CorporaClient is not initialized");
         return await CorporaClient.CreateCorpusAsync(corpus, cancellationToken).ConfigureAwait(false);
     }
 
@@ -81,6 +83,8 @@ public class CorporaManager : BaseClient
     /// <returns>The corpus.</returns>
     public async Task<Corpus?> GetCorpusAsync(string corpusName, CancellationToken cancellationToken = default)
     {
+        if (CorporaClient == null)
+            throw new InvalidOperationException("CorporaClient is not initialized");
         return await CorporaClient.GetCorpusAsync(corpusName, cancellationToken).ConfigureAwait(false);
     }
 
@@ -91,6 +95,8 @@ public class CorporaManager : BaseClient
     /// <returns>A list of all corpora.</returns>
     public async Task<List<Corpus>?> ListCorporaAsync(CancellationToken cancellationToken = default)
     {
+        if (CorporaClient == null)
+            throw new InvalidOperationException("CorporaClient is not initialized");
         var response = await CorporaClient.ListCorporaAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
         return response?.Corpora;
     }
@@ -105,6 +111,8 @@ public class CorporaManager : BaseClient
     public async Task DeleteCorpusAsync(string corpusName, bool force = false,
         CancellationToken cancellationToken = default)
     {
+        if (CorporaClient == null)
+            throw new InvalidOperationException("CorporaClient is not initialized");
         await CorporaClient.DeleteCorpusAsync(corpusName, force, cancellationToken).ConfigureAwait(false);
     }
 
@@ -124,6 +132,8 @@ public class CorporaManager : BaseClient
         List<CustomMetadata>? metadata = null, CancellationToken cancellationToken = default)
     {
         var document = new Document { DisplayName = displayName, CustomMetadata = metadata };
+        if (DocumentsClient == null)
+            throw new InvalidOperationException("DocumentsClient is not initialized");
         return await DocumentsClient.CreateDocumentAsync(corpusName, document, cancellationToken).ConfigureAwait(false);
     }
 
@@ -135,6 +145,8 @@ public class CorporaManager : BaseClient
     /// <returns>The document.</returns>
     public async Task<Document?> GetDocumentAsync(string documentName, CancellationToken cancellationToken = default)
     {
+        if (DocumentsClient == null)
+            throw new InvalidOperationException("DocumentsClient is not initialized");
         return await DocumentsClient.GetDocumentAsync(documentName, cancellationToken).ConfigureAwait(false);
     }
 
@@ -147,6 +159,8 @@ public class CorporaManager : BaseClient
     public async Task<List<Document>?> ListDocumentsAsync(string corpusName,
         CancellationToken cancellationToken = default)
     {
+        if (DocumentsClient == null)
+            throw new InvalidOperationException("DocumentsClient is not initialized");
         var response = await DocumentsClient.ListDocumentsAsync(corpusName, cancellationToken: cancellationToken)
             .ConfigureAwait(false);
         return response?.Documents;
@@ -162,6 +176,8 @@ public class CorporaManager : BaseClient
     public async Task DeleteDocumentAsync(string documentName, bool force = false,
         CancellationToken cancellationToken = default)
     {
+        if (DocumentsClient == null)
+            throw new InvalidOperationException("DocumentsClient is not initialized");
         await DocumentsClient.DeleteDocumentAsync(documentName, force, cancellationToken).ConfigureAwait(false);
     }
 
@@ -179,6 +195,8 @@ public class CorporaManager : BaseClient
     public async Task<Chunk?> AddChunkAsync(string documentName, Chunk chunk,
         CancellationToken cancellationToken = default)
     {
+        if (ChunkClient == null)
+            throw new InvalidOperationException("ChunkClient is not initialized");
         return await ChunkClient.CreateChunkAsync(documentName, chunk, cancellationToken).ConfigureAwait(false);
     }
     
@@ -194,6 +212,8 @@ public class CorporaManager : BaseClient
     {
         var chunksResponsRequests = chunks.Select(chunk => new CreateChunkRequest() { Chunk = chunk, Parent = documentName })
             .ToList();
+        if (ChunkClient == null)
+            throw new InvalidOperationException("ChunkClient is not initialized");
         var response = await ChunkClient.BatchCreateChunksAsync(documentName, chunksResponsRequests, cancellationToken).ConfigureAwait(false);
         if(response==null || response.Chunks==null || response.Chunks.Count!=chunks.Count)
             throw new GenerativeAIException("Failed to add chunks to document", "Failed to add chunks to document");
@@ -208,6 +228,8 @@ public class CorporaManager : BaseClient
     /// <returns>The chunk.</returns>
     public async Task<Chunk?> GetChunkAsync(string chunkName, CancellationToken cancellationToken = default)
     {
+        if (ChunkClient == null)
+            throw new InvalidOperationException("ChunkClient is not initialized");
         return await ChunkClient.GetChunkAsync(chunkName, cancellationToken).ConfigureAwait(false);
     }
 
@@ -219,6 +241,8 @@ public class CorporaManager : BaseClient
     /// <returns>A list of all chunks in the document.</returns>
     public async Task<List<Chunk>?> ListChunksAsync(string documentName, CancellationToken cancellationToken = default)
     {
+        if (ChunkClient == null)
+            throw new InvalidOperationException("ChunkClient is not initialized");
         var response = await ChunkClient.ListChunksAsync(documentName, cancellationToken: cancellationToken)
             .ConfigureAwait(false);
         return response?.Chunks;
@@ -232,6 +256,8 @@ public class CorporaManager : BaseClient
     /// <returns>A task representing the asynchronous operation.</returns>
     public async Task DeleteChunkAsync(string chunkName, CancellationToken cancellationToken = default)
     {
+        if (ChunkClient == null)
+            throw new InvalidOperationException("ChunkClient is not initialized");
         await ChunkClient.DeleteChunkAsync(chunkName, cancellationToken).ConfigureAwait(false);
     }
 
@@ -249,6 +275,8 @@ public class CorporaManager : BaseClient
     public async Task<Permission?> CreateCorpusPermissionAsync(string corpusName, Permission permission,
         CancellationToken cancellationToken = default)
     {
+        if (CorpusPermissionClient == null)
+            throw new InvalidOperationException("CorpusPermissionClient is not initialized");
         return await CorpusPermissionClient.CreatePermissionAsync(corpusName, permission, cancellationToken)
             .ConfigureAwait(false);
     }
@@ -262,6 +290,8 @@ public class CorporaManager : BaseClient
     public async Task<Permission?> GetPermissionAsync(string permissionName,
         CancellationToken cancellationToken = default)
     {
+        if (CorpusPermissionClient == null)
+            throw new InvalidOperationException("CorpusPermissionClient is not initialized");
         return await CorpusPermissionClient.GetPermissionAsync(permissionName, cancellationToken).ConfigureAwait(false);
     }
 
@@ -274,6 +304,8 @@ public class CorporaManager : BaseClient
     public async Task<List<Permission>?> ListCorpusPermissionsAsync(string corpusName,
         CancellationToken cancellationToken = default)
     {
+        if (CorpusPermissionClient == null)
+            throw new InvalidOperationException("CorpusPermissionClient is not initialized");
         var response = await CorpusPermissionClient
             .ListPermissionsAsync(corpusName, cancellationToken: cancellationToken).ConfigureAwait(false);
         return response?.Permissions;
@@ -287,6 +319,8 @@ public class CorporaManager : BaseClient
     /// <returns>A task representing the asynchronous operation.</returns>
     public async Task DeletePermissionAsync(string permissionName, CancellationToken cancellationToken = default)
     {
+        if (CorpusPermissionClient == null)
+            throw new InvalidOperationException("CorpusPermissionClient is not initialized");
         await CorpusPermissionClient.DeletePermissionAsync(permissionName, cancellationToken).ConfigureAwait(false);
     }
 
@@ -305,6 +339,8 @@ public class CorporaManager : BaseClient
         CancellationToken cancellationToken = default)
     {
         var request = new QueryCorpusRequest { Query = query };
+        if (CorporaClient == null)
+            throw new InvalidOperationException("CorporaClient is not initialized");
         return await CorporaClient.QueryCorpusAsync(corpusName, request, cancellationToken).ConfigureAwait(false);
     }
 
@@ -319,6 +355,8 @@ public class CorporaManager : BaseClient
         CancellationToken cancellationToken = default)
     {
         var request = new QueryDocumentRequest { Query = query };
+        if (DocumentsClient == null)
+            throw new InvalidOperationException("DocumentsClient is not initialized");
         return await DocumentsClient.QueryDocumentAsync(documentName, request, cancellationToken).ConfigureAwait(false);
     }
 

@@ -33,7 +33,7 @@ public sealed class CredentialConfiguration : ClientSecrets
     /// client secrets for web and installed applications, account details, and token information.
     /// It supports both user-based and service account authentication scenarios in API integrations.
     /// </remarks>
-    public CredentialConfiguration()
+    public CredentialConfiguration():this(new ClientSecrets(),new ClientSecrets(), "","","","")
     {
         
     }
@@ -117,7 +117,7 @@ public class ClientSecrets
     /// authorization URI, certificate URL of the authentication provider, and token endpoint.
     /// These details are often used for secure communication with external services.
     /// </remarks>
-    public ClientSecrets()
+    public ClientSecrets():this("","", [],"","","")
     {
         
     }

@@ -16,7 +16,7 @@ internal class ResponseHelper
         var message = "";
         if (response.Candidates == null || response.Candidates.Length == 0 && response.PromptFeedback!=null && response.PromptFeedback.BlockReason >0)
         {
-            message = FormatErrorMessage(response.PromptFeedback.BlockReason.Value);
+            message = FormatErrorMessage(response.PromptFeedback!.BlockReason!.Value);
            
         }
         else if (response.Candidates?[0] != null)

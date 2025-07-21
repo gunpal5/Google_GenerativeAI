@@ -30,7 +30,7 @@ public class GenerativeAIService : IGenerativeAiService
         }
         else
         {
-            var platformAdapter = new GoogleAIPlatformAdapter(options.Value.Credentials.ApiKey, options.Value.ApiVersion,
+            var platformAdapter = new GoogleAIPlatformAdapter(options.Value.Credentials.ApiKey, options.Value.ApiVersion ?? "v1beta",
                 logger: this.Logger);
             _platform = new GoogleAi(platformAdapter, logger: this.Logger);
         }

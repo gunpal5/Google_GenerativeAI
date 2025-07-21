@@ -29,6 +29,7 @@ public class ImagenModel : BaseClient
     /// Generates images based on the provided <see cref="GenerateImageRequest"/>.
     /// </summary>
     /// <param name="request">The <see cref="GenerateImageRequest"/> containing the prompt and parameters.</param>
+    /// <param name="cancellationToken">Token to monitor for cancellation requests.</param>
     /// <returns>A <see cref="GenerateImageResponse"/> containing the generated images.</returns>
     /// <seealso href="https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/imagen-api">See Official API Documentation</seealso>
     public async Task<GenerateImageResponse?> GenerateImagesAsync(GenerateImageRequest request, CancellationToken cancellationToken = default)

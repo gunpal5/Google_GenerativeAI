@@ -1,5 +1,6 @@
 ﻿namespace GenerativeAI;
 
+
 /// <summary>
 /// Provides constants for Vertex AI model variations and related information.
 /// </summary>
@@ -7,17 +8,19 @@
 /// This class defines constants based on the Vertex AI models documented at:
 /// <seealso href="https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models"/>
 /// </remarks>
+// ReSharper disable InconsistentNaming
 public static class VertexAIModels
 {
     /// <summary>
     /// Provides constants for Gemini model variations.
     /// </summary>
-    public class Gemini
+    public static class Gemini
     {
         
         /// <summary>
         /// Gemini 2.0 Flash model name.
         /// </summary>
+        // ReSharper disable once InconsistentNaming
         public const string Gemini2Flash = "gemini-2.0-flash-001";
 
         /// <summary>
@@ -43,6 +46,7 @@ public static class VertexAIModels
         /// <summary>
         /// Gemini 2.5 Flash Preview model name from April 17th release.
         /// </summary>
+        
         public const string Gemini25FlashPreview0417 = "gemini-2.5-flash-preview-04-17";
         
         /// <summary>

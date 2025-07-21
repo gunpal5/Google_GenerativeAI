@@ -20,7 +20,7 @@ public static class ServiceCollectionExtension
         services.AddOptions<GenerativeAIOptions>().Configure(s =>
         {
             s.Authenticator = s.Authenticator?? null;
-            s.Credentials = s.Credentials?? new GoogleAICredentials(EnvironmentVariables.GOOGLE_API_KEY);
+            s.Credentials = s.Credentials?? new GoogleAICredentials(EnvironmentVariables.GOOGLE_API_KEY ?? string.Empty);
             s.IsVertex = s.IsVertex?? isVertex;
             s.Model = s.Model?? EnvironmentVariables.GOOGLE_AI_MODEL?? GoogleAIModels.DefaultGeminiModel;
             s.ProjectId = s.ProjectId?? EnvironmentVariables.GOOGLE_PROJECT_ID;

@@ -96,7 +96,7 @@ public static class ContentExtensions
         if (string.IsNullOrEmpty(file.MimeType))
             throw new ArgumentException("Remote file MIME type cannot be null or empty.", nameof(file));
 
-        AddRemoteFile(request, file.Uri, file.MimeType);
+        AddRemoteFile(request, file.Uri!, file.MimeType!);
     }
 
     /// <summary>
@@ -157,7 +157,7 @@ public static class ContentExtensions
         {
             if (!string.IsNullOrEmpty(part.Text))
             {
-                var blocks = part.Text.ExtractCodeBlocks();
+                var blocks = part.Text!.ExtractCodeBlocks();
                 codeBlocks.AddRange(blocks);
             }
         }
@@ -178,7 +178,7 @@ public static class ContentExtensions
         {
             if (!string.IsNullOrEmpty(part.Text))
             {
-                var blocks = part.Text.ExtractJsonBlocks();
+                var blocks = part.Text!.ExtractJsonBlocks();
                 jsonBlocks.AddRange(blocks);
             }
         }

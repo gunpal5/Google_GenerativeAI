@@ -92,7 +92,7 @@ public class VertexAI : GenAI, IGenerativeAI
 
         if (!string.IsNullOrEmpty(corpusIdForRag))
         {
-            model.UseVertexRetrievalTool(corpusIdForRag, ragRetrievalConfig);
+            model.UseVertexRetrievalTool(corpusIdForRag!, ragRetrievalConfig);
         }
 
         return model;

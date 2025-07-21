@@ -77,6 +77,8 @@ public class TimestampJsonConverter: JsonConverter<Timestamp>
     {
         // Assuming the JSON representation is a string in RFC 3339 format
         var timestampString = reader.GetString();
+        if (timestampString == null)
+            throw new JsonException("Timestamp string cannot be null");
         return Timestamp.FromDateTime(DateTime.Parse(timestampString));
     }
 

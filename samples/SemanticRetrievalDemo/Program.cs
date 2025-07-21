@@ -97,8 +97,10 @@ do
     Console.WriteLine();
     Console.Write("Question: ");
     var question = Console.ReadLine();
-    if (question.ToLower() == "exit")
+    if (question?.ToLower() == "exit")
         break;
+    if (string.IsNullOrEmpty(question))
+        continue;
     var response = await chatSession.GenerateAnswerAsync(question);
     
     Console.WriteLine();

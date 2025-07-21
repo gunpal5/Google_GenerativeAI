@@ -3,7 +3,7 @@
 /// <summary>
 /// Defines constant role identifiers used in the Generative AI system.
 /// </summary>
-public class Roles
+public static class Roles
 {
     /// <summary>
     /// Represents the role of a user interacting with the system.
@@ -13,6 +13,7 @@ public class Roles
     /// <summary>
     /// Represents the role assigned to the AI model in the system.
     /// </summary>
+
     public const string Model = "model";
 
     /// <summary>

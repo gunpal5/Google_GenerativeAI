@@ -5,6 +5,9 @@ using Google.Apis.Auth.OAuth2;
 
 namespace GenerativeAI.Authenticators;
 
+/// <summary>
+/// Authenticator that uses Google Service Account credentials for authentication with Google services.
+/// </summary>
 public class GoogleServiceAccountAuthenticator : BaseAuthenticator
 {
     private readonly List<string> _scopes =
@@ -22,8 +25,11 @@ public class GoogleServiceAccountAuthenticator : BaseAuthenticator
     private ServiceAccountCredential _credential;
 
     /// <summary>
-    /// Authenticator class for Google services using a service account.
+    /// Initializes a new instance of the GoogleServiceAccountAuthenticator class.
     /// </summary>
+    /// <param name="serviceAccountEmail">The service account email address.</param>
+    /// <param name="certificate">Optional path to the certificate file. If null, uses default.</param>
+    /// <param name="passphrase">Optional passphrase for the certificate.</param>
     public GoogleServiceAccountAuthenticator(string serviceAccountEmail, string? certificate = null,
         string? passphrase = null)
     {

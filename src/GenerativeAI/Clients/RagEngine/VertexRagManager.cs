@@ -98,14 +98,20 @@ public class VertexRagManager : BaseClient
             await RagCorpusClient.CreateRagCorpusAsync(corpus, cancellationToken).ConfigureAwait(false);
 
 
-        longRunningOperation =
-            await AwaitForLongRunningOperation(longRunningOperation.Name, cancellationToken: cancellationToken)
-                .ConfigureAwait(false);
+        if (longRunningOperation?.Name != null)
+        {
+            longRunningOperation =
+                await AwaitForLongRunningOperation(longRunningOperation.Name, cancellationToken: cancellationToken)
+                    .ConfigureAwait(false);
+        }
 
-        if (longRunningOperation.Done == true && longRunningOperation.Response.ContainsKey("name"))
+        if (longRunningOperation?.Done == true && longRunningOperation.Response != null && longRunningOperation.Response.ContainsKey("name"))
         {
             var nameJson = (JsonElement)longRunningOperation.Response["name"];
             var name = nameJson.GetString();
+            
+            if (name == null)
+                return null;
 
             return await RagCorpusClient.GetRagCorpusAsync(name, cancellationToken).ConfigureAwait(false);
         }
@@ -138,11 +144,11 @@ public class VertexRagManager : BaseClient
                     .ConfigureAwait(false);
             
             await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
-        } while (longRunningOperation.Done != true && sw.ElapsedMilliseconds < LongRunningOperationTimeout);
+        } while (longRunningOperation?.Done != true && sw.ElapsedMilliseconds < LongRunningOperationTimeout);
 
-        if (longRunningOperation.Done == true && longRunningOperation.Error != null)
+        if (longRunningOperation != null && longRunningOperation.Done == true && longRunningOperation.Error != null)
         {
-            throw new VertexAIException(longRunningOperation.Error.Message, longRunningOperation.Error);
+            throw new VertexAIException(longRunningOperation.Error.Message ?? "Unknown error", longRunningOperation.Error);
         }
 
         return longRunningOperation;
@@ -285,12 +291,18 @@ public class VertexRagManager : BaseClient
     /// <returns>The updated RagCorpus object if the operation is successful, or null if the operation fails.</returns>
     public async Task<RagCorpus> UpdateCorpusAsync(RagCorpus corpus, CancellationToken cancellationToken = default)
     {
+        if (corpus?.Name == null)
+            throw new ArgumentNullException(nameof(corpus), "Corpus or corpus name cannot be null");
+            
         var longRunning =
             await RagCorpusClient.UpdateRagCorpusAsync(corpus.Name, corpus, cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
-        longRunning = await AwaitForLongRunningOperation(longRunning.Name, cancellationToken: cancellationToken)
-            .ConfigureAwait(false);
-        if (longRunning.Done == true)
+        if (longRunning.Name != null)
+        {
+            longRunning = await AwaitForLongRunningOperation(longRunning.Name, cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
+        }
+        if (longRunning != null && longRunning.Done == true)
         {
             var name = corpus.Name;
             return await RagCorpusClient.GetRagCorpusAsync(name, cancellationToken).ConfigureAwait(false);
@@ -303,7 +315,7 @@ public class VertexRagManager : BaseClient
     /// Lists available <see cref="RagCorpus"/> resources.
     /// </summary>
     /// <param name="pageSize">The maximum number of <see cref="RagCorpus"/> resources to return.</param>
-    /// <param name="pageToken">A page token, received from a previous <see cref="ListRagCorporaAsync"/> call.</param>
+    /// <param name="pageToken">A page token, received from a previous <see cref="ListCorporaAsync"/> call.</param>
     /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
     /// <returns>A list of <see cref="RagCorpus"/> resources.</returns>
     /// <seealso href="https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/rag-api">See Official API Documentation</seealso>
@@ -348,6 +360,7 @@ public class VertexRagManager : BaseClient
     /// <param name="localFilePath">The full path to the local file to be uploaded.</param>
     /// <param name="displayName">A user-friendly name for the uploaded file.</param>
     /// <param name="description">An optional description of the file being uploaded.</param>
+    /// <param name="uploadRagFileConfig">Optional configuration settings for uploading the RAG file.</param>
     /// <param name="progressCallback">An optional callback to monitor the upload progress, represented as a percentage value.</param>
     /// <param name="cancellationToken">A token to monitor and handle request cancellation.</param>
     /// <returns>An <see cref="UploadRagFileResponse"/> containing details about the uploaded file, or null if the operation fails.</returns>

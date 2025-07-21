@@ -53,7 +53,12 @@ public class FileClient : BaseClient
         if (progressCallback == null)
             progressCallback = d => { };
 
-        var json = JsonSerializer.Serialize(request, SerializerOptions.GetTypeInfo(request.GetType()));
+        if (SerializerOptions == null)
+            throw new InvalidOperationException("SerializerOptions is not initialized");
+        var typeInfo = SerializerOptions.GetTypeInfo(request.GetType());
+        if (typeInfo == null)
+            throw new InvalidOperationException($"Could not get type info for {request.GetType()}");
+        var json = JsonSerializer.Serialize(request, typeInfo);
         //Upload File
         using var file = File.OpenRead(filePath);
         var httpMessage = new HttpRequestMessage(HttpMethod.Post, url);
@@ -77,16 +82,18 @@ public class FileClient : BaseClient
     }
 
     /// <summary>
-    /// Uploads a file stream as a <see cref="RemoteFile"/> to the remote server.
+    /// Asynchronously uploads a file stream to the remote server and returns the uploaded file's metadata.
     /// </summary>
-    /// <param name="stream">The stream representing the file to upload.</param>
-    /// <param name="displayName">The display name of the file being uploaded.</param>
-    /// <param name="mimeType">The MIME type of the file being uploaded.</param>
-    /// <param name="progressCallback">An optional callback to track the progress of the upload, represented as a percentage.</param>
-    /// <returns>The uploaded <see cref="RemoteFile"/> information.</returns>
-    /// <seealso href="https://ai.google.dev/api/files#method:-media.upload">See Official API Documentation</seealso>
+    /// <param name="stream">The file stream to be uploaded.</param>
+    /// <param name="displayName">The display name for the uploaded file.</param>
+    /// <param name="mimeType">The MIME type of the file to be uploaded.</param>
+    /// <param name="progressCallback">
+    /// An optional callback function to monitor the upload progress, with the progress represented as a percentage.
+    /// </param>
+    /// <param name="cancellationToken">A token used to propagate notifications that the operation should be canceled.</param>
+    /// <returns>A <see cref="RemoteFile"/> object representing the metadata of the uploaded file.</returns>
     public async Task<RemoteFile> UploadStreamAsync(Stream stream, string displayName, string mimeType,
-        Action<double>? progressCallback = null,CancellationToken cancellationToken = default)
+        Action<double>? progressCallback = null, CancellationToken cancellationToken = default)
     {
         var baseUrl = _platform.GetBaseUrl(false);
         var apiVersion = _platform.GetApiVersion();
@@ -105,7 +112,12 @@ public class FileClient : BaseClient
         if (progressCallback == null)
             progressCallback = d => { };
 
-        var json = JsonSerializer.Serialize(request, SerializerOptions.GetTypeInfo(request.GetType()));
+        if (SerializerOptions == null)
+            throw new InvalidOperationException("SerializerOptions is not initialized");
+        var typeInfo = SerializerOptions.GetTypeInfo(request.GetType());
+        if (typeInfo == null)
+            throw new InvalidOperationException($"Could not get type info for {request.GetType()}");
+        var json = JsonSerializer.Serialize(request, typeInfo);
         //Upload File
 
         using var httpMessage = new HttpRequestMessage(HttpMethod.Post, url);
@@ -175,6 +187,7 @@ public class FileClient : BaseClient
     /// Gets the metadata for the given <see cref="RemoteFile"/>.
     /// </summary>
     /// <param name="name">The name of the <see cref="RemoteFile"/> to get.</param>
+    /// <param name="cancellationToken">Token to monitor for cancellation requests.</param>
     /// <returns>The <see cref="RemoteFile"/> information.</returns>
     /// <seealso href="https://ai.google.dev/api/files#method:-files.get">See Official API Documentation</seealso>
     public async Task<RemoteFile> GetFileAsync(string name,CancellationToken cancellationToken = default)
@@ -189,7 +202,7 @@ public class FileClient : BaseClient
     /// Lists the metadata for <see cref="RemoteFile"/>s owned by the requesting project.
     /// </summary>
     /// <param name="pageSize">Maximum number of <see cref="RemoteFile"/>s to return per page. If unspecified, defaults to 10. Maximum <paramref name="pageSize"/> is 100.</param>
-    /// <param name="pageToken">A page token from a previous <see cref="ListMyCustomFilesAsync"/> call.</param>
+    /// <param name="pageToken">A page token from a previous <see cref="ListFilesAsync"/> call.</param>
     /// <returns>A list of <see cref="RemoteFile"/>s.</returns>
     /// <seealso href="https://ai.google.dev/api/files#method:-files.list">See Official API Documentation</seealso>
     public async Task<ListFilesResponse> ListFilesAsync(int? pageSize = null, string? pageToken = null)
@@ -235,6 +248,9 @@ public class FileClient : BaseClient
     /// <returns>An awaitable task that completes when the file reaches the "ACTIVE" state.</returns>
     public async Task AwaitForFileStateActiveAsync(RemoteFile file, int maxSeconds, CancellationToken cancellationToken)
     {
+        if (file?.Name == null)
+            throw new ArgumentNullException(nameof(file), "File or file name cannot be null");
+            
         Stopwatch sw = new Stopwatch();
         sw.Start();
         while (sw.Elapsed.TotalSeconds < maxSeconds)
@@ -246,7 +262,7 @@ public class FileClient : BaseClient
             }
             else if (remoteFile.State != FileState.PROCESSING)
             {
-                throw new GenerativeAIException("There was an error processing the file.", remoteFile.Error?.Message);
+                throw new GenerativeAIException("There was an error processing the file.", remoteFile.Error?.Message ?? "Unknown error");
             }
             
             await Task.Delay(1000, cancellationToken).ConfigureAwait(false);

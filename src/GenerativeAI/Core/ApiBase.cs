@@ -56,6 +56,8 @@ namespace GenerativeAI.Core
         /// Adds authorization headers to an HTTP request.
         /// </summary>
         /// <param name="request">The HTTP request where headers will be added.</param>
+        /// <param name="requireAccessToken">Whether an access token is required for the request.</param>
+        /// <param name="cancellationToken">Token to monitor for cancellation requests.</param>
         /// <remarks>
         /// Override this method in derived classes to dynamically add authorization headers.
         /// By default, this implementation does nothing.
@@ -93,7 +95,12 @@ namespace GenerativeAI.Core
                 _logger?.LogSuccessfulGetResponse(url, content);
 
                 // Deserialize and return the response
-                return JsonSerializer.Deserialize(content, (JsonTypeInfo<T>) SerializerOptions.GetTypeInfo(typeof(T))) ??
+                if (SerializerOptions == null)
+                    throw new InvalidOperationException("SerializerOptions is not initialized");
+                var typeInfo = SerializerOptions.GetTypeInfo(typeof(T));
+                if (typeInfo == null)
+                    throw new InvalidOperationException($"Could not get type info for {typeof(T)}");
+                return JsonSerializer.Deserialize(content, (JsonTypeInfo<T>) typeInfo) ??
                        throw new InvalidOperationException("Deserialized response is null.");
             }
             catch (Exception ex) when (ex is TaskCanceledException or OperationCanceledException)
@@ -128,7 +135,12 @@ namespace GenerativeAI.Core
                 _logger?.LogHttpRequest(method.Method, url, payload);
 
                 // Serialize payload and create request
-                var jsonPayload = JsonSerializer.Serialize(payload, SerializerOptions.GetTypeInfo(typeof(TRequest)));
+                if (SerializerOptions == null)
+                    throw new InvalidOperationException("SerializerOptions is not initialized");
+                var typeInfo = SerializerOptions.GetTypeInfo(typeof(TRequest));
+                if (typeInfo == null)
+                    throw new InvalidOperationException($"Could not get type info for {typeof(TRequest)}");
+                var jsonPayload = JsonSerializer.Serialize(payload, typeInfo);
                 using var request = new HttpRequestMessage(method, url)
                 {
                     Content = new StringContent(jsonPayload, System.Text.Encoding.UTF8, "application/json")
@@ -187,7 +199,7 @@ namespace GenerativeAI.Core
                         throw new Exception();
                     }
 
-                    throw new ApiException(code.GetInt32(), message.GetString(), status.GetString());
+                    throw new ApiException(code.GetInt32(), message.GetString() ?? "Unknown error", status.GetString() ?? "Unknown status");
                 }
                 catch (ApiException)
                 {
@@ -222,7 +234,12 @@ namespace GenerativeAI.Core
         /// <returns>The deserialized object of type T, or null if deserialization fails.</returns>
         protected T? Deserialize<T>(string json)
         {
-            return (T?) JsonSerializer.Deserialize(json, SerializerOptions.GetTypeInfo(typeof(T)));
+            if (SerializerOptions == null)
+                throw new InvalidOperationException("SerializerOptions is not initialized");
+            var typeInfo = SerializerOptions.GetTypeInfo(typeof(T));
+            if (typeInfo == null)
+                throw new InvalidOperationException($"Could not get type info for {typeof(T)}");
+            return (T?) JsonSerializer.Deserialize(json, typeInfo);
         }
 
         /// <summary>
@@ -289,8 +306,10 @@ namespace GenerativeAI.Core
         /// <summary>
         /// Uploads a file asynchronously to the specified URL with progress tracking.
         /// </summary>
+        /// <param name="stream">The stream containing the file data to upload.</param>
         /// <param name="url">The destination URL to upload the file.</param>
         /// <param name="filePath">The full path to the file to upload.</param>
+        /// <param name="mimeType">The MIME type of the file being uploaded.</param>
         /// <param name="progress">An action to report progress as a percentage between 0 and 100.</param>
         /// <param name="additionalHeaders">Optional. A dictionary of additional headers to include with the upload request.</param>
         /// <param name="cancellationToken">Optional. A token to cancel the file upload operation.</param>
@@ -371,7 +390,12 @@ namespace GenerativeAI.Core
         {
             // Serialize the request payload into a MemoryStream
             using var ms = new MemoryStream();
-            await JsonSerializer.SerializeAsync(ms, payload, SerializerOptions.GetTypeInfo(typeof(TRequest)), cancellationToken).ConfigureAwait(false);
+            if (SerializerOptions == null)
+                throw new InvalidOperationException("SerializerOptions is not initialized");
+            var typeInfo = SerializerOptions.GetTypeInfo(typeof(TRequest));
+            if (typeInfo == null)
+                throw new InvalidOperationException($"Could not get type info for {typeof(TRequest)}");
+            await JsonSerializer.SerializeAsync(ms, payload, typeInfo, cancellationToken).ConfigureAwait(false);
             ms.Seek(0, SeekOrigin.Begin);
 
             // Prepare an HTTP request message
@@ -400,9 +424,15 @@ namespace GenerativeAI.Core
                 using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
                 #endif
                 
+                if (SerializerOptions == null)
+                    throw new InvalidOperationException("SerializerOptions is not initialized");
+                var responseTypeInfo = SerializerOptions.GetTypeInfo(typeof(TResponse));
+                if (responseTypeInfo == null)
+                    throw new InvalidOperationException($"Could not get type info for {typeof(TResponse)}");
+                
                 await foreach (var item in JsonSerializer.DeserializeAsyncEnumerable(
                                    stream,
-                                   (JsonTypeInfo<TResponse>)SerializerOptions.GetTypeInfo(typeof(TResponse)),
+                                   (JsonTypeInfo<TResponse>)responseTypeInfo,
                                    cancellationToken).ConfigureAwait(false)
                               )
                 {

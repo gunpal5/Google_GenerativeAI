@@ -10,7 +10,7 @@ namespace GenerativeAI.Types;
 public class SemanticRetrieverChunk
 {
     /// <summary>
-    /// Output only. Name of the source matching the request's <see cref="SemanticRetriever">SemanticRetrieverConfig.source</see>.
+    /// Output only. Name of the source matching the request's SemanticRetrieverConfig.source.
     /// Example: <c>corpora/123</c> or <c>corpora/123/documents/abc</c>
     /// </summary>
     [JsonPropertyName("source")]

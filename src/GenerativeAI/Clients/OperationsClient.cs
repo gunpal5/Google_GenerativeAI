@@ -1,12 +1,8 @@
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using GenerativeAI;
-using GenerativeAI.Clients;
 using GenerativeAI.Core;
 using GenerativeAI.Types;
-using GenerativeAI.Types.RagEngine;
 using Microsoft.Extensions.Logging;
+
+namespace GenerativeAI.Clients;
 
 /// <summary>
 /// Provides functionality for interacting with long-running operations. The OperationsClient
@@ -64,7 +60,7 @@ public class OperationsClient : BaseClient
     /// </summary>
     /// <param name="name">The name of the operation resource.</param>
     /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
-    /// <returns>The <see cref="Operation"/> resource.</returns>
+    /// <returns>The <see cref="GoogleLongRunningOperation"/> resource.</returns>
     public async Task<GoogleLongRunningOperation?> GetOperationAsync(string name,
         CancellationToken cancellationToken = default)
     {
