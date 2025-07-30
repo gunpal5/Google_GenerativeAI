@@ -49,7 +49,7 @@ public static class MicrosoftExtensions
             {
                 Name = f.Name,
                 Description = f.Description,
-                Parameters = ParseFunctionParameters(f.JsonSchema),
+                Parameters = ParseFunctionParameters(s_schemaTransformerCache.GetOrCreateTransformedSchema(f)),
             }
         ).ToList();
 
@@ -598,4 +598,29 @@ public static class MicrosoftExtensions
             .SelectMany(s => s.Contents).OfType<FunctionCallContent>().ToList();
         return aiFunction.Count > 0 ? aiFunction : null;
     }
+
+    /// <summary>
+    /// Gets a JSON schema transformer cache conforming to known Gemini restrictions.
+    /// </summary>
+    private static AIJsonSchemaTransformCache s_schemaTransformerCache { get; } = new(new()
+    {
+        TransformSchemaNode = (ctx, node) =>
+        {
+            // Move content from common but unsupported properties to description. In particular, we focus on properties that
+            // the AIJsonUtilities schema generator might produce and that we know to be unsupported by Gemini.
+
+            if (node is JsonObject schemaObj &&
+                schemaObj["format"] is { } formatNode &&
+                (formatNode.GetValueKind() is not JsonValueKind.String || formatNode.GetValue<string>() is not ("enum" or "date-time")))
+            {
+                _ = schemaObj.Remove("format");
+
+                schemaObj["description"] = schemaObj["description"] is { } descriptionNode && descriptionNode.GetValueKind() is JsonValueKind.String ?
+                    $"{descriptionNode.GetValue<string>()}\n{formatNode}" :
+                    formatNode.ToString();
+            }
+
+            return node;
+        },
+    });
 }
