@@ -131,7 +131,11 @@ public class VertextPlatformAdapter : IPlatformAdapter
                 "application_default_credentials.json");
         }
 
-        if (string.IsNullOrEmpty(ProjectId))
+        if (expressMode == true)
+        {
+            if (string.IsNullOrEmpty(apiKey))
+                throw new ArgumentException("API Key is required for Vertex AI Express.", nameof(apiKey));
+        } else if (string.IsNullOrEmpty(ProjectId))
         {
             var configuration = GetCredentialsFromFile(credentialsFile);
             if (configuration == null)
@@ -141,11 +145,7 @@ public class VertextPlatformAdapter : IPlatformAdapter
             this.CredentialFile = credentialsFile;
         }
 
-        if (expressMode == true)
-        {
-            if (string.IsNullOrEmpty(apiKey))
-                throw new ArgumentException("API Key is required for Vertex AI Express.", nameof(apiKey));
-        }
+        
 
         if (authenticator == null)
         {
@@ -207,7 +207,7 @@ public class VertextPlatformAdapter : IPlatformAdapter
 #else
         if (request == null) throw new ArgumentNullException(nameof(request));
 #endif
-        if (this.Credentials == null || this.Credentials.AuthToken == null)
+        if (this.Credentials == null || this.Credentials.AuthToken == null && ExpressMode != true)
         {
             await this.AuthorizeAsync(cancellationToken).ConfigureAwait(false);
         }
