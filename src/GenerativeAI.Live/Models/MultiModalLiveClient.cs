@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
 using GenerativeAI.Core;
+using GenerativeAI.Live.Events;
 using GenerativeAI.Live.Helper;
 using GenerativeAI.Live.Logging;
 using GenerativeAI.Types;
@@ -559,6 +560,11 @@ public class MultiModalLiveClient : IDisposable
             {
                 //log info.CloseStatusDescription
                 _logger?.LogConnectionClosedWithInvalidPyload(info.CloseStatusDescription!);
+            }
+            else if (info.CloseStatus == WebSocketCloseStatus.InternalServerError && !string.IsNullOrEmpty(info.CloseStatusDescription))
+            {
+                _logger?.LogConnectionClosedWithError(info.Type, info.Exception!);
+                Disconnected?.Invoke(this, new ErrorMessageEventArgs(info.CloseStatusDescription));
             }
             else
             {
