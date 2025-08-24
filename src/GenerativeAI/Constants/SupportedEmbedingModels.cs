@@ -27,6 +27,7 @@ public static class SupportedEmbedingModels
     {
         // From GeminiConstants
         GoogleAIModels.TextEmbedding,
+        GoogleAIModels.GeminiEmbedding,
 
         // From VertexAIModels.Embeddings
         VertexAIModels.Embeddings.TextEmbeddingGecko001,

@@ -13,12 +13,22 @@ public static class GoogleAIModels
     /// Represents the default Gemini AI model identifier used by the Generative AI services.
     /// </summary>
     public const string DefaultGeminiModel = Gemini15Flash;
-    
+
+    ///<summary>
+    /// Gemini 2.5 Flash
+    /// </summary>
+    public const string Gemini25Flash = "models/gemini-2.5-flash";
+
     /// <summary>
     /// Gemini 2.0 Flash model name.
     /// </summary>
     public const string Gemini2Flash = "models/gemini-2.0-flash";
     
+    /// <summary>
+    /// Gemini 2.5 Pro
+    /// </summary>
+    public const string Gemini25Pro = "models/gemini-2.5-pro";
+
     /// <summary>
     /// Gemini 2.5 Pro Exp 03-25 model name.
     /// </summary>
@@ -81,10 +91,15 @@ public static class GoogleAIModels
     /// </summary>
     public const string Gemini2FlashExpImageGeneration = "gemini-2.0-flash-exp-image-generation";
     
+    /// <summary>
+    /// The current Gemini Emedding model name.
+    /// </summary>
+    public const string GeminiEmbedding = "models/gemini-embedding-001";
 
     /// <summary>
     /// Gemini 2.0 Flash Exp model name.
     /// </summary>
+    [Obsolete("Gemini-embedding-exp is deprecated. Use GeminiEmedding (gemini-embedding-001) instead.", false)]
     public const string GeminiEmbeddingExp = "gemini-embedding-exp";
     /// <summary>
     /// Gemma 3.0 27B model name.
