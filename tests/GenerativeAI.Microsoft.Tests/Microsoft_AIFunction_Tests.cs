@@ -265,6 +265,22 @@ public class Microsoft_AIFunction_Tests:TestBase
 
         response.Text.ShouldContain("date",Case.Insensitive);
     }
+
+    [Fact]
+    public async Task ShouldWorkWith_DateOnly_TimeOnly()
+    {
+        Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
+        var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+        var chatClient = new GenerativeAIChatClient(apiKey);
+        var chatOptions = new ChatOptions();
+
+        chatOptions.Tools = new List<AITool>{AIFunctionFactory.Create(GetUserAppointmentAsync)};
+        var message = new ChatMessage(ChatRole.User, "When is my next appointment on Jan 15, 2024 at 2:30 PM?");
+        var response = await chatClient.GetResponseAsync(message,options:chatOptions, cancellationToken: TestContext.Current.CancellationToken);
+
+        response.Text.ShouldContain("appointment",Case.Insensitive);
+        response.Text.ShouldContain("2:30",Case.Insensitive);
+    }
     
     [Fact]
     public async Task ShouldWorkWith_BookStoreService_with_Streaming()
@@ -287,6 +303,8 @@ public class Microsoft_AIFunction_Tests:TestBase
         //
         // response.Text.ShouldContain("damdamadum",Case.Insensitive);
     }
+    
+    
     
     [System.ComponentModel.Description("Get book page content")]
     public static Task<string> GetBookPageContentAsync(string bookName, int bookPageNumber)
@@ -312,7 +330,18 @@ public class Microsoft_AIFunction_Tests:TestBase
         return DateTime.Now.ToString("dddd dd MMMM yyyy HH:mm:ss");
     }
     
-    [System.ComponentModel.Description("Get student record for the year")]
+
+    [System.ComponentModel.Description("Get student enrollment information")]
+    public Task<StudentEnrollmentInfo> GetStudentEnrollmentInfoAsync(string studentId)
+    {
+        return Task.FromResult(new StudentEnrollmentInfo
+        {
+            StudentId = studentId,
+            EnrollmentDate = DateOnly.FromDateTime(DateTime.Now),
+            EnrollmentTime = TimeOnly.FromDateTime(DateTime.Now),
+            Program = "Computer Science"
+        });
+    }
 
     public Task<StudentRecord> GetStudentRecordAsync(QueryStudentRecordRequest query)
     {
@@ -339,6 +368,14 @@ public class Microsoft_AIFunction_Tests:TestBase
         Celsius,
         Fahrenheit,
         Imperial
+    }
+
+    public class StudentEnrollmentInfo
+    {
+        public string StudentId { get; set; } = string.Empty;
+        public DateOnly EnrollmentDate { get; set; }
+        public TimeOnly EnrollmentTime { get; set; }
+        public string Program { get; set; } = string.Empty;
     }
 
     public class Weather
@@ -394,4 +431,23 @@ public class Microsoft_AIFunction_Tests:TestBase
         public bool? IsActive { get; set; } = true;
     }
     
+    
+    
+    [Description("Get user appointment information")]
+    public Task<AppointmentTime> GetUserAppointmentAsync(DateOnly date, TimeOnly time)
+    {
+        return Task.FromResult(new AppointmentTime
+        {
+            Date = date,
+            Time = time,
+            Description = "Doctor appointment"
+        });
+    }
+
+    public class AppointmentTime
+    {
+        public DateOnly Date { get; set; }
+        public TimeOnly Time { get; set; }
+        public string Description { get; set; } = string.Empty;
+    }
 }

@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Text;
 using System.Text.Json.Nodes;
 using GenerativeAI.Tests;
 using GenerativeAI.Tools;
@@ -238,5 +239,99 @@ public class QuickTool_Tests : TestBase
         
         result.Text().ShouldContain("Amit Rana",Case.Insensitive);
         Console.WriteLine(result.Text());
+    }
+    
+    [Fact]
+    public async Task ShouldUseMultipleQuickTools()
+    {
+        Assert.SkipUnless(IsGoogleApiKeySet, GoogleTestSkipMessage);
+
+        var getStudentFunc = (([Description("Student Name")] string name) =>
+        {
+            return $"Student {name} is currently enrolled.";
+        });
+
+        var getGradesFunc = (([Description("Student Name")] string name) =>
+        {
+            return new Dictionary<string, double>
+            {
+                { "Math", 95.0 },
+                { "Physics", 88.0 }
+            };
+        });
+
+        var getAttendanceFunc = (([Description("Student Name")] string name) =>
+        {
+            return new { Present = 90, Total = 100 };
+        });
+
+        var studentTool = new QuickTool(getStudentFunc, "GetStudentStatus", "Get student enrollment status");
+        var gradesTool = new QuickTool(getGradesFunc, "GetGrades", "Get student grades");
+        var attendanceTool = new QuickTool(getAttendanceFunc, "GetAttendance", "Get student attendance");
+
+        var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.Gemini2Flash);
+
+        model.AddFunctionTool(studentTool);
+        model.AddFunctionTool(gradesTool);
+        model.AddFunctionTool(attendanceTool);
+
+        var result = await model.GenerateContentAsync("What is John's enrollment status, grades and attendance?", 
+            cancellationToken: TestContext.Current.CancellationToken);
+
+        result.Text().ShouldContain("John", Case.Insensitive);
+        result.Text().ShouldContain("95.0", Case.Insensitive);
+        result.Text().ShouldContain("90", Case.Insensitive);
+        Console.WriteLine(result.Text());
+    }
+    
+    
+    
+    [Fact]
+    public async Task ShouldUseMultipleQuickToolsStreaming()
+    {
+        Assert.SkipUnless(IsGoogleApiKeySet, GoogleTestSkipMessage);
+
+        var getStudentFunc = (([Description("Student Name")] string name) =>
+        {
+            return $"Student {name} is currently enrolled.";
+        });
+
+        var getGradesFunc = (([Description("Student Name")] string name) =>
+        {
+            return new Dictionary<string, double>
+            {
+                { "Math", 95.0 },
+                { "Physics", 88.0 }
+            };
+        });
+
+        var getAttendanceFunc = (([Description("Student Name")] string name) =>
+        {
+            return new { Present = 90, Total = 100 };
+        });
+
+        var studentTool = new QuickTool(getStudentFunc, "GetStudentStatus", "Get student enrollment status");
+        var gradesTool = new QuickTool(getGradesFunc, "GetGrades", "Get student grades");
+        var attendanceTool = new QuickTool(getAttendanceFunc, "GetAttendance", "Get student attendance");
+
+        var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.Gemini2Flash);
+
+        model.AddFunctionTool(studentTool);
+        model.AddFunctionTool(gradesTool);
+        model.AddFunctionTool(attendanceTool);
+
+        var responseText = new StringBuilder();
+        await foreach (var response in model.StreamContentAsync(
+            "What is John's enrollment status, grades and attendance?",
+            cancellationToken: TestContext.Current.CancellationToken))
+        {
+            responseText.Append(response.Text());
+            Console.WriteLine(response.Text());
+        }
+
+        var finalResponse = responseText.ToString();
+        finalResponse.ShouldContain("John", Case.Insensitive);
+        finalResponse.ShouldContain("95.0", Case.Insensitive);
+        finalResponse.ShouldContain("90", Case.Insensitive);
     }
 }

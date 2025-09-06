@@ -38,7 +38,7 @@ public class CachingClient_Tests : TestBase
         // Assert
         result.ShouldNotBeNull();
         result.Name.ShouldNotBeNullOrEmpty();
-        result.Model.ShouldBe("models/gemini-20-flash");
+        result.Model.ShouldBe("models/gemini-2.0-flash");
         //result.DisplayName.ShouldBe("Test Cached Content");
         result.CreateTime.ShouldNotBeNull();
         result.UsageMetadata.ShouldNotBeNull();

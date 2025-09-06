@@ -49,7 +49,7 @@ public static class MicrosoftExtensions
             {
                 Name = f.Name,
                 Description = f.Description,
-                Parameters = ParseFunctionParameters(s_schemaTransformerCache.GetOrCreateTransformedSchema(f)),
+                Parameters = ParseFunctionParameters(f.JsonSchema),
             }
         ).ToList();
 
@@ -79,7 +79,15 @@ public static class MicrosoftExtensions
             if (properties.GetPropertyCount() == 0)
                 return null;
             else
-                return schema.ToSchema();
+            {
+                // Convert to JsonNode and apply transformations
+                var node = schema.AsNode();
+                if (node != null)
+                {
+                    ApplySchemaTransformations(node);
+                }
+                return node != null ? GoogleSchemaHelper.ConvertToCompatibleSchemaSubset(node) : null;
+            }
         }
     }
 
@@ -217,7 +225,8 @@ public static class MicrosoftExtensions
 #pragma warning disable IL2026, IL3050 // Reflection is used to deserialize the response
             if (JsonSerializer.IsReflectionEnabledByDefault)
             {
-                return JsonSerializer.Deserialize<JsonNode>(JsonSerializer.Serialize(response),
+                return JsonSerializer.Deserialize<JsonNode>(
+                    JsonSerializer.Serialize(response, DefaultSerializerOptions.GenerateObjectJsonOptions),
                     TypesSerializerContext.Default.JsonNode)!;
             }
 #pragma warning restore IL2026, IL3050 // Reflection is used to deserialize the response
@@ -510,7 +519,7 @@ public static class MicrosoftExtensions
             if (part.FunctionCall is not null)
             {
                 (contents ??= new()).Add(new FunctionCallContent(part.FunctionCall.Name, part.FunctionCall.Name,
-                    ConvertFunctionCallArg(part.FunctionCall.Args)));
+                    ConvertFunctionCallArg(part.FunctionCall.Args, part.FunctionCall.Name)));
             }
 
             if (part.FunctionResponse is not null)
@@ -530,18 +539,68 @@ public static class MicrosoftExtensions
     }
 
     /// <summary>
+    /// Transforms date/time values from Gemini's format to a format compatible with DateOnly/TimeOnly.
+    /// </summary>
+    private static object? TransformDateTimeValue(JsonNode value)
+    {
+        // If it's a string value that looks like a date/time, transform it
+        if (value is JsonValue jsonValue && jsonValue.TryGetValue<string>(out var stringValue))
+        {
+            // Check if it's an ISO 8601 date/time string
+            if (!string.IsNullOrEmpty(stringValue) && 
+                (stringValue.IndexOf('T') >= 0 || stringValue.IndexOf('-') >= 0))
+            {
+                // Try to parse as DateTime/DateTimeOffset
+                if (DateTime.TryParse(stringValue, System.Globalization.CultureInfo.InvariantCulture, 
+                    System.Globalization.DateTimeStyles.None, out var dateTime))
+                {
+                    // Create a JsonObject with both date and time components
+                    // This allows AIFunction to deserialize to either DateOnly or TimeOnly as needed
+                    var dateOnlyString = dateTime.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                    var timeOnlyString = dateTime.ToString("HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                    
+                    // Return the date-only format for better compatibility
+                    // The AIFunction deserializer will handle conversion to DateOnly/TimeOnly
+                    return JsonValue.Create(dateOnlyString);
+                }
+            }
+        }
+        
+        // For non-date values or complex objects, return as-is
+        return value?.DeepClone();
+    }
+
+    /// <summary>
     /// Converts the arguments of a function call into a dictionary representation.
     /// </summary>
     /// <param name="functionCallArgs">The arguments of the function call, potentially in a serialized JSON format.</param>
+    /// <param name="functionName">The name of the function being called (optional, used for context).</param>
     /// <returns>A dictionary where the keys represent argument names and values represent their corresponding data, or null if conversion is not possible.</returns>
     #pragma warning disable CA1859 // Use concrete types when possible for improved performance
-    private static IDictionary<string, object?>? ConvertFunctionCallArg(JsonNode? functionCallArgs)
+    private static IDictionary<string, object?>? ConvertFunctionCallArg(JsonNode? functionCallArgs, string? functionName = null)
     #pragma warning restore CA1859
     {
         if (functionCallArgs == null)
             return null;
         var obj = functionCallArgs.AsObject();
-        return obj?.ToDictionary(s => s.Key, s => (object?)s.Value?.DeepClone());
+        if (obj == null)
+            return null;
+            
+        var result = new Dictionary<string, object?>();
+        foreach (var kvp in obj)
+        {
+            if (kvp.Value != null)
+            {
+                // Transform date/time values if they look like ISO 8601 dates
+                var transformedValue = TransformDateTimeValue(kvp.Value);
+                result[kvp.Key] = transformedValue;
+            }
+            else
+            {
+                result[kvp.Key] = null;
+            }
+        }
+        return result;
 
         #region Unused codes for future reference
 
@@ -600,6 +659,62 @@ public static class MicrosoftExtensions
     }
 
     /// <summary>
+    /// Applies schema transformations to make schemas compatible with Gemini API restrictions.
+    /// </summary>
+    private static void ApplySchemaTransformations(JsonNode node)
+    {
+        if (node is JsonObject obj)
+        {
+            // Convert DateOnly/TimeOnly formats from "date"/"time" to "date-time" for Google API compatibility
+            if (obj["format"] is { } formatNode && formatNode.GetValueKind() is JsonValueKind.String)
+            {
+                var formatValue = formatNode.GetValue<string>();
+                if (formatValue is "date" or "time")
+                {
+                    obj["format"] = "date-time";
+                }
+                else if (formatValue is not ("enum" or "date-time"))
+                {
+                    // For unsupported formats like "email", remove the format and add it to description
+                    _ = obj.Remove("format");
+
+                    obj["description"] = obj["description"] is { } descriptionNode && descriptionNode.GetValueKind() is JsonValueKind.String ?
+                        $"{descriptionNode.GetValue<string>()} (format: {formatValue})" :
+                        $"format: {formatValue}";
+                }
+            }
+
+            // Recursively apply transformations to nested properties
+            if (obj["properties"] is JsonObject properties)
+            {
+                foreach (var property in properties)
+                {
+                    if (property.Value != null)
+                    {
+                        ApplySchemaTransformations(property.Value);
+                    }
+                }
+            }
+
+            // Recursively apply transformations to items (for arrays)
+            if (obj["items"] is JsonNode items)
+            {
+                ApplySchemaTransformations(items);
+            }
+        }
+        else if (node is JsonArray array)
+        {
+            foreach (var item in array)
+            {
+                if (item != null)
+                {
+                    ApplySchemaTransformations(item);
+                }
+            }
+        }
+    }
+
+    /// <summary>
     /// Gets a JSON schema transformer cache conforming to known Gemini restrictions.
     /// </summary>
     private static AIJsonSchemaTransformCache s_schemaTransformerCache { get; } = new(new()
@@ -609,15 +724,26 @@ public static class MicrosoftExtensions
             // Move content from common but unsupported properties to description. In particular, we focus on properties that
             // the AIJsonUtilities schema generator might produce and that we know to be unsupported by Gemini.
 
-            if (node is JsonObject schemaObj &&
-                schemaObj["format"] is { } formatNode &&
-                (formatNode.GetValueKind() is not JsonValueKind.String || formatNode.GetValue<string>() is not ("enum" or "date-time")))
+            if (node is JsonObject schemaObj)
             {
-                _ = schemaObj.Remove("format");
+                // Convert DateOnly/TimeOnly formats from "date"/"time" to "date-time" for Google API compatibility
+                if (schemaObj["format"] is { } formatNode && formatNode.GetValueKind() is JsonValueKind.String)
+                {
+                    var formatValue = formatNode.GetValue<string>();
+                    if (formatValue is "date" or "time")
+                    {
+                        schemaObj["format"] = "date-time";
+                    }
+                    else if (formatValue is not ("enum" or "date-time"))
+                    {
+                        // For unsupported formats like "email", remove the format and add it to description
+                        _ = schemaObj.Remove("format");
 
-                schemaObj["description"] = schemaObj["description"] is { } descriptionNode && descriptionNode.GetValueKind() is JsonValueKind.String ?
-                    $"{descriptionNode.GetValue<string>()}\n{formatNode}" :
-                    formatNode.ToString();
+                        schemaObj["description"] = schemaObj["description"] is { } descriptionNode && descriptionNode.GetValueKind() is JsonValueKind.String ?
+                            $"{descriptionNode.GetValue<string>()} (format: {formatValue})" :
+                            $"format: {formatValue}";
+                    }
+                }
             }
 
             return node;

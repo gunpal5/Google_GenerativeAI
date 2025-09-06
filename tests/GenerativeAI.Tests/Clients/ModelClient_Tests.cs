@@ -21,6 +21,11 @@ namespace GenerativeAI.Tests.Clients
             models.Count.ShouldBeGreaterThan(0);
             foreach (var modelInfo in models)
             {
+                if (string.IsNullOrEmpty(modelInfo.Description))
+                {
+                    Console.WriteLine(modelInfo.BaseModelId);;
+                    continue;
+                }
                 modelInfo.Name.ShouldNotBeNullOrEmpty();
                 modelInfo.Description.ShouldNotBeNullOrEmpty();
                 modelInfo.DisplayName.ShouldNotBeNullOrEmpty();

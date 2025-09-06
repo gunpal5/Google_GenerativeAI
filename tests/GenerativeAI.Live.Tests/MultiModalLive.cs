@@ -15,6 +15,7 @@ public class MultiModalLive_Tests
 
     public async Task ShouldRunMultiModalLive()
     {
+        
         var logger = LoggerFactory.Create((s) =>
         {
             s.AddSimpleConsole();
