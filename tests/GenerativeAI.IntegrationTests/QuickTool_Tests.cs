@@ -426,6 +426,7 @@ public class QuickTool_Tests : TestBase
     [Fact]
     public void ShouldVerifyMultipleFunctionToolsAreAdded()
     {
+        Assert.SkipUnless(IsGoogleApiKeySet, GoogleTestSkipMessage);
         // Unit test to verify that multiple AddFunctionTool calls actually add tools to the list
         var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.Gemini2Flash);
 
