@@ -333,19 +333,29 @@ public class VertextPlatformAdapter : IPlatformAdapter
                 return $"{BaseUrls.VertexAIExpress}/{DefaultApiVersion}/publishers/{Publisher}";
             else return $"{BaseUrls.VertexAIExpress}/{DefaultApiVersion}";
         }
+
+        // Handle the special case for "global" region which uses aiplatform.googleapis.com directly
+        string baseUrl;
+        if (string.Equals(Region, "global", StringComparison.OrdinalIgnoreCase))
+        {
+            baseUrl = $"https://aiplatform.googleapis.com/{DefaultApiVersion}/projects/{ProjectId}/locations/{Region}";
+        }
+        else
+        {
 #if NETSTANDARD2_0 || NET462_OR_GREATER
-        var url = this.BaseUrl.Replace("{region}", Region)
-            .Replace("{projectId}", ProjectId)
-            .Replace("{version}", DefaultApiVersion);
+            baseUrl = this.BaseUrl.Replace("{region}", Region)
+                .Replace("{projectId}", ProjectId)
+                .Replace("{version}", DefaultApiVersion);
 #else
-        var url = this.BaseUrl.Replace("{region}", Region, StringComparison.InvariantCultureIgnoreCase)
-            .Replace("{projectId}", ProjectId, StringComparison.InvariantCultureIgnoreCase)
-            .Replace("{version}", DefaultApiVersion, StringComparison.InvariantCultureIgnoreCase);
+            baseUrl = this.BaseUrl.Replace("{region}", Region, StringComparison.InvariantCultureIgnoreCase)
+                .Replace("{projectId}", ProjectId, StringComparison.InvariantCultureIgnoreCase)
+                .Replace("{version}", DefaultApiVersion, StringComparison.InvariantCultureIgnoreCase);
 #endif
+        }
 
         if(appendPublisher)
-            return $"{url}/publishers/{Publisher}";
-        else return url;
+            return $"{baseUrl}/publishers/{Publisher}";
+        else return baseUrl;
     }
 
     /// <summary>

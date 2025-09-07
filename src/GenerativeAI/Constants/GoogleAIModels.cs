@@ -19,10 +19,20 @@ public static class GoogleAIModels
     /// </summary>
     public const string Gemini25Flash = "models/gemini-2.5-flash";
 
+    ///<summary>
+    /// Gemini 2.5 Flash Lite
+    /// </summary>
+    public const string Gemini25FlashLite = "models/gemini-2.5-flash-lite";
+
     /// <summary>
     /// Gemini 2.0 Flash model name.
     /// </summary>
     public const string Gemini2Flash = "models/gemini-2.0-flash";
+
+    /// <summary>
+    /// Gemini 2.0 Flash Lite model name.
+    /// </summary>
+    public const string Gemini2FlashLite = "models/gemini-2.0-flash-lite";
     
     /// <summary>
     /// Gemini 2.5 Pro
@@ -72,6 +82,16 @@ public static class GoogleAIModels
     public const string Gemini25FlashPreviewNativeAudioThinkingDialog = "gemini-2.5-flash-exp-native-audio-thinking-dialog";
     
     /// <summary>
+    /// Gemini Live 2.5 Flash Preview model name.
+    /// </summary>
+    public const string GeminiLive25FlashPreview = "gemini-live-2.5-flash-preview";
+    
+    /// <summary>
+    /// Gemini 2.5 Flash Image Preview model name.
+    /// </summary>
+    public const string Gemini25FlashImagePreview = "gemini-2.5-flash-image-preview";
+    
+    /// <summary>
     /// Gemini 2.5 Flash Preview TTS model name.
     /// </summary>
     public const string Gemini25FlashPreviewTts = "gemini-2.5-flash-preview-tts";
@@ -92,14 +112,19 @@ public static class GoogleAIModels
     public const string Gemini2FlashExpImageGeneration = "gemini-2.0-flash-exp-image-generation";
     
     /// <summary>
-    /// The current Gemini Emedding model name.
+    /// Gemini 2.0 Flash Preview Image Generation model name.
+    /// </summary>
+    public const string Gemini2FlashPreviewImageGeneration = "gemini-2.0-flash-preview-image-generation";
+    
+    /// <summary>
+    /// The current Gemini Embedding model name.
     /// </summary>
     public const string GeminiEmbedding = "models/gemini-embedding-001";
 
     /// <summary>
     /// Gemini 2.0 Flash Exp model name.
     /// </summary>
-    [Obsolete("Gemini-embedding-exp is deprecated. Use GeminiEmedding (gemini-embedding-001) instead.", false)]
+    [Obsolete("Gemini-embedding-exp is deprecated. Use GeminiEmbedding (gemini-embedding-001) instead.", false)]
     public const string GeminiEmbeddingExp = "gemini-embedding-exp";
     /// <summary>
     /// Gemma 3.0 27B model name.
