@@ -30,7 +30,7 @@ public class Microsoft_AIFunction_Tests:TestBase
     public async Task ShouldWorkWithTools()
     {
         Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
-        var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+        var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
         var chatClient = new GenerativeAIChatClient(apiKey);
         var chatOptions = new ChatOptions();
         
@@ -45,7 +45,7 @@ public class Microsoft_AIFunction_Tests:TestBase
     public async Task ShouldWorkWithTools_with_Streaming()
     {
         Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
-        var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+        var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
         var chatClient = new GenerativeAIChatClient(apiKey);
         var chatOptions = new ChatOptions();
         
@@ -63,7 +63,7 @@ public class Microsoft_AIFunction_Tests:TestBase
     public async Task ShouldWorkWithComplexClasses()
     {
         Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
-        var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+        var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
         var chatClient = new GenerativeAIChatClient(apiKey, modelName:"models/gemini-2.0-flash");
         var chatOptions = new ChatOptions();
         
@@ -80,7 +80,7 @@ public class Microsoft_AIFunction_Tests:TestBase
     public async Task ShouldWorkWithComplexClasses_Streaming()
     {
         Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
-        var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+        var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
         var chatClient = new GenerativeAIChatClient(apiKey, modelName: "models/gemini-2.0-flash")
         {
             AutoCallFunction = false
@@ -105,7 +105,7 @@ public class Microsoft_AIFunction_Tests:TestBase
     public async Task ShouldWorkWith_BookStoreService()
     {
         Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
-        var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+        var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
         var chatClient = new GenerativeAIChatClient(apiKey,GoogleAIModels.Gemini2Flash,false).AsBuilder().UseFunctionInvocation().Build();
         var chatOptions = new ChatOptions();
        
@@ -132,7 +132,7 @@ public class Microsoft_AIFunction_Tests:TestBase
     public async Task ShouldWorkWith_NoParameters_FunctionFactory()
     {
         Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
-        var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+        var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
         var chatClient = new GenerativeAIChatClient(apiKey,GoogleAIModels.Gemini2Flash,false).AsBuilder().UseFunctionInvocation().Build();
         var chatOptions = new ChatOptions();
        
@@ -152,14 +152,14 @@ public class Microsoft_AIFunction_Tests:TestBase
         var message = new ChatMessage(ChatRole.User, "what is current date & time");
         var response = await chatClient.GetResponseAsync(message,options:chatOptions, cancellationToken: TestContext.Current.CancellationToken);
 
-        response.Text.ShouldContain("date",Case.Insensitive);
+        response.Text.ShouldContain("Today",Case.Insensitive);
     }
     
     [Fact]
     public async Task ShouldWorkWith_NoParameters_MeaiTools()
     {
         Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
-        var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+        var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
         var chatClient = new GenerativeAIChatClient(apiKey,GoogleAIModels.Gemini2Flash,false).AsBuilder().UseFunctionInvocation().Build();
         var chatOptions = new ChatOptions();
        
@@ -173,14 +173,14 @@ public class Microsoft_AIFunction_Tests:TestBase
         var message = new ChatMessage(ChatRole.User, "what is current date & time");
         var response = await chatClient.GetResponseAsync(message,options:chatOptions, cancellationToken: TestContext.Current.CancellationToken);
 
-        response.Text.ShouldContain("date",Case.Insensitive);
+        response.Text.ShouldContain("Today",Case.Insensitive);
     }
     
     [Fact]
     public async Task ShouldWorkWith_NoParameters_QuickTools()
     {
         Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
-        var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+        var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
         var chatClient = new GenerativeAIChatClient(apiKey,GoogleAIModels.Gemini2Flash,false).AsBuilder().UseFunctionInvocation().Build();
         var chatOptions = new ChatOptions();
        
@@ -194,14 +194,14 @@ public class Microsoft_AIFunction_Tests:TestBase
         var message = new ChatMessage(ChatRole.User, "what is current date & time");
         var response = await chatClient.GetResponseAsync(message,options:chatOptions, cancellationToken: TestContext.Current.CancellationToken);
 
-        response.Text.ShouldContain("date",Case.Insensitive);
+        response.Text.ShouldContain("Today",Case.Insensitive);
     }
     
      [Fact]
     public async Task ShouldWorkWith_NoParameters_FunctionFactory_SelfInvoking()
     {
         Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
-        var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+        var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
         var chatClient = new GenerativeAIChatClient(apiKey,GoogleAIModels.Gemini2Flash,false).AsBuilder().UseFunctionInvocation().Build();
         var chatOptions = new ChatOptions();
        
@@ -221,14 +221,14 @@ public class Microsoft_AIFunction_Tests:TestBase
         var message = new ChatMessage(ChatRole.User, "what is current date & time");
         var response = await chatClient.GetResponseAsync(message,options:chatOptions, cancellationToken: TestContext.Current.CancellationToken);
 
-        response.Text.ShouldContain("date",Case.Insensitive);
+        response.Text.ShouldContain("Today",Case.Insensitive);
     }
     
     [Fact]
     public async Task ShouldWorkWith_NoParameters_MeaiTools_SelfInvoking()
     {
         Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
-        var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+        var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
         var chatClient = new GenerativeAIChatClient(apiKey,GoogleAIModels.Gemini2Flash);
         var chatOptions = new ChatOptions();
        
@@ -242,14 +242,14 @@ public class Microsoft_AIFunction_Tests:TestBase
         var message = new ChatMessage(ChatRole.User, "what is current date & time");
         var response = await chatClient.GetResponseAsync(message,options:chatOptions, cancellationToken: TestContext.Current.CancellationToken);
 
-        response.Text.ShouldContain("date",Case.Insensitive);
+        response.Text.ShouldContain("Today",Case.Insensitive);
     }
     
     [Fact]
     public async Task ShouldWorkWith_NoParameters_QuickTools_SelfInvoking()
     {
         Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
-        var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+        var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
         var chatClient = new GenerativeAIChatClient(apiKey,GoogleAIModels.Gemini2Flash);
         var chatOptions = new ChatOptions();
        
@@ -263,15 +263,15 @@ public class Microsoft_AIFunction_Tests:TestBase
         var message = new ChatMessage(ChatRole.User, "what is current date & time");
         var response = await chatClient.GetResponseAsync(message,options:chatOptions, cancellationToken: TestContext.Current.CancellationToken);
 
-        response.Text.ShouldContain("date",Case.Insensitive);
+        response.Text.ShouldContain("Today",Case.Insensitive);
     }
 
     [Fact]
     public async Task ShouldWorkWith_DateOnly_TimeOnly()
     {
         Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
-        var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
-        var chatClient = new GenerativeAIChatClient(apiKey);
+        var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
+        var chatClient = new GenerativeAIChatClient(apiKey, modelName: "models/gemini-2.5-flash");;
         var chatOptions = new ChatOptions();
 
         chatOptions.Tools = new List<AITool>{AIFunctionFactory.Create(GetUserAppointmentAsync)};
@@ -286,7 +286,7 @@ public class Microsoft_AIFunction_Tests:TestBase
     public async Task ShouldWorkWith_BookStoreService_with_Streaming()
     {
         Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
-        var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+        var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
         var chatClient = new GenerativeAIChatClient(apiKey);
         var chatOptions = new ChatOptions();
        

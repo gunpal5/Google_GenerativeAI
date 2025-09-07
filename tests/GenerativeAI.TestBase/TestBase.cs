@@ -120,7 +120,7 @@ public abstract class TestBase
     protected virtual IPlatformAdapter GetTestGooglePlatform()
     {
         //return GetTestVertexAIPlatform();
-        var apiKey = EnvironmentVariables.GOOGLE_API_KEY;// Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+        var apiKey = EnvironmentVariables.GOOGLE_API_KEY;// Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
 
         return new GoogleAIPlatformAdapter(apiKey);
     }

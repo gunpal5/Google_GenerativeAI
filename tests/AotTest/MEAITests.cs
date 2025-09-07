@@ -13,7 +13,7 @@ public class MEAITests
 {
     public async Task ShouldWorkWithTools()
     {
-        var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+        var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
         var chatClient = new GenerativeAIChatClient(apiKey);
         var chatOptions = new ChatOptions();
 
@@ -28,7 +28,7 @@ public class MEAITests
     
     public async Task QuickToolTest()
     {
-        var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+        var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
         var chatClient = new GenerativeAIChatClient(apiKey);
         var chatOptions = new ChatOptions();
         DefaultSerializerOptions.CustomJsonTypeResolvers.Add(MeaiTestJsonSerializerContext.Default);
@@ -41,7 +41,7 @@ public class MEAITests
     
     public async Task ShouldWorkWith_BookStoreService()
     {
-        var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+        var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
         var chatClient = new GenerativeAIChatClient(apiKey);
         var chatOptions = new ChatOptions();
        

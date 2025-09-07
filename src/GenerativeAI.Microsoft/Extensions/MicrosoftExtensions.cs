@@ -29,7 +29,7 @@ public static class MicrosoftExtensions
         Part[] systemParts = (from m in chatMessages
             where m.Role == ChatRole.System
             from c in m.Contents
-            let p = c.ToPart()
+            let p = c.ToPart(options)
             where p is not null
             select p).ToArray();
         if (systemParts.Length > 0)
@@ -40,7 +40,7 @@ public static class MicrosoftExtensions
         request.Contents = (from m in chatMessages
             where m.Role != ChatRole.System
             select new Content((from c in m.Contents
-                let p = c.ToPart()
+                let p = c.ToPart(options)
                 where p is not null
                 select p).ToArray(), m.Role == ChatRole.Assistant ? Roles.Model : Roles.User)).ToList();
 
@@ -80,13 +80,16 @@ public static class MicrosoftExtensions
                 return null;
             else
             {
-                // Convert to JsonNode and apply transformations
+                // Convert to JsonNode, clone it, and apply transformations to the clone
                 var node = schema.AsNode();
                 if (node != null)
                 {
-                    ApplySchemaTransformations(node);
+                    // Clone the node to avoid modifying the original schema
+                    var clonedNode = node.DeepClone();
+                    ApplySchemaTransformations(clonedNode);
+                    return GoogleSchemaHelper.ConvertToCompatibleSchemaSubset(clonedNode);
                 }
-                return node != null ? GoogleSchemaHelper.ConvertToCompatibleSchemaSubset(node) : null;
+                return null;
             }
         }
     }
@@ -107,8 +110,9 @@ public static class MicrosoftExtensions
     /// Converts an <see cref="AIContent"/> instance into a <see cref="Part"/> object.
     /// </summary>
     /// <param name="content">The AI content to transform into a part object.</param>
+    /// <param name="options">Optional chat options for context-aware transformations.</param>
     /// <returns>A <see cref="Part"/> object representing the given AI content, or null if the content type is unsupported.</returns>
-    public static Part? ToPart(this AIContent content)
+    public static Part? ToPart(this AIContent content, ChatOptions? options = null)
     {
         return content switch
         {
@@ -325,11 +329,11 @@ public static class MicrosoftExtensions
     /// </summary>
     /// <param name="response">The <see cref="GenerateContentResponse"/> instance to convert.</param>
     /// <returns>A <see cref="ChatResponse"/> object if the transformation is successful; otherwise, null.</returns>
-    public static ChatResponse? ToChatResponse(this GenerateContentResponse? response)
+    public static ChatResponse? ToChatResponse(this GenerateContentResponse? response, ChatOptions? options = null)
     {
         if (response is null) return null;
 
-        var chatMessage = ToChatMessage(response);
+        var chatMessage = ToChatMessage(response, options);
 
         return new ChatResponse(chatMessage)
         {
@@ -348,7 +352,7 @@ public static class MicrosoftExtensions
     /// </summary>
     /// <param name="response">The input <see cref="GenerateContentResponse"/> to transform into a chat response update.</param>
     /// <returns>A new <see cref="ChatResponseUpdate"/> object reflecting the data in the provided <see cref="GenerateContentResponse"/>.</returns>
-    public static ChatResponseUpdate ToChatResponseUpdate(this GenerateContentResponse? response)
+    public static ChatResponseUpdate ToChatResponseUpdate(this GenerateContentResponse? response, ChatOptions? options = null)
     {
 #if NET6_0_OR_GREATER
         ArgumentNullException.ThrowIfNull(response);
@@ -360,7 +364,7 @@ public static class MicrosoftExtensions
         {
             return new ChatResponseUpdate
             {
-                Contents = response.Candidates.Select(s => s.Content).SelectMany(s => s?.Parts ?? new List<Part>()).ToList().ToAiContents(),
+                Contents = response.Candidates.Select(s => s.Content).SelectMany(s => s?.Parts ?? new List<Part>()).ToList().ToAiContents(options),
                 AdditionalProperties = null,
                 FinishReason = response?.Candidates?.FirstOrDefault()?.FinishReason == FinishReason.OTHER
                     ? ChatFinishReason.Stop
@@ -418,10 +422,10 @@ public static class MicrosoftExtensions
     /// </summary>
     /// <param name="response">The <see cref="GenerateContentResponse"/> to be transformed into a <see cref="ChatMessage"/>.</param>
     /// <returns>A <see cref="ChatMessage"/> representing the data contained in the <see cref="GenerateContentResponse"/>.</returns>
-    private static ChatMessage ToChatMessage(GenerateContentResponse response)
+    private static ChatMessage ToChatMessage(GenerateContentResponse response, ChatOptions? options = null)
     {
         var generatedContent = response.Candidates?.FirstOrDefault()?.Content;
-        var contents = generatedContent?.Parts.ToAiContents();
+        var contents = generatedContent?.Parts.ToAiContents(options);
 
         return new ChatMessage(ToChatRole(generatedContent?.Role), contents)
         {
@@ -434,10 +438,10 @@ public static class MicrosoftExtensions
     /// </summary>
     /// <param name="contents">The <see cref="Content"/> to be transformed into a <see cref="ChatMessage"/>.</param>
     /// <returns>A <see cref="ChatMessage"/> representing the data contained in the <see cref="GenerateContentResponse"/>.</returns>
-    public static IEnumerable<ChatMessage> ToChatMessages(this List<Content>? contents)
+    public static IEnumerable<ChatMessage> ToChatMessages(this List<Content>? contents, ChatOptions? options = null)
     {
         return (from content in contents
-            let aiContents = content.Parts.ToAiContents()
+            let aiContents = content.Parts.ToAiContents(options)
             select new ChatMessage(ToChatRole(content.Role), aiContents)).ToList();
     }
 
@@ -503,8 +507,9 @@ public static class MicrosoftExtensions
     /// Transforms a list of <see cref="Part"/> objects into a collection of <see cref="AIContent"/> instances.
     /// </summary>
     /// <param name="parts">The list of <see cref="Part"/> objects to be converted.</param>
+    /// <param name="options">Optional chat options for context-aware transformations.</param>
     /// <returns>A collection of <see cref="AIContent"/> instances derived from the provided <see cref="Part"/> objects, or null if the input list is null.</returns>
-    public static IList<AIContent> ToAiContents(this List<Part>? parts)
+    public static IList<AIContent> ToAiContents(this List<Part>? parts, ChatOptions? options = null)
     {
         List<AIContent>? contents = null;
         if (parts is null) return new List<AIContent>();
@@ -519,7 +524,7 @@ public static class MicrosoftExtensions
             if (part.FunctionCall is not null)
             {
                 (contents ??= new()).Add(new FunctionCallContent(part.FunctionCall.Name, part.FunctionCall.Name,
-                    ConvertFunctionCallArg(part.FunctionCall.Args, part.FunctionCall.Name)));
+                    ConvertFunctionCallArg(part.FunctionCall.Args, part.FunctionCall.Name, options)));
             }
 
             if (part.FunctionResponse is not null)
@@ -539,34 +544,376 @@ public static class MicrosoftExtensions
     }
 
     /// <summary>
-    /// Transforms date/time values from Gemini's format to a format compatible with DateOnly/TimeOnly.
+    /// Recursively transforms date/time values from Gemini's format to a format compatible with DateOnly/TimeOnly.
     /// </summary>
-    private static object? TransformDateTimeValue(JsonNode value)
+    /// <param name="value">The JSON value to transform</param>
+    /// <param name="parameterName">The parameter path for schema lookup</param>
+    /// <param name="functionName">The name of the function being called</param>
+    /// <param name="options">Chat options containing tool definitions</param>
+    /// <param name="arrayItemSchema">Optional schema for array items when processing nested objects within arrays</param>
+    private static object? TransformDateTimeValue(JsonNode value, string? parameterName, string? functionName, ChatOptions? options, JsonNode? arrayItemSchema = null)
     {
-        // If it's a string value that looks like a date/time, transform it
-        if (value is JsonValue jsonValue && jsonValue.TryGetValue<string>(out var stringValue))
+        // Handle nested objects recursively
+        if (value is JsonObject nestedObj)
         {
-            // Check if it's an ISO 8601 date/time string
-            if (!string.IsNullOrEmpty(stringValue) && 
-                (stringValue.IndexOf('T') >= 0 || stringValue.IndexOf('-') >= 0))
+            var transformedObj = new JsonObject();
+            
+            // If we're not in an array context, we might need to get the schema for this object parameter
+            JsonNode? objectSchema = arrayItemSchema;
+            if (objectSchema == null && !string.IsNullOrEmpty(parameterName) && !string.IsNullOrEmpty(functionName) && options?.Tools != null)
             {
-                // Try to parse as DateTime/DateTimeOffset
-                if (DateTime.TryParse(stringValue, System.Globalization.CultureInfo.InvariantCulture, 
-                    System.Globalization.DateTimeStyles.None, out var dateTime))
+                // Try to get the schema for this object parameter
+                var function = options.Tools.OfType<AIFunction>().FirstOrDefault(f => f.Name == functionName);
+                if (function?.JsonSchema != null)
                 {
-                    // Create a JsonObject with both date and time components
-                    // This allows AIFunction to deserialize to either DateOnly or TimeOnly as needed
-                    var dateOnlyString = dateTime.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
-                    var timeOnlyString = dateTime.ToString("HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                    var schemaNode = JsonSerializer.SerializeToNode(function.JsonSchema);
+                    var pathParts = parameterName.Split('.');
+                    var currentSchema = schemaNode?["properties"];
                     
-                    // Return the date-only format for better compatibility
-                    // The AIFunction deserializer will handle conversion to DateOnly/TimeOnly
-                    return JsonValue.Create(dateOnlyString);
+                    foreach (var part in pathParts)
+                    {
+                        if (currentSchema == null) break;
+                        var propSchema = currentSchema[part];
+                        if (propSchema == null) break;
+                        
+                        // Check the type of this property
+                        if (propSchema["type"] is JsonValue tv && tv.TryGetValue<string>(out var ts))
+                        {
+                            if (ts == "object")
+                            {
+                                objectSchema = propSchema;
+                                currentSchema = propSchema["properties"];
+                            }
+                            else if (ts == "array")
+                            {
+                                // For arrays, navigate through items
+                                objectSchema = propSchema["items"];
+                                currentSchema = propSchema["items"]?["properties"];
+                            }
+                            else
+                            {
+                                // For primitive types, this is the end of navigation
+                                objectSchema = propSchema;
+                                currentSchema = null;
+                            }
+                        }
+                        else
+                        {
+                            currentSchema = propSchema["properties"];
+                        }
+                    }
+                }
+            }
+            
+            foreach (var kvp in nestedObj)
+            {
+                // For nested objects, we need to check each property's schema
+                JsonNode? propSchemaForNested = null;
+                string pathForLookup;
+                
+                if (arrayItemSchema != null)
+                {
+                    // We're inside an array item, use relative path and array item schema
+                    pathForLookup = kvp.Key;
+                    
+                    // Get the schema for this property from the array item schema
+                    var propSchema = objectSchema?["properties"]?[kvp.Key];
+                    if (propSchema != null)
+                    {
+                        // Pass appropriate schema based on property type
+                        if (propSchema["type"] is JsonValue tv && tv.TryGetValue<string>(out var ts))
+                        {
+                            if (ts == "object")
+                            {
+                                propSchemaForNested = propSchema;
+                            }
+                            else if (ts == "array")
+                            {
+                                propSchemaForNested = propSchema["items"];
+                            }
+                            else
+                            {
+                                propSchemaForNested = propSchema;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    // Not in array context, use full path for lookup
+                    pathForLookup = string.IsNullOrEmpty(parameterName) ? kvp.Key : $"{parameterName}.{kvp.Key}";
+                    
+                    // Get the schema for this property when not in array context
+                    if (objectSchema != null)
+                    {
+                        var propSchema = objectSchema["properties"]?[kvp.Key];
+                        if (propSchema != null)
+                        {
+                            // Pass appropriate schema based on property type
+                            if (propSchema["type"] is JsonValue tv && tv.TryGetValue<string>(out var ts))
+                            {
+                                if (ts == "object")
+                                {
+                                    propSchemaForNested = propSchema;
+                                }
+                                else if (ts == "array")
+                                {
+                                    propSchemaForNested = propSchema["items"];
+                                }
+                                else
+                                {
+                                    propSchemaForNested = propSchema;
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                // Pass the appropriate schema context for nested transformation
+                var transformed = kvp.Value != null ? TransformDateTimeValue(kvp.Value, pathForLookup, functionName, options, propSchemaForNested) : null;
+                if (transformed is JsonNode node)
+                {
+                    transformedObj[kvp.Key] = node;
+                }
+                else if (transformed != null)
+                {
+                    transformedObj[kvp.Key] = JsonValue.Create(transformed);
+                }
+                else
+                {
+                    transformedObj[kvp.Key] = null;
+                }
+            }
+            return transformedObj;
+        }
+        
+        // Handle arrays recursively
+        if (value is JsonArray array)
+        {
+            var transformedArray = new JsonArray();
+            
+            // Get the array item schema for nested objects within array items
+            JsonNode? itemSchema = null;
+            if (!string.IsNullOrEmpty(parameterName) && !string.IsNullOrEmpty(functionName) && options?.Tools != null)
+            {
+                var function = options.Tools.OfType<AIFunction>().FirstOrDefault(f => f.Name == functionName);
+                if (function?.JsonSchema != null)
+                {
+                    var schemaNode = JsonSerializer.SerializeToNode(function.JsonSchema);
+                    var pathParts = parameterName.Split('.');
+                    var currentSchema = schemaNode?["properties"];
+                    
+                    foreach (var part in pathParts)
+                    {
+                        if (currentSchema == null) break;
+                        var propSchema = currentSchema[part];
+                        if (propSchema == null) break;
+                        
+                        // If this is an array property, get its items schema
+                        if (propSchema["type"] is JsonValue tv && tv.TryGetValue<string>(out var ts) && ts == "array")
+                        {
+                            itemSchema = propSchema["items"];
+                            break;
+                        }
+                        
+                        currentSchema = propSchema["properties"];
+                    }
+                }
+            }
+            
+            foreach (var item in array)
+            {
+                // For arrays, each item should be transformed with the array parameter name
+                // so that schema lookup can work properly
+                var transformed = item != null ? TransformDateTimeValue(item, parameterName, functionName, options, itemSchema) : null;
+                if (transformed is JsonNode node)
+                {
+                    transformedArray.Add(node);
+                }
+                else if (transformed != null)
+                {
+                    transformedArray.Add(JsonValue.Create(transformed));
+                }
+                else
+                {
+                    transformedArray.Add(null);
+                }
+            }
+            return transformedArray;
+        }
+        
+        // Check if this parameter should be transformed based on the function's parameter types
+        if (!string.IsNullOrEmpty(parameterName) && !string.IsNullOrEmpty(functionName) && options?.Tools != null)
+        {
+            // Find the function in the tools
+            var function = options.Tools.OfType<AIFunction>().FirstOrDefault(f => f.Name == functionName);
+            if (function?.JsonSchema != null)
+            {
+                // Parse the schema to check the parameter's format
+                // Since we're cloning before transformation, the original schema is intact
+                var schemaNode = arrayItemSchema ?? JsonSerializer.SerializeToNode(function.JsonSchema);
+                
+                // Navigate to the correct schema path for nested properties
+                JsonObject? paramSchema = null;
+                
+                // Handle the special case when we're inside an array item
+                if (arrayItemSchema != null)
+                {
+                    // Check if the arrayItemSchema itself is a primitive type (like DateOnly in an array)
+                    if (arrayItemSchema["type"] is JsonValue typeVal && arrayItemSchema["format"] is JsonValue)
+                    {
+                        // This is a primitive array item (e.g., DateOnly[])
+                        paramSchema = arrayItemSchema as JsonObject;
+                    }
+                    else if (!string.IsNullOrEmpty(parameterName))
+                    {
+                        // For complex objects in arrays, look up the property in the item schema
+                        var pathParts = parameterName.Split('.');
+                        var currentSchema = arrayItemSchema["properties"];
+                        
+                        foreach (var part in pathParts)
+                        {
+                            if (currentSchema == null) break;
+                            
+                            var propSchema = currentSchema[part];
+                            if (propSchema == null) break;
+                            
+                            // If this is the last part, this is our target schema
+                            if (part == pathParts[pathParts.Length - 1])
+                            {
+                                paramSchema = propSchema as JsonObject;
+                                
+                                // For arrays, check the items schema
+                                if (paramSchema?["type"] is JsonValue typeValue && typeValue.TryGetValue<string>(out var typeStr) && typeStr == "array")
+                                {
+                                    paramSchema = paramSchema["items"] as JsonObject;
+                                }
+                            }
+                            else
+                            {
+                                // Navigate deeper into nested properties
+                                if (propSchema["type"] is JsonValue tv && tv.TryGetValue<string>(out var ts) && ts == "array")
+                                {
+                                    currentSchema = propSchema["items"]?["properties"];
+                                }
+                                else
+                                {
+                                    currentSchema = propSchema["properties"];
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // If no parameter name, the item schema itself might be a date/time value
+                        paramSchema = arrayItemSchema as JsonObject;
+                    }
+                }
+                else
+                {
+                    // Split the parameter name to handle nested properties like "appointment.date" or "events.schedule.startDate"
+                    var pathParts = parameterName.Split('.');
+                    var currentSchema = schemaNode?["properties"];
+                    
+                    foreach (var part in pathParts)
+                {
+                    if (currentSchema == null) break;
+                    
+                    var propSchema = currentSchema[part];
+                    if (propSchema == null) break;
+                    
+                    // If this is the last part, this is our target schema
+                    if (part == pathParts[pathParts.Length - 1])
+                    {
+                        paramSchema = propSchema as JsonObject;
+                        
+                        // For arrays, check the items schema
+                        if (paramSchema?["type"] is JsonValue typeValue && typeValue.TryGetValue<string>(out var typeStr) && typeStr == "array")
+                        {
+                            paramSchema = paramSchema["items"] as JsonObject;
+                        }
+                    }
+                    else
+                    {
+                        // Navigate deeper into nested properties
+                        // If current property is an array, navigate through items
+                        if (propSchema["type"] is JsonValue tv && tv.TryGetValue<string>(out var ts) && ts == "array")
+                        {
+                            currentSchema = propSchema["items"]?["properties"];
+                        }
+                        // If it's an object, navigate through properties
+                        else
+                        {
+                            currentSchema = propSchema["properties"];
+                        }
+                    }
+                    }
+                }
+                
+                if (paramSchema != null)
+                {
+                    string? format = null;
+                    if (paramSchema["format"] is JsonValue formatValue)
+                    {
+                        formatValue.TryGetValue<string>(out format);
+                    }
+                    
+                    // Check if it's a DateOnly (format: "date") or TimeOnly (format: "time")
+                    var isDateOnly = format == "date";
+                    var isTimeOnly = format == "time";
+                    
+                    if (isDateOnly || isTimeOnly)
+                    {
+                        // Transform the value for DateOnly/TimeOnly parameters
+                        if (value is JsonValue jsonValue && jsonValue.TryGetValue<string>(out var stringValue))
+                        {
+                            if (!string.IsNullOrEmpty(stringValue))
+                            {
+                                if (isDateOnly)
+                                {
+                                    // Try to parse various date formats and convert to yyyy-MM-dd
+                                    // Use RoundtripKind to preserve UTC times and avoid timezone conversion
+                                    if (DateTime.TryParse(stringValue, System.Globalization.CultureInfo.InvariantCulture,
+                                        System.Globalization.DateTimeStyles.RoundtripKind, out var dateTime))
+                                    {
+                                        // Return date part for DateOnly as JsonValue
+                                        return JsonValue.Create(dateTime.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture));
+                                    }
+                                    // If already in correct format, return as-is
+                                    else if (stringValue.Length == 10 && stringValue[4] == '-' && stringValue[7] == '-')
+                                    {
+                                        return JsonValue.Create(stringValue);
+                                    }
+                                }
+                                else if (isTimeOnly)
+                                {
+                                    // Try to parse various time formats and convert to HH:mm:ss
+                                    if (DateTime.TryParse(stringValue, System.Globalization.CultureInfo.InvariantCulture,
+                                        System.Globalization.DateTimeStyles.None, out var dateTime))
+                                    {
+                                        // Return time part for TimeOnly as JsonValue
+                                        return JsonValue.Create(dateTime.ToString("HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture));
+                                    }
+                                    // Parse time-only formats like "2:30 PM"
+                                    else if (DateTime.TryParse("2000-01-01 " + stringValue, System.Globalization.CultureInfo.InvariantCulture,
+                                        System.Globalization.DateTimeStyles.None, out dateTime))
+                                    {
+                                        return JsonValue.Create(dateTime.ToString("HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture));
+                                    }
+                                    // If already in correct format, return as-is
+                                    else if (stringValue.Contains(':'))
+                                    {
+                                        return JsonValue.Create(stringValue);
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
         
-        // For non-date values or complex objects, return as-is
+        // For non-date values or when we can't determine the type, return as-is
         return value?.DeepClone();
     }
 
@@ -575,32 +922,14 @@ public static class MicrosoftExtensions
     /// </summary>
     /// <param name="functionCallArgs">The arguments of the function call, potentially in a serialized JSON format.</param>
     /// <param name="functionName">The name of the function being called (optional, used for context).</param>
+    /// <param name="options">Chat options containing tool definitions for parameter type checking.</param>
     /// <returns>A dictionary where the keys represent argument names and values represent their corresponding data, or null if conversion is not possible.</returns>
     #pragma warning disable CA1859 // Use concrete types when possible for improved performance
-    private static IDictionary<string, object?>? ConvertFunctionCallArg(JsonNode? functionCallArgs, string? functionName = null)
+    private static IDictionary<string, object?>? ConvertFunctionCallArg(JsonNode? functionCallArgs, string? functionName = null, ChatOptions? options = null)
     #pragma warning restore CA1859
     {
-        if (functionCallArgs == null)
-            return null;
-        var obj = functionCallArgs.AsObject();
-        if (obj == null)
-            return null;
-            
-        var result = new Dictionary<string, object?>();
-        foreach (var kvp in obj)
-        {
-            if (kvp.Value != null)
-            {
-                // Transform date/time values if they look like ISO 8601 dates
-                var transformedValue = TransformDateTimeValue(kvp.Value);
-                result[kvp.Key] = transformedValue;
-            }
-            else
-            {
-                result[kvp.Key] = null;
-            }
-        }
-        return result;
+        // Use the comprehensive transformation logic that handles all cases
+        return ComprehensiveDateTimeTransformer.TransformFunctionCallArguments(functionCallArgs, functionName, options);
 
         #region Unused codes for future reference
 

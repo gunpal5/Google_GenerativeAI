@@ -65,7 +65,7 @@ Write some codes:
 ### Chat Mode
 
 ```csharp
- var apiKey = Environment.GetEnvironmentVariable("Gemini_API_Key", EnvironmentVariableTarget.User);
+ var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
 
  var model = new GenerativeModel(apiKey);
  //or var model = new GeminiProModel(apiKey)
@@ -88,7 +88,7 @@ var imageBytes = await File.ReadAllBytesAsync("image.png");
 
 string prompt = "What is in the image?";
 
-var apiKey = Environment.GetEnvironmentVariable("Gemini_API_Key", EnvironmentVariableTarget.User);
+var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
 
 var visionModel = new GeminiProVision(apiKey);
 
@@ -119,7 +119,7 @@ var textPart = new Part()
 
 var parts = new[] { textPart, imagePart };
 
-var apiKey = Environment.GetEnvironmentVariable("Gemini_API_Key", EnvironmentVariableTarget.User);
+var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
 var visionModel = new GeminiProVision(apiKey);
 var result = await visionModel.GenerateContentAsync(parts);
 
@@ -172,7 +172,7 @@ public class WeatherService : IWeatherFunctions
 
  WeatherService service = new WeatherService();
  
- var apiKey = Environment.GetEnvironmentVariable("Gemini_API_Key", EnvironmentVariableTarget.User);
+ var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
 
  var model = new GenerativeModel(apiKey);
 
@@ -188,7 +188,7 @@ public class WeatherService : IWeatherFunctions
 #### Streaming with Generative Model
 
 ```csharp
-var apiKey = Environment.GetEnvironmentVariable("Gemini_API_Key", EnvironmentVariableTarget.User);
+var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
 
 var model = new GenerativeModel(apiKey);
 //or var model = new GeminiProModel(apiKey);
@@ -207,7 +207,7 @@ var imageBytes = await File.ReadAllBytesAsync("image.png");
 
 string prompt = "What is in the image?";
 
-var apiKey = Environment.GetEnvironmentVariable("Gemini_API_Key", EnvironmentVariableTarget.User);
+var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
 
 var visionModel = new GeminiProVision(apiKey);
 
@@ -224,7 +224,7 @@ var result = await chat.StreamContentVisionAsync(prompt, new FileObject(imageByt
 
 #### Streaming with ChatSession
 ```csharp
-var apiKey = Environment.GetEnvironmentVariable("Gemini_API_Key", EnvironmentVariableTarget.User);
+var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
 
 var model = new GenerativeModel(apiKey);
 
@@ -242,7 +242,7 @@ This service can be used to get all the Google Generative AI Models.
 
 #### Get List of Available Models
 ```csharp
-var apiKey = Environment.GetEnvironmentVariable("Gemini_API_Key", EnvironmentVariableTarget.User);
+var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
 
 var service = new ModelInfoService(apiKey);
 
@@ -252,7 +252,7 @@ var models = await service.GetModelsAsync();
 #### Get Model info with Model Id
 
 ```csharp
- var apiKey = Environment.GetEnvironmentVariable("Gemini_API_Key", EnvironmentVariableTarget.User);
+ var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
 
  var service = new ModelInfoService(apiKey);
 

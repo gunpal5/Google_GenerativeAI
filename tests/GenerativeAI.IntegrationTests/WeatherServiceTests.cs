@@ -57,7 +57,7 @@ namespace GenerativeAI.IntegrationTests
             // var functions = service.AsGoogleFunctions();
             // var calls = service.AsGoogleCalls();
             //
-            // var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+            // var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
             //
             // var model = new GenerativeModel(apiKey);
             // model.AddGlobalFunctions(functions,calls);

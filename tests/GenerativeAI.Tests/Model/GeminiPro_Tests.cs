@@ -15,7 +15,7 @@
 //         [Fact]
 //         public async Task ShouldGenerateResult()
 //         {
-//             var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+//             var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
 //
 //             var model = new GenerativeModel(apiKey);
 //
@@ -29,7 +29,7 @@
 //         [Fact]
 //         public async Task ShouldGenerateResultWithFlash()
 //         {
-//             var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+//             var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
 //
 //             var model = new Gemini15Flash(apiKey);
 //
@@ -43,7 +43,7 @@
 //         [Fact]
 //         public async Task ShouldGenerateResultWith15Pro()
 //         {
-//             var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+//             var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
 //
 //             var model = new Gemini15Pro(apiKey);
 //
@@ -57,7 +57,7 @@
 //         [Fact]
 //         public async Task SystemInstructionTests()
 //         {
-//             var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+//             var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
 //
 //             var SystemInstruction =
 //                 "You are a coding expert that specializes in rendering code for front-end interfaces. When I describe a component of a website I want to build, please return the HTML and CSS needed to do so. Do not give an explanation for this code. Also offer some UI design suggestions.";
@@ -76,7 +76,7 @@
 //         [Fact]
 //         public async Task ShouldGenerateStreamResponse()
 //         {
-//             var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+//             var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
 //
 //             var model = new GenerativeModel(apiKey);
 //
@@ -92,7 +92,7 @@
 //         [Fact]
 //         public async Task ShouldGenerateStreamResponseWithParts()
 //         {
-//             var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+//             var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
 //
 //             var model = new GenerativeModel(apiKey);
 //
@@ -107,7 +107,7 @@
 //         [Fact]
 //         public async Task ShouldGenerateStreamResponseWithRequest()
 //         {
-//             var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+//             var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
 //
 //             var model = new GenerativeModel(apiKey);
 //
@@ -122,7 +122,7 @@
 //         [Fact]
 //         public async Task ShouldCreateRequestWithSafetySettings()
 //         {
-//             var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+//             var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
 //
 //             var model = new GenerativeModel(apiKey, new ModelParams()
 //             {
@@ -153,7 +153,7 @@
 //         [Fact]
 //         public async Task ShouldCountTokens()
 //         {
-//             var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+//             var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
 //
 //             var text =
 //                 "In the realm of dreams where magic thrives,\nWhere whispers of fantasy come alive,\nA tale unfolds, a journey to behold,\nWhere dreams take flight, like stories untold.\n\nAmidst the stars, a shimmering light,\nA celestial vision, enchanting the night,\nA dreamer awakens, with eyes wide open,\nEmbracing the wonders, that lie unspoken.\n\nThrough landscapes vast, where colors dance,\nGuided by hope, a heart's keen glance,\nWith every step, the dreamer learns,\nThat courage and kindness the spirit earns.\n\nIn shadows deep, where secrets reside,\nMysteries unravel, side by side,\nEach challenge faced, a lesson to embrace,\nThe dreamer's resolve, forever in grace.\n\nThrough trials and triumphs, the path unwinds,\nA tapestry of dreams, where destiny binds,\nFor in the realms of dreams, where magic dwells,\nThe power of belief forever excels.\n\nSo let us wander, with hearts set free,\nIn this realm of dreams, where possibilities decree,\nFor in these enchanted lands, we find,\nThe magic that lies within our own mind.\r\n";

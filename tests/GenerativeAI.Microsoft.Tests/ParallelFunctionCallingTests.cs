@@ -23,7 +23,7 @@ public class ParallelFunctionCallingTests : TestBase
     public async Task ShouldCallMultipleFunctionsInParallel()
     {
         Assert.SkipUnless(IsGoogleApiKeySet, GoogleTestSkipMessage);
-        var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+        var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
         var chatClient = new GenerativeAIChatClient(apiKey, GoogleAIModels.Gemini2Flash);
         var chatOptions = new ChatOptions();
 
@@ -45,7 +45,7 @@ public class ParallelFunctionCallingTests : TestBase
     public async Task ShouldCallMultipleFunctionsInParallelWithStreaming()
     {
         Assert.SkipUnless(IsGoogleApiKeySet, GoogleTestSkipMessage);
-        var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+        var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
         var chatClient = new GenerativeAIChatClient(apiKey, GoogleAIModels.Gemini2Flash);
         var chatOptions = new ChatOptions();
 
@@ -72,7 +72,7 @@ public class ParallelFunctionCallingTests : TestBase
     public async Task ShouldCallComplexParallelFunctions()
     {
         Assert.SkipUnless(IsGoogleApiKeySet, GoogleTestSkipMessage);
-        var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+        var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
         var chatClient = new GenerativeAIChatClient(apiKey, GoogleAIModels.Gemini2Flash);
         var chatOptions = new ChatOptions();
 
@@ -95,7 +95,7 @@ public class ParallelFunctionCallingTests : TestBase
     public async Task ShouldCombineParallelFunctionResults()
     {
         Assert.SkipUnless(IsGoogleApiKeySet, GoogleTestSkipMessage);
-        var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+        var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
         var chatClient = new GenerativeAIChatClient(apiKey, GoogleAIModels.Gemini2Flash);
         var chatOptions = new ChatOptions();
 
@@ -117,7 +117,7 @@ public class ParallelFunctionCallingTests : TestBase
     // public async Task ShouldHandleParallelFunctionErrorsGracefully()
     // {
     //     Assert.SkipUnless(IsGoogleApiKeySet, GoogleTestSkipMessage);
-    //     var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+    //     var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
     //     var chatClient = new GenerativeAIChatClient(apiKey, GoogleAIModels.Gemini2Flash);
     //     var chatOptions = new ChatOptions();
     //

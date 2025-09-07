@@ -48,7 +48,7 @@ public class WeatherServiceTests
     protected virtual IPlatformAdapter GetTestGooglePlatform()
     {
         //return GetTestVertexAIPlatform();
-        var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY", EnvironmentVariableTarget.User);
+        var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
 
         return new GoogleAIPlatformAdapter(apiKey);
     }
