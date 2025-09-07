@@ -336,12 +336,12 @@ public class VertextPlatformAdapter : IPlatformAdapter
 
         // Handle the special case for "global" region which uses aiplatform.googleapis.com directly
         string baseUrl;
-        if (string.Equals(Region, "global", StringComparison.OrdinalIgnoreCase))
-        {
-            baseUrl = $"https://aiplatform.googleapis.com/{DefaultApiVersion}/projects/{ProjectId}/locations/{Region}";
-        }
-        else
-        {
+        // if (string.Equals(Region, "global", StringComparison.OrdinalIgnoreCase))
+        // {
+        //     baseUrl = $"https://aiplatform.googleapis.com/";
+        // }
+        // else
+        // {
 #if NETSTANDARD2_0 || NET462_OR_GREATER
             baseUrl = this.BaseUrl.Replace("{region}", Region)
                 .Replace("{projectId}", ProjectId)
@@ -351,7 +351,7 @@ public class VertextPlatformAdapter : IPlatformAdapter
                 .Replace("{projectId}", ProjectId, StringComparison.InvariantCultureIgnoreCase)
                 .Replace("{version}", DefaultApiVersion, StringComparison.InvariantCultureIgnoreCase);
 #endif
-        }
+       //}
 
         if(appendPublisher)
             return $"{baseUrl}/publishers/{Publisher}";

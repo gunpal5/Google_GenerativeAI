@@ -65,7 +65,7 @@ public abstract class BaseModel : BaseClient
         return response;
     }
 
-    /// <summary>
+    /// <summary>T
     /// Streams model responses chunk by chunk given an input <see cref="GenerateContentRequest"/>.
     /// </summary>
     /// <param name="model">

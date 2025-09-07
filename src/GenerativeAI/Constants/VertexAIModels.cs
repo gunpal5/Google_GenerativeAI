@@ -75,6 +75,13 @@ public static class VertexAIModels
         public const string Gemini25ProPreviewTTS = "gemini-2.5-pro-preview-tts";
 
         /// <summary>
+        /// Gemini 2.5 Flash Image Preview model name.
+        /// Supports text and image inputs with text and image outputs.
+        /// Currently in public preview with limited capabilities.
+        /// </summary>
+        public const string Gemini25FlashImagePreview = "gemini-2.5-flash-image-preview";
+
+        /// <summary>
         /// Gemini 2.0 Flash Exp 01-21 model name.
         /// </summary>
         public const string Gemini2FlashThinkingExp0121 = "gemini-2.0-flash-thinking-exp-01-21";

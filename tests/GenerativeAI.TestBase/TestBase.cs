@@ -93,7 +93,7 @@ public abstract class TestBase
     {
         get
         {
-            return Environment.GetEnvironmentVariable("VERTEXT_AI_TESTS_ENABLED")?.ToLower() != "true" ||
+            return Environment.GetEnvironmentVariable("VERTEXT_AI_TESTS_ENABLED", EnvironmentVariableTarget.User)?.ToLower() != "true" ||
                    !IsAdcConfigured;
         }
     }

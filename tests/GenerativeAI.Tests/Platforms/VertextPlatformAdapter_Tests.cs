@@ -155,4 +155,11 @@ public class VertextPlatformAdapter_Tests
         // Assert
         baseUrl.ShouldBe($"https://aiplatform.googleapis.com/{apiVersion}/publishers/{publisher}");
     }
+
+    [Fact]
+    public void VertexAIModels_ShouldContain_Gemini25FlashImagePreview()
+    {
+        // Act & Assert
+        VertexAIModels.Gemini.Gemini25FlashImagePreview.ShouldBe("gemini-2.5-flash-image-preview");
+    }
 }
