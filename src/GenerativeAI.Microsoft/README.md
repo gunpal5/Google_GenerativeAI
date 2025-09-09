@@ -85,6 +85,66 @@ public class MyChatService
 }
 ```
 
+### 4. Using IImageClient
+
+Image client can also be used from a service as above.  Here's a sample that shows it's capabilities.
+
+```C#
+using System.Diagnostics;
+using GenerativeAI.Microsoft;
+using Microsoft.Extensions.AI;
+
+#pragma warning disable MEAI001
+// ImageGen creates high quality initial images
+IImageGenerator imageGenerator = new GenerativeAIImagenGenerator(
+    Environment.GetEnvironmentVariable("GOOGLE_API_KEY"),
+    "imagen-4.0-fast-generate-001");
+
+var response = await imageGenerator.GenerateImagesAsync("A clown fish with orange and black-bordered white stripes.");
+var img1 = GetImageContent(response);
+SaveImage(img1, "i1.png");
+ShowImage("i1.png");
+
+response = await imageGenerator.GenerateImagesAsync("A blue tang fish, blue and black with yellow tipped fin and tail.");
+var img2 = GetImageContent(response);
+SaveImage(img2, "i2.png");
+ShowImage("i2.png");
+
+// Imagen cannot edit, but we can use the gemini model for that.
+IImageGenerator imageGeneratorEdit = new GenerativeAIImageGenerator(
+    Environment.GetEnvironmentVariable("GOOGLE_API_KEY"),
+    "gemini-2.5-flash-image-preview");
+var request = new ImageGenerationRequest()
+{
+    Prompt = "Combine the two images into a single scene.",
+    OriginalImages = new[] { img1, img2 }
+};
+response = await imageGeneratorEdit.GenerateAsync(request);
+var scene = GetImageContent(response);
+SaveImage(scene, "scene.png");
+ShowImage("scene.png");
+
+response = await imageGeneratorEdit.EditImageAsync(scene, "Change the setting to a fish tank.");
+var edit = GetImageContent(response);
+SaveImage(edit, "edit.png");
+ShowImage("edit.png");
+
+DataContent GetImageContent(ImageGenerationResponse response) =>
+    response.Contents.OfType<DataContent>().Single();
+
+void SaveImage(DataContent content, string fileName) =>
+    File.WriteAllBytes(fileName, content.Data.Span);
+
+void ShowImage(string fileName)
+{
+    Process.Start(new ProcessStartInfo
+    {
+        FileName = fileName,
+        UseShellExecute = true
+    });
+}
+```
+
 ## Dependencies
 
 - [Google_GenerativeAI](https://github.com/Google_GenerativeAI) (Unofficial C# Google Generative AI SDK)  
