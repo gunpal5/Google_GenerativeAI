@@ -1,3 +1,4 @@
+using GenerativeAI.Core;
 using GenerativeAI.Types;
 using Microsoft.Extensions.AI;
 using System.Text.Json;
@@ -1078,4 +1079,26 @@ public static class MicrosoftExtensions
             return node;
         },
     });
+
+    /// <summary>
+    /// Creates a GenerativeAIEmbeddingGenerator from an API key and optional model name.
+    /// </summary>
+    /// <param name="apiKey">The API key for authenticating with Google AI.</param>
+    /// <param name="modelName">The name of the embedding model to use. Defaults to "text-embedding-004".</param>
+    /// <returns>A new instance of GenerativeAIEmbeddingGenerator.</returns>
+    public static GenerativeAIEmbeddingGenerator AsEmbeddingGenerator(this string apiKey, string modelName = "text-embedding-004")
+    {
+        return new GenerativeAIEmbeddingGenerator(apiKey, modelName);
+    }
+
+    /// <summary>
+    /// Creates a GenerativeAIEmbeddingGenerator from a platform adapter and optional model name.
+    /// </summary>
+    /// <param name="adapter">The platform adapter to use for API calls.</param>
+    /// <param name="modelName">The name of the embedding model to use. Defaults to "text-embedding-004".</param>
+    /// <returns>A new instance of GenerativeAIEmbeddingGenerator.</returns>
+    public static GenerativeAIEmbeddingGenerator AsEmbeddingGenerator(this IPlatformAdapter adapter, string modelName = "text-embedding-004")
+    {
+        return new GenerativeAIEmbeddingGenerator(adapter, modelName);
+    }
 }
