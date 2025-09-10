@@ -28,7 +28,7 @@ public sealed class GenerativeAIImageGenerator : IImageGenerator
     /// <summary>
     /// Creates a new instance using an API key and optional model name.
     /// </summary>
-    public GenerativeAIImageGenerator(string apiKey, string modelName = GoogleAIModels.Gemini2FlashPreviewImageGeneration)
+    public GenerativeAIImageGenerator(string apiKey, string modelName = GoogleAIModels.Gemini25FlashImagePreview)
     {
         model = new GenerativeModel(apiKey, modelName);
     }
@@ -36,7 +36,7 @@ public sealed class GenerativeAIImageGenerator : IImageGenerator
     /// <summary>
     /// Creates a new instance using a platform adapter and optional model name.
     /// </summary>
-    public GenerativeAIImageGenerator(IPlatformAdapter adapter, string modelName = GoogleAIModels.Gemini2FlashPreviewImageGeneration)
+    public GenerativeAIImageGenerator(IPlatformAdapter adapter, string modelName = GoogleAIModels.Gemini25FlashImagePreview)
     {
         model = new GenerativeModel(adapter, modelName);
     }
@@ -97,8 +97,9 @@ public sealed class GenerativeAIImageGenerator : IImageGenerator
 
         if (options != null)
         {
-            if (!string.IsNullOrEmpty(options.MediaType))
-                generationConfig.ResponseMimeType = options.MediaType;
+            //Gemini ResponseMimeType doesn't support images
+            // if (!string.IsNullOrEmpty(options.MediaType))
+            //     generationConfig.ResponseMimeType = options.MediaType;
 
             // Map requested image size (basic heuristic)
             if (options.ImageSize.HasValue)
