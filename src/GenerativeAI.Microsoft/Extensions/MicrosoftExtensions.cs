@@ -33,9 +33,9 @@ public static class MicrosoftExtensions
             let p = c.ToPart(options)
             where p is not null
             select p).ToArray();
-        if (systemParts.Length > 0)
+        if (systemParts.Length > 0 || !string.IsNullOrWhiteSpace(options?.Instructions))
         {
-            request.SystemInstruction = new Content(systemParts, Roles.System);
+            request.SystemInstruction = new Content(systemParts.Concat([new Part { Text = options!.Instructions }]), Roles.System);
         }
 
         request.Contents = (from m in chatMessages
@@ -45,24 +45,51 @@ public static class MicrosoftExtensions
                 where p is not null
                 select p).ToArray(), m.Role == ChatRole.Assistant ? Roles.Model : Roles.User)).ToList();
 
-        var functionDeclarations = options?.Tools?.OfType<AIFunction>().Select(f => 
-            new FunctionDeclaration()
-            {
-                Name = f.Name,
-                Description = f.Description,
-                Parameters = ParseFunctionParameters(f.JsonSchema),
-            }
-        ).ToList();
-
-        if (functionDeclarations != null && functionDeclarations.Count > 0)
+        if (options?.Tools is not null)
         {
-            request.Tools = new List<Tool>()
+            List<FunctionDeclaration>? functionDeclarations = null;
+            List<Tool>? tools = null;
+            foreach (var tool in options.Tools)
             {
-                new Tool
+                switch (tool)
+                {
+                    case AIFunctionDeclaration f:
+                        (functionDeclarations ??= []).Add(new()
+                        {
+                            Name = f.Name,
+                            Description = f.Description,
+                            Parameters = ParseFunctionParameters(f.JsonSchema),
+                        });
+                        break;
+
+                    case HostedWebSearchTool ws:
+                        (tools ??= []).Add(new Tool
+                        {
+                            GoogleSearch = new GoogleSearchTool()
+                        });
+                        break;
+
+                    case HostedCodeInterpreterTool ci:
+                        (tools ??= []).Add(new Tool
+                        {
+                            CodeExecution = new CodeExecutionTool(),
+                        });
+                        break;
+                }
+            }
+
+            if (functionDeclarations is not null)
+            {
+                (tools ??= []).Add(new Tool
                 {
                     FunctionDeclarations = functionDeclarations.ToList()
-                }
-            };
+                });
+            }
+
+            if (tools is not null)
+            {
+                request.Tools = tools;
+            }
         }
 
         return request;
@@ -564,7 +591,7 @@ public static class MicrosoftExtensions
             if (objectSchema == null && !string.IsNullOrEmpty(parameterName) && !string.IsNullOrEmpty(functionName) && options?.Tools != null)
             {
                 // Try to get the schema for this object parameter
-                var function = options.Tools.OfType<AIFunction>().FirstOrDefault(f => f.Name == functionName);
+                var function = options.Tools.OfType<AIFunctionDeclaration>().FirstOrDefault(f => f.Name == functionName);
                 if (function?.JsonSchema != null)
                 {
                     var schemaNode = JsonSerializer.SerializeToNode(function.JsonSchema);
@@ -697,7 +724,7 @@ public static class MicrosoftExtensions
             JsonNode? itemSchema = null;
             if (!string.IsNullOrEmpty(parameterName) && !string.IsNullOrEmpty(functionName) && options?.Tools != null)
             {
-                var function = options.Tools.OfType<AIFunction>().FirstOrDefault(f => f.Name == functionName);
+                var function = options.Tools.OfType<AIFunctionDeclaration>().FirstOrDefault(f => f.Name == functionName);
                 if (function?.JsonSchema != null)
                 {
                     var schemaNode = JsonSerializer.SerializeToNode(function.JsonSchema);
@@ -747,7 +774,7 @@ public static class MicrosoftExtensions
         if (!string.IsNullOrEmpty(parameterName) && !string.IsNullOrEmpty(functionName) && options?.Tools != null)
         {
             // Find the function in the tools
-            var function = options.Tools.OfType<AIFunction>().FirstOrDefault(f => f.Name == functionName);
+            var function = options.Tools.OfType<AIFunctionDeclaration>().FirstOrDefault(f => f.Name == functionName);
             if (function?.JsonSchema != null)
             {
                 // Parse the schema to check the parameter's format
