@@ -227,11 +227,29 @@ public class Microsoft_EmbeddingGenerator_Tests : TestBase
         result.Count.ShouldBeGreaterThan(0);
     }
 
+    [Fact, TestPriority(10)]
+    public async Task GenerateAsync_WithTaskTypeExtension_ShouldUseSpecifiedTaskType()
+    {
+        Assert.SkipWhen(!IsGoogleApiKeySet, GoogleTestSkipMessage);
+
+        // Arrange
+        var generator = CreateTestEmbeddingGenerator();
+        var input = new[] { "Test code for retrieval" };
+        var options = new EmbeddingGenerationOptions().WithTaskType(TaskType.CODE_RETRIEVAL_QUERY);
+
+        // Act
+        var result = await generator.GenerateAsync(input, options);
+
+        // Assert
+        result.ShouldNotBeNull();
+        result.Count.ShouldBeGreaterThan(0);
+    }
+
     #endregion
 
     #region GetService Tests
 
-    [Fact, TestPriority(10)]
+    [Fact, TestPriority(11)]
     public void GetService_WithMatchingType_ShouldReturnSelf()
     {
         // Arrange
@@ -245,7 +263,7 @@ public class Microsoft_EmbeddingGenerator_Tests : TestBase
         service.ShouldBe(generator);
     }
 
-    [Fact, TestPriority(11)]
+    [Fact, TestPriority(12)]
     public void GetService_WithNonMatchingType_ShouldReturnNull()
     {
         // Arrange
@@ -258,7 +276,7 @@ public class Microsoft_EmbeddingGenerator_Tests : TestBase
         service.ShouldBeNull();
     }
 
-    [Fact, TestPriority(12)]
+    [Fact, TestPriority(13)]
     public void GetService_WithServiceKey_ShouldReturnNull()
     {
         // Arrange
@@ -275,7 +293,7 @@ public class Microsoft_EmbeddingGenerator_Tests : TestBase
 
     #region Extension Method Tests
 
-    [Fact, TestPriority(13)]
+    [Fact, TestPriority(14)]
     public void AsEmbeddingGenerator_WithApiKey_ShouldCreateGenerator()
     {
         // Arrange
@@ -289,7 +307,7 @@ public class Microsoft_EmbeddingGenerator_Tests : TestBase
         generator.Model.Model.ShouldBe("text-embedding-004");
     }
 
-    [Fact, TestPriority(14)]
+    [Fact, TestPriority(15)]
     public void AsEmbeddingGenerator_WithApiKeyAndModel_ShouldCreateGeneratorWithSpecifiedModel()
     {
         // Arrange
@@ -304,7 +322,7 @@ public class Microsoft_EmbeddingGenerator_Tests : TestBase
         generator.Model.Model.ShouldBe(modelName);
     }
 
-    [Fact, TestPriority(15)]
+    [Fact, TestPriority(16)]
     public void AsEmbeddingGenerator_WithPlatformAdapter_ShouldCreateGenerator()
     {
         Assert.SkipWhen(!IsGoogleApiKeySet, GoogleTestSkipMessage);
@@ -320,7 +338,7 @@ public class Microsoft_EmbeddingGenerator_Tests : TestBase
         generator.Model.Model.ShouldBe("text-embedding-004");
     }
 
-    [Fact, TestPriority(16)]
+    [Fact, TestPriority(17)]
     public void AsEmbeddingGenerator_WithPlatformAdapterAndModel_ShouldCreateGeneratorWithSpecifiedModel()
     {
         Assert.SkipWhen(!IsGoogleApiKeySet, GoogleTestSkipMessage);
@@ -337,11 +355,26 @@ public class Microsoft_EmbeddingGenerator_Tests : TestBase
         generator.Model.Model.ShouldBe(modelName);
     }
 
+    [Fact, TestPriority(18)]
+    public void WithTaskType_ShouldSetTaskTypeInOptions()
+    {
+        // Arrange
+        var options = new EmbeddingGenerationOptions();
+
+        // Act
+        var result = options.WithTaskType(TaskType.CODE_RETRIEVAL_QUERY);
+
+        // Assert
+        result.ShouldNotBeNull();
+        result.AdditionalProperties.ShouldNotBeNull();
+        result.AdditionalProperties["TaskType"].ShouldBe(TaskType.CODE_RETRIEVAL_QUERY);
+    }
+
     #endregion
 
     #region Dispose Tests
 
-    [Fact, TestPriority(17)]
+    [Fact, TestPriority(19)]
     public void Dispose_ShouldNotThrow()
     {
         // Arrange
@@ -351,7 +384,7 @@ public class Microsoft_EmbeddingGenerator_Tests : TestBase
         Should.NotThrow(() => generator.Dispose());
     }
 
-    [Fact, TestPriority(18)]
+    [Fact, TestPriority(20)]
     public void Dispose_MultipleCalls_ShouldNotThrow()
     {
         // Arrange
@@ -369,7 +402,7 @@ public class Microsoft_EmbeddingGenerator_Tests : TestBase
 
     #region Error Handling Tests
 
-    [Fact, TestPriority(19)]
+    [Fact, TestPriority(21)]
     public async Task GenerateAsync_WithInvalidApiKey_ShouldThrowGenerativeAIException()
     {
         // Arrange
@@ -381,13 +414,13 @@ public class Microsoft_EmbeddingGenerator_Tests : TestBase
             await generator.GenerateAsync(input));
     }
 
-    
+
 
     #endregion
 
     #region Model Support Tests
 
-    [Theory, TestPriority(21)]
+    [Theory, TestPriority(22)]
     [InlineData("text-embedding-004")]
     [InlineData("text-multilingual-embedding-002")]
     [InlineData("textembedding-gecko")]
@@ -406,7 +439,7 @@ public class Microsoft_EmbeddingGenerator_Tests : TestBase
 
     #region Batch Embedding Tests
 
-    [Fact, TestPriority(22)]
+    [Fact, TestPriority(23)]
     public async Task GenerateAsync_WithMultipleInputs_ShouldProcessAsBatch()
     {
         Assert.SkipWhen(!IsGoogleApiKeySet, GoogleTestSkipMessage);
@@ -432,7 +465,7 @@ public class Microsoft_EmbeddingGenerator_Tests : TestBase
 
     #region Usage Tracking Tests
 
-    [Fact, TestPriority(23)]
+    [Fact, TestPriority(24)]
     public async Task GenerateAsync_ShouldIncludeUsageDetails()
     {
         Assert.SkipWhen(!IsGoogleApiKeySet, GoogleTestSkipMessage);
