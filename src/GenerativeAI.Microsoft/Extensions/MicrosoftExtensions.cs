@@ -1128,4 +1128,17 @@ public static class MicrosoftExtensions
     {
         return new GenerativeAIEmbeddingGenerator(adapter, modelName);
     }
+
+    /// <summary>
+    /// Sets the task type for embedding generation.
+    /// </summary>
+    /// <param name="options">The embedding generation options to modify.</param>
+    /// <param name="taskType">The task type for which the embedding will be optimized.</param>
+    /// <returns>The modified embedding generation options.</returns>
+    public static EmbeddingGenerationOptions WithTaskType(this EmbeddingGenerationOptions options, TaskType taskType)
+    {
+        options.AdditionalProperties ??= new AdditionalPropertiesDictionary();
+        options.AdditionalProperties["TaskType"] = taskType;
+        return options;
+    }
 }
