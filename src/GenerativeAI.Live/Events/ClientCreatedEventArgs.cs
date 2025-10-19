@@ -8,9 +8,9 @@ namespace GenerativeAI.Live;
 public class ClientCreatedEventArgs : EventArgs
 {
     /// <summary>
-    /// Gets or sets the transcription of the output audio.
+    /// Gets the newly-created WebSocket client instance.
     /// </summary>
-    public IWebsocketClient Client { get; set; }
+    public IWebsocketClient Client { get; }
 
     /// <summary>
     /// Initializes a new instance of the ClientCreatedEventArgs class.
