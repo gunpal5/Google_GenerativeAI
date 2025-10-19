@@ -123,10 +123,11 @@ public static partial class MultiModalLiveClientLoggingExtensions
     public static partial void LogFunctionCall(this ILogger logger, string functionName);
 
     /// <summary>
-    /// Logs an error message indicating that the WebSocket connection was closed due to an invalid payload.
+    /// Logs an error message indicating that the WebSocket connection was closed with a status code and description.
     /// </summary>
     /// <param name="logger">The logger to log the message to.</param>
+    /// <param name="closeStatus">Indicates the reason why the remote endpoint initiated the close handshake.</param>
     /// <param name="closeStatusDescription">The description of the close status that caused the connection to close.</param>
-    [LoggerMessage(EventId = 113, Level = LogLevel.Error, Message = "WebSocket connection closed caused by invalid payload: {CloseStatusDescription}")]
-    public static partial void LogConnectionClosedWithInvalidPyload(this ILogger logger, string closeStatusDescription);
+    [LoggerMessage(EventId = 114, Level = LogLevel.Error, Message = "WebSocket connection closed with status {CloseStatus}: {CloseStatusDescription}")]
+    public static partial void LogConnectionClosedWithStatus(this ILogger logger, WebSocketCloseStatus? closeStatus, string closeStatusDescription);
 }
