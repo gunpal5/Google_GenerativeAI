@@ -551,26 +551,25 @@ public class MultiModalLiveClient : IDisposable
 
         _client.DisconnectionHappened.Subscribe(info =>
         {
-            if (info.Type == DisconnectionType.Error)
+            if (info.Exception is not null)
             {
                 _logger?.LogConnectionClosedWithError(info.Type, info.Exception!);
-                ErrorOccurred?.Invoke(this, new ErrorEventArgs(info.Exception!)); 
+                ErrorOccurred?.Invoke(this, new ErrorEventArgs(info.Exception!));
             }
-            else if (info.CloseStatus == WebSocketCloseStatus.InvalidPayloadData)
-            {
-                //log info.CloseStatusDescription
-                _logger?.LogConnectionClosedWithInvalidPyload(info.CloseStatusDescription!);
-            }
-            else if (info.CloseStatus == WebSocketCloseStatus.InternalServerError && !string.IsNullOrEmpty(info.CloseStatusDescription))
-            {
-                _logger?.LogConnectionClosedWithError(info.Type, info.Exception!);
-                Disconnected?.Invoke(this, new ErrorMessageEventArgs(info.CloseStatusDescription));
+
+            if (!string.IsNullOrEmpty(info.CloseStatusDescription))
+            { 
+                _logger?.LogConnectionClosedWithStatus(info.CloseStatus, info.CloseStatusDescription);
             }
             else
             {
                 _logger?.LogConnectionClosed();
-                Disconnected?.Invoke(this, EventArgs.Empty);
             }
+
+            var eventArgs = !string.IsNullOrEmpty(info.CloseStatusDescription) ?
+                new ErrorMessageEventArgs(info.CloseStatusDescription) :
+                EventArgs.Empty;
+            Disconnected?.Invoke(this, eventArgs);
         });
 
         try
