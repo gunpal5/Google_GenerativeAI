@@ -158,6 +158,11 @@ public class MultiModalLiveClient : IDisposable
     #region Events
 #pragma warning disable CA1003
     /// <summary>
+    /// Event triggered after the client is created, but before a connection is attempted.
+    /// </summary>
+    public event EventHandler<ClientCreatedEventArgs>? ClientCreated;
+
+    /// <summary>
     /// Event triggered when an audio chunk is received.
     /// </summary>
     public event EventHandler<AudioBufferReceivedEventArgs>? AudioChunkReceived;
@@ -532,6 +537,8 @@ public class MultiModalLiveClient : IDisposable
         var socketClient = await GetClient().ConfigureAwait(false);
         _client = socketClient.WithReconnect(url); // Use the factory and an extension method for clarity
 #pragma warning restore CA2000
+
+        ClientCreated?.Invoke(this, new ClientCreatedEventArgs(_client));
 
         _client.ReconnectionHappened.Subscribe(info =>
         {
