@@ -35,7 +35,11 @@ public static class MicrosoftExtensions
             select p).ToArray();
         if (systemParts.Length > 0 || !string.IsNullOrWhiteSpace(options?.Instructions))
         {
-            request.SystemInstruction = new Content(systemParts.Concat([new Part { Text = options!.Instructions }]), Roles.System);
+            // Only add instructions part if it's not null or empty to avoid creating empty parts
+            var allSystemParts = !string.IsNullOrWhiteSpace(options?.Instructions)
+                ? systemParts.Concat([new Part { Text = options!.Instructions }])
+                : systemParts;
+            request.SystemInstruction = new Content(allSystemParts, Roles.System);
         }
 
         request.Contents = (from m in chatMessages

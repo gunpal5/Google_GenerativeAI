@@ -6,9 +6,16 @@ namespace GenerativeAI.Types;
 /// Raw media bytes.
 /// Text should not be sent as raw bytes, use the 'text' field.
 /// </summary>
-/// <seealso href="https://ai.google.dev/api/caching#Blob">See Official API Documentation</seealso> 
+/// <seealso href="https://ai.google.dev/api/caching#Blob">See Official API Documentation</seealso>
 public class Blob
 {
+    /// <summary>
+    /// Optional. Display name of the blob. Used to provide a label or filename to distinguish blobs.
+    /// This field is not currently used in the Gemini GenerateContent calls.
+    /// </summary>
+    [JsonPropertyName("displayName")]
+    public string? DisplayName { get; set; }
+
     /// <summary>
     /// The IANA standard MIME type of the source data. Examples:
     /// - image/png

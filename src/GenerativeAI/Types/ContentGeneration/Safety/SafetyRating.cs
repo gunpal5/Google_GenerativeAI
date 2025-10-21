@@ -28,4 +28,30 @@ public class SafetyRating
     /// </summary>
     [JsonPropertyName("blocked")]
     public bool Blocked { get; set; }
+
+    /// <summary>
+    /// Output only. The overwritten threshold for the safety category of Gemini 2.0 image out.
+    /// If minors are detected in the output image, the threshold of each safety category will be
+    /// overwritten if user sets a lower threshold.
+    /// </summary>
+    [JsonPropertyName("overwrittenThreshold")]
+    public HarmBlockThreshold? OverwrittenThreshold { get; set; }
+
+    /// <summary>
+    /// Output only. Harm probability score.
+    /// </summary>
+    [JsonPropertyName("probabilityScore")]
+    public float? ProbabilityScore { get; set; }
+
+    /// <summary>
+    /// Output only. Harm severity levels in the content.
+    /// </summary>
+    [JsonPropertyName("severity")]
+    public HarmSeverity? Severity { get; set; }
+
+    /// <summary>
+    /// Output only. Harm severity score.
+    /// </summary>
+    [JsonPropertyName("severityScore")]
+    public float? SeverityScore { get; set; }
 }

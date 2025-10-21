@@ -37,4 +37,18 @@ public class GroundingMetadata
     /// </summary>
     [JsonPropertyName("retrievalMetadata")]
     public RetrievalMetadata? RetrievalMetadata { get; set; }
+
+    /// <summary>
+    /// Optional. Output only. Resource name of the Google Maps widget context token to be used with
+    /// the PlacesContextElement widget to render contextual data.
+    /// This is populated only for Google Maps grounding.
+    /// </summary>
+    [JsonPropertyName("googleMapsWidgetContextToken")]
+    public string? GoogleMapsWidgetContextToken { get; set; }
+
+    /// <summary>
+    /// Optional. Queries executed by the retrieval tools.
+    /// </summary>
+    [JsonPropertyName("retrievalQueries")]
+    public List<string>? RetrievalQueries { get; set; }
 }

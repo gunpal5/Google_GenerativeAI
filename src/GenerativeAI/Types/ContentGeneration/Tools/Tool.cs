@@ -45,6 +45,29 @@ public class Tool
     /// </summary>
     [JsonPropertyName("retrieval")]
     public VertexRetrievalTool? Retrieval { get; set; }
-    
+
+    /// <summary>
+    /// Optional. Tool to search public web data, powered by Vertex AI Search and Sec4 compliance.
+    /// </summary>
+    [JsonPropertyName("enterpriseWebSearch")]
+    public EnterpriseWebSearch? EnterpriseWebSearch { get; set; }
+
+    /// <summary>
+    /// Optional. Tool to support Google Maps in Model.
+    /// </summary>
+    [JsonPropertyName("googleMaps")]
+    public GoogleMaps? GoogleMaps { get; set; }
+
+    /// <summary>
+    /// Optional. Tool to support URL context retrieval.
+    /// </summary>
+    [JsonPropertyName("urlContext")]
+    public UrlContext? UrlContext { get; set; }
+
+    /// <summary>
+    /// Optional. Tool to support computer use.
+    /// </summary>
+    [JsonPropertyName("computerUse")]
+    public ComputerUse? ComputerUse { get; set; }
 }
 

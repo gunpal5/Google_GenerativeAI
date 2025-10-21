@@ -81,4 +81,34 @@ public class GenerateVideosConfig
     /// </summary>
     [JsonPropertyName("enhancePrompt")]
     public bool? EnhancePrompt { get; set; }
+
+    /// <summary>
+    /// Optional. Whether to generate audio for the video.
+    /// </summary>
+    [JsonPropertyName("generateAudio")]
+    public bool? GenerateAudio { get; set; }
+
+    /// <summary>
+    /// Optional. The last frame image to use for video generation.
+    /// </summary>
+    [JsonPropertyName("lastFrame")]
+    public ImageSample? LastFrame { get; set; }
+
+    /// <summary>
+    /// Optional. Reference images for video generation.
+    /// </summary>
+    [JsonPropertyName("referenceImages")]
+    public List<VideoGenerationReferenceImage>? ReferenceImages { get; set; }
+
+    /// <summary>
+    /// Optional. Mask for video generation.
+    /// </summary>
+    [JsonPropertyName("mask")]
+    public VideoGenerationMask? Mask { get; set; }
+
+    /// <summary>
+    /// Optional. Compression quality of the generated videos.
+    /// </summary>
+    [JsonPropertyName("compressionQuality")]
+    public VideoCompressionQuality? CompressionQuality { get; set; }
 }

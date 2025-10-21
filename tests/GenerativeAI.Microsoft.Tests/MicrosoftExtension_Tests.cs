@@ -311,4 +311,147 @@ public class MicrosoftExtension_Tests
     }
 
     #endregion
+
+    #region ToGenerateContentRequest
+
+    [Fact]
+    public void ToGenerateContentRequest_WithSystemMessagesAndNullInstructions_ShouldNotCreateEmptyParts()
+    {
+        // Arrange
+        var chatMessages = new List<ChatMessage>
+        {
+            new ChatMessage(ChatRole.System, "You are a helpful assistant."),
+            new ChatMessage(ChatRole.User, "Hello, how are you?")
+        };
+
+        var options = new ChatOptions
+        {
+            Instructions = null // This was causing the bug
+        };
+
+        // Act
+        var request = chatMessages.ToGenerateContentRequest(options);
+
+        // Assert
+        request.ShouldNotBeNull();
+        request.SystemInstruction.ShouldNotBeNull();
+        request.SystemInstruction.Parts.ShouldNotBeNull();
+        request.SystemInstruction.Parts.Count.ShouldBe(1);
+
+        // Verify that all parts have at least one data field initialized (no empty parts)
+        foreach (var part in request.SystemInstruction.Parts)
+        {
+            var hasData = part.Text != null ||
+                         part.InlineData != null ||
+                         part.FunctionCall != null ||
+                         part.FunctionResponse != null ||
+                         part.FileData != null ||
+                         part.ExecutableCode != null ||
+                         part.CodeExecutionResult != null ||
+                         part.VideoMetadata != null;
+
+            hasData.ShouldBeTrue("Each part should have at least one data field initialized");
+        }
+
+        request.SystemInstruction.Parts[0].Text.ShouldBe("You are a helpful assistant.");
+    }
+
+    [Fact]
+    public void ToGenerateContentRequest_WithSystemMessagesAndEmptyInstructions_ShouldNotCreateEmptyParts()
+    {
+        // Arrange
+        var chatMessages = new List<ChatMessage>
+        {
+            new ChatMessage(ChatRole.System, "You are a helpful assistant."),
+            new ChatMessage(ChatRole.User, "Hello!")
+        };
+
+        var options = new ChatOptions
+        {
+            Instructions = "" // Empty string should also not create empty parts
+        };
+
+        // Act
+        var request = chatMessages.ToGenerateContentRequest(options);
+
+        // Assert
+        request.ShouldNotBeNull();
+        request.SystemInstruction.ShouldNotBeNull();
+        request.SystemInstruction.Parts.Count.ShouldBe(1);
+        request.SystemInstruction.Parts[0].Text.ShouldBe("You are a helpful assistant.");
+    }
+
+    [Fact]
+    public void ToGenerateContentRequest_WithSystemMessagesAndValidInstructions_ShouldIncludeBoth()
+    {
+        // Arrange
+        var chatMessages = new List<ChatMessage>
+        {
+            new ChatMessage(ChatRole.System, "You are a helpful assistant."),
+            new ChatMessage(ChatRole.User, "Hello!")
+        };
+
+        var options = new ChatOptions
+        {
+            Instructions = "Additional instructions here."
+        };
+
+        // Act
+        var request = chatMessages.ToGenerateContentRequest(options);
+
+        // Assert
+        request.ShouldNotBeNull();
+        request.SystemInstruction.ShouldNotBeNull();
+        request.SystemInstruction.Parts.Count.ShouldBe(2);
+        request.SystemInstruction.Parts[0].Text.ShouldBe("You are a helpful assistant.");
+        request.SystemInstruction.Parts[1].Text.ShouldBe("Additional instructions here.");
+    }
+
+    [Fact]
+    public void ToGenerateContentRequest_WithNoSystemMessagesButValidInstructions_ShouldCreateSystemInstruction()
+    {
+        // Arrange
+        var chatMessages = new List<ChatMessage>
+        {
+            new ChatMessage(ChatRole.User, "Hello!")
+        };
+
+        var options = new ChatOptions
+        {
+            Instructions = "Be concise in your responses."
+        };
+
+        // Act
+        var request = chatMessages.ToGenerateContentRequest(options);
+
+        // Assert
+        request.ShouldNotBeNull();
+        request.SystemInstruction.ShouldNotBeNull();
+        request.SystemInstruction.Parts.Count.ShouldBe(1);
+        request.SystemInstruction.Parts[0].Text.ShouldBe("Be concise in your responses.");
+    }
+
+    [Fact]
+    public void ToGenerateContentRequest_WithNoSystemMessagesAndNullInstructions_ShouldNotCreateSystemInstruction()
+    {
+        // Arrange
+        var chatMessages = new List<ChatMessage>
+        {
+            new ChatMessage(ChatRole.User, "Hello!")
+        };
+
+        var options = new ChatOptions
+        {
+            Instructions = null
+        };
+
+        // Act
+        var request = chatMessages.ToGenerateContentRequest(options);
+
+        // Assert
+        request.ShouldNotBeNull();
+        request.SystemInstruction.ShouldBeNull();
+    }
+
+    #endregion
 }

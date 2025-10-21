@@ -86,6 +86,13 @@ public class Part
     /// </summary>
     [JsonPropertyName("thought")]
     public bool? Thought { get; set; }
+
+    /// <summary>
+    /// An opaque signature for the thought so it can be reused in subsequent requests.
+    /// A base64-encoded string.
+    /// </summary>
+    [JsonPropertyName("thoughtSignature")]
+    public string? ThoughtSignature { get; set; }
 }
 
  /// <summary>
