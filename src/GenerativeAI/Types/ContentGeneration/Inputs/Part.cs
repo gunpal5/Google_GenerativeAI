@@ -95,121 +95,30 @@ public class Part
     public string? ThoughtSignature { get; set; }
 }
 
- /// <summary>
-    /// Metadata describes the input video content.
+/// <summary>
+/// Metadata describes the input video content.
+/// Describes how the video in the Part should be used by the model.
+/// </summary>
+public class VideoMetadataResult
+{
+    /// <summary>
+    /// Optional. The frame rate of the video sent to the model.
+    /// If not specified, the default value will be 1.0. The fps range is (0.0, 24.0].
     /// </summary>
-    public class VideoMetadataResult
-    {
-        /// <summary>
-        /// Optional. The end offset of the video.
-        /// </summary>
-        [JsonPropertyName("endOffset")]
-        public string? EndOffset { get; set; }
+    [JsonPropertyName("fps")]
+    public float? Fps { get; set; }
 
-        /// <summary>
-        /// Optional. The start offset of the video.
-        /// </summary>
-        [JsonPropertyName("anyOf")]
-        public List<Schema>? AnyOf { get; set; }
+    /// <summary>
+    /// Optional. The start offset of the video.
+    /// </summary>
+    [JsonPropertyName("startOffset")]
+    public string? StartOffset { get; set; }
 
-        /// <summary>
-        /// Optional. The description of the data.
-        /// </summary>
-        [JsonPropertyName("description")]
-        public string? Description { get; set; }
-
-        /// <summary>
-        /// Optional. Possible values of the element of primitive type with enum format.
-        /// </summary>
-        [JsonPropertyName("enum")]
-        public List<string>? Enum { get; set; }
-
-        /// <summary>
-        /// Optional. The format of the data.
-        /// </summary>
-        [JsonPropertyName("format")]
-        public string? Format { get; set; }
-
-        /// <summary>
-        /// Optional. Schema of the elements of Type.ARRAY.
-        /// </summary>
-        [JsonPropertyName("items")]
-        public Schema? Items { get; set; }
-
-        /// <summary>
-        /// Optional. Maximum number of the elements for Type.ARRAY.
-        /// </summary>
-        [JsonPropertyName("maxItems")]
-        public int? MaxItems { get; set; }
-
-        /// <summary>
-        /// Optional. Maximum value of the Type.INTEGER and Type.NUMBER
-        /// </summary>
-        [JsonPropertyName("maximum")]
-        public float? Maximum { get; set; }
-
-        /// <summary>
-        /// Optional. Minimum number of the elements for Type.ARRAY.
-        /// </summary>
-        [JsonPropertyName("minItems")]
-        public int? MinItems { get; set; }
-
-        /// <summary>
-        /// Optional. Minimum value of the Type.INTEGER and Type.NUMBER
-        /// </summary>
-        [JsonPropertyName("minimum")]
-        public float? Minimum { get; set; }
-
-        /// <summary>
-        /// Optional. Indicates if the value may be null.
-        /// </summary>
-        [JsonPropertyName("nullable")]
-        public bool? Nullable { get; set; }
-
-        /// <summary>
-        /// Optional. Properties of Type.OBJECT.
-        /// </summary>
-        [JsonPropertyName("properties")]
-        public Dictionary<string, Schema>? Properties { get; set; }
-
-        /// <summary>
-        /// Optional. The order of the properties.
-        /// </summary>
-        [JsonPropertyName("propertyOrdering")]
-        public List<string>? PropertyOrdering { get; set; }
-
-        /// <summary>
-        /// Optional. Required properties of Type.OBJECT.
-        /// </summary>
-        [JsonPropertyName("required")]
-        public List<string>? Required { get; set; }
-
-        /// <summary>
-        /// Optional. The title of the Schema.
-        /// </summary>
-        [JsonPropertyName("title")]
-        public string? Title { get; set; }
-       
-
-        /// <summary>
-        /// Instructions for the model to steer it toward better performance.
-        /// </summary>
-        [JsonPropertyName("systemInstruction")]
-        public object? SystemInstruction { get; set; }
-
-        /// <summary>
-        /// Code that enables the system to interact with external systems to
-        /// perform an action outside of the knowledge and scope of the model.
-        /// </summary>
-        [JsonPropertyName("tools")]
-        public List<Tool>? Tools { get; set; }
-
-        /// <summary>
-        /// Configuration that the model uses to generate the response. Not
-        /// supported by the Gemini Developer API.
-        /// </summary>
-        [JsonPropertyName("generationConfig")]
-        public GenerationConfig? GenerationConfig { get; set; }
-    }
+    /// <summary>
+    /// Optional. The end offset of the video.
+    /// </summary>
+    [JsonPropertyName("endOffset")]
+    public string? EndOffset { get; set; }
+}
     
    

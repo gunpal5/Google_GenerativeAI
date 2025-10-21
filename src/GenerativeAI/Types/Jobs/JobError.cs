@@ -1,0 +1,29 @@
+using System.Text.Json.Serialization;
+
+namespace GenerativeAI.Types;
+
+/// <summary>
+/// Represents an error that occurred during job execution.
+/// </summary>
+public class JobError
+{
+    /// <summary>
+    /// The status code, which should be an enum value of google.rpc.Code.
+    /// </summary>
+    [JsonPropertyName("code")]
+    public int? Code { get; set; }
+
+    /// <summary>
+    /// A developer-facing error message, which should be in English.
+    /// Any user-facing error message should be localized and sent in the details field.
+    /// </summary>
+    [JsonPropertyName("message")]
+    public string? Message { get; set; }
+
+    /// <summary>
+    /// A list of messages that carry the error details.
+    /// There is a common set of message types for APIs to use.
+    /// </summary>
+    [JsonPropertyName("details")]
+    public List<string>? Details { get; set; }
+}

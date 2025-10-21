@@ -35,4 +35,13 @@ public class VertexRagStore
     /// </summary>
     [JsonPropertyName("vectorDistanceThreshold")]
     public float? VectorDistanceThreshold { get; set; }
+
+    /// <summary>
+    /// Optional. Currently only supported for Gemini Multimodal Live API.
+    /// If storeContext is specified, Gemini will leverage it to automatically memorize the interactions
+    /// between the client and Gemini, and retrieve context when needed to augment the response generation
+    /// for users' ongoing and future interactions.
+    /// </summary>
+    [JsonPropertyName("storeContext")]
+    public bool? StoreContext { get; set; }
 }

@@ -11,7 +11,7 @@ namespace GenerativeAI.Types
         /// <summary>
         /// Citations to sources for a specific response.
         /// </summary>
-        [JsonPropertyName("citationSources")]
+        [JsonPropertyName("citations")]
         public List<CitationSource>? CitationSources { get; set; }
     }
 }

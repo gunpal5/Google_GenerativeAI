@@ -19,4 +19,10 @@ public class Web
     /// </summary>
     [JsonPropertyName("title")]
     public string? Title { get; set; }
+
+    /// <summary>
+    /// Domain of the (original) URI.
+    /// </summary>
+    [JsonPropertyName("domain")]
+    public string? Domain { get; set; }
 }

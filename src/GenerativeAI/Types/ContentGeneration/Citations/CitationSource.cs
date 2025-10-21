@@ -33,5 +33,17 @@ namespace GenerativeAI.Types
         /// </summary>
         [JsonPropertyName("license")]
         public string? License { get; set; }
+
+        /// <summary>
+        /// Optional. Title of the attribution.
+        /// </summary>
+        [JsonPropertyName("title")]
+        public string? Title { get; set; }
+
+        /// <summary>
+        /// Optional. Publication date of the attribution.
+        /// </summary>
+        [JsonPropertyName("publicationDate")]
+        public GoogleTypeDate? PublicationDate { get; set; }
     }
 }

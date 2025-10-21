@@ -11,7 +11,7 @@ public class RagChunk
     /// If populated, represents where the chunk starts and ends in the document.
     /// </summary>
     [JsonPropertyName("pageSpan")]
-    public object? PageSpan { get; set; }
+    public RagChunkPageSpan? PageSpan { get; set; }
 
     /// <summary>
     /// The content of the chunk.

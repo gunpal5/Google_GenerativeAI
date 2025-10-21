@@ -51,4 +51,11 @@ public class GroundingMetadata
     /// </summary>
     [JsonPropertyName("retrievalQueries")]
     public List<string>? RetrievalQueries { get; set; }
+
+    /// <summary>
+    /// Optional. Output only. List of source flagging uris.
+    /// This is currently populated only for Google Maps grounding.
+    /// </summary>
+    [JsonPropertyName("sourceFlaggingUris")]
+    public List<GroundingMetadataSourceFlaggingUri>? SourceFlaggingUris { get; set; }
 }

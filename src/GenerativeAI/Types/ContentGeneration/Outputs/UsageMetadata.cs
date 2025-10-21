@@ -28,6 +28,13 @@ public class UsageMetadata
     public int CandidatesTokenCount { get; set; }
 
     /// <summary>
+    /// Output only. Total number of tokens across all the generated response candidates.
+    /// This is an alias for <see cref="CandidatesTokenCount"/> used in newer API versions.
+    /// </summary>
+    [JsonPropertyName("responseTokenCount")]
+    public int? ResponseTokenCount { get; set; }
+
+    /// <summary>
     /// Output only. Number of tokens present in tool-use prompt(s).
     /// </summary>
     [JsonPropertyName("toolUsePromptTokenCount")]
@@ -62,6 +69,13 @@ public class UsageMetadata
     /// </summary>
     [JsonPropertyName("candidatesTokensDetails")]
     public List<ModalityTokenCount>? CandidatesTokensDetails { get; set; }
+
+    /// <summary>
+    /// Output only. List of modalities that were returned in the response.
+    /// This is an alias for <see cref="CandidatesTokensDetails"/> used in newer API versions.
+    /// </summary>
+    [JsonPropertyName("responseTokensDetails")]
+    public List<ModalityTokenCount>? ResponseTokensDetails { get; set; }
 
     /// <summary>
     /// Output only. List of modalities that were processed for tool-use request inputs.
