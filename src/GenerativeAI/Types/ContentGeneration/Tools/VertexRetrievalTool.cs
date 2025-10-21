@@ -23,5 +23,11 @@ public class VertexRetrievalTool
     /// Set to use data source powered by Vertex RAG store. User data is uploaded via the VertexRagDataService.
     /// </summary>
     [JsonPropertyName("vertexRagStore")]
-    public VertexRagStore? VertexRagStore { get; set; } 
+    public VertexRagStore? VertexRagStore { get; set; }
+
+    /// <summary>
+    /// Retrieve from data source powered by external API for grounding.
+    /// </summary>
+    [JsonPropertyName("externalApi")]
+    public ExternalApi? ExternalApi { get; set; }
 }

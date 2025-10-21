@@ -15,6 +15,12 @@ public class PromptFeedback
     public BlockReason? BlockReason { get; set; }
 
     /// <summary>
+    /// Optional. A readable block reason message.
+    /// </summary>
+    [JsonPropertyName("blockReasonMessage")]
+    public string? BlockReasonMessage { get; set; }
+
+    /// <summary>
     /// Ratings for safety of the prompt. There is at most one rating per category.
     /// </summary>
     [JsonPropertyName("safetyRatings")]

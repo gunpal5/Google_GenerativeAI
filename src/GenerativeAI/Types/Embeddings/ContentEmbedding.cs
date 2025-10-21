@@ -13,4 +13,10 @@ public class ContentEmbedding
     /// </summary>
     [JsonPropertyName("values")]
     public List<float>? Values { get; set; }
+
+    /// <summary>
+    /// Statistics of the input text associated with the result of content embedding.
+    /// </summary>
+    [JsonPropertyName("statistics")]
+    public ContentEmbeddingStatistics? Statistics { get; set; }
 }

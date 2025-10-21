@@ -13,4 +13,10 @@ public class ToolConfig
     /// </summary>
     [JsonPropertyName("functionCallingConfig")]
     public FunctionCallingConfig? FunctionCallingConfig { get; set; }
+
+    /// <summary>
+    /// Optional. Retrieval config for tool configuration.
+    /// </summary>
+    [JsonPropertyName("retrievalConfig")]
+    public RetrievalConfig? RetrievalConfig { get; set; }
 }

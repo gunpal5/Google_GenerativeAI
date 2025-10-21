@@ -93,4 +93,14 @@ public class CachedContent
     /// </summary>
     [JsonPropertyName("toolConfig")]
     public ToolConfig? ToolConfig { get; set; }
+
+    /// <summary>
+    /// Optional. The Cloud KMS resource identifier of the customer managed encryption key used to protect a resource.
+    /// The key needs to be in the same region as where the compute resource is created.
+    /// If this is set, then all created CachedContent objects will be encrypted with the provided encryption key.
+    /// Allowed formats: projects/{project}/locations/{location}/keyRings/{key_ring}/cryptoKeys/{crypto_key}
+    /// </summary>
+    /// <seealso href="https://cloud.google.com/vertex-ai/docs/general/cmek">Customer-Managed Encryption Keys Documentation</seealso>
+    [JsonPropertyName("kmsKeyName")]
+    public string? KmsKeyName { get; set; }
 }

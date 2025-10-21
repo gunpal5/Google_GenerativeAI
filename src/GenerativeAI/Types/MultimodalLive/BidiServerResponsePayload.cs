@@ -42,4 +42,10 @@ public class BidiResponsePayload
     /// </summary>
     [JsonPropertyName("sessionResumptionUpdate")]
     public LiveServerSessionResumptionUpdate? SessionResumptionUpdate { get; set; }
+
+    /// <summary>
+    /// Gets or sets metadata about token usage for the current session.
+    /// </summary>
+    [JsonPropertyName("usageMetadata")]
+    public UsageMetadata? UsageMetadata { get; set; }
 }

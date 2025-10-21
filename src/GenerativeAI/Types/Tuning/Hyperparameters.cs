@@ -38,5 +38,11 @@ namespace GenerativeAI.Types
         /// </summary>
         [JsonPropertyName("batchSize")]
         public int? BatchSize { get; set; }
+
+        /// <summary>
+        /// Optional. Adapter size for tuning.
+        /// </summary>
+        [JsonPropertyName("adapterSize")]
+        public AdapterSize? AdapterSize { get; set; }
     }
 }

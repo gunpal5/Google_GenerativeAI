@@ -47,6 +47,19 @@ public class GenerateContentResponse
     public string? ModelVersion { get; set; }
 
     /// <summary>
+    /// Output only. Creation time of the response.
+    /// Uses RFC 3339, where generated output will always be Z-normalized and uses 0, 3, 6 or 9 fractional digits.
+    /// </summary>
+    [JsonPropertyName("createTime")]
+    public Timestamp? CreateTime { get; set; }
+
+    /// <summary>
+    /// Output only. A unique identifier for the response.
+    /// </summary>
+    [JsonPropertyName("responseId")]
+    public string? ResponseId { get; set; }
+
+    /// <summary>
     /// Converts the GenerateContentResponse instance to its string representation.
     /// </summary>
     /// <returns>A formatted string displaying the properties of the object.</returns>

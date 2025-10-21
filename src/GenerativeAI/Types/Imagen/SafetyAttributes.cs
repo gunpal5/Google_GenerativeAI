@@ -17,4 +17,10 @@ public class SafetyAttributes
     /// </summary>
     [System.Text.Json.Serialization.JsonPropertyName("scores")]
     public List<double>? Scores { get; set; }
+
+    /// <summary>
+    /// Gets or sets the content type being evaluated.
+    /// </summary>
+    [System.Text.Json.Serialization.JsonPropertyName("contentType")]
+    public string? ContentType { get; set; }
 }

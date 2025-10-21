@@ -55,6 +55,18 @@ public class BidiGenerateContentServerContent
     /// </summary>
     [JsonPropertyName("urlContextMetadata")]
     public UrlContextMetadata? UrlContextMetadata { get; set; }
+
+    /// <summary>
+    /// Output only. The reason why the turn is complete.
+    /// </summary>
+    [JsonPropertyName("turnCompleteReason")]
+    public TurnCompleteReason? TurnCompleteReason { get; set; }
+
+    /// <summary>
+    /// Output only. If true, indicates that the model is waiting for additional input from the user.
+    /// </summary>
+    [JsonPropertyName("waitingForInput")]
+    public bool? WaitingForInput { get; set; }
 }
 
 /// <summary>

@@ -68,4 +68,10 @@ public class UsageMetadata
     /// </summary>
     [JsonPropertyName("toolUsePromptTokensDetails")]
     public List<ModalityTokenCount>? ToolUsePromptTokensDetails { get; set; }
+
+    /// <summary>
+    /// Output only. Traffic type. This shows whether a request consumes Pay-As-You-Go or Provisioned Throughput quota.
+    /// </summary>
+    [JsonPropertyName("trafficType")]
+    public TrafficType? TrafficType { get; set; }
 }
