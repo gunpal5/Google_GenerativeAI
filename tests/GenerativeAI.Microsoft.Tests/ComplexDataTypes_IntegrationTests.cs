@@ -77,7 +77,7 @@ namespace GenerativeAI.Microsoft.Tests
         {
             Assert.SkipWhen(!_canRunIntegrationTests, "GOOGLE_API_KEY_TEST not set");
 
-            var chatClient = new GenerativeAIChatClient(_apiKey, GoogleAIModels.Gemini15Flash);
+            var chatClient = new GenerativeAIChatClient(_apiKey, GoogleAIModels.Gemini25Flash);
 
             var function = AIFunctionFactory.Create(ScheduleHealthcareAppointments);
             var chatOptions = new ChatOptions 
@@ -109,7 +109,7 @@ _output.WriteLine($"Healthcare response: {response.Text}");
         {
             Assert.SkipWhen(!_canRunIntegrationTests, "GOOGLE_API_KEY_TEST not set");
 
-            var chatClient = new GenerativeAIChatClient(_apiKey, GoogleAIModels.Gemini15Flash);
+            var chatClient = new GenerativeAIChatClient(_apiKey, GoogleAIModels.Gemini25Flash);
 
             var function = AIFunctionFactory.Create(CreateProjectPlan);
             var chatOptions = new ChatOptions 

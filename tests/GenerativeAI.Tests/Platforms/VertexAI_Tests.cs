@@ -32,7 +32,7 @@ public class VertexAI_Tests:TestBase
     [Fact]
     public async Task ShouldThrowException_WhenCredentialsAreInvalid_NoAuthencatorProvided()
     {
-        var model = new GenerativeModel(new VertextPlatformAdapter(accessToken:"invalid", projectId:"lashkfdkl",region:"dlakfhkl"), VertexAIModels.Gemini.Gemini15Flash);
+        var model = new GenerativeModel(new VertextPlatformAdapter(accessToken:"invalid", projectId:"lashkfdkl",region:"dlakfhkl"), VertexAIModels.Gemini.Gemini25Flash);
 
         await Should.ThrowAsync<AuthenticationException>(async () =>
         {

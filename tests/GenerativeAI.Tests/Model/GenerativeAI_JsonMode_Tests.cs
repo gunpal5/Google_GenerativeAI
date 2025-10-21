@@ -17,7 +17,7 @@ namespace GenerativeAI.Tests.Model
         typeof(PriorityOrderer))]
     public partial class GenerativeModel_JsonMode_Tests : TestBase
     {
-        private const string DefaultTestModelName = GoogleAIModels.Gemini2Flash;
+        private const string DefaultTestModelName = GoogleAIModels.DefaultGeminiModel;
 
         public GenerativeModel_JsonMode_Tests(ITestOutputHelper helper) : base(helper)
         {
@@ -125,7 +125,7 @@ namespace GenerativeAI.Tests.Model
             var request = new GenerateContentRequest();
             request.AddText("Generate a structured object with various data types including dictionary, list, array, and nested objects.", false);
         
-            model.Model = GoogleAIModels.Gemini15Flash;
+            model.Model = GoogleAIModels.Gemini25Flash;
             // Act
             var response = await model.GenerateContentAsync<ComplexDataTypeClass>(request, cancellationToken: TestContext.Current.CancellationToken);
         
@@ -178,7 +178,7 @@ namespace GenerativeAI.Tests.Model
             var request = new GenerateContentRequest();
             request.AddText("Prepare a daily meal plan for a week.", false);
             
-            model.Model = GoogleAIModels.Gemini15Flash;
+            model.Model = GoogleAIModels.Gemini25Flash;
             // Act
             var response = await model.GenerateObjectAsync<List<Meal>>(request, cancellationToken: TestContext.Current.CancellationToken);
            
@@ -251,7 +251,7 @@ namespace GenerativeAI.Tests.Model
             var request = new GenerateContentRequest();
             request.AddText("Generate a complex JSON object with nested properties.", false);
         
-            model.Model = GoogleAIModels.Gemini15Flash;
+            model.Model = GoogleAIModels.Gemini25Flash;
             // Act
             var response = await model.GenerateContentAsync<ComplexJsonClass>(request, cancellationToken: TestContext.Current.CancellationToken);
         
