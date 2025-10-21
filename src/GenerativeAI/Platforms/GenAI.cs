@@ -41,6 +41,13 @@ public abstract class GenAI
     /// </summary>
     public ModelClient ModelClient { get; }
 
+    /// <summary>
+    /// Gets the instance of the <see cref="BatchClient"/> class for batch processing operations.
+    /// This property provides access to functionality for creating, managing, and monitoring batch jobs
+    /// for content generation and embedding operations.
+    /// </summary>
+    public BatchClient BatchClient { get; }
+
 
     /// <summary>
     /// Initializes a new instance of the <see cref="GenAI"/> class.
@@ -54,6 +61,7 @@ public abstract class GenAI
         this.HttpClient = client;
         this.Logger = logger;
         this.ModelClient = new ModelClient(this.Platform, this.HttpClient, this.Logger);
+        this.BatchClient = new BatchClient(this.Platform, this.HttpClient, this.Logger);
     }
 
     /// <summary>

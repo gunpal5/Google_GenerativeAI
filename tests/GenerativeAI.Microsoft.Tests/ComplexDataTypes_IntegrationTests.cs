@@ -13,6 +13,7 @@ using GenerativeAI.Types;
 using Microsoft.Extensions.AI;
 using Shouldly;
 using Xunit;
+using Environment = System.Environment;
 
 namespace GenerativeAI.Microsoft.Tests
 {

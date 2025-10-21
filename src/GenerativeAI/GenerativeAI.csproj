@@ -69,7 +69,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Clients\Imagen\" />
     <Folder Include="Types\Tuning\Permissions\" />
   </ItemGroup>
 

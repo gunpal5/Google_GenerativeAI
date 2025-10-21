@@ -216,9 +216,10 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
     }
 
     /// <inheritdoc/>
-    public string GetBaseUrl(bool appendVesion = true, bool appendPublisher = true)
+    public string GetBaseUrl(bool appendVersion = true, bool appendPublisher = true, bool appendLocation = true,
+        bool appendProject = true)
     {
-        if (appendVesion)
+        if (appendVersion)
             return $"{BaseUrl}/{DefaultApiVersion}";
         return BaseUrl;
     }
@@ -272,7 +273,7 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
     }
 
     /// <inheritdoc />
-    public string? GetMultiModalLiveModalName(string modelName)
+    public string? GetFullyQualifiedModelName(string modelName, bool appendLocation = true)
     {
         return modelName.ToModelId();
     }

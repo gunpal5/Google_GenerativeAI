@@ -3,6 +3,7 @@ using GenerativeAI.Clients;
 using GenerativeAI.Core;
 using GenerativeAI.Types;
 using Shouldly;
+using Environment = System.Environment;
 
 namespace GenerativeAI.Tests.Clients;
 

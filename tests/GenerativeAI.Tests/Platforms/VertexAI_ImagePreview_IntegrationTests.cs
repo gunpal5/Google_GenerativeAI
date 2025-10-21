@@ -2,6 +2,7 @@ using System.Text;
 using GenerativeAI.Tests;
 using GenerativeAI.Types;
 using Shouldly;
+using Environment = System.Environment;
 
 namespace GenerativeAI.Tests.Platforms;
 

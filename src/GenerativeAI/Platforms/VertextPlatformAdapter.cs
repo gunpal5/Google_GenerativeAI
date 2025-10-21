@@ -320,42 +320,55 @@ public class VertextPlatformAdapter : IPlatformAdapter
     }
 
     /// <summary>
-    /// Constructs the base URL for API requests, optionally appending the version.
+    /// Constructs the base URL for API requests with optional components.
+    /// Pattern: https://{region}-aiplatform.googleapis.com/{version}/projects/{projectId}/locations/{region}/publishers/{publisher}
     /// </summary>
-    /// <param name="appendVesion">Indicates whether to append the version to the URL.</param>
+    /// <param name="appendVersion">Indicates whether to append the version to the URL.</param>
     /// <param name="appendPublisher">Indicates whether to append the publisher to the URL.</param>
+    /// <param name="appendLocation">Indicates whether to include the location/region in the URL.</param>
+    /// <param name="appendProject">Indicates whether to include the project ID in the URL.</param>
     /// <returns>The constructed base URL string.</returns>
-    public string GetBaseUrl(bool appendVesion = true, bool appendPublisher = true)
+    public string GetBaseUrl(bool appendVersion = true, bool appendPublisher = true, bool appendLocation = true,
+        bool appendProject = true)
     {
         if (ExpressMode == true)
         {
-            if(appendPublisher)
-                return $"{BaseUrls.VertexAIExpress}/{DefaultApiVersion}/publishers/{Publisher}";
-            else return $"{BaseUrls.VertexAIExpress}/{DefaultApiVersion}";
+            var expressUrl = $"{BaseUrls.VertexAIExpress}";
+            if (appendVersion)
+                expressUrl += $"/{DefaultApiVersion}";
+            if (appendPublisher)
+                expressUrl += $"/publishers/{Publisher}";
+            return expressUrl;
         }
 
-        // Handle the special case for "global" region which uses aiplatform.googleapis.com directly
-        string baseUrl;
-        // if (string.Equals(Region, "global", StringComparison.OrdinalIgnoreCase))
-        // {
-        //     baseUrl = $"https://aiplatform.googleapis.com/";
-        // }
-        // else
-        // {
-#if NETSTANDARD2_0 || NET462_OR_GREATER
-            baseUrl = this.BaseUrl.Replace("{region}", Region)
-                .Replace("{projectId}", ProjectId)
-                .Replace("{version}", DefaultApiVersion);
-#else
-            baseUrl = this.BaseUrl.Replace("{region}", Region, StringComparison.InvariantCultureIgnoreCase)
-                .Replace("{projectId}", ProjectId, StringComparison.InvariantCultureIgnoreCase)
-                .Replace("{version}", DefaultApiVersion, StringComparison.InvariantCultureIgnoreCase);
-#endif
-       //}
+        // Start with base domain
+        string baseUrl = $"https://{Region}-aiplatform.googleapis.com";
+      
+        // Append version: /{version}
+        if (appendVersion)
+        {
+            baseUrl += $"/{DefaultApiVersion}";
+        }
 
-        if(appendPublisher)
-            return $"{baseUrl}/publishers/{Publisher}";
-        else return baseUrl;
+        // Append project: /projects/{projectId}
+        if (appendProject && !string.IsNullOrEmpty(ProjectId))
+        {
+            baseUrl += $"/projects/{ProjectId}";
+        }
+
+        // Append location: /locations/{region}
+        if (appendLocation && !string.IsNullOrEmpty(Region))
+        {
+            baseUrl += $"/locations/{Region}";
+        }
+
+        // Append publisher: /publishers/{publisher}
+        if (appendPublisher)
+        {
+            baseUrl += $"/publishers/{Publisher}";
+        }
+
+        return baseUrl;
     }
 
     /// <summary>
@@ -427,9 +440,9 @@ public class VertextPlatformAdapter : IPlatformAdapter
     }
 
     /// <inheritdoc />
-    public string? GetMultiModalLiveModalName(string modelName)
+    public string? GetFullyQualifiedModelName(string modelName, bool appendLocation = true)
     {
-        var transformed = "projects/{project}/locations/{location}/publishers/google/{model}";
+        var transformed = appendLocation ? "projects/{project}/locations/{location}/publishers/google/{model}" : "publishers/google/{model}";
 //        var transformed = "publishers/google/{model}";
         //var transformed = "{model}";
 #if NET6_0_OR_GREATER

@@ -28,30 +28,34 @@
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net9.0'">
-        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.3" />      
-        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.10" />      
+        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.10" />      
+        <PackageReference Update="DotNet.ReproducibleBuilds" Version="1.2.39">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
     <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0'">
-        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.3" />       
-        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.10" />       
+        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.10" />
     </ItemGroup>
     <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0'">
-        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.3" />       
-        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.10" />       
+        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.10" />
     </ItemGroup>
     <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0'">
-        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.3" />       
-        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.10" />       
+        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.10" />
     </ItemGroup>
     <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
-        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.3" />     
-        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.10" />     
+        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.10" />
     </ItemGroup>
     <ItemGroup>
         <None Include="..\..\favicon.png" Pack="True" PackagePath="" />
     </ItemGroup>
     <ItemGroup>
-      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.3" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.10" />
     </ItemGroup>
 
 </Project>

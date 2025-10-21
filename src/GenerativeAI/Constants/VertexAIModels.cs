@@ -24,6 +24,12 @@ public static class VertexAIModels
         public const string Gemini2Flash = "gemini-2.0-flash-001";
 
         /// <summary>
+        /// Gemini 2.5 Flash model name.
+        /// </summary>
+        // ReSharper disable once InconsistentNaming
+        public const string Gemini25Flash = "gemini-2.5-flash";
+
+        /// <summary>
         /// Gemini 2.0 Pro Experimental model name.
         /// </summary>
         public const string Gemini2ProExp = "gemini-2.0-pro-exp-02-05";

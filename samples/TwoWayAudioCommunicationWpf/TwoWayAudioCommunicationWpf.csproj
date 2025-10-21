@@ -12,9 +12,9 @@
 
     <ItemGroup>
       <PackageReference Include="MdXaml.Full" Version="1.27.0" />
-      <PackageReference Include="NAudio" Version="2.2.0" />
-      <PackageReference Include="PvRecorder" Version="1.2.10" />
-      <PackageReference Include="WPF-UI" Version="4.0.1" />
+      <PackageReference Include="NAudio" Version="2.2.1" />
+      <PackageReference Include="PvRecorder" Version="1.2.13" />
+      <PackageReference Include="WPF-UI" Version="4.0.3" />
     </ItemGroup>
 
     <ItemGroup>

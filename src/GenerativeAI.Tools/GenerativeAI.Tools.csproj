@@ -33,6 +33,10 @@
     </ItemGroup>
     <ItemGroup>
       <PackageReference Include="CSharpToJsonSchema" Version="3.10.2-dev.39" />
+      <PackageReference Update="DotNet.ReproducibleBuilds" Version="1.2.39">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
     </ItemGroup>
 
 </Project>

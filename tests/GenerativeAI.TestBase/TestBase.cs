@@ -29,7 +29,7 @@ public abstract class TestBase
     /// Message displayed when Vertex AI tests are skipped.
     /// </summary>
     public const string VertextTestSkipMesaage =
-        "VertexAI tests skipped. Add Environment variable 'VERTEXT_AI_TESTS_ENABLED=true' with proper ADC configurations to run these tests.";
+        "VertexAI tests skipped. Add Environment variable 'VERTEX_AI_TESTS_ENABLED=true' with proper ADC configurations to run these tests.";
 
     /// <summary>
     /// Determines if semantic tests are enabled based on the SEMANTIC_TESTS_ENABLED environment variable
@@ -93,7 +93,7 @@ public abstract class TestBase
     {
         get
         {
-            return Environment.GetEnvironmentVariable("VERTEXT_AI_TESTS_ENABLED", EnvironmentVariableTarget.User)?.ToLower() != "true" ||
+            return Environment.GetEnvironmentVariable("VERTEX_AI_TESTS_ENABLED")?.ToLower() != "true" ||
                    !IsAdcConfigured;
         }
     }
@@ -127,9 +127,9 @@ public abstract class TestBase
 
     protected virtual IPlatformAdapter GetTestVertexAIPlatform()
     {
-        var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY", EnvironmentVariableTarget.User);
-        var projectId = Environment.GetEnvironmentVariable("GOOGLE_PROJECT_ID", EnvironmentVariableTarget.User);
-        var region = Environment.GetEnvironmentVariable("GOOGLE_REGION", EnvironmentVariableTarget.User);
+        var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY");
+        var projectId = Environment.GetEnvironmentVariable("GOOGLE_PROJECT_ID");
+        var region = Environment.GetEnvironmentVariable("GOOGLE_REGION");
 
         return new VertextPlatformAdapter(projectId, region, false, apiKey);
     }

@@ -139,7 +139,7 @@ public class MultiModalLiveClient : IDisposable
 #else
         _platformAdapter = platformAdapter ?? throw new ArgumentNullException(nameof(platformAdapter));
 #endif
-        ModelName = platformAdapter.GetMultiModalLiveModalName(modelName) ?? throw new InvalidOperationException($"Failed to get multimodal live model name for '{modelName}'");
+        ModelName = platformAdapter.GetFullyQualifiedModelName(modelName) ?? throw new InvalidOperationException($"Failed to get multimodal live model name for '{modelName}'");
         Config = config ?? new GenerationConfig()
         {
             ResponseModalities = new List<Modality> { Modality.TEXT }

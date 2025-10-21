@@ -3,6 +3,7 @@ using GenerativeAI;
 using GenerativeAI.Core;
 using GenerativeAI.Types;
 using Shouldly;
+using Environment = System.Environment;
 
 
 namespace AotTest;

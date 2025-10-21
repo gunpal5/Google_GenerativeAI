@@ -124,7 +124,7 @@ public class FileManagementClient : BaseClient
     public async Task<GoogleLongRunningOperation> ImportRagFilesAsync(string parent, ImportRagFilesRequest request,
         CancellationToken cancellationToken = default)
     {
-        var url = $"{Platform.GetBaseUrl(appendPublisher:false)}/{parent.ToRagCorpusId()}/ragFiles:import";
+        var url = $"{Platform.GetBaseUrl(appendPublisher: false)}/{parent.ToRagCorpusId()}/ragFiles:import";
 
         return await SendAsync<ImportRagFilesRequest, GoogleLongRunningOperation>(url, request, HttpMethod.Post,
             cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -154,7 +154,7 @@ public class FileManagementClient : BaseClient
         }
     
         var queryString = queryParams.Count > 0 ? "?" + string.Join("&", queryParams) : string.Empty;
-        var url = $"{Platform.GetBaseUrl(appendPublisher:false)}/{parent.ToRagCorpusId()}/ragFiles{queryString}";
+        var url = $"{Platform.GetBaseUrl(appendPublisher: false)}/{parent.ToRagCorpusId()}/ragFiles{queryString}";
     
         return await GetAsync<ListRagFilesResponse>(url, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
@@ -168,7 +168,7 @@ public class FileManagementClient : BaseClient
     /// <seealso href="https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/rag-api">See Official API Documentation</seealso>
     public async Task<RagFile?> GetRagFileAsync(string name, CancellationToken cancellationToken = default)
     {
-        var baseUrl = Platform.GetBaseUrl(appendPublisher:false);
+        var baseUrl = Platform.GetBaseUrl(appendPublisher: false);
         var url = $"{baseUrl}/{name.ToRagFileId()}";
         return await GetAsync<RagFile>(url, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
@@ -182,7 +182,7 @@ public class FileManagementClient : BaseClient
     /// <seealso href="https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/rag-api">See Official API Documentation</seealso>
     public async Task DeleteRagFileAsync(string name, CancellationToken cancellationToken = default)
     {
-        var baseUrl = Platform.GetBaseUrl(appendPublisher:false);
+        var baseUrl = Platform.GetBaseUrl(appendPublisher: false);
         var url = $"{baseUrl}/{name.ToRagFileId()}";
         await DeleteAsync(url, cancellationToken: cancellationToken).ConfigureAwait(false);
     }

@@ -4,8 +4,9 @@ namespace GenerativeAI.Types;
 
 /// <summary>
 /// Job state enumeration representing the lifecycle states of a job.
+/// Supports both BATCH_STATE_* (Google AI) and JOB_STATE_* (Vertex AI) formats.
 /// </summary>
-[JsonConverter(typeof(JsonStringEnumConverter<JobState>))]
+[JsonConverter(typeof(JobStateConverter))]
 public enum JobState
 {
     /// <summary>

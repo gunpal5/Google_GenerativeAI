@@ -9,8 +9,7 @@ namespace GenerativeAI.Types;
 public class BatchJob
 {
     /// <summary>
-    /// Output only. The resource name of the BatchJob.
-    /// Format: projects/{project}/locations/{location}/batchPredictionJobs/{batch_prediction_job}
+    /// The resource name of the BatchJob. Output only.
     /// </summary>
     [JsonPropertyName("name")]
     public string? Name { get; set; }
@@ -22,9 +21,10 @@ public class BatchJob
     public string? DisplayName { get; set; }
 
     /// <summary>
-    /// Output only. The state of the BatchJob.
+    /// The state of the BatchJob.
     /// </summary>
     [JsonPropertyName("state")]
+    [JsonConverter(typeof(JobStateConverter))]
     public JobState? State { get; set; }
 
     /// <summary>
@@ -34,37 +34,31 @@ public class BatchJob
     public JobError? Error { get; set; }
 
     /// <summary>
-    /// Output only. The time when the BatchJob was created.
-    /// A timestamp in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits.
-    /// Examples: "2014-10-02T15:01:23Z" and "2014-10-02T15:01:23.045123456Z".
+    /// The time when the BatchJob was created.
     /// </summary>
     [JsonPropertyName("createTime")]
-    public Timestamp? CreateTime { get; set; }
+    public string? CreateTime { get; set; }
 
     /// <summary>
-    /// Output only. Time when the BatchJob for the first time entered the JOB_STATE_RUNNING state.
-    /// A timestamp in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits.
+    /// Output only. Time when the Job for the first time entered the JOB_STATE_RUNNING state.
     /// </summary>
     [JsonPropertyName("startTime")]
-    public Timestamp? StartTime { get; set; }
+    public string? StartTime { get; set; }
 
     /// <summary>
-    /// Output only. The time when the BatchJob was completed (succeeded, failed, or cancelled).
-    /// A timestamp in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits.
+    /// The time when the BatchJob was completed.
     /// </summary>
     [JsonPropertyName("endTime")]
-    public Timestamp? EndTime { get; set; }
+    public string? EndTime { get; set; }
 
     /// <summary>
-    /// Output only. The time when the BatchJob was last updated.
-    /// A timestamp in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits.
+    /// The time when the BatchJob was last updated.
     /// </summary>
     [JsonPropertyName("updateTime")]
-    public Timestamp? UpdateTime { get; set; }
+    public string? UpdateTime { get; set; }
 
     /// <summary>
     /// The name of the model that produces the predictions via the BatchJob.
-    /// Format: models/{model}
     /// </summary>
     [JsonPropertyName("model")]
     public string? Model { get; set; }
@@ -80,4 +74,16 @@ public class BatchJob
     /// </summary>
     [JsonPropertyName("dest")]
     public BatchJobDestination? Destination { get; set; }
+
+    /// <summary>
+    /// The type identifier for the metadata object (Google AI only).
+    /// </summary>
+    [JsonPropertyName("@type")]
+    public string? Type { get; set; }
+
+    /// <summary>
+    /// Statistics about the batch job (Google AI only).
+    /// </summary>
+    [JsonPropertyName("batchStats")]
+    public BatchStats? BatchStats { get; set; }
 }

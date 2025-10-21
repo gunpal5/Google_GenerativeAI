@@ -31,7 +31,11 @@
         <ProjectReference Include="..\GenerativeAI\GenerativeAI.csproj"/>
     </ItemGroup>
     <ItemGroup>
-      <PackageReference Include="Google.Apis.Auth" Version="1.69.0" />
+      <PackageReference Include="Google.Apis.Auth" Version="1.72.0" />
+      <PackageReference Update="DotNet.ReproducibleBuilds" Version="1.2.39">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
     </ItemGroup>
 
 </Project>
