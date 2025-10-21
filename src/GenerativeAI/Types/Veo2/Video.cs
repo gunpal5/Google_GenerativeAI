@@ -12,8 +12,9 @@ public class Video
 {
     /// <summary>
     /// The URI (e.g., Google Cloud Storage path) where the video is stored.
+    /// Path to another storage.
     /// </summary>
-    [JsonPropertyName("gcsUri")]
+    [JsonPropertyName("uri")]
     public string? Uri { get; set; }
 
     /// <summary>

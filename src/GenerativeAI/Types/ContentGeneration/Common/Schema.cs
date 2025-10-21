@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 
 namespace GenerativeAI.Types;
@@ -101,6 +102,90 @@ public class Schema
     /// </summary>
     [JsonPropertyName("items")]
     public Schema? Items { get; set; }
+
+    /// <summary>
+    /// Optional. Schema for additional properties not explicitly defined.
+    /// </summary>
+    [JsonPropertyName("additionalProperties")]
+    public JsonNode? AdditionalProperties { get; set; }
+
+    /// <summary>
+    /// Optional. Definitions of reusable schemas.
+    /// </summary>
+    [JsonPropertyName("defs")]
+    public Dictionary<string, Schema>? Defs { get; set; }
+
+    /// <summary>
+    /// Optional. Reference to another schema definition.
+    /// </summary>
+    [JsonPropertyName("ref")]
+    public string? Ref { get; set; }
+
+    /// <summary>
+    /// Optional. The value should be valid against any of the provided schemas.
+    /// </summary>
+    [JsonPropertyName("anyOf")]
+    public List<Schema>? AnyOf { get; set; }
+
+    /// <summary>
+    /// Optional. Default value for this schema.
+    /// </summary>
+    [JsonPropertyName("default")]
+    public JsonNode? Default { get; set; }
+
+    /// <summary>
+    /// Optional. Example value for this schema.
+    /// </summary>
+    [JsonPropertyName("example")]
+    public JsonNode? Example { get; set; }
+
+    /// <summary>
+    /// Optional. Maximum length for string types.
+    /// </summary>
+    [JsonPropertyName("maxLength")]
+    public int? MaxLength { get; set; }
+
+    /// <summary>
+    /// Optional. Maximum number of properties for object types.
+    /// </summary>
+    [JsonPropertyName("maxProperties")]
+    public int? MaxProperties { get; set; }
+
+    /// <summary>
+    /// Optional. Maximum value for numeric types.
+    /// </summary>
+    [JsonPropertyName("maximum")]
+    public double? Maximum { get; set; }
+
+    /// <summary>
+    /// Optional. Minimum length for string types.
+    /// </summary>
+    [JsonPropertyName("minLength")]
+    public int? MinLength { get; set; }
+
+    /// <summary>
+    /// Optional. Minimum number of properties for object types.
+    /// </summary>
+    [JsonPropertyName("minProperties")]
+    public int? MinProperties { get; set; }
+
+    /// <summary>
+    /// Optional. Minimum value for numeric types.
+    /// </summary>
+    [JsonPropertyName("minimum")]
+    public double? Minimum { get; set; }
+
+    /// <summary>
+    /// Optional. Regular expression pattern for string validation.
+    /// </summary>
+    [JsonPropertyName("pattern")]
+    public string? Pattern { get; set; }
+
+    /// <summary>
+    /// Optional. Title of the schema.
+    /// </summary>
+    [JsonPropertyName("title")]
+    public string? Title { get; set; }
 
     /// <summary>
     /// Creates a <see cref="Schema"/> object representing the structure of the specified object type.

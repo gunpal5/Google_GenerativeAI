@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using System.Text.Json.Nodes;
 
 namespace GenerativeAI.Types;
 
@@ -25,4 +26,28 @@ public class FunctionDeclaration
     /// </summary>
     [JsonPropertyName("parameters")]
     public Schema? Parameters { get; set; }
+
+    /// <summary>
+    /// Optional. Defines the function behavior. Defaults to BLOCKING.
+    /// </summary>
+    [JsonPropertyName("behavior")]
+    public Behavior? Behavior { get; set; }
+
+    /// <summary>
+    /// Optional. Alternative to parameters using JSON Schema. If set, parameters must be omitted.
+    /// </summary>
+    [JsonPropertyName("parametersJsonSchema")]
+    public JsonNode? ParametersJsonSchema { get; set; }
+
+    /// <summary>
+    /// Optional. Defines the expected response schema for the function.
+    /// </summary>
+    [JsonPropertyName("response")]
+    public Schema? Response { get; set; }
+
+    /// <summary>
+    /// Optional. Alternative to response using JSON Schema. If set, response must be omitted.
+    /// </summary>
+    [JsonPropertyName("responseJsonSchema")]
+    public JsonNode? ResponseJsonSchema { get; set; }
 }

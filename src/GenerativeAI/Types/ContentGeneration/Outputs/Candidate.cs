@@ -74,4 +74,16 @@ public class Candidate
     /// </summary>
     [JsonPropertyName("index")]
     public int? Index { get; set; }
+
+    /// <summary>
+    /// Output only. Describes the reason the model stopped generating tokens.
+    /// </summary>
+    [JsonPropertyName("finishMessage")]
+    public string? FinishMessage { get; set; }
+
+    /// <summary>
+    /// Output only. Metadata related to url context retrieval tool.
+    /// </summary>
+    [JsonPropertyName("urlContextMetadata")]
+    public UrlContextMetadata? UrlContextMetadata { get; set; }
 }

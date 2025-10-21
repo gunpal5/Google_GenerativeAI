@@ -100,4 +100,41 @@ public class Model
     /// </summary>
     [JsonPropertyName("topK")]
     public int? TopK { get; set; }
+
+    /// <summary>
+    /// Optional. List of deployed models created from this base model.
+    /// Note that a model could have been deployed to endpoints in different locations.
+    /// </summary>
+    [JsonPropertyName("endpoints")]
+    public List<Endpoint>? Endpoints { get; set; }
+
+    /// <summary>
+    /// Optional. Labels with user-defined metadata to organize your models.
+    /// </summary>
+    [JsonPropertyName("labels")]
+    public Dictionary<string, string>? Labels { get; set; }
+
+    /// <summary>
+    /// Optional. Information about the tuned model from the base model.
+    /// </summary>
+    [JsonPropertyName("tunedModelInfo")]
+    public TunedModelInfo? TunedModelInfo { get; set; }
+
+    /// <summary>
+    /// Optional. List of actions that are supported by the model.
+    /// </summary>
+    [JsonPropertyName("supportedActions")]
+    public List<string>? SupportedActions { get; set; }
+
+    /// <summary>
+    /// Optional. The default checkpoint id of a model version.
+    /// </summary>
+    [JsonPropertyName("defaultCheckpointId")]
+    public string? DefaultCheckpointId { get; set; }
+
+    /// <summary>
+    /// Optional. The checkpoints of the model.
+    /// </summary>
+    [JsonPropertyName("checkpoints")]
+    public List<Checkpoint>? Checkpoints { get; set; }
 }

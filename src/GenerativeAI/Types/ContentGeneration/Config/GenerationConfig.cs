@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using System.Text.Json.Nodes;
 
 namespace GenerativeAI.Types;
 
@@ -189,6 +190,25 @@ public class GenerationConfig
     /// </summary>
     [JsonPropertyName("routingConfig")]
     public RoutingConfig? RoutingConfig { get; set; }
+
+    /// <summary>
+    /// Optional. Config for model selection.
+    /// </summary>
+    [JsonPropertyName("modelSelectionConfig")]
+    public ModelSelectionConfig? ModelSelectionConfig { get; set; }
+
+    /// <summary>
+    /// Optional. If enabled, the model will detect emotions and adapt its responses accordingly.
+    /// </summary>
+    [JsonPropertyName("enableAffectiveDialog")]
+    public bool? EnableAffectiveDialog { get; set; }
+
+    /// <summary>
+    /// Optional. Output schema of the generated response. This is an alternative to responseSchema
+    /// that accepts JSON Schema. If set, responseSchema must be omitted, but responseMimeType is required.
+    /// </summary>
+    [JsonPropertyName("responseJsonSchema")]
+    public JsonNode? ResponseJsonSchema { get; set; }
 }
 
 
