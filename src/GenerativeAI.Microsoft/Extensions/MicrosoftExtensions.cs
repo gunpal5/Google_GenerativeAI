@@ -405,9 +405,18 @@ public static class MicrosoftExtensions
 
         if (response.Candidates != null)
         {
+            var contents = response.Candidates.Select(s => s.Content).SelectMany(s => s?.Parts ?? new List<Part>()).ToList().ToAiContents(options);
+
+            // Add usage information as UsageContent so it gets aggregated by the framework
+            var usage = ParseContentResponseUsage(response);
+            if (usage != null)
+            {
+                contents.Add(new UsageContent(usage));
+            }
+
             return new ChatResponseUpdate
             {
-                Contents = response.Candidates.Select(s => s.Content).SelectMany(s => s?.Parts ?? new List<Part>()).ToList().ToAiContents(options),
+                Contents = contents,
                 AdditionalProperties = null,
                 FinishReason = response?.Candidates?.FirstOrDefault()?.FinishReason == FinishReason.OTHER
                     ? ChatFinishReason.Stop
