@@ -209,6 +209,12 @@ public class GenerationConfig
     /// </summary>
     [JsonPropertyName("responseJsonSchema")]
     public JsonNode? ResponseJsonSchema { get; set; }
+
+    /// <summary>
+    /// Optional. Image generation configuration for models that support image output.
+    /// </summary>
+    [JsonPropertyName("imageConfig")]
+    public ImageConfig? ImageConfig { get; set; }
 }
 
 
@@ -321,4 +327,16 @@ public class ManualRoutingMode
     /// </summary>
     [JsonPropertyName("modelName")]
     public string? ModelName { get; set; }
+}
+
+/// <summary>
+/// Configuration for image generation in models that support image output (e.g., gemini-2.5-flash-image).
+/// </summary>
+public class ImageConfig
+{
+    /// <summary>
+    /// Optional. The aspect ratio for generated images. Common values: "16:9", "9:16", "1:1", "4:3", "3:4".
+    /// </summary>
+    [JsonPropertyName("aspectRatio")]
+    public string? AspectRatio { get; set; }
 }
