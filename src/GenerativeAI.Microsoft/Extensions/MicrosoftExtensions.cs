@@ -337,6 +337,17 @@ public static class MicrosoftExtensions
             config.ThinkingConfig.IncludeThoughts = includeThoughts;
         }
 
+        if (options.AdditionalProperties.TryGetValue(AdditionalPropertiesKeys.ResponseModalities, out List<Modality>? modalities))
+        {
+            config.ResponseModalities = modalities;
+        }
+
+        if (options.AdditionalProperties.TryGetValue(AdditionalPropertiesKeys.ImageConfigAspectRatio, out string? aspectRatio))
+        {
+            config.ImageConfig ??= new ImageConfig();
+            config.ImageConfig.AspectRatio = aspectRatio;
+        }
+
         return config;
     }
 
