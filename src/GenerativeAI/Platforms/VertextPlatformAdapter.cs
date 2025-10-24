@@ -342,7 +342,7 @@ public class VertextPlatformAdapter : IPlatformAdapter
         }
 
         // Start with base domain
-        string baseUrl = $"https://{Region}-aiplatform.googleapis.com";
+        var baseUrl = Region == "global" ? "https://aiplatform.googleapis.com" : $"https://{Region}-aiplatform.googleapis.com";
       
         // Append version: /{version}
         if (appendVersion)
