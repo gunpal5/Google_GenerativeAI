@@ -1,16 +1,19 @@
 using GenerativeAI;
 using GenerativeAI.Tools.Mcp;
+using ModelContextProtocol.Transports;
 
 namespace McpIntegrationDemo;
 
 /// <summary>
 /// Demonstrates how to integrate MCP (Model Context Protocol) servers with Google Generative AI.
+/// Shows examples for all transport types: stdio, HTTP/SSE.
 /// </summary>
 class Program
 {
     static async Task Main(string[] args)
     {
         Console.WriteLine("=== MCP Integration Demo for Google Generative AI ===\n");
+        Console.WriteLine("Supports all MCP transport protocols: stdio, HTTP/SSE\n");
 
         // Get API key from environment variable
         var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY");
@@ -23,18 +26,28 @@ class Program
 
         try
         {
-            // Example 1: Single MCP Server
-            await SingleMcpServerExample(apiKey);
+            // Example 1: Stdio Transport
+            await StdioTransportExample(apiKey);
 
             Console.WriteLine("\n" + new string('=', 60) + "\n");
 
-            // Example 2: Multiple MCP Servers
+            // Example 2: HTTP/SSE Transport
+            await HttpTransportExample(apiKey);
+
+            Console.WriteLine("\n" + new string('=', 60) + "\n");
+
+            // Example 3: Multiple MCP Servers with Different Transports
             await MultipleMcpServersExample(apiKey);
 
             Console.WriteLine("\n" + new string('=', 60) + "\n");
 
-            // Example 3: Custom MCP Server Configuration
+            // Example 4: Custom Transport Configuration
             await CustomConfigurationExample(apiKey);
+
+            Console.WriteLine("\n" + new string('=', 60) + "\n");
+
+            // Example 5: Auto-Reconnection with Transport Factory
+            await AutoReconnectionExample(apiKey);
         }
         catch (Exception ex)
         {
@@ -44,25 +57,23 @@ class Program
     }
 
     /// <summary>
-    /// Example 1: Connecting to a single MCP server
+    /// Example 1: Using stdio transport to launch an MCP server as a subprocess
     /// </summary>
-    static async Task SingleMcpServerExample(string apiKey)
+    static async Task StdioTransportExample(string apiKey)
     {
-        Console.WriteLine("Example 1: Single MCP Server Integration\n");
+        Console.WriteLine("Example 1: Stdio Transport (Launch MCP Server as Subprocess)\n");
 
-        // Configure the MCP server
-        // This example uses the official MCP "everything" demo server
-        var mcpConfig = new McpServerConfig
-        {
-            Name = "everything-server",
-            Command = "npx",
-            Arguments = new List<string> { "-y", "@modelcontextprotocol/server-everything" }
-        };
+        // Create stdio transport using the factory
+        var transport = McpTransportFactory.CreateStdioTransport(
+            name: "everything-server",
+            command: "npx",
+            arguments: new[] { "-y", "@modelcontextprotocol/server-everything" }
+        );
 
-        Console.WriteLine($"Connecting to MCP server: {mcpConfig.Name}...");
+        Console.WriteLine("Connecting to MCP server via stdio...");
 
         // Create and connect to the MCP server
-        using var mcpTool = await McpTool.CreateAsync(mcpConfig);
+        using var mcpTool = await McpTool.CreateAsync(transport);
 
         Console.WriteLine($"Connected! Available functions: {string.Join(", ", mcpTool.GetAvailableFunctions())}");
         Console.WriteLine();
@@ -77,41 +88,84 @@ class Program
         model.FunctionCallingBehaviour.AutoReplyFunction = true;
 
         // Ask the model something that requires using the MCP tools
-        Console.WriteLine("Asking model: 'Use the echo tool to say Hello from MCP!'\n");
+        Console.WriteLine("Asking model: 'Use the echo tool to say Hello from stdio!'\n");
 
-        var result = await model.GenerateContentAsync("Use the echo tool to say 'Hello from MCP!'");
+        var result = await model.GenerateContentAsync("Use the echo tool to say 'Hello from stdio!'");
         Console.WriteLine($"Model response: {result.Text}");
     }
 
     /// <summary>
-    /// Example 2: Connecting to multiple MCP servers simultaneously
+    /// Example 2: Using HTTP/SSE transport to connect to a remote MCP server
+    /// </summary>
+    static async Task HttpTransportExample(string apiKey)
+    {
+        Console.WriteLine("Example 2: HTTP/SSE Transport (Connect to Remote MCP Server)\n");
+
+        // NOTE: This example requires a running MCP server on HTTP
+        // You can skip this if you don't have an HTTP MCP server running
+        Console.WriteLine("Checking if HTTP MCP server is available at http://localhost:8080...");
+
+        try
+        {
+            // Create HTTP transport using the factory
+            var transport = McpTransportFactory.CreateHttpTransport("http://localhost:8080");
+
+            Console.WriteLine("Connecting to MCP server via HTTP/SSE...");
+
+            // Create tool with a shorter timeout for this example
+            var options = new McpToolOptions
+            {
+                ConnectionTimeoutMs = 5000 // 5 seconds
+            };
+
+            using var mcpTool = await McpTool.CreateAsync(transport, options);
+
+            Console.WriteLine($"Connected! Available functions: {string.Join(", ", mcpTool.GetAvailableFunctions())}");
+            Console.WriteLine();
+
+            // Use with Gemini model
+            var model = new GenerativeModel(apiKey, "gemini-2.0-flash-exp");
+            model.AddFunctionTool(mcpTool);
+            model.FunctionCallingBehaviour.AutoCallFunction = true;
+
+            var result = await model.GenerateContentAsync("List the available tools");
+            Console.WriteLine($"Model response: {result.Text}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Skipping HTTP example: {ex.Message}");
+            Console.WriteLine("To run this example, start an MCP server with HTTP transport on port 8080");
+        }
+    }
+
+    /// <summary>
+    /// Example 3: Connecting to multiple MCP servers with different transports
     /// </summary>
     static async Task MultipleMcpServersExample(string apiKey)
     {
-        Console.WriteLine("Example 2: Multiple MCP Servers\n");
+        Console.WriteLine("Example 3: Multiple MCP Servers with Different Transports\n");
 
-        // Configure multiple MCP servers
-        var configs = new List<McpServerConfig>
+        // Create transports for multiple servers
+        var transports = new List<IClientTransport>
         {
-            new McpServerConfig
-            {
-                Name = "server-1",
-                Command = "npx",
-                Arguments = new List<string> { "-y", "@modelcontextprotocol/server-everything" }
-            },
-            // You can add more servers here
-            // new McpServerConfig
-            // {
-            //     Name = "weather-server",
-            //     Command = "python",
-            //     Arguments = new List<string> { "weather_mcp_server.py" }
-            // }
+            McpTransportFactory.CreateStdioTransport(
+                "server-1",
+                "npx",
+                new[] { "-y", "@modelcontextprotocol/server-everything" }
+            ),
+            // You can mix different transport types
+            // McpTransportFactory.CreateHttpTransport("http://localhost:8080"),
+            // McpTransportFactory.CreateStdioTransport(
+            //     "python-server",
+            //     "python",
+            //     new[] { "weather_mcp_server.py" }
+            // )
         };
 
         Console.WriteLine("Connecting to multiple MCP servers...");
 
         // Create all MCP tools
-        var mcpTools = await McpTool.CreateMultipleAsync(configs);
+        var mcpTools = await McpTool.CreateMultipleAsync(transports);
 
         foreach (var tool in mcpTools)
         {
@@ -144,38 +198,48 @@ class Program
     }
 
     /// <summary>
-    /// Example 3: Custom MCP server configuration with options
+    /// Example 4: Custom transport configuration with environment variables and headers
     /// </summary>
     static async Task CustomConfigurationExample(string apiKey)
     {
-        Console.WriteLine("Example 3: Custom Configuration\n");
+        Console.WriteLine("Example 4: Custom Transport Configuration\n");
 
-        // Advanced MCP server configuration
-        var mcpConfig = new McpServerConfig
-        {
-            Name = "custom-server",
-            Command = "npx",
-            Arguments = new List<string> { "-y", "@modelcontextprotocol/server-everything" },
-            ConnectionTimeoutMs = 60000, // 60 seconds
-            Environment = new Dictionary<string, string>
+        // Example 1: Stdio with environment variables
+        Console.WriteLine("Creating stdio transport with custom environment variables...");
+
+        var stdioTransport = McpTransportFactory.CreateStdioTransport(
+            name: "custom-server",
+            command: "npx",
+            arguments: new[] { "-y", "@modelcontextprotocol/server-everything" },
+            environmentVariables: new Dictionary<string, string>
             {
-                // Add custom environment variables if needed
-                // { "CUSTOM_VAR", "value" }
-            }
-        };
+                { "NODE_ENV", "production" },
+                { "LOG_LEVEL", "debug" }
+            },
+            workingDirectory: null
+        );
+
+        // Example 2: HTTP with authentication
+        Console.WriteLine("Example HTTP transport with authentication (not connecting):");
+        Console.WriteLine("  var httpTransport = McpTransportFactory.CreateHttpTransportWithAuth(");
+        Console.WriteLine("      \"http://api.example.com\",");
+        Console.WriteLine("      \"your-auth-token\"");
+        Console.WriteLine("  );");
+        Console.WriteLine();
 
         // Custom tool options
         var toolOptions = new McpToolOptions
         {
+            ConnectionTimeoutMs = 60000, // 60 seconds
             AutoReconnect = true,
             MaxReconnectAttempts = 5,
             ThrowOnToolCallFailure = false,
             IncludeDetailedErrors = true
         };
 
-        Console.WriteLine("Creating MCP tool with custom configuration...");
+        Console.WriteLine("Connecting with custom options...");
 
-        using var mcpTool = await McpTool.CreateAsync(mcpConfig, toolOptions);
+        using var mcpTool = await McpTool.CreateAsync(stdioTransport, toolOptions);
 
         Console.WriteLine("Connected!");
         Console.WriteLine($"Is Connected: {mcpTool.IsConnected}");
@@ -198,13 +262,48 @@ class Program
         // Use the tool with a model
         var model = new GenerativeModel(apiKey, "gemini-2.0-flash-exp");
         model.AddFunctionTool(mcpTool);
-        model.FunctionCallingBehaviour.FunctionEnabled = true;
         model.FunctionCallingBehaviour.AutoCallFunction = true;
-        model.FunctionCallingBehaviour.AutoReplyFunction = true;
 
         // You can also manually refresh tools if the MCP server updates
         Console.WriteLine("Refreshing tools from MCP server...");
         await mcpTool.RefreshToolsAsync();
         Console.WriteLine($"Tools refreshed. Count: {mcpTool.GetAvailableFunctions().Count}");
+    }
+
+    /// <summary>
+    /// Example 5: Auto-reconnection using transport factory
+    /// </summary>
+    static async Task AutoReconnectionExample(string apiKey)
+    {
+        Console.WriteLine("Example 5: Auto-Reconnection with Transport Factory\n");
+
+        // Use a factory function for auto-reconnection support
+        // The factory will be called to create a new transport if reconnection is needed
+        using var mcpTool = await McpTool.CreateAsync(
+            transportFactory: () => McpTransportFactory.CreateStdioTransport(
+                "reconnectable-server",
+                "npx",
+                new[] { "-y", "@modelcontextprotocol/server-everything" }
+            ),
+            options: new McpToolOptions
+            {
+                AutoReconnect = true,
+                MaxReconnectAttempts = 3
+            }
+        );
+
+        Console.WriteLine("Connected with auto-reconnection support!");
+        Console.WriteLine($"Available functions: {mcpTool.GetAvailableFunctions().Count}");
+        Console.WriteLine();
+        Console.WriteLine("If the connection is lost, McpTool will automatically attempt to reconnect");
+        Console.WriteLine("up to 3 times using the transport factory.\n");
+
+        // Use with Gemini
+        var model = new GenerativeModel(apiKey, "gemini-2.0-flash-exp");
+        model.AddFunctionTool(mcpTool);
+        model.FunctionCallingBehaviour.AutoCallFunction = true;
+
+        var result = await model.GenerateContentAsync("Use echo to say 'Auto-reconnection enabled!'");
+        Console.WriteLine($"Model response: {result.Text}");
     }
 }

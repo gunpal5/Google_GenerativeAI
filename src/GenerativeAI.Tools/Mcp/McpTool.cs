@@ -15,6 +15,7 @@ namespace GenerativeAI.Tools.Mcp;
 /// <summary>
 /// A tool implementation that integrates MCP (Model Context Protocol) servers with Google Generative AI.
 /// This allows you to expose tools from any MCP server to Gemini models for function calling.
+/// Supports all MCP transport protocols: stdio, HTTP/SSE, and custom transports.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -23,27 +24,35 @@ namespace GenerativeAI.Tools.Mcp;
 /// McpTool forwards the request to the MCP server and returns the response.
 /// </para>
 /// <para>
-/// Example usage:
+/// Example usage with stdio transport:
 /// <code>
-/// var config = new McpServerConfig
-/// {
-///     Name = "my-mcp-server",
-///     Command = "npx",
-///     Arguments = new List&lt;string&gt; { "-y", "@modelcontextprotocol/server-everything" }
-/// };
+/// var transport = McpTransportFactory.CreateStdioTransport(
+///     "my-server",
+///     "npx",
+///     new[] { "-y", "@modelcontextprotocol/server-everything" }
+/// );
 ///
-/// using var mcpTool = await McpTool.CreateAsync(config);
+/// using var mcpTool = await McpTool.CreateAsync(transport);
 ///
-/// var model = new GenerativeModel("gemini-2.0-flash-exp");
+/// var model = new GenerativeModel(apiKey, "gemini-2.0-flash-exp");
 /// model.AddFunctionTool(mcpTool);
 ///
-/// var result = await model.GenerateContentAsync("What's the weather in San Francisco?");
+/// var result = await model.GenerateContentAsync("Your query here");
+/// </code>
+/// </para>
+/// <para>
+/// Example usage with HTTP transport:
+/// <code>
+/// var transport = McpTransportFactory.CreateHttpTransport("http://localhost:8080");
+///
+/// using var mcpTool = await McpTool.CreateAsync(transport);
+/// // Use as above
 /// </code>
 /// </para>
 /// </remarks>
 public class McpTool : GoogleFunctionTool, IDisposable, IAsyncDisposable
 {
-    private readonly McpServerConfig _config;
+    private readonly Func<IClientTransport>? _transportFactory;
     private readonly McpToolOptions _options;
     private McpClient? _client;
     private IClientTransport? _transport;
@@ -63,46 +72,75 @@ public class McpTool : GoogleFunctionTool, IDisposable, IAsyncDisposable
     /// </summary>
     public bool IsConnected => _client != null && _transport != null;
 
-    private McpTool(McpServerConfig config, McpToolOptions? options = null)
+    private McpTool(IClientTransport transport, McpToolOptions? options = null)
     {
-        _config = config ?? throw new ArgumentNullException(nameof(config));
+        _transport = transport ?? throw new ArgumentNullException(nameof(transport));
+        _options = options ?? new McpToolOptions();
+        _functionDeclarations = new List<FunctionDeclaration>();
+        _mcpTools = new Dictionary<string, ModelContextProtocol.Protocol.Types.Tool>();
+        _transportFactory = null;
+    }
+
+    private McpTool(Func<IClientTransport> transportFactory, McpToolOptions? options = null)
+    {
+        _transportFactory = transportFactory ?? throw new ArgumentNullException(nameof(transportFactory));
         _options = options ?? new McpToolOptions();
         _functionDeclarations = new List<FunctionDeclaration>();
         _mcpTools = new Dictionary<string, ModelContextProtocol.Protocol.Types.Tool>();
     }
 
     /// <summary>
-    /// Creates a new McpTool instance and connects to the specified MCP server.
+    /// Creates a new McpTool instance and connects using the provided transport.
+    /// Supports all MCP transport types: stdio, HTTP/SSE, etc.
     /// </summary>
-    /// <param name="config">Configuration for the MCP server connection.</param>
+    /// <param name="transport">The MCP client transport (stdio, HTTP, etc.).</param>
     /// <param name="options">Optional configuration options for the tool behavior.</param>
     /// <param name="cancellationToken">Token to monitor for cancellation requests.</param>
     /// <returns>A connected McpTool instance ready to use.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when config is null.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when transport is null.</exception>
     /// <exception cref="InvalidOperationException">Thrown when unable to connect to the MCP server.</exception>
     public static async Task<McpTool> CreateAsync(
-        McpServerConfig config,
+        IClientTransport transport,
         McpToolOptions? options = null,
         CancellationToken cancellationToken = default)
     {
-        var tool = new McpTool(config, options);
+        var tool = new McpTool(transport, options);
         await tool.ConnectAsync(cancellationToken).ConfigureAwait(false);
         return tool;
     }
 
     /// <summary>
-    /// Creates multiple McpTool instances from a list of server configurations.
+    /// Creates a new McpTool instance with a transport factory for auto-reconnection support.
+    /// The factory will be called to create a new transport when reconnection is needed.
     /// </summary>
-    /// <param name="configs">List of MCP server configurations.</param>
+    /// <param name="transportFactory">Factory function that creates a new transport instance.</param>
+    /// <param name="options">Optional configuration options for the tool behavior.</param>
+    /// <param name="cancellationToken">Token to monitor for cancellation requests.</param>
+    /// <returns>A connected McpTool instance ready to use.</returns>
+    public static async Task<McpTool> CreateAsync(
+        Func<IClientTransport> transportFactory,
+        McpToolOptions? options = null,
+        CancellationToken cancellationToken = default)
+    {
+        var tool = new McpTool(transportFactory, options);
+        tool._transport = transportFactory();
+        await tool.ConnectAsync(cancellationToken).ConfigureAwait(false);
+        return tool;
+    }
+
+    /// <summary>
+    /// Creates multiple McpTool instances from a list of transports.
+    /// </summary>
+    /// <param name="transports">List of MCP client transports.</param>
     /// <param name="options">Optional configuration options for the tool behavior.</param>
     /// <param name="cancellationToken">Token to monitor for cancellation requests.</param>
     /// <returns>A list of connected McpTool instances.</returns>
     public static async Task<List<McpTool>> CreateMultipleAsync(
-        IEnumerable<McpServerConfig> configs,
+        IEnumerable<IClientTransport> transports,
         McpToolOptions? options = null,
         CancellationToken cancellationToken = default)
     {
-        var tasks = configs.Select(config => CreateAsync(config, options, cancellationToken));
+        var tasks = transports.Select(transport => CreateAsync(transport, options, cancellationToken));
         var tools = await Task.WhenAll(tasks).ConfigureAwait(false);
         return tools.ToList();
     }
@@ -112,18 +150,11 @@ public class McpTool : GoogleFunctionTool, IDisposable, IAsyncDisposable
         await _connectionLock.WaitAsync(cancellationToken).ConfigureAwait(false);
         try
         {
-            // Create transport based on configuration
-            _transport = new StdioClientTransport(new StdioClientTransportOptions
-            {
-                Name = _config.Name,
-                Command = _config.Command,
-                Arguments = _config.Arguments,
-                Environment = _config.Environment,
-                WorkingDirectory = _config.WorkingDirectory
-            });
+            if (_transport == null)
+                throw new InvalidOperationException("Transport is not initialized");
 
             // Create MCP client
-            using var timeoutCts = new CancellationTokenSource(_config.ConnectionTimeoutMs);
+            using var timeoutCts = new CancellationTokenSource(_options.ConnectionTimeoutMs);
             using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCts.Token);
 
             _client = await McpClient.CreateAsync(_transport, linkedCts.Token).ConfigureAwait(false);
@@ -358,6 +389,17 @@ public class McpTool : GoogleFunctionTool, IDisposable, IAsyncDisposable
         {
             await _transport.DisposeAsync().ConfigureAwait(false);
             _transport = null;
+        }
+
+        // Create new transport if factory is available
+        if (_transportFactory != null)
+        {
+            _transport = _transportFactory();
+        }
+        else
+        {
+            throw new InvalidOperationException(
+                "Cannot reconnect without a transport factory. Use CreateAsync with a factory function for auto-reconnection support.");
         }
 
         // Reconnect
