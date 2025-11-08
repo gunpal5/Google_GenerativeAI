@@ -30,6 +30,7 @@
     - [Gemini Tools and Function Calling](#gemini-tools-and-function-calling)
         - [1. Inbuilt Tools (GoogleSearch, GoogleSearchRetrieval, and Code Execution)](#gemini-tools-and-function-calling)
         - [2. Function Calling](#gemini-tools-and-function-calling)
+        - [3. MCP Server Integration](#4-mcp-model-context-protocol-server-integration)
     - [Image Generation and Captioning](#image-generation-and-captioning)
     - [Multimodal Live API](#multimodal-live-api)
     - [Retrieval-Augmented Generation](#retrieval-augmented-generation)
@@ -504,6 +505,68 @@ model.AddFunctionTool(service.AsGoogleFunctionTool());
 ---
 
 **For more details and options, see the [wiki](https://github.com/gunpal5/Google_GenerativeAI/wiki/Function-Calling).**
+
+---
+
+ - ### 4. MCP (Model Context Protocol) Server Integration
+
+Integrate MCP servers to expose tools from any MCP-compatible server to Gemini. Supports **all transport protocols**: stdio, HTTP/SSE, and custom transports.
+
+**Stdio Transport** (Launch MCP server as subprocess):
+```csharp
+// Create stdio transport
+var transport = McpTransportFactory.CreateStdioTransport(
+    "my-server",
+    "npx",
+    new[] { "-y", "@modelcontextprotocol/server-everything" }
+);
+
+using var mcpTool = await McpTool.CreateAsync(transport);
+
+var model = new GenerativeModel("YOUR_API_KEY", GoogleAIModels.Gemini2Flash);
+model.AddFunctionTool(mcpTool);
+model.FunctionCallingBehaviour.AutoCallFunction = true;
+```
+
+**HTTP/SSE Transport** (Connect to remote MCP server):
+```csharp
+// Create HTTP transport
+var transport = McpTransportFactory.CreateHttpTransport("http://localhost:8080");
+
+// Or with authentication
+var authTransport = McpTransportFactory.CreateHttpTransportWithAuth(
+    "https://api.example.com",
+    "your-auth-token"
+);
+
+using var mcpTool = await McpTool.CreateAsync(transport);
+model.AddFunctionTool(mcpTool);
+```
+
+**Multiple MCP Servers**:
+```csharp
+var transports = new List<IClientTransport>
+{
+    McpTransportFactory.CreateStdioTransport("server1", "npx", new[] { "..." }),
+    McpTransportFactory.CreateHttpTransport("http://localhost:8080")
+};
+
+var mcpTools = await McpTool.CreateMultipleAsync(transports);
+foreach (var tool in mcpTools)
+{
+    model.AddFunctionTool(tool);
+}
+```
+
+**Key Features**:
+- Supports stdio, HTTP/SSE, and custom transports
+- Auto-discovery of tools from MCP servers
+- Multiple concurrent servers
+- Auto-reconnection support
+- Works with any MCP-compatible server (Node.js, Python, C#, etc.)
+
+**See [samples/McpIntegrationDemo](samples/McpIntegrationDemo) for complete examples.**
+
 ---
 ## Image Generation and Captioning
 

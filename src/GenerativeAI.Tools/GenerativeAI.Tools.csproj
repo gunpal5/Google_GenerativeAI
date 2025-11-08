@@ -33,10 +33,12 @@
     </ItemGroup>
     <ItemGroup>
       <PackageReference Include="CSharpToJsonSchema" Version="3.10.2-dev.39" />
+      <PackageReference Include="ModelContextProtocol" Version="0.4.0-preview.3" />
       <PackageReference Update="DotNet.ReproducibleBuilds" Version="1.2.39">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
+      <PackageReference Include="ModelContextProtocol.Core" Version="0.4.0-preview.3" />
     </ItemGroup>
 
 </Project>
