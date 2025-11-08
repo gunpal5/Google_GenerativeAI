@@ -565,7 +565,9 @@ foreach (var tool in mcpTools)
 - Auto-reconnection support
 - Works with any MCP-compatible server (Node.js, Python, C#, etc.)
 
-**See [samples/McpIntegrationDemo](samples/McpIntegrationDemo) for complete examples.**
+**For detailed documentation and examples, see:**
+- **[MCP Integration Guide](https://github.com/gunpal5/Google_GenerativeAI/wiki/MCP-(Model-Context-Protocol)-Integration)** - Complete guide with configuration options, best practices, and troubleshooting
+- **[samples/McpIntegrationDemo](samples/McpIntegrationDemo)** - Working code examples
 
 ---
 ## Image Generation and Captioning
