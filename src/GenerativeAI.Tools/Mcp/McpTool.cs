@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using GenerativeAI.Core;
 using GenerativeAI.Types;
 using ModelContextProtocol;
-using ModelContextProtocol.Transports;
+using ModelContextProtocol.Client;
 
 namespace GenerativeAI.Tools.Mcp;
 
@@ -57,7 +57,7 @@ public class McpTool : GoogleFunctionTool, IDisposable, IAsyncDisposable
     private McpClient? _client;
     private IClientTransport? _transport;
     private List<FunctionDeclaration> _functionDeclarations;
-    private Dictionary<string, ModelContextProtocol.Protocol.Types.Tool> _mcpTools;
+    private Dictionary<string, McpClientTool> _mcpTools;
     private bool _disposed;
     private int _reconnectAttempts;
     private readonly SemaphoreSlim _connectionLock = new SemaphoreSlim(1, 1);
@@ -77,7 +77,7 @@ public class McpTool : GoogleFunctionTool, IDisposable, IAsyncDisposable
         _transport = transport ?? throw new ArgumentNullException(nameof(transport));
         _options = options ?? new McpToolOptions();
         _functionDeclarations = new List<FunctionDeclaration>();
-        _mcpTools = new Dictionary<string, ModelContextProtocol.Protocol.Types.Tool>();
+        _mcpTools = new Dictionary<string, McpClientTool>();
         _transportFactory = null;
     }
 
@@ -86,7 +86,7 @@ public class McpTool : GoogleFunctionTool, IDisposable, IAsyncDisposable
         _transportFactory = transportFactory ?? throw new ArgumentNullException(nameof(transportFactory));
         _options = options ?? new McpToolOptions();
         _functionDeclarations = new List<FunctionDeclaration>();
-        _mcpTools = new Dictionary<string, ModelContextProtocol.Protocol.Types.Tool>();
+        _mcpTools = new Dictionary<string, McpClientTool>();
     }
 
     /// <summary>
@@ -157,7 +157,7 @@ public class McpTool : GoogleFunctionTool, IDisposable, IAsyncDisposable
             using var timeoutCts = new CancellationTokenSource(_options.ConnectionTimeoutMs);
             using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCts.Token);
 
-            _client = await McpClient.CreateAsync(_transport, linkedCts.Token).ConfigureAwait(false);
+            _client = await McpClient.CreateAsync(_transport, cancellationToken:linkedCts.Token).ConfigureAwait(false);
 
             // Discover available tools
             await RefreshToolsAsync(cancellationToken).ConfigureAwait(false);
@@ -179,7 +179,7 @@ public class McpTool : GoogleFunctionTool, IDisposable, IAsyncDisposable
         if (_client == null)
             throw new InvalidOperationException("MCP client is not connected. Call ConnectAsync first.");
 
-        var tools = await _client.ListToolsAsync(cancellationToken).ConfigureAwait(false);
+        var tools = await _client.ListToolsAsync(cancellationToken:cancellationToken).ConfigureAwait(false);
 
         _mcpTools.Clear();
         _functionDeclarations.Clear();
@@ -191,7 +191,7 @@ public class McpTool : GoogleFunctionTool, IDisposable, IAsyncDisposable
         }
     }
 
-    private FunctionDeclaration ConvertMcpToolToFunctionDeclaration(ModelContextProtocol.Protocol.Types.Tool mcpTool)
+    private FunctionDeclaration ConvertMcpToolToFunctionDeclaration(McpClientTool mcpTool)
     {
         var declaration = new FunctionDeclaration
         {
@@ -199,10 +199,10 @@ public class McpTool : GoogleFunctionTool, IDisposable, IAsyncDisposable
             Description = mcpTool.Description ?? string.Empty
         };
 
-        // Convert MCP tool's input schema to Google's Schema format
-        if (mcpTool.InputSchema != null)
+        // McpClientTool.JsonSchema contains the JSON Schema for the tool's parameters
+        if (mcpTool.JsonSchema.ValueKind != JsonValueKind.Undefined && mcpTool.JsonSchema.ValueKind != JsonValueKind.Null)
         {
-            declaration.ParametersJsonSchema = JsonNode.Parse(mcpTool.InputSchema.ToJsonString());
+            declaration.ParametersJsonSchema = JsonNode.Parse(mcpTool.JsonSchema.GetRawText());
         }
 
         return declaration;
@@ -258,7 +258,7 @@ public class McpTool : GoogleFunctionTool, IDisposable, IAsyncDisposable
             var result = await _client.CallToolAsync(
                 functionCall.Name,
                 arguments,
-                cancellationToken
+                cancellationToken:cancellationToken
             ).ConfigureAwait(false);
 
             // Convert MCP response to FunctionResponse
@@ -273,27 +273,13 @@ public class McpTool : GoogleFunctionTool, IDisposable, IAsyncDisposable
                 var contentArray = new JsonArray();
                 foreach (var content in result.Content)
                 {
-                    var contentObj = new JsonObject
-                    {
-                        ["type"] = content.Type
-                    };
-
-                    if (content.Type == "text" && !string.IsNullOrEmpty(content.Text))
-                    {
-                        contentObj["text"] = content.Text;
-                    }
-                    else if (content.Type == "image" && !string.IsNullOrEmpty(content.Data))
-                    {
-                        contentObj["data"] = content.Data;
-                        contentObj["mimeType"] = content.MimeType;
-                    }
-                    else if (content.Type == "resource" && content.Resource != null)
-                    {
-                        contentObj["resource"] = JsonNode.Parse(JsonSerializer.Serialize(content.Resource));
-                    }
-
-                    contentArray.Add(contentObj);
+                    // Serialize the entire ContentBlock as-is
+                    // The MCP SDK handles the polymorphic serialization correctly
+                    var contentJson = JsonSerializer.Serialize(content);
+                    var contentNode = JsonNode.Parse(contentJson);
+                    contentArray.Add(contentNode);
                 }
+
                 responseNode["content"] = contentArray;
             }
             else
@@ -302,7 +288,7 @@ public class McpTool : GoogleFunctionTool, IDisposable, IAsyncDisposable
             }
 
             // Include error information if present
-            if (result.IsError)
+            if (result.IsError == true)
             {
                 responseNode["isError"] = true;
                 if (_options.IncludeDetailedErrors)
@@ -387,7 +373,14 @@ public class McpTool : GoogleFunctionTool, IDisposable, IAsyncDisposable
 
         if (_transport != null)
         {
-            await _transport.DisposeAsync().ConfigureAwait(false);
+            if (_transport is IAsyncDisposable asyncDisposable)
+            {
+                await asyncDisposable.DisposeAsync().ConfigureAwait(false);
+            }
+            else if (_transport is IDisposable disposable)
+            {
+                disposable.Dispose();
+            }
             _transport = null;
         }
 
@@ -451,7 +444,14 @@ public class McpTool : GoogleFunctionTool, IDisposable, IAsyncDisposable
             {
                 try
                 {
-                    _transport.DisposeAsync().AsTask().GetAwaiter().GetResult();
+                    if (_transport is IAsyncDisposable asyncDisposable)
+                    {
+                        asyncDisposable.DisposeAsync().AsTask().GetAwaiter().GetResult();
+                    }
+                    else if (_transport is IDisposable disposable)
+                    {
+                        disposable.Dispose();
+                    }
                 }
                 catch
                 {
@@ -472,7 +472,14 @@ public class McpTool : GoogleFunctionTool, IDisposable, IAsyncDisposable
 
         if (_transport != null)
         {
-            await _transport.DisposeAsync().ConfigureAwait(false);
+            if (_transport is IAsyncDisposable asyncDisposable)
+            {
+                await asyncDisposable.DisposeAsync().ConfigureAwait(false);
+            }
+            else if (_transport is IDisposable disposable)
+            {
+                disposable.Dispose();
+            }
         }
 
         _connectionLock.Dispose();

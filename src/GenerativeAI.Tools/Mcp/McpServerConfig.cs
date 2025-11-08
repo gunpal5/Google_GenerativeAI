@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using ModelContextProtocol.Transports;
+using ModelContextProtocol.Client;
 
 namespace GenerativeAI.Tools.Mcp;
 
@@ -92,7 +92,7 @@ public static class McpTransportFactory
     {
         var options = new HttpClientTransportOptions
         {
-            BaseUrl = new Uri(baseUrl),
+            Endpoint = new Uri(baseUrl),
             AdditionalHeaders = additionalHeaders != null
                 ? new Dictionary<string, string>(additionalHeaders)
                 : null
