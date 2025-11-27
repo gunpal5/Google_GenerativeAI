@@ -340,7 +340,13 @@ public class MicrosoftExtension_Tests
     {
         // Arrange
         var thoughtSignature = "some_signature";
-        var content = new FunctionCallContent("myFunction", new Dictionary<string, object?> { { "arg1", "value1" } });
+        var content = new FunctionCallContent("myFunction", "name")
+        {
+            Arguments = new Dictionary<string, object?>()
+            {
+                {"arg1", "value1"}
+            }
+        };
         content.AdditionalProperties = new AdditionalPropertiesDictionary
         {
             { AdditionalPropertiesKeys.ThoughtSignature, thoughtSignature }
