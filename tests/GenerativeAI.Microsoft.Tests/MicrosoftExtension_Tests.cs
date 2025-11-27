@@ -310,6 +310,102 @@ public class MicrosoftExtension_Tests
         // Add more specific assertions based on your Bogus rules if needed
     }
 
+    [Fact]
+    public void ToAiContents_WithFunctionCallPart_AndThoughtSignature_ReturnsFunctionCallContentWithSignature()
+    {
+        // Arrange
+        var thoughtSignature = "some_signature";
+        var parts = new List<Part> { new Part
+        {
+            FunctionCall = new FunctionCall { Name = "myFunction", Args = JsonNode.Parse(" { \"arg1\": \"value1\", \"arg2\": \"value2\" }") },
+            ThoughtSignature = thoughtSignature
+        } };
+
+        // Act
+        var result = parts.ToAiContents();
+
+        // Assert
+        result.ShouldNotBeNull();
+        result.Count.ShouldBe(1);
+        result.FirstOrDefault().ShouldBeOfType<FunctionCallContent>();
+        var functionCallContent = (FunctionCallContent)result.FirstOrDefault();
+        functionCallContent.Name.ShouldBe("myFunction");
+        functionCallContent.AdditionalProperties.ShouldNotBeNull();
+        functionCallContent.AdditionalProperties.ContainsKey(AdditionalPropertiesKeys.ThoughtSignature).ShouldBeTrue();
+        functionCallContent.AdditionalProperties[AdditionalPropertiesKeys.ThoughtSignature].ShouldBe(thoughtSignature);
+    }
+
+    [Fact]
+    public void ToPart_WithFunctionCallContent_AndThoughtSignature_ReturnsPartWithSignature()
+    {
+        // Arrange
+        var thoughtSignature = "some_signature";
+        var content = new FunctionCallContent("myFunction", "name")
+        {
+            Arguments = new Dictionary<string, object?>()
+            {
+                {"arg1", "value1"}
+            }
+        };
+        content.AdditionalProperties = new AdditionalPropertiesDictionary
+        {
+            { AdditionalPropertiesKeys.ThoughtSignature, thoughtSignature }
+        };
+
+        // Act
+        var part = content.ToPart();
+
+        // Assert
+        part.ShouldNotBeNull();
+        part.FunctionCall.ShouldNotBeNull();
+        part.ThoughtSignature.ShouldBe(thoughtSignature);
+    }
+
+    [Fact]
+    public void ToAiContents_WithTextPart_AndThoughtSignature_ReturnsTextContentWithSignature()
+    {
+        // Arrange
+        var thoughtSignature = "some_signature";
+        var parts = new List<Part> { new Part
+        {
+            Text = "Hello world",
+            ThoughtSignature = thoughtSignature
+        } };
+
+        // Act
+        var result = parts.ToAiContents();
+
+        // Assert
+        result.ShouldNotBeNull();
+        result.Count.ShouldBe(1);
+        result.FirstOrDefault().ShouldBeOfType<TextContent>();
+        var textContent = (TextContent)result.FirstOrDefault();
+        textContent.Text.ShouldBe("Hello world");
+        textContent.AdditionalProperties.ShouldNotBeNull();
+        textContent.AdditionalProperties.ContainsKey(AdditionalPropertiesKeys.ThoughtSignature).ShouldBeTrue();
+        textContent.AdditionalProperties[AdditionalPropertiesKeys.ThoughtSignature].ShouldBe(thoughtSignature);
+    }
+
+    [Fact]
+    public void ToPart_WithTextContent_AndThoughtSignature_ReturnsPartWithSignature()
+    {
+        // Arrange
+        var thoughtSignature = "some_signature";
+        var content = new TextContent("Hello world");
+        content.AdditionalProperties = new AdditionalPropertiesDictionary
+        {
+            { AdditionalPropertiesKeys.ThoughtSignature, thoughtSignature }
+        };
+
+        // Act
+        var part = content.ToPart();
+
+        // Assert
+        part.ShouldNotBeNull();
+        part.Text.ShouldBe("Hello world");
+        part.ThoughtSignature.ShouldBe(thoughtSignature);
+    }
+
     #endregion
 
     #region ToGenerateContentRequest
