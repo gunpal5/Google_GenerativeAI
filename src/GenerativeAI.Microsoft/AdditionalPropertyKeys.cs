@@ -24,4 +24,9 @@ public static class AdditionalPropertiesKeys
     /// Key used to specify the aspect ratio for image generation.
     /// </summary>
     public const string ImageConfigAspectRatio = "AspectRatio";
+
+    /// <summary>
+    /// Key used to store the thought signature in the additional properties.
+    /// </summary>
+    public const string ThoughtSignature = "thoughtSignature";
 }
