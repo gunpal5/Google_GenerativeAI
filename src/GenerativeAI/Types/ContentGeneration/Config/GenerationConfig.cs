@@ -165,7 +165,7 @@ public class GenerationConfig
     /// </summary>
     [JsonPropertyName("speechConfig")]
     public SpeechConfig? SpeechConfig { get; set; }
-    
+
     /// <summary>
     /// Optional. Config for thinking features.
     /// An error will be returned if this field is set for models that don't support thinking.
@@ -178,13 +178,13 @@ public class GenerationConfig
     /// </summary>
     [JsonPropertyName("mediaResolution")]
     public MediaResolution? MediaResolution { get; set; }
-    
+
     /// <summary>
     /// Optional. If enabled, audio timestamp will be included in the request to the model.
     /// </summary>
     [JsonPropertyName("audioTimestamp")]
     public bool? AudioTimestamp { get; set; }
-    
+
     /// <summary>
     /// Optional. Routing configuration.
     /// </summary>
@@ -228,7 +228,7 @@ public class ThinkingConfig
     /// </summary>
     [JsonPropertyName("includeThoughts")]
     public bool? IncludeThoughts { get; set; }
-    
+
     /// <summary>
     /// Indicates the thinking budget in tokens
     /// </summary>
@@ -279,7 +279,7 @@ public class RoutingConfig
 }
 
 /// <summary>
-/// When automated routing is specified, the routing will be determined by the pretrained routing model 
+/// When automated routing is specified, the routing will be determined by the pretrained routing model
 /// and customer provided model routing preference.
 /// </summary>
 public class AutoRoutingMode
@@ -329,14 +329,69 @@ public class ManualRoutingMode
     public string? ModelName { get; set; }
 }
 
-/// <summary>
-/// Configuration for image generation in models that support image output (e.g., gemini-2.5-flash-image).
-/// </summary>
-public class ImageConfig
-{
-    /// <summary>
-    /// Optional. The aspect ratio for generated images. Common values: "16:9", "9:16", "1:1", "4:3", "3:4".
-    /// </summary>
-    [JsonPropertyName("aspectRatio")]
-    public string? AspectRatio { get; set; }
-}
+  /// <summary>
+  /// Configuration for image generation in models that support image output (e.g., gemini-2.5-flash-image, gemini-3-pro-image-preview).
+  /// </summary>
+  /// <remarks>
+  /// Use <see cref="ImageConfigValues"/> for common predefined values.
+  /// </remarks>
+  /// <seealso href="https://ai.google.dev/gemini-api/docs/image-generation">See Official API Documentation</seealso>
+  public class ImageConfig
+  {
+      /// <summary>
+      /// Optional. The aspect ratio for generated images.
+      /// </summary>
+      /// <remarks>
+      /// Common values include "1:1" (square), "16:9" (landscape), "9:16" (portrait), "4:3", and "3:4".
+      /// See <see cref="ImageConfigValues.AspectRatios"/> for predefined constants.
+      /// </remarks>
+      [JsonPropertyName("aspectRatio")]
+      public string? AspectRatio { get; set; }
+
+      /// <summary>
+      /// Optional. The output resolution for generated images.
+      /// </summary>
+      /// <remarks>
+      /// Values: "1K", "2K", "4K". Only supported on certain models like gemini-3-pro-image-preview.
+      /// See <see cref="ImageConfigValues.ImageSizes"/> for predefined constants.
+      /// </remarks>
+      [JsonPropertyName("imageSize")]
+      public string? ImageSize { get; set; }
+
+      /// <summary>
+      /// Optional. The image output options for generated images.
+      /// </summary>
+      /// <remarks>
+      /// Only supported on certain models like gemini-3-pro-image-preview.
+      /// </remarks>
+      [JsonPropertyName("imageOutputOptions")]
+      public ImageOutputOptions? ImageOutputOptions { get; set; }
+  }
+
+  /// <summary>
+  /// The image output format for generated images.
+  /// </summary>
+  /// <remarks>
+  /// See <see cref="ImageConfigValues.OutputMimeTypes"/> for predefined MIME type constants.
+  /// </remarks>
+  public class ImageOutputOptions
+  {
+      /// <summary>
+      /// Optional. The image format that the output should be saved as.
+      /// </summary>
+      /// <remarks>
+      /// Default is "image/png". Supported values: "image/png", "image/jpeg".
+      /// See <see cref="ImageConfigValues.OutputMimeTypes"/> for predefined constants.
+      /// </remarks>
+      [JsonPropertyName("mimeType")]
+      public string? MimeType { get; set; }
+
+      /// <summary>
+      /// Optional. The compression quality of the output image (0-100).
+      /// </summary>
+      /// <remarks>
+      /// Only applicable when <see cref="MimeType"/> is "image/jpeg". Default is 75.
+      /// </remarks>
+      [JsonPropertyName("compressionQuality")]
+      public int? CompressionQuality { get; set; }
+  }

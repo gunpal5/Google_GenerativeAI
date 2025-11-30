@@ -20,6 +20,8 @@ namespace GenerativeAI.Types;
 [JsonSerializable(typeof(GoogleTypeDate))]
 [JsonSerializable(typeof(Schema))]
 [JsonSerializable(typeof(GenerationConfig))]
+[JsonSerializable(typeof(ImageConfig))]
+[JsonSerializable(typeof(ImageOutputOptions))]
 [JsonSerializable(typeof(ModelSelectionConfig))]
 [JsonSerializable(typeof(FeatureSelectionPreference))]
 [JsonSerializable(typeof(PrebuiltVoiceConfig))]
