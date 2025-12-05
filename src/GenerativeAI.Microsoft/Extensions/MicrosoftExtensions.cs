@@ -146,7 +146,7 @@ public static class MicrosoftExtensions
     /// <returns>A <see cref="Part"/> object representing the given AI content, or null if the content type is unsupported.</returns>
     public static Part? ToPart(this AIContent content, ChatOptions? options = null)
     {
-        return content switch
+        var part = content switch
         {
             TextContent text => new Part { Text = text.Text },
             DataContent image => new Part
@@ -175,6 +175,15 @@ public static class MicrosoftExtensions
             },
             _ => null,
         };
+
+        if (part != null && content.AdditionalProperties != null &&
+            content.AdditionalProperties.TryGetValue(AdditionalPropertiesKeys.ThoughtSignature, out var signature) &&
+            signature is string signatureString)
+        {
+            part.ThoughtSignature = signatureString;
+        }
+
+        return part;
     }
 
     /// <summary>
@@ -590,13 +599,25 @@ public static class MicrosoftExtensions
         {
             if (part.Text is not null)
             {
-                (contents ??= new()).Add(new TextContent(part.Text));
+                var textContent = new TextContent(part.Text);
+                if (part.ThoughtSignature != null)
+                {
+                    textContent.AdditionalProperties ??= new AdditionalPropertiesDictionary();
+                    textContent.AdditionalProperties[AdditionalPropertiesKeys.ThoughtSignature] = part.ThoughtSignature;
+                }
+                (contents ??= new()).Add(textContent);
             }
 
             if (part.FunctionCall is not null)
             {
-                (contents ??= new()).Add(new FunctionCallContent(part.FunctionCall.Name, part.FunctionCall.Name,
-                    ConvertFunctionCallArg(part.FunctionCall.Args, part.FunctionCall.Name, options)));
+                var functionCallContent = new FunctionCallContent(part.FunctionCall.Name, part.FunctionCall.Name,
+                    ConvertFunctionCallArg(part.FunctionCall.Args, part.FunctionCall.Name, options));
+                if (part.ThoughtSignature != null)
+                {
+                    functionCallContent.AdditionalProperties ??= new AdditionalPropertiesDictionary();
+                    functionCallContent.AdditionalProperties[AdditionalPropertiesKeys.ThoughtSignature] = part.ThoughtSignature;
+                }
+                (contents ??= new()).Add(functionCallContent);
             }
 
             if (part.FunctionResponse is not null)
