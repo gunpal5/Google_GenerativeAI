@@ -26,7 +26,17 @@ public static class AdditionalPropertiesKeys
     public const string ImageConfigAspectRatio = "AspectRatio";
 
     /// <summary>
-    /// Key used to store the thought signature in the additional properties.
+    /// Key used to specify the output resolution for image generation ("1K", "2K", "4K").
     /// </summary>
-    public const string ThoughtSignature = "thoughtSignature";
+    public const string ImageConfigImageSize = "ImageSize";
+
+    /// <summary>
+    /// Key used to specify the output MIME type for image generation ("image/png", "image/jpeg").
+    /// </summary>
+    public const string ImageOutputOptionsMimeType = "MimeType";
+
+    /// <summary>
+    /// Key used to specify the compression quality for image generation (0-100).
+    /// </summary>
+    public const string ImageOutputOptionsCompressionQuality = "CompressionQuality";
 }

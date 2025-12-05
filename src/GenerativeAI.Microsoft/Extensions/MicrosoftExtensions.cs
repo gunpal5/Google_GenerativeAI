@@ -357,6 +357,26 @@ public static class MicrosoftExtensions
             config.ImageConfig.AspectRatio = aspectRatio;
         }
 
+        if (options.AdditionalProperties.TryGetValue(AdditionalPropertiesKeys.ImageConfigImageSize, out string? imageSize))
+        {
+            config.ImageConfig ??= new ImageConfig();
+            config.ImageConfig.ImageSize = imageSize;
+        }
+
+        if (options.AdditionalProperties.TryGetValue(AdditionalPropertiesKeys.ImageOutputOptionsMimeType, out string? mimeType))
+        {
+            config.ImageConfig ??= new ImageConfig();
+            config.ImageConfig.ImageOutputOptions ??= new ImageOutputOptions();
+            config.ImageConfig.ImageOutputOptions.MimeType = mimeType;
+        }
+
+        if (options.AdditionalProperties.TryGetValue(AdditionalPropertiesKeys.ImageOutputOptionsCompressionQuality, out int compressionQuality))
+        {
+            config.ImageConfig ??= new ImageConfig();
+            config.ImageConfig.ImageOutputOptions ??= new ImageOutputOptions();
+            config.ImageConfig.ImageOutputOptions.CompressionQuality = compressionQuality;
+        }
+
         return config;
     }
 
