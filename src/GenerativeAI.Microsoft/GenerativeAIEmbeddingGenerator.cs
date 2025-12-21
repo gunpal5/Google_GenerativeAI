@@ -77,7 +77,8 @@ public sealed class GenerativeAIEmbeddingGenerator : IEmbeddingGenerator<string,
                     Parts = [new Part { Text = text }]
                 },
                 Model = Model.Model,
-                TaskType = GetTaskType(options)
+                TaskType = GetTaskType(options),
+                OutputDimensionality = options?.Dimensions
             });
 
             // Call the batch embed API
