@@ -274,9 +274,10 @@ public class Gemini3_ThinkingConfig_Tests
 
         // Act
         var json = JsonSerializer.Serialize(config);
-        var deserialized = JsonSerializer.Deserialize<ThinkingConfig>(json);
 
         // Assert
+        var deserialized = JsonSerializer.Deserialize<ThinkingConfig>(json);
+
         deserialized.ShouldNotBeNull();
         deserialized.ThinkingLevel.ShouldBe(level);
     }
