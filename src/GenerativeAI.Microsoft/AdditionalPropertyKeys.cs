@@ -39,4 +39,9 @@ public static class AdditionalPropertiesKeys
     /// Key used to specify the compression quality for image generation (0-100).
     /// </summary>
     public const string ImageOutputOptionsCompressionQuality = "CompressionQuality";
+
+    /// <summary>
+    /// Key used to store the thought signature for content generated during thinking/reasoning.
+    /// </summary>
+    public const string ThoughtSignature = "ThoughtSignature";
 }
