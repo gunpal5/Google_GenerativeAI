@@ -36,8 +36,11 @@ jobs:
         run: dotnet test -c Release --no-build --verbosity normal
         continue-on-error: true
 
-      - name: Pack
-        run: dotnet pack -c Release --no-build -o ./nupkgs
+      - name: Pack (src projects only)
+        run: |
+          for project in src/**/*.csproj; do
+            dotnet pack "$project" -c Release --no-build -o ./nupkgs
+          done
 
       - name: Publish to NuGet.org
         run: dotnet nuget push "./nupkgs/*.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_KEY }} --skip-duplicate
