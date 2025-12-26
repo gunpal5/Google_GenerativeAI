@@ -34,11 +34,11 @@ jobs:
         with:
             github_token: ${{ secrets.GITHUB_TOKEN }}
             branch: ${{ github.ref }}
-  build-test-publish:   
+  build-test-publish:
     name: Publishing
     needs: [update]
     permissions: write-all
-    uses: gunpal5/workflows/.github/workflows/dotnet_build-test-publish.yml@main    
+    uses: gunpal5/workflows/.github/workflows/dotnet_build-test-publish.yml@main
     secrets:
       nuget-key: ${{ secrets.NUGET_KEY }}
     with:
@@ -46,5 +46,28 @@ jobs:
       create-release: true
       publish: true
       project-version: ${{ needs.update.outputs.new_version }}
- 
-      
+
+  publish-github-packages:
+    name: Publish to GitHub Packages
+    needs: [build-test-publish]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Build and Pack
+        run: dotnet pack -c Release -o ./nupkgs
+
+      - name: Publish to GitHub Packages
+        run: |
+          dotnet nuget add source "https://nuget.pkg.github.com/gunpal5/index.json" --name github --username gunpal5 --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text
+          dotnet nuget push "./nupkgs/*.nupkg" --source github --skip-duplicate
+
