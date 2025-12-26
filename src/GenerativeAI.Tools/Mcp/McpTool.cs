@@ -204,13 +204,8 @@ public class McpTool : GoogleFunctionTool, IDisposable, IAsyncDisposable
         {
             var jsonNode = JsonNode.Parse(mcpTool.JsonSchema.GetRawText());
 
-            // Set ParametersJsonSchema for full JSON Schema support (used by regular Gemini API)
-            declaration.ParametersJsonSchema = jsonNode;
-
-            // Also set Parameters for compatibility with Gemini Live API
-            // (Live API doesn't support parameters_json_schema)
-            // Note: Some schemas (e.g., with additionalProperties/dictionaries) cannot be converted
-            // to the compatible subset - in those cases, the tool will only work with regular API
+            // Use Parameters (compatible schema subset) which works with both regular and Live API
+            // Note: API doesn't allow both parameters and parameters_json_schema to be set
             if (jsonNode != null)
             {
                 try
@@ -220,8 +215,9 @@ public class McpTool : GoogleFunctionTool, IDisposable, IAsyncDisposable
                 catch (InvalidOperationException)
                 {
                     // Schema contains features not supported by Google's structured output API
-                    // (e.g., dictionaries with additionalProperties). Tool will work with regular
-                    // Gemini API via ParametersJsonSchema but not with Gemini Live API.
+                    // (e.g., dictionaries with additionalProperties). Fall back to ParametersJsonSchema
+                    // which supports full JSON Schema but won't work with Gemini Live API.
+                    declaration.ParametersJsonSchema = jsonNode;
                 }
             }
         }
