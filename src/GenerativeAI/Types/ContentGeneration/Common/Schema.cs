@@ -105,8 +105,9 @@ public class Schema
 
     /// <summary>
     /// Optional. Schema for additional properties not explicitly defined.
+    /// Note: This property is not supported by the Gemini API and is excluded from serialization.
     /// </summary>
-    [JsonPropertyName("additionalProperties")]
+    [JsonIgnore]
     public JsonNode? AdditionalProperties { get; set; }
 
     /// <summary>

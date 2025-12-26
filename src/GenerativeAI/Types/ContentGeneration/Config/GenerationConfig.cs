@@ -230,10 +230,40 @@ public class ThinkingConfig
     public bool? IncludeThoughts { get; set; }
 
     /// <summary>
-    /// Indicates the thinking budget in tokens
+    /// Indicates the thinking budget in tokens.
     /// </summary>
     [JsonPropertyName("thinkingBudget")]
     public int? ThinkingBudget { get; set; }
+
+    /// <summary>
+    /// Controls the maximum depth of the model's internal reasoning process before it produces a response.
+    /// This is particularly relevant for Gemini 3 and later models.
+    /// </summary>
+    [JsonPropertyName("thinkingLevel")]
+    public ThinkingLevel? ThinkingLevel { get; set; }
+}
+
+/// <summary>
+/// Controls the depth of thinking/reasoning for models that support thinking features.
+/// Used with Gemini 3 and later models.
+/// </summary>
+public enum ThinkingLevel
+{
+    /// <summary>
+    /// Unspecified thinking level.
+    /// </summary>
+    THINKING_LEVEL_UNSPECIFIED,
+
+    /// <summary>
+    /// Low thinking level - faster responses with less deep reasoning.
+    /// </summary>
+    LOW,
+
+    /// <summary>
+    /// High thinking level - deeper reasoning with potentially slower responses.
+    /// Recommended for complex tasks.
+    /// </summary>
+    HIGH
 }
 
 /// <summary>
