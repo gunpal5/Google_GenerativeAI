@@ -165,7 +165,19 @@ public static class GoogleAIModels
     /// Gemini Robotics-ER 1.5 Preview model name.
     /// </summary>
     public const string GeminiRoboticsEr15Preview = "models/gemini-robotics-er-1.5-preview";
-    
+
+    /// <summary>
+    /// Gemini 3 Pro Preview model name.
+    /// Supports advanced thinking features with thought signatures for function calling.
+    /// </summary>
+    public const string Gemini3ProPreview = "models/gemini-3-pro-preview";
+
+    /// <summary>
+    /// Gemini 3 Flash Preview model name.
+    /// Supports advanced thinking features with thought signatures for function calling.
+    /// </summary>
+    public const string Gemini3FlashPreview = "models/gemini-3-flash-preview";
+
     /// <summary>
     /// The current Gemini Embedding model name.
     /// </summary>
