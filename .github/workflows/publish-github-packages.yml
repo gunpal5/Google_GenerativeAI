@@ -1,0 +1,50 @@
+name: Publish to GitHub Packages
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (leave empty to use current version from csproj)'
+        required: false
+        default: ''
+
+jobs:
+  publish:
+    name: Publish to GitHub Packages
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Set version (if provided)
+        if: ${{ inputs.version != '' }}
+        uses: vers-one/dotnet-project-version-updater@v1.7
+        with:
+          file: |
+            "**/*.csproj", "**/*.nuspec", "**/AssemblyInfo.cs"
+          version: ${{ inputs.version }}
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build -c Release --no-restore
+
+      - name: Pack
+        run: dotnet pack -c Release --no-build -o ./nupkgs
+
+      - name: Add GitHub Packages source
+        run: dotnet nuget add source "https://nuget.pkg.github.com/gunpal5/index.json" --name github --username gunpal5 --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text
+
+      - name: Publish to GitHub Packages
+        run: dotnet nuget push "./nupkgs/*.nupkg" --source github --skip-duplicate
+
+      - name: List published packages
+        run: ls -la ./nupkgs/
