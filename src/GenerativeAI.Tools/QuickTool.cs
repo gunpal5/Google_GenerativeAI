@@ -182,6 +182,14 @@ public class QuickTool : GoogleFunctionTool
                 continue;
             }
 
+            // If the parameter is JsonNode or JsonObject, pass the entire args directly
+            // This enables dynamic tool handling where the function receives raw JSON
+            if (param.ParameterType == typeof(JsonNode) || param.ParameterType == typeof(JsonObject))
+            {
+                objects.Add(functionCallArgs);
+                continue;
+            }
+
             // Retrieve the parameter value from the JSON node using its name in camelCase
             var paramName = param.Name ?? $"param{objects.Count}";
             var val = functionCallArgs[paramName.ToCamelCase()];

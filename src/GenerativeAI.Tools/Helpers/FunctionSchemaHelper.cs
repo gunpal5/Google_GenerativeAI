@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Nodes;
 using GenerativeAI.Types;
 using GenerativeAI.Utility;
 
@@ -28,7 +29,7 @@ public static class FunctionSchemaHelper
         var parameters = func.Method.GetParameters();
         Schema parametersSchema = new Schema();
         var options = DefaultSerializerOptions.GenerateObjectJsonOptions;
-        
+
         parametersSchema.Properties = new Dictionary<string, Schema>();
         parametersSchema.Required = new List<string>();
         parametersSchema.Type = "object";
@@ -38,6 +39,12 @@ public static class FunctionSchemaHelper
             var type = param.ParameterType;
             if(type.Name == "CancellationToken")
                 continue;
+
+            // Skip JsonNode and JsonObject parameters - they receive the entire args directly
+            // and cannot be converted to a schema (they accept any JSON structure)
+            if (type == typeof(JsonNode) || type == typeof(JsonObject))
+                continue;
+
             paramCount++;
             //var descriptionsDics = TypeDescriptionExtractor.GetDescriptionDic(type);
             var desc = TypeDescriptionExtractor.GetDescription(param);
@@ -56,7 +63,7 @@ public static class FunctionSchemaHelper
         functionObject.Description = description ?? functionDescription;
         functionObject.Parameters = paramCount>0? parametersSchema:null;
         functionObject.Name = name ?? func.Method.Name;
-       
+
         return functionObject;
     }
 }

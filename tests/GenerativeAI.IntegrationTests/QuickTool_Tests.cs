@@ -472,13 +472,13 @@ public class QuickTool_Tests : TestBase
 
         model.AddFunctionTool(new QuickTool(
             ([Description("The process name to close")] string procName) => $"Closed {procName}",
-            name: "close_process", 
+            name: "close_process",
             description: "close a process by its process name"
         ));
 
         // Ask the model to list all available functions
         var result = await model.GenerateContentAsync(
-            "What functions can you call? Please list all available functions and their descriptions.", 
+            "What functions can you call? Please list all available functions and their descriptions.",
             cancellationToken: TestContext.Current.CancellationToken);
 
         var response = result.Text() ?? "NULL RESPONSE";
@@ -486,16 +486,16 @@ public class QuickTool_Tests : TestBase
         Console.WriteLine(response);
         Console.WriteLine("=== Function Tools Count ===");
         Console.WriteLine($"Model has {model.FunctionTools.Count} function tools");
-        
+
         for (int i = 0; i < model.FunctionTools.Count; i++)
         {
             var tool = model.FunctionTools[i];
             Console.WriteLine($"Tool {i}: contains get_processes={tool.IsContainFunction("get_processes")}, contains close_process={tool.IsContainFunction("close_process")}");
         }
-        
+
         // Check the actual tools being sent
         Console.WriteLine("=== Diagnostics Complete ===");
-        
+
         // If response is not null, check for functions
         if (response != "NULL RESPONSE")
         {
@@ -503,4 +503,179 @@ public class QuickTool_Tests : TestBase
             response.ShouldContain("close_process", Case.Insensitive);
         }
     }
+
+    #region Dynamic Tool Tests (Issue #92)
+
+    [Fact]
+    public async Task ShouldSupportDynamicTool_WithJsonNodeParameter()
+    {
+        // Arrange - Create a tool with JsonNode parameter for dynamic handling
+        JsonNode? receivedArgs = null;
+        var dynamicFunc = (JsonNode args) =>
+        {
+            receivedArgs = args;
+            var city = args["city"]?.GetValue<string>() ?? "unknown";
+            return $"Weather in {city}: Sunny, 25°C";
+        };
+
+        var quickTool = new QuickTool(dynamicFunc, "get_weather", "Get weather for a city");
+
+        var functionArgs = new JsonObject();
+        functionArgs.Add("city", "Paris");
+
+        // Act
+        var response = await quickTool.CallAsync(new FunctionCall()
+        {
+            Name = "get_weather",
+            Args = functionArgs
+        }, cancellationToken: TestContext.Current.CancellationToken);
+
+        // Assert
+        receivedArgs.ShouldNotBeNull();
+        receivedArgs["city"]?.GetValue<string>().ShouldBe("Paris");
+        (response?.Response as JsonNode)?["content"]?.GetValue<string>().ShouldContain("Paris");
+    }
+
+    [Fact]
+    public async Task ShouldSupportDynamicTool_WithJsonObjectParameter()
+    {
+        // Arrange - Create a tool with JsonObject parameter
+        JsonObject? receivedArgs = null;
+        var dynamicFunc = (JsonObject args) =>
+        {
+            receivedArgs = args;
+            var name = args["name"]?.GetValue<string>() ?? "unknown";
+            var age = args["age"]?.GetValue<int>() ?? 0;
+            return $"User: {name}, Age: {age}";
+        };
+
+        var quickTool = new QuickTool(dynamicFunc, "process_user", "Process user data dynamically");
+
+        var functionArgs = new JsonObject();
+        functionArgs.Add("name", "John");
+        functionArgs.Add("age", 30);
+
+        // Act
+        var response = await quickTool.CallAsync(new FunctionCall()
+        {
+            Name = "process_user",
+            Args = functionArgs
+        }, cancellationToken: TestContext.Current.CancellationToken);
+
+        // Assert
+        receivedArgs.ShouldNotBeNull();
+        receivedArgs["name"]?.GetValue<string>().ShouldBe("John");
+        receivedArgs["age"]?.GetValue<int>().ShouldBe(30);
+        (response?.Response as JsonNode)?["content"]?.GetValue<string>().ShouldContain("John");
+        (response?.Response as JsonNode)?["content"]?.GetValue<string>().ShouldContain("30");
+    }
+
+    [Fact]
+    public async Task ShouldSupportDynamicTool_WithJsonNodeAndCancellationToken()
+    {
+        // Arrange
+        bool cancellationTokenReceived = false;
+        var dynamicFunc = async (JsonNode args, CancellationToken ct) =>
+        {
+            cancellationTokenReceived = ct != CancellationToken.None;
+            await Task.Delay(10, ct);
+            return args["query"]?.GetValue<string>() ?? "no query";
+        };
+
+        var quickTool = new QuickTool(dynamicFunc, "search", "Dynamic search function");
+
+        var functionArgs = new JsonObject();
+        functionArgs.Add("query", "test query");
+
+        // Act
+        using var cts = new CancellationTokenSource();
+        var response = await quickTool.CallAsync(new FunctionCall()
+        {
+            Name = "search",
+            Args = functionArgs
+        }, cancellationToken: cts.Token);
+
+        // Assert
+        cancellationTokenReceived.ShouldBeTrue();
+        (response?.Response as JsonNode)?["content"]?.GetValue<string>().ShouldBe("test query");
+    }
+
+    [Fact]
+    public async Task ShouldSupportDynamicTool_WithComplexNestedJson()
+    {
+        // Arrange - Test with complex nested JSON structure
+        // Note: Returning an object (not a string) so it gets properly serialized to JSON
+        var dynamicFunc = (JsonNode args) =>
+        {
+            var filters = args["filters"];
+            var options = args["options"];
+
+            return new
+            {
+                filterCount = filters?.AsArray().Count ?? 0,
+                optionA = options?["optionA"]?.GetValue<bool>() ?? false,
+                optionB = options?["optionB"]?.GetValue<string>() ?? ""
+            };
+        };
+
+        var quickTool = new QuickTool(dynamicFunc, "complex_query", "Process complex query");
+
+        var functionArgs = new JsonObject();
+        var filters = new JsonArray { "filter1", "filter2", "filter3" };
+        var options = new JsonObject();
+        options["optionA"] = true;
+        options["optionB"] = "value";
+        functionArgs.Add("filters", filters);
+        functionArgs.Add("options", options);
+
+        // Act
+        var response = await quickTool.CallAsync(new FunctionCall()
+        {
+            Name = "complex_query",
+            Args = functionArgs
+        }, cancellationToken: TestContext.Current.CancellationToken);
+
+        // Assert
+        var content = (response?.Response as JsonNode)?["content"];
+        content?["filterCount"]?.GetValue<int>().ShouldBe(3);
+        content?["optionA"]?.GetValue<bool>().ShouldBe(true);
+        content?["optionB"]?.GetValue<string>().ShouldBe("value");
+    }
+
+    [Fact]
+    public async Task ShouldSupportDynamicTool_IntegrationWithModel()
+    {
+        Assert.SkipUnless(IsGoogleApiKeySet, GoogleTestSkipMessage);
+
+        // Arrange - Create a dynamic tool that handles any arguments
+        var toolInvocations = new List<string>();
+        var dynamicFunc = (JsonNode args) =>
+        {
+            toolInvocations.Add(args.ToJsonString());
+            var location = args["location"]?.GetValue<string>() ?? "unknown";
+            var unit = args["unit"]?.GetValue<string>() ?? "celsius";
+            return $"Temperature in {location}: 22 degrees {unit}";
+        };
+
+        var quickTool = new QuickTool(dynamicFunc, "get_temperature",
+            "Get temperature for a location. Parameters: location (string), unit (optional string: celsius or fahrenheit)");
+
+        var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.Gemini2Flash);
+        model.AddFunctionTool(quickTool);
+
+        // Act
+        var result = await model.GenerateContentAsync(
+            "What's the temperature in Tokyo?",
+            cancellationToken: TestContext.Current.CancellationToken);
+
+        // Assert
+        toolInvocations.Count.ShouldBeGreaterThan(0);
+        Console.WriteLine($"Tool was invoked {toolInvocations.Count} time(s)");
+        Console.WriteLine($"Args received: {string.Join(", ", toolInvocations)}");
+        Console.WriteLine($"Response: {result.Text()}");
+
+        result.Text().ShouldContain("Tokyo", Case.Insensitive);
+    }
+
+    #endregion
 }
