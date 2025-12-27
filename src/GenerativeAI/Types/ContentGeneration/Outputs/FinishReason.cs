@@ -1,12 +1,18 @@
 ﻿using System.Text.Json.Serialization;
+using GenerativeAI.Types.Converters;
 
 namespace GenerativeAI.Types;
 
 /// <summary>
 /// Defines the reason why the model stopped generating tokens.
 /// </summary>
+/// <remarks>
+/// This enum uses a lenient JSON converter that gracefully handles unknown values
+/// by falling back to <see cref="OTHER"/> instead of throwing an exception.
+/// This prevents crashes when Google adds new FinishReason values to their API.
+/// </remarks>
 /// <seealso href="https://ai.google.dev/api/generate-content#FinishReason">See Official API Documentation</seealso>
-[JsonConverter(typeof(JsonStringEnumConverter<FinishReason>))]
+[JsonConverter(typeof(LenientFinishReasonConverter))]
 public enum FinishReason
 {
     /// <summary>
@@ -69,4 +75,46 @@ public enum FinishReason
     /// Token generation stopped because generated images contain safety violations.
     /// </summary>
     IMAGE_SAFETY = 11,
+
+    /// <summary>
+    /// Token generation stopped due to model armor protection mechanisms.
+    /// Documented in Vertex AI (google.cloud.aiplatform.v1).
+    /// </summary>
+    MODEL_ARMOR = 12,
+
+    /// <summary>
+    /// Image generation stopped because generated images have prohibited content.
+    /// Documented in Vertex AI (google.cloud.aiplatform.v1).
+    /// </summary>
+    IMAGE_PROHIBITED_CONTENT = 13,
+
+    /// <summary>
+    /// Image generation stopped because generated images were flagged for recitation.
+    /// Documented in Vertex AI (google.cloud.aiplatform.v1).
+    /// </summary>
+    IMAGE_RECITATION = 14,
+
+    /// <summary>
+    /// Image generation stopped because of other miscellaneous issues.
+    /// Documented in Vertex AI (google.cloud.aiplatform.v1).
+    /// </summary>
+    IMAGE_OTHER = 15,
+
+    /// <summary>
+    /// Model generated a tool call but no tools were enabled in the request.
+    /// Documented in Gemini API and Vertex AI.
+    /// </summary>
+    UNEXPECTED_TOOL_CALL = 16,
+
+    /// <summary>
+    /// The model was expected to generate an image, but none was generated.
+    /// Documented in Vertex AI (google.cloud.aiplatform.v1).
+    /// </summary>
+    NO_IMAGE = 17,
+
+    /// <summary>
+    /// Model called too many tools consecutively, thus the system exited execution.
+    /// Documented in generativelanguagepb (SDK/proto contract).
+    /// </summary>
+    TOO_MANY_TOOL_CALLS = 18,
 }
