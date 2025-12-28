@@ -32,7 +32,7 @@
       <ProjectReference Include="..\GenerativeAI\GenerativeAI.csproj" />
     </ItemGroup>
     <ItemGroup>
-      <PackageReference Include="Gunpal5.CSharpToJsonSchema" Version="1.0.0" />
+      <PackageReference Include="CSharpToJsonSchema" Version="3.10.2-dev.69" />
       <PackageReference Include="ModelContextProtocol" Version="0.4.0-preview.3" />
       <PackageReference Update="DotNet.ReproducibleBuilds" Version="1.2.39">
         <PrivateAssets>all</PrivateAssets>
