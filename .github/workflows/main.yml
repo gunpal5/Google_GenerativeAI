@@ -6,9 +6,8 @@ jobs:
   build-test-publish:
     name: Build, Test & Publish
     runs-on: ubuntu-latest
-    outputs:
-      new_version: ${{ steps.update.outputs.newVersion }}
-    permissions: write-all
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -18,13 +17,11 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Bump version (local only)
-        id: update
-        uses: vers-one/dotnet-project-version-updater@v1.7
-        with:
-          file: |
-            "**/*.csproj", "**/*.nuspec", "**/AssemblyInfo.cs"
-          version: bump-build
+      - name: Get current version
+        id: version
+        run: |
+          VERSION=$(grep -oP '(?<=<Version>)[^<]+' src/GenerativeAI/GenerativeAI.csproj | head -1)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Restore dependencies
         run: dotnet restore
@@ -53,33 +50,24 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: v${{ steps.update.outputs.newVersion }}
-          name: v${{ steps.update.outputs.newVersion }}
+          tag_name: v${{ steps.version.outputs.version }}
+          name: v${{ steps.version.outputs.version }}
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  commit-version:
-    name: Commit Version Bump
-    needs: [build-test-publish]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Bump version
+      - name: Bump version for next release
+        id: bump
         uses: vers-one/dotnet-project-version-updater@v1.7
         with:
           file: |
             "**/*.csproj", "**/*.nuspec", "**/AssemblyInfo.cs"
           version: bump-build
 
-      - name: Commit and push
+      - name: Commit version bump
         run: |
           git config user.name "Gunpal Jain"
           git config user.email "gunpal5@gmail.com"
           git add .
-          git commit -m "Bump version to v${{ needs.build-test-publish.outputs.new_version }}"
+          git commit -m "Bump version to v${{ steps.bump.outputs.newVersion }}"
           git push
