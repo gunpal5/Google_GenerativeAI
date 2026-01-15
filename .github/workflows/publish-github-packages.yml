@@ -37,17 +37,20 @@ jobs:
       - name: Build
         run: dotnet build -c Release --no-restore
 
-      - name: Pack (src projects only)
+      - name: Pack core library projects
         run: |
-          for project in src/**/*.csproj; do
-            dotnet pack "$project" -c Release --no-build -o ./nupkgs
-          done
+          dotnet pack src/GenerativeAI/GenerativeAI.csproj -c Release --no-build -o ./nupkgs
+          dotnet pack src/GenerativeAI.Auth/GenerativeAI.Auth.csproj -c Release --no-build -o ./nupkgs
+          dotnet pack src/GenerativeAI.Live/GenerativeAI.Live.csproj -c Release --no-build -o ./nupkgs
+          dotnet pack src/GenerativeAI.Microsoft/GenerativeAI.Microsoft.csproj -c Release --no-build -o ./nupkgs
+          dotnet pack src/GenerativeAI.Tools/GenerativeAI.Tools.csproj -c Release --no-build -o ./nupkgs
+          dotnet pack src/GenerativeAI.Web/GenerativeAI.Web.csproj -c Release --no-build -o ./nupkgs
 
       - name: Add GitHub Packages source
         run: dotnet nuget add source "https://nuget.pkg.github.com/gunpal5/index.json" --name github --username gunpal5 --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text
 
       - name: Publish to GitHub Packages
-        run: dotnet nuget push "./nupkgs/*.nupkg" --source github --skip-duplicate
+        run: dotnet nuget push "./nupkgs/*.nupkg" --source github --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
 
       - name: List published packages
         run: ls -la ./nupkgs/
