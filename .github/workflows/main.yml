@@ -8,6 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      packages: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -33,11 +34,14 @@ jobs:
         run: dotnet test -c Release --no-build --verbosity normal
         continue-on-error: true
 
-      - name: Pack (src projects only)
+      - name: Pack core library projects
         run: |
-          for project in src/**/*.csproj; do
-            dotnet pack "$project" -c Release --no-build -o ./nupkgs
-          done
+          dotnet pack src/GenerativeAI/GenerativeAI.csproj -c Release --no-build -o ./nupkgs
+          dotnet pack src/GenerativeAI.Auth/GenerativeAI.Auth.csproj -c Release --no-build -o ./nupkgs
+          dotnet pack src/GenerativeAI.Live/GenerativeAI.Live.csproj -c Release --no-build -o ./nupkgs
+          dotnet pack src/GenerativeAI.Microsoft/GenerativeAI.Microsoft.csproj -c Release --no-build -o ./nupkgs
+          dotnet pack src/GenerativeAI.Tools/GenerativeAI.Tools.csproj -c Release --no-build -o ./nupkgs
+          dotnet pack src/GenerativeAI.Web/GenerativeAI.Web.csproj -c Release --no-build -o ./nupkgs
 
       - name: Publish to NuGet.org
         run: dotnet nuget push "./nupkgs/*.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_KEY }} --skip-duplicate
@@ -45,7 +49,7 @@ jobs:
       - name: Publish to GitHub Packages
         run: |
           dotnet nuget add source "https://nuget.pkg.github.com/gunpal5/index.json" --name github --username gunpal5 --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text
-          dotnet nuget push "./nupkgs/*.nupkg" --source github --skip-duplicate
+          dotnet nuget push "./nupkgs/*.nupkg" --source github --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
