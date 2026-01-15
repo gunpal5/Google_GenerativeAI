@@ -17,9 +17,9 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <RepositoryUrl>https://github.com/gunpal5/Google_GenerativeAI</RepositoryUrl>
         <PackageTags>GenerativeAI,Google,Gemini,Tools,SDK,GoogleGemini.Net,Google,Gemini,Gemini.Net</PackageTags>
-        <Version>3.6.2</Version>
-        <AssemblyVersion>3.6.2</AssemblyVersion>
-        <FileVersion>3.6.2</FileVersion>
+        <Version>3.6.3</Version>
+        <AssemblyVersion>3.6.3</AssemblyVersion>
+        <FileVersion>3.6.3</FileVersion>
         <SignAssembly>True</SignAssembly>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
      
