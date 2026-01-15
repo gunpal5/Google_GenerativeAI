@@ -672,6 +672,11 @@ public class MultiModalLiveClient : IDisposable
     /// <returns>
     /// A task that represents the asynchronous operation.
     /// </returns>
+    /// <remarks>
+    /// If <see cref="BidiGenerateContentSetup.Tools"/> is null or empty, this method will automatically
+    /// include tools from the client's <see cref="FunctionTools"/> property, as well as code execution
+    /// and Google Search tools if <see cref="UseCodeExecutor"/> or <see cref="UseGoogleSearch"/> are enabled.
+    /// </remarks>
     public async Task SendSetupAsync(BidiGenerateContentSetup setup, CancellationToken cancellationToken = default)
     {
 #if NET6_0_OR_GREATER
@@ -689,6 +694,21 @@ public class MultiModalLiveClient : IDisposable
         if(!setup.Model.Contains("/"))
 #endif
             throw new ArgumentException("Please provide a valid model name such as 'models/gemini-2.0-flash-live-001'.");
+
+        // Auto-merge FunctionTools from client properties if setup.Tools is not provided
+        if (setup.Tools == null || setup.Tools.Length == 0)
+        {
+            var tools = this.FunctionTools?.Select(s => s.AsTool()).ToList() ?? new List<Tool>();
+
+            if (UseCodeExecutor)
+                tools.Add(new Tool { CodeExecution = new CodeExecutionTool() });
+            if (UseGoogleSearch)
+                tools.Add(new Tool { GoogleSearch = new GoogleSearchTool() });
+
+            if (tools.Count > 0)
+                setup.Tools = tools.ToArray();
+        }
+
         var payload = new BidiClientPayload { Setup = setup };
         await SendAsync(payload, cancellationToken).ConfigureAwait(false);
     }
