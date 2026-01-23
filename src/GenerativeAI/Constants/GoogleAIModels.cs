@@ -170,13 +170,19 @@ public static class GoogleAIModels
     /// Gemini 3 Pro Preview model name.
     /// Supports advanced thinking features with thought signatures for function calling.
     /// </summary>
-    public const string Gemini3ProPreview = "models/gemini-3-pro-preview";
+    public const string Gemini3ProPreview = "gemini-3-pro-preview";
 
     /// <summary>
     /// Gemini 3 Flash Preview model name.
     /// Supports advanced thinking features with thought signatures for function calling.
     /// </summary>
-    public const string Gemini3FlashPreview = "models/gemini-3-flash-preview";
+    public const string Gemini3FlashPreview = "gemini-3-flash-preview";
+
+    /// <summary>
+    /// Gemini 3 Pro Image Preview model name.
+    /// Supports image generation capabilities with advanced reasoning.
+    /// </summary>
+    public const string Gemini3ProImagePreview = "gemini-3-pro-image-preview";
 
     /// <summary>
     /// The current Gemini Embedding model name.

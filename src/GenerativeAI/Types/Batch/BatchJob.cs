@@ -86,4 +86,49 @@ public class BatchJob
     /// </summary>
     [JsonPropertyName("batchStats")]
     public BatchStats? BatchStats { get; set; }
+
+    /// <summary>
+    /// Output only. Information about where the output is written (Vertex AI only).
+    /// Only populated when the job's state is JOB_STATE_SUCCEEDED.
+    /// </summary>
+    [JsonPropertyName("outputInfo")]
+    public BatchOutputInfo? OutputInfo { get; set; }
+
+    /// <summary>
+    /// Input configuration for the batch job (Vertex AI only).
+    /// </summary>
+    [JsonPropertyName("inputConfig")]
+    public VertexInputConfig? InputConfig { get; set; }
+
+    /// <summary>
+    /// Output configuration for the batch job (Vertex AI only).
+    /// </summary>
+    [JsonPropertyName("outputConfig")]
+    public VertexOutputConfig? OutputConfig { get; set; }
+}
+
+/// <summary>
+/// Information about the output of a batch prediction job (Vertex AI only).
+/// </summary>
+public class BatchOutputInfo
+{
+    /// <summary>
+    /// Output only. The full path of the Cloud Storage directory created, into which the prediction output is written.
+    /// </summary>
+    [JsonPropertyName("gcsOutputDirectory")]
+    public string? GcsOutputDirectory { get; set; }
+
+    /// <summary>
+    /// Output only. The path of the BigQuery dataset created, in bq://projectId.bqDatasetId format,
+    /// into which the prediction output is written.
+    /// </summary>
+    [JsonPropertyName("bigqueryOutputDataset")]
+    public string? BigqueryOutputDataset { get; set; }
+
+    /// <summary>
+    /// Output only. The name of the BigQuery table created, in predictions_&lt;timestamp&gt; format,
+    /// into which the prediction output is written.
+    /// </summary>
+    [JsonPropertyName("bigqueryOutputTable")]
+    public string? BigqueryOutputTable { get; set; }
 }

@@ -98,6 +98,24 @@ public static class VertexAIModels
         public const string Gemini25FlashImagePreview = "gemini-2.5-flash-image-preview";
 
         /// <summary>
+        /// Gemini 3 Flash Preview model name.
+        /// Supports advanced thinking features with thought signatures for function calling.
+        /// </summary>
+        public const string Gemini3FlashPreview = "gemini-3-flash-preview";
+
+        /// <summary>
+        /// Gemini 3 Pro Preview model name.
+        /// Supports advanced thinking features with thought signatures for function calling.
+        /// </summary>
+        public const string Gemini3ProPreview = "gemini-3-pro-preview";
+
+        /// <summary>
+        /// Gemini 3 Pro Image Preview model name.
+        /// Supports image generation capabilities with advanced reasoning.
+        /// </summary>
+        public const string Gemini3ProImagePreview = "gemini-3-pro-image-preview";
+
+        /// <summary>
         /// Gemma 3.0 1B model name.
         /// </summary>
         public const string Gemma3_1B = "gemma-3-1b-it";

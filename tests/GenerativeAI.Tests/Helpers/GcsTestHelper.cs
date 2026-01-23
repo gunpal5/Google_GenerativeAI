@@ -119,6 +119,48 @@ public class GcsTestHelper : IDisposable
     }
 
     /// <summary>
+    /// Uploads sample batch requests with schema for structured output testing.
+    /// Each line includes generationConfig with responseMimeType and responseSchema.
+    /// </summary>
+    /// <param name="schemaType">The C# type to generate schema from</param>
+    /// <returns>GCS URI for the uploaded file</returns>
+    public async Task<string> UploadSampleContentRequestsWithSchemaAsync(Type schemaType)
+    {
+        // Use BatchJsonLGenerator for proper serialization with schema
+        var prompts = new[]
+        {
+            "Create a profile for: John Smith, age 35, software engineer",
+            "Create a profile for: Jane Doe, age 28, data scientist"
+        };
+
+        // Use the centralized BatchJsonLGenerator
+        var jsonl = GenerativeAI.Helpers.BatchJsonLGenerator.GenerateContentJsonL(
+            prompts,
+            new GenerativeAI.Helpers.BatchOptions { ResponseSchemaType = schemaType });
+
+        var fileName = $"test-batch-input-{Guid.NewGuid()}.jsonl";
+
+        // Log the content being uploaded for debugging
+        Console.WriteLine($"Uploading JSONL file with schema: {fileName}");
+        Console.WriteLine($"Content ({jsonl.Length} bytes):");
+        Console.WriteLine(jsonl);
+        Console.WriteLine("---");
+
+        var contentBytes = Encoding.UTF8.GetBytes(jsonl);
+        using var stream = new MemoryStream(contentBytes);
+
+        await _storageClient.UploadObjectAsync(
+            _bucketName,
+            fileName,
+            "application/json",
+            stream);
+
+        _uploadedFiles.Add(fileName);
+
+        return $"gs://{_bucketName}/{fileName}";
+    }
+
+    /// <summary>
     /// Uploads sample batch requests for Embeddings testing.
     /// Each line must be a JSON object with a "request" field containing the EmbedContentRequest.
     /// </summary>
