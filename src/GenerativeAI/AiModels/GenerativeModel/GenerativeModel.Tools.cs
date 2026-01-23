@@ -211,8 +211,17 @@ public partial class GenerativeModel
 
         if (this.RetrievalTool != null)
         {
-            request.Tools ??= new List<Tool>();
-            request.Tools.Add(this.RetrievalTool);
+            // Don't add RetrievalTool if request contains a FunctionResponse
+            // Vertex AI doesn't support combining RetrievalTool with FunctionResponse in the same request
+            // The retrieval has already been executed in the initial request
+            var hasFunctionResponse = request.Contents?.Any(c =>
+                c.Parts?.Any(p => p.FunctionResponse != null) == true) == true;
+
+            if (!hasFunctionResponse)
+            {
+                request.Tools ??= new List<Tool>();
+                request.Tools.Add(this.RetrievalTool);
+            }
         }
     }
 
