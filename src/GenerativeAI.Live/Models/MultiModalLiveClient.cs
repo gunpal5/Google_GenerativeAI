@@ -262,7 +262,7 @@ public class MultiModalLiveClient : IDisposable
             }
             if (responsePayload.ToolCall != null)
             {
-                Task.Run(async () => await CallFunctions(responsePayload.ToolCall).ConfigureAwait(false));   
+                _ = CallFunctionsWithErrorHandlingAsync(responsePayload.ToolCall);
             }
             ProcessTextChunk(responsePayload);
             ProcessAudioChunk(responsePayload);
@@ -518,6 +518,39 @@ public class MultiModalLiveClient : IDisposable
             };
             await SendToolResponseAsync(toolResponse, cancellationToken).ConfigureAwait(false);
         }
+    }
+
+    /// <summary>
+    /// Wrapper method that handles function calls with proper error handling for background execution.
+    /// This prevents ObjectDisposedException and other errors from being unobserved.
+    /// </summary>
+    private async Task CallFunctionsWithErrorHandlingAsync(BidiGenerateContentToolCall toolCall)
+    {
+        try
+        {
+            await CallFunctions(toolCall).ConfigureAwait(false);
+        }
+        catch (ObjectDisposedException)
+        {
+            // Client was disposed during function execution, this is expected during shutdown
+            _logger?.LogWarning("WebSocket client was disposed while executing function call for connection {ConnectionId}", _connectionId);
+        }
+#if NET6_0_OR_GREATER
+        catch (InvalidOperationException ex) when (ex.Message.Contains("not connected", StringComparison.Ordinal))
+#else
+        catch (InvalidOperationException ex) when (ex.Message.Contains("not connected"))
+#endif
+        {
+            // Client disconnected before we could send the response
+            _logger?.LogWarning("WebSocket client disconnected before function response could be sent for connection {ConnectionId}", _connectionId);
+        }
+#pragma warning disable CA1031 // Do not catch general exception types
+        catch (Exception ex)
+        {
+            _logger?.LogError(ex, "Unexpected error during function call execution for connection {ConnectionId}", _connectionId);
+            ErrorOccurred?.Invoke(this, new ErrorEventArgs(ex));
+        }
+#pragma warning restore CA1031
     }
 
     #endregion

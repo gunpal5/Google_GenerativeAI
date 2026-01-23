@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Forms.VisualStyles;
 using GenerativeAI;
 using GenerativeAI.Live;
+using GenerativeAI.Tools;
 using GenerativeAI.Types;
 using TwoWayAudioCommunicationWpf.AudioHelper;
 using TwoWayAudioCommunicationWpf.Classes;
@@ -61,7 +62,8 @@ public partial class MainWindow : FluentWindow, INotifyPropertyChanged
         }
     }
 
-    private const string Model = "gemini-2.0-flash-live-001";
+    // Only this model supports tools (function calling, Google Search) with Live API
+    private const string Model = "gemini-2.5-flash-native-audio-preview-12-2025";
 
     private CancellationTokenSource? _cancellationTokenSource;
     private bool _isRecording = false;
@@ -183,8 +185,15 @@ public partial class MainWindow : FluentWindow, INotifyPropertyChanged
             var config = new GenerationConfig() { ResponseModalities = new List<Modality> { Modality.AUDIO } };
 
             _multiModalLiveClient =
-                new MultiModalLiveClient(platform, "gemini-2.0-flash-exp", config); // Consider dependency injection
+                new MultiModalLiveClient(platform, Model, config); // Consider dependency injection
             _multiModalLiveClient.UseGoogleSearch = true;
+
+            // Add function tools for testing Issue #100 fix
+            var functionTool = new QuickTools([
+                GetCurrentDateTime,
+                GetWeather
+            ]);
+            _multiModalLiveClient.FunctionTools = [functionTool];
 
 
             RegisterClientEvents();
@@ -468,4 +477,27 @@ public partial class MainWindow : FluentWindow, INotifyPropertyChanged
     {
        Process.GetCurrentProcess().Kill();
     }
+
+    #region Function Tools for Testing Issue #100
+
+    /// <summary>
+    /// Gets the current date and time.
+    /// </summary>
+    [System.ComponentModel.Description("Gets the current date and time. Use when the user asks what time or date it is.")]
+    public static string GetCurrentDateTime()
+    {
+        return DateTime.Now.ToString("dddd, MMMM dd, yyyy 'at' hh:mm tt");
+    }
+
+    /// <summary>
+    /// Gets weather for a location (simulated).
+    /// </summary>
+    [System.ComponentModel.Description("Gets the current weather for a location. Use when the user asks about the weather.")]
+    public static string GetWeather(
+        [System.ComponentModel.Description("The city or location name")] string location)
+    {
+        return $"The weather in {location} is currently sunny with a temperature of 22 degrees Celsius.";
+    }
+
+    #endregion
 }
