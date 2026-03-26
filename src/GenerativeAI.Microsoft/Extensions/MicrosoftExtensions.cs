@@ -232,7 +232,7 @@ public static class MicrosoftExtensions
     /// </summary>
     /// <param name="response">The response object to convert. It can be of type <see cref="FunctionResultContent"/>, <see cref="JsonNode"/>, or other compatible types.</param>
     /// <returns>A <see cref="JsonNode"/> instance representing the response. Throws an exception if the response is not a valid JSON node.</returns>
-    private static JsonNode ToJsonNodeResponse(this object? response)
+    public static JsonNode ToJsonNodeResponse(this object? response)
     {
         if (response is FunctionResultContent content)
         {
@@ -259,6 +259,11 @@ public static class MicrosoftExtensions
                         return newNode;
                 }
             }
+        }
+
+        if (response is JsonElement element)
+        {
+            return element.AsNode()?.DeepClone() ?? new JsonObject();
         }
 
         if (response is JsonNode node2)

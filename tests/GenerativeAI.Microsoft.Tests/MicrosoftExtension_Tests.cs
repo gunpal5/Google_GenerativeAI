@@ -550,4 +550,123 @@ public class MicrosoftExtension_Tests
     }
 
     #endregion
+
+    #region ToJsonNodeResponse Tests (Issue #104)
+
+    [Fact]
+    public void ToJsonNodeResponse_WithTextContent_ShouldNotThrowInvalidCastException()
+    {
+        // Arrange - TextContent is what MCP tools return, which caused InvalidCastException
+        object response = new TextContent("Echo: Hello, MCP!");
+
+        // Act
+        var result = response.ToJsonNodeResponse();
+
+        // Assert
+        result.ShouldNotBeNull();
+        result.ShouldBeAssignableTo<JsonNode>();
+    }
+
+    [Fact]
+    public void ToJsonNodeResponse_WithJsonElement_ShouldReturnJsonNode()
+    {
+        // Arrange
+        object response = JsonSerializer.Deserialize<JsonElement>("{\"key\": \"value\"}");
+
+        // Act
+        var result = response.ToJsonNodeResponse();
+
+        // Assert
+        result.ShouldNotBeNull();
+        result["key"]?.GetValue<string>().ShouldBe("value");
+    }
+
+    [Fact]
+    public void ToJsonNodeResponse_WithJsonObject_ShouldReturnSameNode()
+    {
+        // Arrange
+        object response = new JsonObject { ["name"] = "test" };
+
+        // Act
+        var result = response.ToJsonNodeResponse();
+
+        // Assert
+        result.ShouldNotBeNull();
+        result.ShouldBeAssignableTo<JsonNode>();
+    }
+
+    [Fact]
+    public void ToJsonNodeResponse_WithFunctionResultContent_ContainingJsonObject_ShouldReturnJsonObject()
+    {
+        // Arrange
+        var jsonObj = new JsonObject { ["result"] = "success" };
+        object response = new FunctionResultContent("callId", jsonObj);
+
+        // Act
+        var result = response.ToJsonNodeResponse();
+
+        // Assert
+        result.ShouldNotBeNull();
+        result.ShouldBeOfType<JsonObject>();
+    }
+
+    [Fact]
+    public void ToJsonNodeResponse_WithFunctionResultContent_ContainingJsonElement_ShouldReturnJsonNode()
+    {
+        // Arrange
+        var element = JsonSerializer.Deserialize<JsonElement>("{\"data\": 42}");
+        object response = new FunctionResultContent("callId", element);
+
+        // Act
+        var result = response.ToJsonNodeResponse();
+
+        // Assert
+        result.ShouldNotBeNull();
+    }
+
+    [Fact]
+    public void ToJsonNodeResponse_WithStringValue_ShouldSerializeToJsonNode()
+    {
+        // Arrange
+        object response = "Hello, MCP!";
+
+        // Act
+        var result = response.ToJsonNodeResponse();
+
+        // Assert
+        result.ShouldNotBeNull();
+    }
+
+    [Fact]
+    public void ToJsonNodeResponse_WithAnonymousObject_ShouldSerializeToJsonNode()
+    {
+        // Arrange
+        object response = new { message = "Echo: Hello, MCP!", status = "ok" };
+
+        // Act
+        var result = response.ToJsonNodeResponse();
+
+        // Assert
+        result.ShouldNotBeNull();
+        result["message"]?.GetValue<string>().ShouldBe("Echo: Hello, MCP!");
+        result["status"]?.GetValue<string>().ShouldBe("ok");
+    }
+
+    [Fact]
+    public void ToJsonNodeResponse_WithScalarJsonElement_InFunctionResultContent_ShouldWrapInObject()
+    {
+        // Arrange - scalar JsonElement (not object or array)
+        var element = JsonSerializer.Deserialize<JsonElement>("\"just a string\"");
+        object response = new FunctionResultContent("callId", element);
+
+        // Act
+        var result = response.ToJsonNodeResponse();
+
+        // Assert
+        result.ShouldNotBeNull();
+        result.ShouldBeOfType<JsonObject>();
+        result["content"]?.GetValue<string>().ShouldBe("just a string");
+    }
+
+    #endregion
 }

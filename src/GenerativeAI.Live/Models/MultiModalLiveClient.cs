@@ -234,7 +234,7 @@ public class MultiModalLiveClient : IDisposable
 
     #region Private Methods
 
-    private void ProcessReceivedMessage(ResponseMessage msg)
+    private async void ProcessReceivedMessage(ResponseMessage msg)
     {
         _logger?.LogMessageReceived(msg.MessageType);
 
@@ -262,7 +262,7 @@ public class MultiModalLiveClient : IDisposable
             }
             if (responsePayload.ToolCall != null)
             {
-                _ = CallFunctionsWithErrorHandlingAsync(responsePayload.ToolCall);
+                await CallFunctionsWithErrorHandlingAsync(responsePayload.ToolCall).ConfigureAwait(false);
             }
             ProcessTextChunk(responsePayload);
             ProcessAudioChunk(responsePayload);

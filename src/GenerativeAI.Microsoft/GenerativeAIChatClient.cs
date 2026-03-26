@@ -113,10 +113,9 @@ public sealed class GenerativeAIChatClient : IChatClient
                         contents.Add(content);
                     var responseObject = new JsonObject();
                     responseObject["name"] = functionCall.Name;
-                    var node = ((JsonElement)result).AsNode();
+                    var node = result.ToJsonNodeResponse();
                     if (node != null)
                         responseObject["content"] = node.DeepClone();
-                    //responseObject["content"] = result as JsonNode;
                     var functionResponse = new FunctionResponse()
                     {
                         Name = tool.Name,
@@ -126,7 +125,7 @@ public sealed class GenerativeAIChatClient : IChatClient
                     functionResponses.Add(functionResponse);
                 }
             }
-            
+
         }
         var funcContent = new Content() { Role = Roles.Function };
         funcContent.AddParts(functionResponses.Select(s => new Part()
@@ -169,10 +168,9 @@ public sealed class GenerativeAIChatClient : IChatClient
                         contents.Add(content);
                     var responseObject = new JsonObject();
                     responseObject["name"] = functionCall.Name;
-                    var node = ((JsonElement)result).AsNode();
+                    var node = result.ToJsonNodeResponse();
                     if (node != null)
                         responseObject["content"] = node.DeepClone();
-                    //responseObject["content"] = result as JsonNode;
                     var functionResponse = new FunctionResponse()
                     {
                         Name = tool.Name,

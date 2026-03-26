@@ -117,6 +117,7 @@ namespace GenerativeAI.Tests.Clients
                     }
                 }
             };
+            
 
             var batchJob = await client.CreateEmbeddingsAsync(
                 GoogleAIModels.GeminiEmbedding,
