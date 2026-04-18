@@ -77,7 +77,11 @@ public sealed class GenerativeAIChatClient : IChatClient
 #else
         if (messages == null) throw new ArgumentNullException(nameof(messages));
 #endif
-        var request = messages.ToGenerateContentRequest(options);
+        var messageList = messages as IList<ChatMessage> ?? messages.ToList();
+        await messageList.PromoteOversizedAttachmentsAsync(model, cancellationToken)
+            .ConfigureAwait(false);
+
+        var request = messageList.ToGenerateContentRequest(options);
         var response = await model.GenerateContentAsync(request, cancellationToken).ConfigureAwait(false);
 
         return await CallFunctionAsync(request, response,
@@ -210,7 +214,14 @@ public sealed class GenerativeAIChatClient : IChatClient
 #else
         if (messages == null) throw new ArgumentNullException(nameof(messages));
 #endif
-        var request = messages.ToGenerateContentRequest(options);
+        // Promote oversized DataContent (>20 MB) to Files API uploads
+        // before request construction; otherwise inline_data blows past
+        // Gemini's per-part limit and the call rejects.
+        var messageList = messages as IList<ChatMessage> ?? messages.ToList();
+        await messageList.PromoteOversizedAttachmentsAsync(model, cancellationToken)
+            .ConfigureAwait(false);
+
+        var request = messageList.ToGenerateContentRequest(options);
         GenerateContentResponse? lastResponse = null;
         await foreach (var response in model.StreamContentAsync(request, cancellationToken).ConfigureAwait(false))
         {

@@ -1,3 +1,4 @@
+using GenerativeAI.Clients;
 using GenerativeAI.Core;
 using GenerativeAI.Types;
 using Microsoft.Extensions.AI;
@@ -139,6 +140,55 @@ public static class MicrosoftExtensions
     }
 
     /// <summary>
+    /// Auto-promotes a <see cref="DataContent"/> to the Files API when its
+    /// payload exceeds Gemini's 20 MB inline_data limit. Walks the message
+    /// list, uploads any oversized binary attachments via <paramref name="model"/>'s
+    /// Files client, and rewrites those entries to point at the resulting
+    /// remote file URI. Cheap when nothing is oversized — the loop just
+    /// short-circuits. Call this BEFORE <see cref="ToGenerateContentRequest"/>
+    /// so the converted parts use FileData instead of InlineData.
+    /// </summary>
+    public static async Task PromoteOversizedAttachmentsAsync(
+        this IList<ChatMessage> chatMessages,
+        GenerativeModel model,
+        CancellationToken cancellationToken = default)
+    {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(chatMessages);
+        ArgumentNullException.ThrowIfNull(model);
+#else
+        if (chatMessages == null) throw new ArgumentNullException(nameof(chatMessages));
+        if (model == null) throw new ArgumentNullException(nameof(model));
+#endif
+        for (int mi = 0; mi < chatMessages.Count; mi++)
+        {
+            var msg = chatMessages[mi];
+            for (int ci = 0; ci < msg.Contents.Count; ci++)
+            {
+                if (msg.Contents[ci] is not DataContent data) continue;
+                if (data.Data.Length <= InlineMimeTypes.MaxInlineSize) continue;
+
+                using var stream = new MemoryStream(data.Data.ToArray());
+                // GenerativeModel doesn't expose Files; spin up a client
+                // bound to the same platform. FileClient defaults its own
+                // HttpClient + logger, which is fine — it's a thin
+                // wrapper over the existing auth/transport adapter.
+                var files = new FileClient(model.Platform);
+                var remote = await files
+                    .UploadStreamAsync(stream, $"upload_{Guid.NewGuid():N}",
+                        data.MediaType ?? "application/octet-stream",
+                        progressCallback: null, cancellationToken)
+                    .ConfigureAwait(false);
+                await files.AwaitForFileStateActiveAsync(remote, 5 * 60, cancellationToken)
+                    .ConfigureAwait(false);
+
+                // Replace DataContent with a marker that ToPart picks up.
+                msg.Contents[ci] = new RemoteFileContent(remote, data.MediaType);
+            }
+        }
+    }
+
+    /// <summary>
     /// Converts an <see cref="AIContent"/> instance into a <see cref="Part"/> object.
     /// </summary>
     /// <param name="content">The AI content to transform into a part object.</param>
@@ -149,6 +199,14 @@ public static class MicrosoftExtensions
         var part = content switch
         {
             TextContent text => new Part { Text = text.Text },
+            RemoteFileContent rfc => new Part
+            {
+                FileData = new FileData
+                {
+                    FileUri = rfc.RemoteFile.Uri,
+                    MimeType = rfc.MimeType ?? rfc.RemoteFile.MimeType,
+                }
+            },
             DataContent image => new Part
             {
                 InlineData = new Blob()
@@ -202,23 +260,29 @@ public static class MicrosoftExtensions
                 node.Add(arg.Key, nd.DeepClone());
             else
             {
-                var p = arg.Value switch
+                JsonNode? p = arg.Value switch
                 {
-                    string s => s,
-                    int i => i,
-                    float f => f,
-                    double d => d,
-                    bool b => b,
+                    string s => JsonValue.Create(s),
+                    bool b => JsonValue.Create(b),
+                    int i => JsonValue.Create(i),
+                    long l => JsonValue.Create(l),
+                    short sh => JsonValue.Create((int)sh),
+                    byte by => JsonValue.Create((int)by),
+                    sbyte sb => JsonValue.Create((int)sb),
+                    uint ui => JsonValue.Create(ui),
+                    ulong ul => JsonValue.Create(ul),
+                    float f => JsonValue.Create(f),
+                    double d => JsonValue.Create(d),
+                    decimal dc => JsonValue.Create(dc),
                     null => null,
-                    JsonElement e => e.AsNode()?.AsObject(),
-                    JsonNode n => n switch
-                    {
-                        JsonObject o => o,
-                        JsonArray a => a,
-                        JsonValue v => v.GetValue<JsonElement>().AsNode(),
-                        _ => n
-                    },
-                    _ => throw new ArgumentException("Unsupported argument type")
+                    JsonElement e => e.AsNode(),
+                    JsonNode n => n.DeepClone(),
+                    // Fallback: serialise via JsonSerializer for any other
+                    // type (Dictionary<string,object>, List<>, custom DTOs,
+                    // DateTime, Guid, etc.). This keeps the SDK from
+                    // crashing on tool args that contain anything beyond
+                    // the four primitive types previously hard-coded.
+                    var other => JsonNode.Parse(JsonSerializer.Serialize(other))
                 };
                 node.Add(arg.Key, p);
             }
