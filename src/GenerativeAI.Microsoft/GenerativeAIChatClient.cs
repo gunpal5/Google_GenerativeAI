@@ -218,10 +218,56 @@ public sealed class GenerativeAIChatClient : IChatClient
         // before request construction; otherwise inline_data blows past
         // Gemini's per-part limit and the call rejects.
         var messageList = messages as IList<ChatMessage> ?? messages.ToList();
+        Console.WriteLine($"[GenerativeAIChatClient] STREAM start — model={model.Model}, messages={messageList.Count}");
+        for (int mi = 0; mi < messageList.Count; mi++)
+        {
+            var m = messageList[mi];
+            for (int ci = 0; ci < m.Contents.Count; ci++)
+            {
+                var c = m.Contents[ci];
+                if (c is DataContent dc)
+                {
+                    Console.WriteLine($"[GenerativeAIChatClient]   msg[{mi}].content[{ci}] = DataContent mime={dc.MediaType} bytes={dc.Data.Length}");
+                }
+                else if (c is TextContent tc)
+                {
+                    Console.WriteLine($"[GenerativeAIChatClient]   msg[{mi}].content[{ci}] = TextContent {tc.Text?.Length ?? 0} chars");
+                }
+                else
+                {
+                    Console.WriteLine($"[GenerativeAIChatClient]   msg[{mi}].content[{ci}] = {c.GetType().Name}");
+                }
+            }
+        }
         await messageList.PromoteOversizedAttachmentsAsync(model, cancellationToken)
             .ConfigureAwait(false);
 
         var request = messageList.ToGenerateContentRequest(options);
+        // Log the constructed Gemini request shape (just part counts +
+        // mime types, not the bytes themselves) so we can confirm what
+        // actually reaches the wire.
+        if (request.Contents != null)
+        {
+            for (int ci = 0; ci < request.Contents.Count; ci++)
+            {
+                var content = request.Contents[ci];
+                var partsDesc = content.Parts == null
+                    ? "<no parts>"
+                    : string.Join(", ", content.Parts.Select(p =>
+                    {
+                        if (p.InlineData != null)
+                            return $"inline({p.InlineData.MimeType},{p.InlineData.Data?.Length ?? 0}b64chars)";
+                        if (p.FileData != null)
+                            return $"file({p.FileData.MimeType},{p.FileData.FileUri})";
+                        if (p.Text != null)
+                            return $"text({p.Text.Length})";
+                        if (p.FunctionCall != null) return $"fnCall({p.FunctionCall.Name})";
+                        if (p.FunctionResponse != null) return $"fnResp({p.FunctionResponse.Name})";
+                        return "?";
+                    }));
+                Console.WriteLine($"[GenerativeAIChatClient]   request.Contents[{ci}] role={content.Role} parts=[{partsDesc}]");
+            }
+        }
         GenerateContentResponse? lastResponse = null;
         await foreach (var response in model.StreamContentAsync(request, cancellationToken).ConfigureAwait(false))
         {

@@ -17,6 +17,26 @@ public class BidiGenerateContentRealtimeInput
     /// <summary>
     /// Inlined bytes data for media input.
     /// </summary>
+    /// <remarks>Deprecated by the Gemini API. Use <see cref="Audio"/>, <see cref="Video"/>, or <see cref="Text"/> instead.</remarks>
+    [Obsolete("mediaChunks is deprecated by the Gemini API. Use Audio, Video, or Text instead.")]
     [JsonPropertyName("mediaChunks")]
     public Blob[]? MediaChunks { get; set; }
+
+    /// <summary>
+    /// Inline audio data sent in real time.
+    /// </summary>
+    [JsonPropertyName("audio")]
+    public Blob? Audio { get; set; }
+
+    /// <summary>
+    /// Inline video data sent in real time.
+    /// </summary>
+    [JsonPropertyName("video")]
+    public Blob? Video { get; set; }
+
+    /// <summary>
+    /// Text input sent in real time.
+    /// </summary>
+    [JsonPropertyName("text")]
+    public string? Text { get; set; }
 }

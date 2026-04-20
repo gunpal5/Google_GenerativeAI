@@ -835,7 +835,7 @@ public class MultiModalLiveClient : IDisposable
     {
         var realtimeInput = new BidiGenerateContentRealtimeInput
         {
-            MediaChunks = new[] { new Blob() { Data = Convert.ToBase64String(audioData), MimeType = mimeType } }
+            Audio = new Blob { Data = Convert.ToBase64String(audioData), MimeType = mimeType }
         };
 
         var payload = new BidiClientPayload { RealtimeInput = realtimeInput };
