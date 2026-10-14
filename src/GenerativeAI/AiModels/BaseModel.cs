@@ -54,13 +54,14 @@ public abstract class BaseModel : BaseClient
     /// </summary>
     /// <param name="model">The name of the <see cref="Model">Generative AI Model</see> to use for generating the completion.  Format: `models/{model}`.</param>
     /// <param name="request">The <see cref="GenerateContentRequest"/> containing the content of the current conversation with the model.</param>
+    /// <param name="cancellationToken">An optional token to observe while waiting for the task to complete.</param>
     /// <returns>The <see cref="GenerateContentResponse"/> containing the model's response.</returns>
     /// <seealso href="https://ai.google.dev/gemini-api/docs/text-generation">See Official API Documentation</seealso>
-    protected virtual async Task<GenerateContentResponse> GenerateContentAsync(string model, GenerateContentRequest request)
+    protected virtual async Task<GenerateContentResponse> GenerateContentAsync(string model, GenerateContentRequest request, CancellationToken cancellationToken = default)
     {
         var url = $"{Platform.GetBaseUrl()}/{model.ToModelId()}:{GenerativeModelTasks.GenerateContent}";
 
-        var response = await SendAsync<GenerateContentRequest, GenerateContentResponse>(url, request, HttpMethod.Post).ConfigureAwait(false);
+        var response = await SendAsync<GenerateContentRequest, GenerateContentResponse>(url, request, HttpMethod.Post, cancellationToken).ConfigureAwait(false);
         CheckBlockedResponse(response, url);
         return response;
     }
