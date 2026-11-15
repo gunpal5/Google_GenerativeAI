@@ -43,13 +43,15 @@ public class VertexRagManager_Tests : SemanticRetrieverTestBase
     [Fact, TestPriority(1)]
     public async Task ShouldCreateCorpusWithPineconeAsync()
     {
+        // Requires a Pinecone index and a Secret Manager secret (readable by the Vertex AI RAG service agent)
+        // holding the Pinecone API key.
+        var secretVersion = Environment.GetEnvironmentVariable("PINECONE_API_KEY_SECRET_VERSION");
+        var indexName = Environment.GetEnvironmentVariable("PINECONE_INDEX_NAME");
+        Assert.SkipWhen(string.IsNullOrWhiteSpace(secretVersion) || string.IsNullOrWhiteSpace(indexName),
+            "Set PINECONE_API_KEY_SECRET_VERSION (projects/{p}/secrets/{s}/versions/{v}) and PINECONE_INDEX_NAME to run the Pinecone corpus test.");
+
         // Arrange
         var client = new VertexRagManager(GetTestVertexAIPlatform(), null);
-        //client.Platform.Authenticator = new GoogleCloudAdcAuthenticator();
-        var newCorpus = new RagCorpus
-        {
-            DisplayName = "Test Pinecone Corpus",
-        };
 
         // Act
         var result = await client.CreateCorpusAsync(
@@ -57,11 +59,10 @@ public class VertexRagManager_Tests : SemanticRetrieverTestBase
                 description: "test corpus description",
                 pineconeConfig: new RagVectorDbConfigPinecone()
                 {
-                    IndexName = "test-index-5"
+                    IndexName = indexName
                 },
-                apiKeyResourceName:"projects/103876794532/secrets/pinecone/versions/1",
+                apiKeyResourceName: secretVersion,
                 cancellationToken: TestContext.Current.CancellationToken)
-                //apiKeyResourceName: Environment.GetEnvironmentVariable("pinecone-secret"))
             .ConfigureAwait(true);
 
         // Assert
@@ -243,7 +244,7 @@ public class VertexRagManager_Tests : SemanticRetrieverTestBase
         var client = new VertexRagManager(GetTestVertexAIPlatform(), null);
 
         var list = await client.ListCorporaAsync(cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
-        foreach (var l in list.RagCorpora)
+        foreach (var l in list.RagCorpora ?? new List<RagCorpus>())
         {
             await client.DeleteRagCorpusAsync(l.Name,cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
             
@@ -266,9 +267,7 @@ public class VertexRagManager_Tests : SemanticRetrieverTestBase
         // Arrange
         var client = new VertexRagManager(GetTestVertexAIPlatform(), null);
 
-        var list = await client.ListCorporaAsync(cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
-        var corpusName = list.RagCorpora
-            .FirstOrDefault(s => s.DisplayName.Contains("test", StringComparison.OrdinalIgnoreCase)).Name;
+        var corpusName = await GetTestCorpusNameOrSkipAsync(client).ConfigureAwait(true);
 
         var file = "TestData/pg1184.txt";
         // Act
@@ -288,9 +287,7 @@ public class VertexRagManager_Tests : SemanticRetrieverTestBase
         // Arrange
         var client = new VertexRagManager(GetTestVertexAIPlatform(), null);
 
-        var list = await client.ListCorporaAsync(cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
-        var corpusName = list.RagCorpora
-            .FirstOrDefault(s => s.DisplayName.Contains("test", StringComparison.OrdinalIgnoreCase)).Name;
+        var corpusName = await GetTestCorpusNameOrSkipAsync(client).ConfigureAwait(true);
 
         var request = new ImportRagFilesRequest();
         request.AddGooglDriveSource(new GoogleDriveSourceResourceId()
@@ -311,9 +308,7 @@ public class VertexRagManager_Tests : SemanticRetrieverTestBase
         // Arrange
         var client = new VertexRagManager(GetTestVertexAIPlatform(), null);
 
-        var list = await client.ListCorporaAsync(cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
-        var corpusName = list.RagCorpora
-            .FirstOrDefault(s => s.DisplayName.Contains("test", StringComparison.OrdinalIgnoreCase)).Name;
+        var corpusName = await GetTestCorpusNameOrSkipAsync(client).ConfigureAwait(true);
 
        var files = await client.ListFilesAsync(corpusName, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
        files.ShouldNotBeNull();
@@ -326,9 +321,7 @@ public class VertexRagManager_Tests : SemanticRetrieverTestBase
         // Arrange
         var client = new VertexRagManager(GetTestVertexAIPlatform(), null);
 
-        var list = await client.ListCorporaAsync(cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
-        var corpusName = list.RagCorpora
-            .FirstOrDefault(s => s.DisplayName.Contains("test", StringComparison.OrdinalIgnoreCase)).Name;
+        var corpusName = await GetTestCorpusNameOrSkipAsync(client).ConfigureAwait(true);
 
         var files = await client.ListFilesAsync(corpusName, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
         files.ShouldNotBeNull();
@@ -348,9 +341,7 @@ public class VertexRagManager_Tests : SemanticRetrieverTestBase
 
         var client = vertexAi.CreateRagManager();
 
-        var list = await client.ListCorporaAsync(cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
-        var corpusName = list.RagCorpora
-            .FirstOrDefault(s => s.DisplayName.Contains("test", StringComparison.OrdinalIgnoreCase)).Name;
+        var corpusName = await GetTestCorpusNameOrSkipAsync(client).ConfigureAwait(true);
         
         var model = vertexAi.CreateGenerativeModel(VertexRegionalTestModel,corpusIdForRag: corpusName);
 
@@ -363,9 +354,7 @@ public class VertexRagManager_Tests : SemanticRetrieverTestBase
         // Arrange
         var client = new VertexRagManager(GetTestVertexAIPlatform(), null);
 
-        var list = await client.ListCorporaAsync(cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
-        var corpusName = list.RagCorpora
-            .FirstOrDefault(s => s.DisplayName.Contains("test", StringComparison.OrdinalIgnoreCase)).Name;
+        var corpusName = await GetTestCorpusNameOrSkipAsync(client).ConfigureAwait(true);
 
         var files = await client.ListFilesAsync(corpusName, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
         files.ShouldNotBeNull();
@@ -376,6 +365,20 @@ public class VertexRagManager_Tests : SemanticRetrieverTestBase
         await client.DeleteFileAsync(last.Name, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
     }
 
+
+    /// <summary>
+    /// Returns the name of a corpus whose display name contains "test" (created by the priority-1 tests),
+    /// or skips the test when there is none.
+    /// </summary>
+    private static async Task<string> GetTestCorpusNameOrSkipAsync(VertexRagManager client)
+    {
+        var list = await client.ListCorporaAsync(cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
+        var corpus = list?.RagCorpora?.FirstOrDefault(c =>
+            c.DisplayName?.Contains("test", StringComparison.OrdinalIgnoreCase) == true);
+        Assert.SkipWhen(corpus?.Name == null,
+            "No test corpus exists; ShouldCreateCorpusWithDefaultStore must succeed first.");
+        return corpus!.Name!;
+    }
 
     // The RAG Engine is not available on the global endpoint, so always use a regional one.
     protected override IPlatformAdapter GetTestVertexAIPlatform()
