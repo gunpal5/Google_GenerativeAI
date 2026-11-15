@@ -52,6 +52,14 @@ namespace GenerativeAI
 #else
             if (request == null) throw new ArgumentNullException(nameof(request));
 #endif
+            // Veo models were retired on the Gemini API and the official SDKs no longer allow generate_videos there;
+            // fail fast with guidance instead of sending a request the API rejects.
+            if (Platform is not VertextPlatformAdapter)
+                throw new NotSupportedException(
+                    "Veo video generation (predictLongRunning) is no longer available on the Gemini API. " +
+                    "Use Vertex AI, or generate video on the Gemini API with a Gemini Omni model " +
+                    "(GoogleAIModels.Video.GeminiOmni12Flash) through the Interactions API.");
+
             var modelId = this.ModelName.ToModelId();
             var url = $"{Platform.GetBaseUrl()}/{modelId}:predictLongRunning";
 
