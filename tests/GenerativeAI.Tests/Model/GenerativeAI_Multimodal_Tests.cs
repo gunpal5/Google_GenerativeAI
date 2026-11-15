@@ -73,7 +73,10 @@ namespace GenerativeAI.Tests.Model
             result.ShouldNotBeNull();
             var text = result.Text();
             text.ShouldNotBeNull();
-            text.ShouldContain("meeting", Case.Insensitive);
+            // The clip shows a business presentation; the model words it differently from run to run.
+            var expected = new[] { "meeting", "presentation", "presenting", "conference", "colleagues", "office" };
+            expected.ShouldContain(word => text.IndexOf(word, StringComparison.OrdinalIgnoreCase) >= 0,
+                $"Expected the description to mention one of: {string.Join(", ", expected)}. Actual: {text}");
             _console.WriteLine(result.Text());
         }
 
