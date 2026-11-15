@@ -143,11 +143,19 @@ public abstract class BaseModel : BaseClient
         return await SendAsync<BatchEmbedContentRequest, BatchEmbedContentsResponse>(url, request, HttpMethod.Post, cancellationToken).ConfigureAwait(false);
     }
 
+    private static string GetBareModelId(string model)
+    {
+        var index = model.LastIndexOf('/');
+        return index >= 0 ? model.Substring(index + 1) : model;
+    }
+
     private void ValidateEmbeddingRequest(string model, EmbedContentRequest req)
     {
         req.Model = req.Model ?? model;
 
-        if (!SupportedEmbedingModels.All.Contains(req.Model)) throw new NotSupportedException($"Model {req.Model} is not supported for embedding.");
+        // Compare bare model ids: callers may pass "models/x", "publishers/google/models/x" or just "x".
+        var modelId = GetBareModelId(req.Model);
+        if (!SupportedEmbedingModels.All.Any(m => string.Equals(GetBareModelId(m), modelId, StringComparison.OrdinalIgnoreCase))) throw new NotSupportedException($"Model {req.Model} is not supported for embedding.");
 
         if (!string.IsNullOrEmpty(req.Title) && req.TaskType != TaskType.RETRIEVAL_DOCUMENT) throw new NotSupportedException("A title can only be specified for tasks of type 'RETRIEVAL_DOCUMENT'.");
 

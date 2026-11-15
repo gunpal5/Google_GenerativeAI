@@ -1132,6 +1132,11 @@ public class MultiModalLiveClient : IDisposable
     /// Signals that the user has started speaking. Only use this when automatic activity detection is disabled
     /// through <see cref="RealtimeInputConfig"/>.
     /// </summary>
+    /// <remarks>
+    /// Activity markers delimit audio input. The Gemini API rejects realtime text sent between
+    /// <see cref="SendActivityStartAsync"/> and <see cref="SendActivityEndAsync"/> ("Precondition check failed");
+    /// send text with <see cref="SendRealtimeTextAsync"/> outside the markers instead.
+    /// </remarks>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
     public Task SendActivityStartAsync(CancellationToken cancellationToken = default)

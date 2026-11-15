@@ -42,8 +42,10 @@ public class VertexAI_LiveTests : TestBase
     [Fact]
     public async Task GeminiEmbedding001_EmbedContent_WithTaskTypeAndDimensionality_AndBatch()
     {
-        var platform = VertexPlatform();
-        var region = LiveTestHelpers.VertexRegion ?? "(default)";
+        // gemini-embedding-001 is not served from the global endpoint, so always use a regional one.
+        LiveTestHelpers.RequireVertex();
+        var platform = LiveTestHelpers.CreateRegionalVertexPlatform();
+        var region = "regional";
         var model = new EmbeddingModel(platform, VertexAIModels.Embeddings.GeminiEmbedding001);
         const int dimensions = 256;
 

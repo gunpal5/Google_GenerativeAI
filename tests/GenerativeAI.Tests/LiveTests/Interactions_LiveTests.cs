@@ -19,11 +19,11 @@ public class Interactions_LiveTests : TestBase
 
     private static InteractionsClient CreateClient() => new(LiveTestHelpers.RequireGeminiPlatform());
 
-    // Minimal thinking keeps the request cheap while leaving room for the (tiny) answer.
+    // Low thinking keeps the request cheap while leaving room for the (tiny) answer.
     internal static InteractionGenerationConfig SmallConfig() => new()
     {
         MaxOutputTokens = 256,
-        ThinkingLevel = InteractionThinkingLevels.Minimal
+        ThinkingLevel = InteractionThinkingLevels.Low
     };
 
     [Fact]

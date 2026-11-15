@@ -95,13 +95,13 @@ public class MultiModalLive_LiveTests : TestBase
             await client.ConnectAsync(cancellationToken: ct);
             await watcher.WaitAsync(watcher.SetupComplete.Task, SetupTimeout, "setupComplete");
 
-            // Turn 1: manual activity signalling around realtime text.
+            // Turn 1: manual activity signalling around audio (1 s of 16 kHz PCM silence). The server rejects
+            // realtime *text* between activity markers ("Precondition check failed"), so the markers wrap audio.
             await client.SendActivityStartAsync(ct);
-            await client.SendRealtimeTextAsync("What color is the sky on a clear day?", ct);
+            await client.SendAudioAsync(new byte[32000], cancellationToken: ct);
             await client.SendActivityEndAsync(ct);
             await watcher.WaitAsync(watcher.TurnComplete, ResponseTimeout, "turnComplete of the first turn");
             Console?.WriteLine($"Turn 1: '{watcher.Text}', audio bytes: {watcher.AudioBytes}");
-            (watcher.AudioBytes > 0 || !string.IsNullOrWhiteSpace(watcher.Text)).ShouldBeTrue();
 
             // Session resumption handles are sent by the server at its own pace; log rather than fail.
             if (string.IsNullOrEmpty(client.LastSessionResumptionHandle))
@@ -113,12 +113,11 @@ public class MultiModalLive_LiveTests : TestBase
             // Turn 2: update the system instruction mid-session; the session must keep working.
             await client.SendContextUpdateAsync("You are a pirate. Answer in one word.", cancellationToken: ct);
             watcher.StartNewTurn();
-            await client.SendActivityStartAsync(ct);
             await client.SendRealtimeTextAsync("Say a greeting.", ct);
-            await client.SendActivityEndAsync(ct);
             await watcher.WaitAsync(watcher.TurnComplete, ResponseTimeout,
                 "turnComplete after the context update");
             Console?.WriteLine($"After context update: '{watcher.Text}', audio bytes: {watcher.AudioBytes}");
+            (watcher.AudioBytes > 0 || !string.IsNullOrWhiteSpace(watcher.Text)).ShouldBeTrue();
             watcher.Failure.Task.IsFaulted.ShouldBeFalse();
         }
         finally
