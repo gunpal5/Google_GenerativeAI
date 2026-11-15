@@ -54,6 +54,9 @@ public class MultiModalLiveClient : IDisposable
     private IWebsocketClient? _client;
 #pragma warning restore CA2213
     private readonly Guid _connectionId;
+    private readonly List<IDisposable> _subscriptions = new();
+    private BidiGenerateContentSetup? _lastSetup;
+    private bool _textReceivedInTurn;
     private readonly ILogger? _logger;
     private readonly IPlatformAdapter _platformAdapter;
 
@@ -183,6 +186,13 @@ public class MultiModalLiveClient : IDisposable
     public string? LastSessionResumptionHandle { get; private set; }
 
     /// <summary>
+    /// Whether to re-send the last setup message automatically after the websocket reconnects (default true).
+    /// The Live API requires a setup message at the start of every connection. If <see cref="SessionResumption"/>
+    /// is set and a resumable handle has been received, the session is resumed with that handle.
+    /// </summary>
+    public bool ResendSetupOnReconnect { get; set; } = true;
+
+    /// <summary>
     /// Optional factory that <see cref="ConnectAsync"/> uses to create the WebSocket client instead of the default
     /// reconnecting <see cref="WebsocketClient"/>. It receives the Live API endpoint URL from the platform adapter
     /// (which, for the Gemini API, already contains the API key) and must return a client that has not been started;
@@ -279,6 +289,11 @@ public class MultiModalLiveClient : IDisposable
     public event EventHandler<TextChunkReceivedArgs>? TextChunkReceived;
 
     /// <summary>
+    /// Occurs when the server signals that the model's turn is complete (for both text and audio responses).
+    /// </summary>
+    public event EventHandler? TurnCompleted;
+
+    /// <summary>
     /// Event triggered upon receiving input transcription data.
     /// </summary>
     public event EventHandler<Transcription>? InputTranscriptionReceived;
@@ -312,6 +327,7 @@ public class MultiModalLiveClient : IDisposable
 
     private async void ProcessReceivedMessage(ResponseMessage msg)
     {
+        // async void: any exception that escapes here would crash the process, so everything is caught below.
         _logger?.LogMessageReceived(msg.MessageType);
 
         try
@@ -354,6 +370,20 @@ public class MultiModalLiveClient : IDisposable
             _logger?.LogError(ex, "Error deserializing message: {MessageType}", msg.MessageType);
             // Optionally re-throw or handle the error as appropriate
         }
+#pragma warning disable CA1031 // Exceptions (including from user event handlers) must not escape an async void method
+        catch (Exception ex)
+        {
+            _logger?.LogError(ex, "Error processing message for connection {ConnectionId}", _connectionId);
+            try
+            {
+                ErrorOccurred?.Invoke(this, new ErrorEventArgs(ex));
+            }
+            catch (Exception handlerEx)
+            {
+                _logger?.LogError(handlerEx, "ErrorOccurred handler threw for connection {ConnectionId}", _connectionId);
+            }
+        }
+#pragma warning restore CA1031
     }
 
    
@@ -369,6 +399,7 @@ public class MultiModalLiveClient : IDisposable
         }
 #endif
 
+        var textInThisMessage = false;
         if (responsePayload.ServerContent?.ModelTurn != null)
         {
             var textParts = responsePayload.ServerContent.ModelTurn.Parts;
@@ -377,6 +408,8 @@ public class MultiModalLiveClient : IDisposable
             {
                 if (part.Text != null)
                 {
+                    textInThisMessage = true;
+                    _textReceivedInTurn = true;
                     this.TextChunkReceived?.Invoke(this,
                         new TextChunkReceivedArgs(part.Text, responsePayload.ServerContent.TurnComplete == true));
                     if (_logger?.IsEnabled(LogLevel.Information) == true)
@@ -387,12 +420,20 @@ public class MultiModalLiveClient : IDisposable
 
         if (responsePayload.ServerContent?.TurnComplete == true)
         {
+            // The server often sends turnComplete in its own message without text. Raise a final, empty chunk
+            // so text consumers still see IsTurnFinish (only when the turn produced text).
+            if (_textReceivedInTurn && !textInThisMessage)
+                this.TextChunkReceived?.Invoke(this, new TextChunkReceivedArgs(string.Empty, true));
+
+            _textReceivedInTurn = false;
             _logger?.LogInformation("Text generation completed.");
+            TurnCompleted?.Invoke(this, EventArgs.Empty);
         }
 
         if (responsePayload.ServerContent?.Interrupted == true)
         {
             // HandleInterruption is called by ProcessAudioChunk; calling it here too raised GenerationInterrupted twice.
+            _textReceivedInTurn = false;
             _logger?.LogWarning("Text generation interrupted.");
         }
     }
@@ -646,6 +687,9 @@ public class MultiModalLiveClient : IDisposable
     {
         _logger?.LogConnectionAttempt();
 
+        // Connecting again replaces the previous websocket; release it so it and its subscriptions don't leak.
+        ReleaseClient();
+
         var url = _platformAdapter.GetMultiModalLiveUrl();
         if (WebsocketClientFactory != null)
         {
@@ -662,22 +706,26 @@ public class MultiModalLiveClient : IDisposable
 
         ClientCreated?.Invoke(this, new ClientCreatedEventArgs(_client));
 
-        _client.ReconnectionHappened.Subscribe(info =>
+        _subscriptions.Add(_client.ReconnectionHappened.Subscribe(info =>
         {
             if (_logger?.IsEnabled(LogLevel.Information) == true)
                 _logger.LogInformation("Reconnection happened: {ReconnectionType}", info.Type);
-            // Consider re-sending setup or other state restoration here
-        });
 
-        _client.MessageReceived.ObserveOn(TaskPoolScheduler.Default)
+            // The initial connection's setup is sent by ConnectAsync; after a reconnect the server
+            // expects a new setup message before anything else.
+            if (info.Type != ReconnectionType.Initial && ResendSetupOnReconnect && _lastSetup != null)
+                _ = ResendSetupAfterReconnectAsync(_lastSetup);
+        }));
+
+        _subscriptions.Add(_client.MessageReceived.ObserveOn(TaskPoolScheduler.Default)
             .Subscribe(ProcessReceivedMessage, ex =>
             {
                 _logger?.LogError(ex, "Error in MessageReceived subscription for connection {ConnectionId}",
                     _connectionId);
-                ErrorOccurred?.Invoke(this, new ErrorEventArgs(ex)); 
-            });
+                ErrorOccurred?.Invoke(this, new ErrorEventArgs(ex));
+            }));
 
-        _client.DisconnectionHappened.Subscribe(info =>
+        _subscriptions.Add(_client.DisconnectionHappened.Subscribe(info =>
         {
             if (info.Exception is not null)
             {
@@ -698,7 +746,7 @@ public class MultiModalLiveClient : IDisposable
                 new ErrorMessageEventArgs(info.CloseStatusDescription) :
                 EventArgs.Empty;
             Disconnected?.Invoke(this, eventArgs);
-        });
+        }));
 
         try
         {
@@ -716,6 +764,40 @@ public class MultiModalLiveClient : IDisposable
             ErrorOccurred?.Invoke(this, new ErrorEventArgs(ex));
             throw;
         }
+    }
+
+    private async Task ResendSetupAfterReconnectAsync(BidiGenerateContentSetup setup)
+    {
+        if (setup.SessionResumption != null && !string.IsNullOrEmpty(LastSessionResumptionHandle))
+        {
+            setup.SessionResumption = new SessionResumptionConfig
+            {
+                Handle = LastSessionResumptionHandle,
+                Transparent = setup.SessionResumption.Transparent
+            };
+        }
+
+#pragma warning disable CA1031 // Fire-and-forget from the reconnection callback; failures are reported via ErrorOccurred
+        try
+        {
+            await SendSetupAsync(setup).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            _logger?.LogError(ex, "Failed to re-send setup after reconnect for connection {ConnectionId}", _connectionId);
+            ErrorOccurred?.Invoke(this, new ErrorEventArgs(ex));
+        }
+#pragma warning restore CA1031
+    }
+
+    private void ReleaseClient()
+    {
+        foreach (var subscription in _subscriptions)
+            subscription.Dispose();
+        _subscriptions.Clear();
+
+        _client?.Dispose();
+        _client = null;
     }
 
     /// <summary>
@@ -784,8 +866,8 @@ public class MultiModalLiveClient : IDisposable
 #pragma warning restore CA1031
             finally
             {
-                _client.Dispose();
-                _client = null;
+                // Release the subscriptions too, so a disposed client's events can't reach this instance.
+                ReleaseClient();
             }
         }
     }
@@ -838,6 +920,7 @@ public class MultiModalLiveClient : IDisposable
                 setup.Tools = tools.ToArray();
         }
 
+        _lastSetup = setup;
         var payload = new BidiClientPayload { Setup = setup };
         await SendAsync(payload, cancellationToken).ConfigureAwait(false);
     }

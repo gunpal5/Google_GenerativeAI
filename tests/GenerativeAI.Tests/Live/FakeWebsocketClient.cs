@@ -42,6 +42,9 @@ internal sealed class FakeWebsocketClient : IWebsocketClient
     /// <summary>Pushes a text message as if it were received from the server.</summary>
     public void ReceiveText(string json) => _messages.OnNext(ResponseMessage.TextMessage(json));
 
+    /// <summary>Simulates the underlying connection being re-established.</summary>
+    public void SimulateReconnection(ReconnectionType type) => _reconnections.OnNext(new ReconnectionInfo(type));
+
     public Uri Url { get; set; }
     public IObservable<ResponseMessage> MessageReceived => _messages.AsObservable();
     public IObservable<ReconnectionInfo> ReconnectionHappened => _reconnections.AsObservable();
@@ -100,8 +103,13 @@ internal sealed class FakeWebsocketClient : IWebsocketClient
     public Task Reconnect() => Task.CompletedTask;
     public Task ReconnectOrFail() => Task.CompletedTask;
 
+    /// <summary>Whether anything was still subscribed to <see cref="MessageReceived"/> when this client was disposed.</summary>
+    public bool HadMessageSubscribersAtDispose { get; private set; }
+
     public void Dispose()
     {
+        if (!IsDisposed)
+            HadMessageSubscribersAtDispose = _messages.HasObservers;
         IsRunning = false;
         IsDisposed = true;
         _messages.Dispose();

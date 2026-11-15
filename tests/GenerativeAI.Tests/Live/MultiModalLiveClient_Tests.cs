@@ -4,6 +4,7 @@ using GenerativeAI.Live;
 using GenerativeAI.Types;
 using Moq;
 using Shouldly;
+using Websocket.Client;
 
 namespace GenerativeAI.Tests.Live;
 
@@ -755,6 +756,152 @@ public class MultiModalLiveClient_Tests
             socket.ReceiveText("""{"goAway":{"timeLeft":"5s"}}""");
 
             (await received).TimeLeftDuration.ShouldBe(TimeSpan.FromSeconds(5));
+        }
+    }
+
+    #endregion
+
+    #region Reliability
+
+    [Fact]
+    public async Task EventHandlerException_IsReportedAndDoesNotStopProcessing()
+    {
+        var (client, socket) = await ConnectAsync();
+        using (client)
+        {
+            var error = WaitForEventAsync<System.IO.ErrorEventArgs>(h => client.ErrorOccurred += h);
+            client.GoAwayReceived += (_, _) => throw new InvalidOperationException("handler failure");
+
+            socket.ReceiveText("""{"goAway":{"timeLeft":"1s"}}""");
+            (await error).GetException().Message.ShouldBe("handler failure");
+
+            var resumption = WaitForEventAsync<LiveServerSessionResumptionUpdate>(h =>
+                client.SessionResumableUpdateReceived += h);
+            socket.ReceiveText("""{"sessionResumptionUpdate":{"newHandle":"h2","resumable":true}}""");
+            (await resumption).NewHandle.ShouldBe("h2");
+        }
+    }
+
+    [Fact]
+    public async Task ConnectingAgain_DisposesPreviousSocketAndIgnoresItsMessages()
+    {
+        var sockets = new List<FakeWebsocketClient>();
+        var client = new MultiModalLiveClient(new GoogleAIPlatformAdapter("test-key"), ModelName);
+        client.WebsocketClientFactory = url =>
+        {
+            var socket = new FakeWebsocketClient(url);
+            sockets.Add(socket);
+            return socket;
+        };
+
+        using (client)
+        {
+            await client.ConnectAsync(autoSendSetup: false, TestContext.Current.CancellationToken);
+            await client.ConnectAsync(autoSendSetup: false, TestContext.Current.CancellationToken);
+
+            sockets.Count.ShouldBe(2);
+            sockets[0].IsDisposed.ShouldBeTrue();
+            sockets[0].HadMessageSubscribersAtDispose.ShouldBeFalse(); // unsubscribed before disposal
+            sockets[1].IsDisposed.ShouldBeFalse();
+
+            var fromNewSocket = WaitForEventAsync<LiveServerGoAway>(h => client.GoAwayReceived += h);
+            sockets[1].ReceiveText("""{"goAway":{"timeLeft":"2s"}}""");
+            (await fromNewSocket).TimeLeft.ShouldBe("2s");
+        }
+    }
+
+    [Fact]
+    public async Task Reconnection_ResendsSetupWithLatestResumptionHandle()
+    {
+        var (client, socket) = await ConnectAsync(c => c.SessionResumption = new SessionResumptionConfig(),
+            autoSendSetup: true);
+        using (client)
+        {
+            socket.SentMessages.Count.ShouldBe(1);
+
+            var update = WaitForEventAsync<LiveServerSessionResumptionUpdate>(h =>
+                client.SessionResumableUpdateReceived += h);
+            socket.ReceiveText("""{"sessionResumptionUpdate":{"newHandle":"resume-1","resumable":true}}""");
+            await update;
+
+            var resent = new TaskCompletionSource<string>(TaskCreationOptions.RunContinuationsAsynchronously);
+            socket.TextSent += json => resent.TrySetResult(json);
+            socket.SimulateReconnection(ReconnectionType.Lost);
+
+            using var doc = JsonDocument.Parse(await resent.Task.WaitAsync(Timeout, TestContext.Current.CancellationToken));
+            var setup = doc.RootElement.GetProperty("setup");
+            setup.GetProperty("sessionResumption").GetProperty("handle").GetString().ShouldBe("resume-1");
+        }
+    }
+
+    [Fact]
+    public async Task InitialConnectionEvent_DoesNotResendSetup()
+    {
+        var (client, socket) = await ConnectAsync(autoSendSetup: true);
+        using (client)
+        {
+            socket.SimulateReconnection(ReconnectionType.Initial);
+            await Task.Delay(200, TestContext.Current.CancellationToken);
+            socket.SentMessages.Count.ShouldBe(1);
+        }
+    }
+
+    [Fact]
+    public async Task Reconnection_DoesNotResendSetup_WhenDisabled()
+    {
+        var (client, socket) = await ConnectAsync(c => c.ResendSetupOnReconnect = false, autoSendSetup: true);
+        using (client)
+        {
+            socket.SimulateReconnection(ReconnectionType.Lost);
+            await Task.Delay(200, TestContext.Current.CancellationToken);
+            socket.SentMessages.Count.ShouldBe(1);
+        }
+    }
+
+    [Fact]
+    public async Task SeparateTurnComplete_RaisesFinalEmptyTextChunkAndTurnCompleted()
+    {
+        var (client, socket) = await ConnectAsync();
+        using (client)
+        {
+            var chunks = new List<TextChunkReceivedArgs>();
+            var finished = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            var turnCompleted = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            client.TextChunkReceived += (_, e) =>
+            {
+                lock (chunks) chunks.Add(e);
+                if (e.IsTurnFinish) finished.TrySetResult(true);
+            };
+            client.TurnCompleted += (_, _) => turnCompleted.TrySetResult(true);
+
+            socket.ReceiveText("""{"serverContent":{"modelTurn":{"parts":[{"text":"Hello"}]}}}""");
+            socket.ReceiveText("""{"serverContent":{"turnComplete":true}}""");
+
+            await finished.Task.WaitAsync(Timeout, TestContext.Current.CancellationToken);
+            await turnCompleted.Task.WaitAsync(Timeout, TestContext.Current.CancellationToken);
+            lock (chunks)
+            {
+                chunks.Select(c => c.Text).ShouldBe(new[] { "Hello", string.Empty });
+                chunks[^1].IsTurnFinish.ShouldBeTrue();
+            }
+        }
+    }
+
+    [Fact]
+    public async Task TurnCompleteWithoutText_RaisesTurnCompletedButNoTextChunk()
+    {
+        var (client, socket) = await ConnectAsync();
+        using (client)
+        {
+            var textChunks = 0;
+            client.TextChunkReceived += (_, _) => Interlocked.Increment(ref textChunks);
+            var turnCompleted = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            client.TurnCompleted += (_, _) => turnCompleted.TrySetResult(true);
+
+            socket.ReceiveText("""{"serverContent":{"turnComplete":true}}""");
+
+            await turnCompleted.Task.WaitAsync(Timeout, TestContext.Current.CancellationToken);
+            textChunks.ShouldBe(0);
         }
     }
 
