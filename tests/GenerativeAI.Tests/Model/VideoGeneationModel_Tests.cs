@@ -13,6 +13,11 @@ public class VideoGeneationModel_Tests:TestBase
     public VideoGeneationModel_Tests(ITestOutputHelper helper) : base(helper)
     {
         Assert.SkipWhen(SkipVertexAITests, VertextTestSkipMesaage);
+        // Video generation is expensive: only run when explicitly requested.
+        Assert.SkipUnless(
+            string.Equals(System.Environment.GetEnvironmentVariable("RUN_VIDEO_GENERATION_TESTS"), "true",
+                StringComparison.OrdinalIgnoreCase),
+            "Video generation tests are opt-in because they consume credits. Set RUN_VIDEO_GENERATION_TESTS=true to run them.");
     }
 
     [RunnableInDebugOnly]
