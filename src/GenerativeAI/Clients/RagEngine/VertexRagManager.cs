@@ -136,7 +136,7 @@ public class VertexRagManager : BaseClient
 
         if (longRunningOperation != null && longRunningOperation.Done == true && longRunningOperation.Error != null)
         {
-            throw new VertexAIException(longRunningOperation.Error.Message ?? $"Operation {operationId} failed with error code {longRunningOperation.Error.Code?.ToString() ?? "unknown"}.", longRunningOperation.Error);
+            throw new VertexAIException(longRunningOperation.Error.Message ?? $"Operation {operationId} failed with error code {longRunningOperation.Error.Code?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "unknown"}.", longRunningOperation.Error);
         }
 
         return longRunningOperation;

@@ -101,7 +101,7 @@ public class FileManagementClient : BaseClient
 
             var fileResponse = await Deserialize<UploadRagFileResponse>(response).ConfigureAwait(false);
             if (fileResponse != null && fileResponse.Error != null)
-                throw new VertexAIException(fileResponse.Error.Message ?? $"RAG file upload failed with error code {fileResponse.Error.Code?.ToString() ?? "unknown"}.", fileResponse.Error);
+                throw new VertexAIException(fileResponse.Error.Message ?? $"RAG file upload failed with error code {fileResponse.Error.Code?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "unknown"}.", fileResponse.Error);
             
             return fileResponse?.RagFile;
         }

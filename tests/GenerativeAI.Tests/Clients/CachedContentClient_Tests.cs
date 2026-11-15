@@ -21,19 +21,10 @@ public class CachingClient_Tests : TestBase
     public async Task ShouldCreateCachedContentAsync()
     {
         // Arrange
-        using var httpClient = new HttpClient();
-        var file = await httpClient.GetStringAsync("https://storage.googleapis.com/generativeai-downloads/data/a11.txt",TestContext.Current.CancellationToken);
-         var client = CreateCachingClient();
-        var cachedContent = new CachedContent
-        {
-            DisplayName = "Test Cached Content",
-            Model = GoogleAIModels.Gemini38Flash,
-            Contents = new List<Content>
-                { RequestExtensions.FormatGenerateContentInput(file), },
-        };
+        var client = CreateCachingClient();
 
         // Act
-        var result = await client.CreateCachedContentAsync(cachedContent, cancellationToken: TestContext.Current.CancellationToken);
+        var result = await CreateTestCacheAsync(client);
 
         // Assert
         result.ShouldNotBeNull();
@@ -52,10 +43,8 @@ public class CachingClient_Tests : TestBase
     {
         // Arrange
         
-         var client = CreateCachingClient();
-        var cachedItems = await client.ListCachedContentsAsync(cancellationToken: TestContext.Current.CancellationToken);
-        var testItem = cachedItems.CachedContents.FirstOrDefault();
-        string cachedContentName = testItem.Name; // Replace with a valid test name
+        var client = CreateCachingClient();
+        var cachedContentName = (await GetOrCreateTestCacheAsync(client)).Name!;
 
         // Act
         var result = await client.GetCachedContentAsync(cachedContentName, cancellationToken: TestContext.Current.CancellationToken);
@@ -76,8 +65,9 @@ public class CachingClient_Tests : TestBase
     public async Task ShouldListCachedContentsAsync()
     {
         // Arrange
-         var client = CreateCachingClient();
+        var client = CreateCachingClient();
         const int pageSize = 5;
+        await GetOrCreateTestCacheAsync(client); // make sure there is something to list
 
         // Act
         var result = await client.ListCachedContentsAsync(pageSize, cancellationToken: TestContext.Current.CancellationToken);
@@ -102,9 +92,8 @@ public class CachingClient_Tests : TestBase
     public async Task ShouldUpdateCachedContentAsync()
     {
         // Arrange
-         var client = CreateCachingClient();
-        var cachedItems = await client.ListCachedContentsAsync(cancellationToken: TestContext.Current.CancellationToken);
-        var testItem = cachedItems.CachedContents.FirstOrDefault();
+        var client = CreateCachingClient();
+        var testItem = await GetOrCreateTestCacheAsync(client);
         var updatedContent = new CachedContent
         {
             //Name = testItem.Name,
@@ -129,11 +118,9 @@ public class CachingClient_Tests : TestBase
     public async Task ShouldDeleteCachedContentAsync()
     {
         // Arrange
-         var client = CreateCachingClient();
-        var cachedItems = await client.ListCachedContentsAsync(cancellationToken: TestContext.Current.CancellationToken);
-        var testItem = cachedItems.CachedContents.FirstOrDefault();
-
-        string cachedContentName = testItem.Name; // Replace with valid test data
+        // Delete a cache this test created itself, so parallel runs (other target frameworks) keep theirs.
+        var client = CreateCachingClient();
+        var cachedContentName = (await CreateTestCacheAsync(client)).Name!;
 
         // Act and Assert
         await Should.NotThrowAsync(async () => await client.DeleteCachedContentAsync(cachedContentName, cancellationToken: TestContext.Current.CancellationToken));
@@ -170,6 +157,38 @@ public class CachingClient_Tests : TestBase
         // Assert
         exception.Message.ShouldNotBeNullOrEmpty();
         Console.WriteLine($"Handled exception while deleting Cached Content: {exception.Message}");
+    }
+
+    private const string TestCacheDisplayName = "Test Cached Content";
+
+    /// <summary>
+    /// Creates a small cached content (~10k tokens, 5 minute TTL) so tests do not depend on each other.
+    /// </summary>
+    private static async Task<CachedContent> CreateTestCacheAsync(CachingClient client)
+    {
+        var ct = TestContext.Current.CancellationToken;
+        using var httpClient = new HttpClient();
+        var file = await httpClient.GetStringAsync("https://storage.googleapis.com/generativeai-downloads/data/a11.txt", ct);
+        var text = file.Length > 40_000 ? file.Substring(0, 40_000) : file;
+
+        var created = await client.CreateCachedContentAsync(new CachedContent
+        {
+            DisplayName = TestCacheDisplayName,
+            Model = GoogleAIModels.Gemini38Flash,
+            Contents = new List<Content> { RequestExtensions.FormatGenerateContentInput(text) },
+            Ttl = new Duration { Seconds = 300 }
+        }, cancellationToken: ct);
+        created.ShouldNotBeNull();
+        created.Name.ShouldNotBeNullOrEmpty();
+        return created;
+    }
+
+    /// <summary>Returns an existing cached content, or creates one when the account has none.</summary>
+    private static async Task<CachedContent> GetOrCreateTestCacheAsync(CachingClient client)
+    {
+        var list = await client.ListCachedContentsAsync(cancellationToken: TestContext.Current.CancellationToken);
+        var existing = list?.CachedContents?.FirstOrDefault(c => !string.IsNullOrEmpty(c.Name));
+        return existing ?? await CreateTestCacheAsync(client);
     }
 
     public CachingClient CreateCachingClient()

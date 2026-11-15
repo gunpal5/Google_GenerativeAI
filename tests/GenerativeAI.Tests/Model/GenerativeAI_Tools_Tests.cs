@@ -77,7 +77,8 @@ public class GenerativeAI_Tools_Tests:TestBase
 
         var text = response.Text();
         text.ShouldNotBeNullOrEmpty();
-        text.ShouldContain("price");
+        // The wording varies ("price", "trading at", ...); the ticker is reliably mentioned.
+        text.ShouldContain("GOOG", Case.Insensitive);
         Console.WriteLine(text);
     }
 

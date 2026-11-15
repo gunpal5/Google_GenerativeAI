@@ -29,6 +29,8 @@ public class OAuth_Tests:TestBase
     private IGoogleAuthenticator? CreateAuthenticatorWithJsonFile()
     {
         var file = Environment.GetEnvironmentVariable("Google_Client_Secret", EnvironmentVariableTarget.User);
+        Assert.SkipWhen(string.IsNullOrWhiteSpace(file) || !File.Exists(file),
+            "Set the Google_Client_Secret user environment variable to an existing OAuth client secret JSON file.");
         return new GoogleOAuthAuthenticator(file);
     }
 }

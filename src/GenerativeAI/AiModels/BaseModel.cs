@@ -145,8 +145,8 @@ public abstract class BaseModel : BaseClient
 
     private static string GetBareModelId(string model)
     {
-        var index = model.LastIndexOf('/');
-        return index >= 0 ? model.Substring(index + 1) : model;
+        var segments = model.Split('/');
+        return segments[segments.Length - 1];
     }
 
     private void ValidateEmbeddingRequest(string model, EmbedContentRequest req)
