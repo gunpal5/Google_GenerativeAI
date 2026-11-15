@@ -57,6 +57,52 @@ public class InteractionsClient : BaseClient
     public async Task<Interaction> CreateAsync(CreateInteractionRequest request,
         CancellationToken cancellationToken = default)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
+        var interaction = await CreateOnceAsync(request, cancellationToken).ConfigureAwait(false);
+
+        // Automatic continuation, as in python-genai: keep resuming a long decode while the server asks for it,
+        // and return one interaction holding the steps of every hop. Background interactions are left alone.
+        var hops = 0;
+        while (EnableAutomaticContinuation && request.Background != true && hops < MaxContinuations &&
+               string.Equals(interaction.Status, InteractionStatuses.RequiresContinuation, StringComparison.Ordinal) &&
+               !string.IsNullOrEmpty(interaction.ContinuationToken))
+        {
+            hops++;
+            var next = await CreateOnceAsync(CreateContinuationRequest(interaction, request), cancellationToken)
+                .ConfigureAwait(false);
+            if (interaction.Steps is { Count: > 0 })
+            {
+                var steps = new List<InteractionStep>(interaction.Steps);
+                if (next.Steps != null)
+                    steps.AddRange(next.Steps);
+                next.Steps = steps;
+            }
+
+            interaction = next;
+        }
+
+        return interaction;
+    }
+
+    /// <summary>
+    /// Whether <see cref="CreateAsync(CreateInteractionRequest, CancellationToken)"/> automatically resumes an
+    /// interaction whose status is <see cref="InteractionStatuses.RequiresContinuation"/> (default true, as in
+    /// python-genai). The returned interaction is the last hop, with the steps of all hops.
+    /// </summary>
+    public bool EnableAutomaticContinuation { get; set; } = true;
+
+    /// <summary>
+    /// The maximum number of continuation requests per create call (default 10).
+    /// </summary>
+    public int MaxContinuations { get; set; } = 10;
+
+    private async Task<Interaction> CreateOnceAsync(CreateInteractionRequest request,
+        CancellationToken cancellationToken)
+    {
         Validate(request);
         var body = request.Clone();
         body.Stream = null;

@@ -583,6 +583,45 @@ public class InteractionsClient_Tests
     }
 
     [Fact]
+    public async Task CreateAsync_AutomaticallyContinuesAndCombinesSteps()
+    {
+        const string hop1 = """
+            {"id":"v1_hop1","status":"requires_continuation","continuation_token":"tok-1",
+             "steps":[{"type":"model_output","content":[{"type":"text","text":"Once upon "}]}]}
+            """;
+        const string hop2 = """
+            {"id":"v1_hop2","status":"completed",
+             "steps":[{"type":"model_output","content":[{"type":"text","text":"a time."}]}]}
+            """;
+        var (client, handler) = CreateGoogle(hop1, hop2);
+
+        var interaction = await client.CreateAsync(
+            new CreateInteractionRequest { Model = "gemini-3.8-flash", Input = "Write a story" },
+            TestContext.Current.CancellationToken);
+
+        handler.Requests.Count.ShouldBe(2);
+        JsonNode.Parse(handler.Requests[1].Body!)!["continuation_token"]!.GetValue<string>().ShouldBe("tok-1");
+        interaction.Id.ShouldBe("v1_hop2");
+        interaction.Status.ShouldBe(InteractionStatuses.Completed);
+        interaction.Steps!.Count.ShouldBe(2);
+    }
+
+    [Fact]
+    public async Task CreateAsync_DoesNotContinueWhenDisabled()
+    {
+        const string hop1 = """{"id":"v1_hop1","status":"requires_continuation","continuation_token":"tok-1"}""";
+        var (client, handler) = CreateGoogle(hop1);
+        client.EnableAutomaticContinuation = false;
+
+        var interaction = await client.CreateAsync(
+            new CreateInteractionRequest { Model = "gemini-3.8-flash", Input = "Write a story" },
+            TestContext.Current.CancellationToken);
+
+        handler.Requests.Count.ShouldBe(1);
+        interaction.Status.ShouldBe(InteractionStatuses.RequiresContinuation);
+    }
+
+    [Fact]
     public async Task ContinueAsync_SendsContinuationTokenWithPreviousInteraction()
     {
         var (client, handler) = CreateGoogle(CompletedInteractionJson);
