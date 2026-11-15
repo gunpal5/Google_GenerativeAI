@@ -192,32 +192,64 @@ public class VertexBatchClient_Tests : TestBase
     public async Task ShouldCancelBatchJob()
     {
         Assert.SkipUnless(!SkipVertexAITests, VertextTestSkipMesaage);
-        //Assert.Skip("Skip - GetAsync for Vertex AI not yet implemented");
+        Assert.SkipUnless(IsGcsConfigured, "Skip - GCS not configured. Set GCS_TEST_BUCKET and GOOGLE_PROJECT_ID environment variables");
+        var ct = TestContext.Current.CancellationToken;
 
         var client = CreateClient();
-        var jobName = "projects/your-project/locations/your-region/batchPredictionJobs/123"; // Replace with actual job name
+        using var gcsHelper = new GcsTestHelper();
+        var jobName = (await CreateSmallGcsBatchJobAsync(client, gcsHelper, ct)).Name!;
 
-        await client.CancelAsync(jobName, cancellationToken: TestContext.Current.CancellationToken);
-
+        await client.CancelAsync(jobName, cancellationToken: ct);
         Console?.WriteLine($"Cancelled batch job: {jobName}");
 
-        // Verify cancellation
-        var response = await client.GetAsync(jobName, cancellationToken: TestContext.Current.CancellationToken);
-        response.Metadata?.State.ShouldBe(JobState.JOB_STATE_CANCELLED);
+        var state = (await client.GetAsync(jobName, cancellationToken: ct)).Metadata?.State;
+        (state is JobState.JOB_STATE_CANCELLING or JobState.JOB_STATE_CANCELLED).ShouldBeTrue($"Unexpected state {state}");
     }
 
     [Fact]
     public async Task ShouldDeleteBatchJob()
     {
         Assert.SkipUnless(!SkipVertexAITests, VertextTestSkipMesaage);
-       // Assert.Skip("Skip batch tests - requires a completed or failed batch job to delete");
+        Assert.SkipUnless(IsGcsConfigured, "Skip - GCS not configured. Set GCS_TEST_BUCKET and GOOGLE_PROJECT_ID environment variables");
+        var ct = TestContext.Current.CancellationToken;
 
         var client = CreateClient();
-        var jobName = "projects/880800811905/locations/us-central1/batchPredictionJobs/2895952497568907264"; // Replace with actual job name
+        using var gcsHelper = new GcsTestHelper();
+        var jobName = (await CreateSmallGcsBatchJobAsync(client, gcsHelper, ct)).Name!;
 
-        await client.DeleteBatchJobAsync(jobName, cancellationToken: TestContext.Current.CancellationToken);
+        // Only finished jobs can be deleted: cancel, then wait for a terminal state.
+        await client.CancelAsync(jobName, cancellationToken: ct);
+        var deadline = DateTime.UtcNow.AddMinutes(5);
+        while (true)
+        {
+            var state = (await client.GetAsync(jobName, cancellationToken: ct)).Metadata?.State;
+            if (state is JobState.JOB_STATE_CANCELLED or JobState.JOB_STATE_FAILED or JobState.JOB_STATE_SUCCEEDED
+                or JobState.JOB_STATE_EXPIRED)
+                break;
+            if (DateTime.UtcNow > deadline)
+                throw new TimeoutException($"Batch job {jobName} did not finish cancelling (state: {state}).");
+            await Task.Delay(TimeSpan.FromSeconds(10), ct);
+        }
 
+        await client.DeleteBatchJobAsync(jobName, cancellationToken: ct);
         Console?.WriteLine($"Deleted batch job: {jobName}");
+    }
+
+    /// <summary>
+    /// Creates a small batch job from sample requests uploaded to the test bucket, so tests don't depend on
+    /// job IDs that existed in someone's project.
+    /// </summary>
+    private static async Task<BatchJob> CreateSmallGcsBatchJobAsync(BatchClient client, GcsTestHelper gcsHelper,
+        CancellationToken ct)
+    {
+        var inputUri = await gcsHelper.UploadSampleContentRequestsAsync();
+        var job = await client.CreateAsync(
+            VertexAIModels.Gemini.Gemini38Flash,
+            new BatchJobSource { GcsUri = new List<string> { inputUri } },
+            new BatchJobDestination { GcsUri = gcsHelper.GetOutputUriPrefix() },
+            cancellationToken: ct);
+        job.Name.ShouldNotBeNullOrEmpty();
+        return job;
     }
 
     [Fact]

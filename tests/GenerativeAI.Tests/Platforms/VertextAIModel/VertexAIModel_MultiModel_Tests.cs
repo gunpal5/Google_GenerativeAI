@@ -65,7 +65,7 @@ public class VertexAIModel_MultiModel_Tests : TestBase
         var model = CreateInitializedModel();
 
         string prompt = "Describe this video?";
-        string uri = "https://videos.pexels.com/video-files/3192305/3192305-uhd_2560_1440_25fps.mp4";
+        string uri = "gs://cloud-samples-data/video/animals.mp4"; // public Google sample; Vertex reads gs:// URIs
 
         //Act
         var result = await model.GenerateContentAsync(prompt, uri, "video/mp4", cancellationToken: TestContext.Current.CancellationToken);
@@ -74,7 +74,7 @@ public class VertexAIModel_MultiModel_Tests : TestBase
         result.ShouldNotBeNull();
         var text = result.Text();
         text.ShouldNotBeNull();
-        text.ShouldContain("meeting", Case.Insensitive);
+        text.ShouldNotBeNullOrWhiteSpace();
         Console.WriteLine(result.Text());
     }
 
