@@ -44,4 +44,10 @@ public static class BaseUrls
     /// </summary>
     public const string VertexMultiModalLive =
         "wss://{location}-aiplatform.googleapis.com/ws/google.cloud.aiplatform.{version}.LlmBidiService/BidiGenerateContent";
+
+    /// <summary>
+    /// WebSocket URL template for Google AI Live Music (Lyria RealTime) sessions. Gemini API only.
+    /// </summary>
+    public const string GoogleLiveMusic =
+        "wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.{version}.GenerativeService.BidiGenerateMusic";
 }

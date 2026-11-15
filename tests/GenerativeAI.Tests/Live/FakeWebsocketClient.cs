@@ -45,6 +45,15 @@ internal sealed class FakeWebsocketClient : IWebsocketClient
     /// <summary>Simulates the underlying connection being re-established.</summary>
     public void SimulateReconnection(ReconnectionType type) => _reconnections.OnNext(new ReconnectionInfo(type));
 
+    /// <summary>Simulates the connection being closed (optionally with a close reason or an exception).</summary>
+    public void SimulateDisconnection(DisconnectionType type, string? closeStatusDescription = null,
+        Exception? exception = null) =>
+        _disconnections.OnNext(new DisconnectionInfo(type, WebSocketCloseStatus.NormalClosure, closeStatusDescription,
+            null, exception));
+
+    /// <summary>Pushes a binary message as if it were received from the server.</summary>
+    public void ReceiveBinary(byte[] data) => _messages.OnNext(ResponseMessage.BinaryMessage(data));
+
     public Uri Url { get; set; }
     public IObservable<ResponseMessage> MessageReceived => _messages.AsObservable();
     public IObservable<ReconnectionInfo> ReconnectionHappened => _reconnections.AsObservable();
