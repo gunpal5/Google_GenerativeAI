@@ -398,3 +398,6 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Personal Claude Code memory (machine-specific, never committed)
+CLAUDE.local.md

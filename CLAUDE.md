@@ -20,8 +20,6 @@ Google_GenerativeAI is the unofficial C# .NET SDK for Google Gemini (Gemini API)
 
 ## Working preferences
 
-- **Use Rider** (the Rider MCP tools) to build and run tests when it's available. Rider's test settings hold the
-  Vertex AI environment (`GOOGLE_PROJECT_ID`, `GOOGLE_REGION=global`, ADC).
 - **Never run video generation tests or anything that generates video.** They cost credits and stay off unless the
   maintainer asks (`RUN_VIDEO_GENERATION_TESTS=true`).
 - Keep the build at **0 warnings**. Verify code examples you add to the README, wiki or skill by compiling them.
@@ -31,23 +29,10 @@ Google_GenerativeAI is the unofficial C# .NET SDK for Google Gemini (Gemini API)
 
 ## Git conventions
 
-### Commit authorship
-- **Author name:** Gunpal Jain
-- **Author email:** gunpal5@gmail.com
-- Do not use "Claude" or "noreply@anthropic.com" as the author, and don't mention AI assistance in commit messages.
-
-### Branch naming
-- `feature/description`, `fix/description`, `refactor/description` or `docs/description`.
-- Do not use a `claude/` prefix unless the environment requires it.
-
-### Commit messages
+- Branch names: `feature/description`, `fix/description`, `refactor/description` or `docs/description`.
 - Conventional commits: `type: description` with `feat`, `fix`, `docs`, `refactor`, `test` or `chore`; add `!` for
   breaking changes (for example `refactor!:`).
-
-### Local quirk
-- Git on this machine can report "dubious ownership" for the repository. Pass
-  `-c safe.directory=D:/GitHub/GenerativeAI_Latest/Google_GenerativeAI` (or set `GIT_CONFIG_COUNT` /
-  `GIT_CONFIG_KEY_0=safe.directory` / `GIT_CONFIG_VALUE_0` for `gh`) instead of changing the global git config.
+- Machine-specific settings (commit authorship, local tooling) live in `CLAUDE.local.md`, which is not committed.
 
 ## Code style
 
