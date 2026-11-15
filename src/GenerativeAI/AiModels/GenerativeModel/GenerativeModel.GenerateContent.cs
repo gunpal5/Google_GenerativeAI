@@ -6,6 +6,120 @@ namespace GenerativeAI;
 
 public partial class GenerativeModel
 {
+    /// <summary>
+    /// Whether to resume automatically when the API ends a response early with
+    /// <see cref="FinishReason.CONTINUATION"/> and a continuation token (default true, as in the official SDKs).
+    /// The follow-up responses are merged into one response (non-streaming) or streamed on (streaming).
+    /// </summary>
+    public bool EnableAutomaticContinuation { get; set; } = true;
+
+    /// <summary>
+    /// The maximum number of follow-up requests made for one generation when
+    /// <see cref="EnableAutomaticContinuation"/> is on (default 10).
+    /// </summary>
+    public int MaxContinuations { get; set; } = 10;
+
+    /// <summary>
+    /// Sends the request and follows continuation tokens, merging the hops into one response.
+    /// </summary>
+    private async Task<GenerateContentResponse> GenerateWithContinuationAsync(GenerateContentRequest request,
+        CancellationToken cancellationToken)
+    {
+        var originalToken = request.ContinuationToken;
+        try
+        {
+            var response = await base.GenerateContentAsync(Model, request, cancellationToken).ConfigureAwait(false);
+            var hops = 0;
+            string? token;
+            while (EnableAutomaticContinuation && hops < MaxContinuations &&
+                   (token = Core.ContinuationHelper.GetResumeToken(response)) != null)
+            {
+                hops++;
+                request.ContinuationToken = token;
+                var next = await base.GenerateContentAsync(Model, request, cancellationToken).ConfigureAwait(false);
+                response = Core.ContinuationHelper.Merge(response, next);
+            }
+
+            return response;
+        }
+        finally
+        {
+            request.ContinuationToken = originalToken;
+        }
+    }
+
+    /// <summary>
+    /// Streams the request and, when a hop ends (or fails) with a resumable continuation token, starts a new stream
+    /// with that token and keeps yielding chunks.
+    /// </summary>
+    private async IAsyncEnumerable<GenerateContentResponse> StreamWithContinuationAsync(GenerateContentRequest request,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
+    {
+        var originalToken = request.ContinuationToken;
+        try
+        {
+            var hops = 0;
+            while (true)
+            {
+                GenerateContentResponse? lastChunk = null;
+                string? lastToken = null;
+                Exception? failure = null;
+
+                var enumerator = base.GenerateContentStreamAsync(Model, request, cancellationToken)
+                    .GetAsyncEnumerator(cancellationToken);
+                try
+                {
+                    while (true)
+                    {
+                        GenerateContentResponse? chunk;
+                        try
+                        {
+                            if (!await enumerator.MoveNextAsync().ConfigureAwait(false))
+                                break;
+                            chunk = enumerator.Current;
+                        }
+#pragma warning disable CA1031 // Only swallowed when the stream can be resumed with a continuation token
+                        catch (Exception ex) when (ex is not OperationCanceledException)
+                        {
+                            failure = ex;
+                            break;
+                        }
+#pragma warning restore CA1031
+
+                        if (chunk == null)
+                            continue;
+
+                        lastChunk = chunk;
+                        var chunkToken = chunk.Candidates is { Length: > 0 } c ? c[0].ContinuationToken : null;
+                        if (!string.IsNullOrEmpty(chunkToken))
+                            lastToken = chunkToken;
+                        yield return chunk;
+                    }
+                }
+                finally
+                {
+                    await enumerator.DisposeAsync().ConfigureAwait(false);
+                }
+
+                // Resume when the stream failed after a checkpoint, or ended with a resumable finish reason.
+                var resumeToken = failure != null ? lastToken : Core.ContinuationHelper.GetResumeToken(lastChunk);
+                if (!EnableAutomaticContinuation || hops >= MaxContinuations || resumeToken == null)
+                {
+                    if (failure != null)
+                        System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(failure).Throw();
+                    yield break;
+                }
+
+                hops++;
+                request.ContinuationToken = resumeToken;
+            }
+        }
+        finally
+        {
+            request.ContinuationToken = originalToken;
+        }
+    }
+
     #region Public Methods
 
     #region Generate Content
@@ -21,9 +135,14 @@ public partial class GenerativeModel
         GenerateContentRequest request,
         CancellationToken cancellationToken = default)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         PrepareRequest(request);
-        // Use the base class method to get the raw response
-        var baseResponse = await base.GenerateContentAsync(Model, request, cancellationToken).ConfigureAwait(false);
+        // Get the raw response, following continuation tokens if the API ended it early
+        var baseResponse = await GenerateWithContinuationAsync(request, cancellationToken).ConfigureAwait(false);
 
         // Attempt to call functions if instructed
         return await CallFunctionAsync(request, baseResponse, cancellationToken).ConfigureAwait(false);
@@ -110,10 +229,15 @@ public partial class GenerativeModel
         GenerateContentRequest request,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(request);
+#else
+        if (request == null) throw new ArgumentNullException(nameof(request));
+#endif
         PrepareRequest(request);
 
         GenerateContentResponse? lastResponse = null;
-        await foreach (var streamedItem in base.GenerateContentStreamAsync(Model, request, cancellationToken).ConfigureAwait(false))
+        await foreach (var streamedItem in StreamWithContinuationAsync(request, cancellationToken).ConfigureAwait(false))
         {
             if (cancellationToken.IsCancellationRequested)
                 break;
