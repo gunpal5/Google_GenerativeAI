@@ -45,9 +45,19 @@ public static class GoogleAIModels
     public const string Gemini38Flash = "models/gemini-3.8-flash";
 
     /// <summary>
+    /// Gemini 3.7 Flash model name (stable).
+    /// </summary>
+    public const string Gemini37Flash = "models/gemini-3.7-flash";
+
+    /// <summary>
     /// Gemini 3.6 Flash model name (stable).
     /// </summary>
     public const string Gemini36Flash = "models/gemini-3.6-flash";
+
+    /// <summary>
+    /// Gemini 3.5 Flash model name (stable).
+    /// </summary>
+    public const string Gemini35Flash = "models/gemini-3.5-flash";
 
     /// <summary>
     /// Gemini 3.5 Flash-Lite model name (stable).
@@ -254,165 +264,15 @@ public static class GoogleAIModels
     /// </summary>
     public const string Gemma4_31B = "models/gemma-4-31b-it";
 
-    /// <summary>
-    /// Gemma 3.0 1B model name.
-    /// </summary>
-    public const string Gemma3_1B = "models/gemma-3-1b-it";
-
-    /// <summary>
-    /// Gemma 3.0 4B model name.
-    /// </summary>
-    public const string Gemma3_4B = "models/gemma-3-4b-it";
-
-    /// <summary>
-    /// Gemma 3.0 12B model name.
-    /// </summary>
-    public const string Gemma3_12B = "models/gemma-3-12b-it";
-
-    /// <summary>
-    /// Gemma 3.0 27B model name.
-    /// </summary>
-    public const string Gemmma3_27B = "gemma-3-27b-it";
-
-    /// <summary>
-    /// Gemma 3n E4B model name (efficient version).
-    /// </summary>
-    public const string Gemma3n_E4B = "models/gemma-3n-e4b-it";
-
-    /// <summary>
-    /// Gemma 3n E2B model name (efficient version).
-    /// </summary>
-    public const string Gemma3n_E2B = "models/gemma-3n-e2b-it";
-
     #endregion
 
     #region Shut down or no longer listed
-
-    /// <summary>
-    /// Gemini 3 Pro Preview model name.
-    /// </summary>
-    [Obsolete("Shut down on March 9, 2026. Use Gemini31ProPreview or a Gemini 4 model.", false)]
-    public const string Gemini3ProPreview = "gemini-3-pro-preview";
 
     /// <summary>
     /// Gemini 3 Pro Image Preview model name.
     /// </summary>
     [Obsolete("Shut down on June 25, 2026. Use Gemini3ProImage.", false)]
     public const string Gemini3ProImagePreview = "gemini-3-pro-image-preview";
-
-    /// <summary>
-    /// Gemini 2.5 Flash-Lite Preview 06-17 model name.
-    /// </summary>
-    [Obsolete("No longer listed in the Gemini API model documentation. Use Gemini25FlashLite or Gemini35FlashLite.", false)]
-    public const string Gemini25FlashLitePreview0617 = "models/gemini-2.5-flash-lite-preview-06-17";
-
-    /// <summary>
-    /// Gemini 2.0 Flash model name.
-    /// </summary>
-    [Obsolete("Shut down on June 1, 2026. Use Gemini38Flash.", false)]
-    public const string Gemini2Flash = "models/gemini-2.0-flash";
-
-    /// <summary>
-    /// Gemini 2.0 Flash Lite model name.
-    /// </summary>
-    [Obsolete("Shut down on June 1, 2026. Use Gemini35FlashLite.", false)]
-    public const string Gemini2FlashLite = "models/gemini-2.0-flash-lite";
-
-    /// <summary>
-    /// Gemini 2.5 Pro Exp 03-25 model name.
-    /// </summary>
-    [Obsolete("No longer listed in the Gemini API model documentation. Use a Gemini 4 model.", false)]
-    public const string Gemini25ProExp0325 = "gemini-2.5-pro-exp-03-25";
-
-    /// <summary>
-    /// Gemini 2.0 Flash Exp 01-21 model name.
-    /// </summary>
-    [Obsolete("No longer listed in the Gemini API model documentation. Use Gemini38Flash.", false)]
-    public const string Gemini2FlashThinkingExp0121 = "gemini-2.0-flash-thinking-exp-01-21";
-
-    /// <summary>
-    /// Gemini 2.5 Pro Preview model name from March 25th release.
-    /// </summary>
-    [Obsolete("Shut down on December 2, 2025. Use a Gemini 4 model.", false)]
-    public const string Gemini25ProPreview0325 = "gemini-2.5-pro-preview-03-25";
-
-    /// <summary>
-    /// Gemini 2.5 Flash Preview 05-20 model name (despite the constant name, this is a Flash model).
-    /// </summary>
-    [Obsolete("Shut down on November 18, 2025. Use Gemini38Flash.", false)]
-    public const string Gemini25ProPreview0520 = "gemini-2.5-flash-preview-05-20";
-
-    /// <summary>
-    /// Gemini 2.0 Flash Live model name version 001.
-    /// </summary>
-    [Obsolete("Shut down on December 9, 2025. Use Gemini38Live.", false)]
-    public const string Gemini2FlashLive001 = "gemini-2.0-flash-live-001";
-
-    /// <summary>
-    /// Gemini 2.5 Flash Preview model name from April 17th release.
-    /// </summary>
-    [Obsolete("No longer listed in the Gemini API model documentation. Use Gemini38Flash.", false)]
-    public const string Gemini25FlashPreview0417 = "gemini-2.5-flash-preview-04-17";
-
-    /// <summary>
-    /// Gemini 2.5 Flash Preview Native Audio Dialog model name.
-    /// </summary>
-    [Obsolete("No longer listed in the Gemini API model documentation. Use Gemini38Live.", false)]
-    public const string Gemini25FlashPreviewNativeAudioDialog = "gemini-2.5-flash-preview-native-audio-dialog";
-
-    /// <summary>
-    /// Gemini 2.5 Flash Preview Native Audio Thinking Dialog model name.
-    /// </summary>
-    [Obsolete("No longer listed in the Gemini API model documentation. Use Gemini38LiveExtendedThinking.", false)]
-    public const string Gemini25FlashPreviewNativeAudioThinkingDialog = "gemini-2.5-flash-exp-native-audio-thinking-dialog";
-
-    /// <summary>
-    /// Gemini Live 2.5 Flash Preview model name.
-    /// </summary>
-    [Obsolete("Shut down on December 9, 2025. Use Gemini38Live.", false)]
-    public const string GeminiLive25FlashPreview = "gemini-live-2.5-flash-preview";
-
-    /// <summary>
-    /// Gemini 2.5 Flash Image Preview model name.
-    /// </summary>
-    [Obsolete("Shut down on January 15, 2026. Use GeminiNanoBanana21 or Gemini31FlashImage.", false)]
-    public const string Gemini25FlashImagePreview = "gemini-2.5-flash-image-preview";
-
-    /// <summary>
-    /// Gemini 2.5 Pro Preview model name from May 6th release.
-    /// </summary>
-    [Obsolete("Shut down on December 2, 2025. Use a Gemini 4 model.", false)]
-    public const string Gemini25ProPreview0506 = "gemini-2.5-pro-preview-05-06";
-
-    /// <summary>
-    /// Gemini 2.5 Pro Preview model name from June 5th release.
-    /// </summary>
-    [Obsolete("Shut down on December 2, 2025. Use a Gemini 4 model.", false)]
-    public const string Gemini25ProPreview0605 = "models/gemini-2.5-pro-preview-06-05";
-
-    /// <summary>
-    /// Gemini 2.0 Flash Exp Image Generation model name.
-    /// </summary>
-    [Obsolete("No longer listed in the Gemini API model documentation. Use GeminiNanoBanana21.", false)]
-    public const string Gemini2FlashExpImageGeneration = "gemini-2.0-flash-exp-image-generation";
-
-    /// <summary>
-    /// Gemini 2.0 Flash Preview Image Generation model name.
-    /// </summary>
-    [Obsolete("Shut down on November 14, 2025. Use GeminiNanoBanana21.", false)]
-    public const string Gemini2FlashPreviewImageGeneration = "gemini-2.0-flash-preview-image-generation";
-
-    /// <summary>
-    /// Gemini 2.5 Flash Preview model name from September 2025 release.
-    /// </summary>
-    [Obsolete("Shut down on February 17, 2026. Use Gemini38Flash.", false)]
-    public const string Gemini25FlashPreview092025 = "models/gemini-2.5-flash-preview-09-2025";
-
-    /// <summary>
-    /// Gemini 2.5 Flash-Lite Preview model name from September 2025 release.
-    /// </summary>
-    [Obsolete("Shut down on March 31, 2026. Use Gemini35FlashLite.", false)]
-    public const string Gemini25FlashLitePreview092025 = "models/gemini-2.5-flash-lite-preview-09-2025";
 
     /// <summary>
     /// Gemini 2.5 Computer Use Preview model name from October 2025 release.
@@ -433,57 +293,9 @@ public static class GoogleAIModels
     public const string Gemini25FlashNativeAudioPreview092025 = "models/gemini-2.5-flash-native-audio-preview-09-2025";
 
     /// <summary>
-    /// Gemini 2.5 Flash Live Preview model name.
-    /// </summary>
-    [Obsolete("No longer listed in the Gemini API model documentation. Use Gemini38Live.", false)]
-    public const string Gemini25FlashLivePreview = "models/gemini-2.5-flash-live-preview";
-
-    /// <summary>
-    /// Gemini Robotics-ER 1.5 Preview model name.
-    /// </summary>
-    [Obsolete("Shut down on April 30, 2026. Use GeminiRoboticsEr2Preview.", false)]
-    public const string GeminiRoboticsEr15Preview = "models/gemini-robotics-er-1.5-preview";
-
-    /// <summary>
-    /// Gemini 2.0 Flash model name.
-    /// </summary>
-    [Obsolete("Shut down on June 1, 2026. Use Gemini38Flash.", false)]
-    public const string Gemini2FlashLatest = "gemini-2.0-flash";
-
-    /// <summary>
-    /// Gemini 2.0 Flash Exp Model Name
-    /// </summary>
-    [Obsolete("No longer listed in the Gemini API model documentation. Use Gemini38Flash.", false)]
-    public const string Gemini2FlashExp = "gemini-2.0-flash-exp";
-
-    /// <summary>
-    /// Gemini 2.0 Flash-Lite Preview model name.
-    /// </summary>
-    [Obsolete("Shut down on December 9, 2025. Use Gemini35FlashLite.", false)]
-    public const string Gemini2FlashLitePreview = "models/gemini-2.0-flash-lite-preview-02-05";
-
-    /// <summary>
-    /// Gemini 2.0 Flash Exp model name.
-    /// </summary>
-    [Obsolete("Gemini-embedding-exp is deprecated. Use GeminiEmbedding2 or GeminiEmbedding (gemini-embedding-001) instead.", false)]
-    public const string GeminiEmbeddingExp = "gemini-embedding-exp";
-
-    /// <summary>
     /// Text Embedding 005 model name.
     /// </summary>
     public const string TextEmbedding005 = "text-embedding-005";
-
-    /// <summary>
-    /// Text Embedding model 004 name.
-    /// </summary>
-    [Obsolete("text-embedding-004 was shut down on January 14, 2026. Use GeminiEmbedding2 or GeminiEmbedding.", false)]
-    public const string TextEmbedding = "models/text-embedding-004";
-
-    /// <summary>
-    /// Embedding model name.
-    /// </summary>
-    [Obsolete("The Embedding model is older. Use GeminiEmbedding2 or GeminiEmbedding instead.", false)]
-    public const string Embedding = "models/embedding-001";
 
     /// <summary>
     /// AQA model name.
@@ -526,85 +338,6 @@ public static class GoogleAIModels
     /// </remarks>
     public static class Experimental
     {
-        /// <summary>
-        /// LearnLM 2.0 Flash Experimental model name.
-        /// </summary>
-        [Obsolete("No longer listed in the Gemini API model documentation.", false)]
-        public const string LearnLM2FlashExp = "models/learnlm-2.0-flash-experimental";
-    }
-
-    /// <summary>
-    /// Provides constants for Imagen model variations.
-    /// </summary>
-    /// <remarks>
-    /// All Imagen models on the Gemini API are shut down. Use the Gemini image models
-    /// (for example <see cref="GeminiNanoBanana21"/>) instead.
-    /// </remarks>
-    public static class Imagen
-    {
-        /// <summary>
-        /// Imagen 3 model names.
-        /// </summary>
-        public const string Imagen3Generate001 = "imagen-3.0-generate-001";
-        /// <summary>
-        /// Imagen 3 fast generation model for quick image generation.
-        /// </summary>
-        public const string Imagen3FastGenerate001 = "imagen-3.0-fast-generate-001";
-
-        /// <summary>
-        /// Imagen 3 generation model version 002.
-        /// </summary>
-        [Obsolete("Shut down on the Gemini API on November 10, 2025. Use GoogleAIModels.GeminiNanoBanana21.", false)]
-        public const string Imagen3Generate002 = "models/imagen-3.0-generate-002";
-
-        /// <summary>
-        /// Imagen 4 generation model version 001.
-        /// </summary>
-        [Obsolete("Shut down on the Gemini API on August 17, 2026. Use GoogleAIModels.GeminiNanoBanana21.", false)]
-        public const string Imagen4Generate001 = "models/imagen-4.0-generate-001";
-
-        /// <summary>
-        /// Imagen 4 Ultra generation model version 001.
-        /// </summary>
-        [Obsolete("Shut down on the Gemini API on August 17, 2026. Use GoogleAIModels.Gemini3ProImage.", false)]
-        public const string Imagen4UltraGenerate001 = "models/imagen-4.0-ultra-generate-001";
-
-        /// <summary>
-        /// Imagen 4 Fast generation model version 001.
-        /// </summary>
-        [Obsolete("Shut down on the Gemini API on August 17, 2026. Use GoogleAIModels.Gemini31FlashLiteImage.", false)]
-        public const string Imagen4FastGenerate001 = "models/imagen-4.0-fast-generate-001";
-
-        /// <summary>
-        /// Imagen 4 generation preview model from June 6th release.
-        /// </summary>
-        [Obsolete("Shut down on the Gemini API on February 17, 2026. Use GoogleAIModels.GeminiNanoBanana21.", false)]
-        public const string Imagen4GeneratePreview0606 = "models/imagen-4.0-generate-preview-06-06";
-
-        /// <summary>
-        /// Imagen 4 Ultra generation preview model from June 6th release.
-        /// </summary>
-        [Obsolete("Shut down on the Gemini API on February 17, 2026. Use GoogleAIModels.Gemini3ProImage.", false)]
-        public const string Imagen4UltraGeneratePreview0606 = "models/imagen-4.0-ultra-generate-preview-06-06";
-
-        /// <summary>
-        /// Imagen 2 model names.
-        /// </summary>
-        public const string ImageGeneration006 = "imagegeneration@006";
-        /// <summary>
-        /// Imagen 2 image generation model version 005.
-        /// </summary>
-        public const string ImageGeneration005 = "imagegeneration@005";
-
-        /// <summary>
-        /// Imagen model name.
-        /// </summary>
-        public const string ImageGeneration002 = "imagegeneration@002";
-
-        /// <summary>
-        /// Imagen 3 model name for editing and customization.
-        /// </summary>
-        public const string Imagen3Capability001 = "imagen-3.0-capability-001";
     }
 
     /// <summary>
@@ -625,47 +358,6 @@ public static class GoogleAIModels
         /// </summary>
         public const string GeminiOmni11Flash = "models/gemini-omni-1.1-flash";
 
-        /// <summary>
-        /// Veo 2 video generation model.
-        /// </summary>
-        [Obsolete("Shut down on the Gemini API on June 30, 2026. Use GeminiOmni12Flash.", false)]
-        public const string Veo2Generate001 = "models/veo-2.0-generate-001";
-
-        /// <summary>
-        /// Veo 3 video generation preview model.
-        /// </summary>
-        [Obsolete("Shut down on the Gemini API on November 12, 2025. Use GeminiOmni12Flash.", false)]
-        public const string Veo3GeneratePreview = "models/veo-3.0-generate-preview";
-
-        /// <summary>
-        /// Veo 3 Fast video generation preview model.
-        /// </summary>
-        [Obsolete("Shut down on the Gemini API on November 12, 2025. Use GeminiOmni12Flash.", false)]
-        public const string Veo3FastGeneratePreview = "models/veo-3.0-fast-generate-preview";
-
-        /// <summary>
-        /// Veo 3 video generation model version 001.
-        /// </summary>
-        [Obsolete("Shut down on the Gemini API on June 30, 2026. Use GeminiOmni12Flash.", false)]
-        public const string Veo3Generate001 = "models/veo-3.0-generate-001";
-
-        /// <summary>
-        /// Veo 3 Fast video generation model version 001.
-        /// </summary>
-        [Obsolete("Shut down on the Gemini API on June 30, 2026. Use GeminiOmni12Flash.", false)]
-        public const string Veo3FastGenerate001 = "models/veo-3.0-fast-generate-001";
-
-        /// <summary>
-        /// Veo 3.1 video generation preview model.
-        /// </summary>
-        [Obsolete("Shut down on the Gemini API on October 22, 2026. Use GeminiOmni12Flash.", false)]
-        public const string Veo31GeneratePreview = "models/veo-3.1-generate-preview";
-
-        /// <summary>
-        /// Veo 3.1 Fast video generation preview model.
-        /// </summary>
-        [Obsolete("Shut down on the Gemini API on October 22, 2026. Use GeminiOmni12Flash.", false)]
-        public const string Veo31FastGeneratePreview = "models/veo-3.1-fast-generate-preview";
     }
 
     /// <summary>

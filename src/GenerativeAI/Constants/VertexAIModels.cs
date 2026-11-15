@@ -18,57 +18,27 @@ public static class VertexAIModels
     {
         
         /// <summary>
-        /// Gemini 2.0 Flash model name.
-        /// </summary>
-        // ReSharper disable once InconsistentNaming
-        public const string Gemini2Flash = "gemini-2.0-flash-001";
-
-        /// <summary>
         /// Gemini 2.5 Flash model name.
         /// </summary>
         // ReSharper disable once InconsistentNaming
+        [Obsolete("Google lists gemini-2.5-flash as retired on Vertex AI since October 20, 2026. Use Gemini38Flash or Gemini35FlashLite.", false)]
         public const string Gemini25Flash = "gemini-2.5-flash";
 
         /// <summary>
         /// Gemini 2.5 Pro model name (stable).
         /// </summary>
+        [Obsolete("Google lists gemini-2.5-pro as retired on Vertex AI since October 20, 2026. Use Gemini38Flash or Gemini35Flash.", false)]
         public const string Gemini25Pro = "gemini-2.5-pro";
 
         /// <summary>
         /// Gemini 2.5 Flash-Lite model name (stable).
         /// </summary>
+        [Obsolete("Google lists gemini-2.5-flash-lite as retired on Vertex AI since October 20, 2026. Use Gemini38Flash or Gemini35FlashLite.", false)]
         public const string Gemini25FlashLite = "gemini-2.5-flash-lite";
 
         /// <summary>
-        /// Gemini 2.0 Pro Experimental model name.
-        /// </summary>
-        public const string Gemini2ProExp = "gemini-2.0-pro-exp-02-05";
-
-        /// <summary>
-        /// Gemini 2.5 Pro Exp 03-25 model name.
-        /// </summary>
-        public const string Gemini25ProExp0325 = "gemini-2.5-pro-exp-03-25";
-        
-        /// <summary>
-        /// Gemini 2.5 Pro Preview model name from March 25th release.
-        /// </summary>
-        public const string Gemini25ProPreview0325 = "gemini-2.5-pro-preview-03-25";
-
-        /// <summary>
-        /// Gemini 2.0 Flash Live model name version 001.
-        /// </summary>
-        public const string Gemini2FlashLive001 = "gemini-2.0-flash-live-001";
-    
-        /// <summary>
         /// Gemini 2.5 Flash Preview model name from April 17th release.
         /// </summary>
-        
-        public const string Gemini25FlashPreview0417 = "gemini-2.5-flash-preview-04-17";
-        
-        /// <summary>
-        /// Gemini 2.5 Flash Preview model name from May 20th release.
-        /// </summary>
-        public const string Gemini25FlashPreview0520 = "gemini-2.5-flash-preview-05-20";
         
         /// <summary>
         /// Gemini 2.5 Flash Native Audio model name.
@@ -79,11 +49,6 @@ public static class VertexAIModels
         /// Gemini 2.5 Flash Preview TTS model name.
         /// </summary>
         public const string Gemini25FlashPreviewTTS = "gemini-2.5-flash-preview-tts";
-        
-        /// <summary>
-        /// Gemini 2.5 Pro Preview model name from May 6th release.
-        /// </summary>
-        public const string Gemini25ProPreview0506 = "gemini-2.5-pro-preview-05-06";
         
         /// <summary>
         /// Gemini 2.5 Pro Preview TTS model name.
@@ -113,14 +78,41 @@ public static class VertexAIModels
         public const string Gemini4Argon = "gemini-4-argon";
 
         /// <summary>
+        /// Gemini 4 Carbon for defensive cybersecurity use cases. Available behind an allowlist.
+        /// </summary>
+        public const string Gemini4CarbonCyberPermissive = "gemini-4-carbon-cyber-permissive";
+
+        /// <summary>
+        /// Gemini 4 Argon for defensive cybersecurity use cases. Available behind an allowlist.
+        /// </summary>
+        public const string Gemini4ArgonCyberPermissive = "gemini-4-argon-cyber-permissive";
+
+        /// <summary>
         /// Gemini 3.8 Flash model name.
         /// </summary>
         public const string Gemini38Flash = "gemini-3.8-flash";
 
         /// <summary>
+        /// Gemini 3.8 Flash Cyber model name, optimized for cybersecurity.
+        /// </summary>
+        public const string Gemini38FlashCyber = "gemini-3.8-flash-cyber";
+
+        /// <summary>
+        /// Gemini 3.7 Flash model name. Scheduled for retirement on January 28, 2027; the replacement is
+        /// <see cref="Gemini38Flash"/>.
+        /// </summary>
+        public const string Gemini37Flash = "gemini-3.7-flash";
+
+        /// <summary>
         /// Gemini 3.6 Flash model name.
         /// </summary>
+        [Obsolete("gemini-3.6-flash retires on Vertex AI on November 19, 2026. Use Gemini38Flash.", false)]
         public const string Gemini36Flash = "gemini-3.6-flash";
+
+        /// <summary>
+        /// Gemini 3.5 Flash model name.
+        /// </summary>
+        public const string Gemini35Flash = "gemini-3.5-flash";
 
         /// <summary>
         /// Gemini 3.5 Flash-Lite model name.
@@ -148,6 +140,11 @@ public static class VertexAIModels
         public const string Gemini38FlashTts = "gemini-3.8-flash-tts";
 
         /// <summary>
+        /// Gemini 3.8 Flash-Lite text-to-speech model name.
+        /// </summary>
+        public const string Gemini38FlashLiteTts = "gemini-3.8-flash-lite-tts";
+
+        /// <summary>
         /// Gemini Nano Banana 2.1 image generation model name.
         /// </summary>
         public const string GeminiNanoBanana21 = "gemini-nano-banana-2.1";
@@ -156,6 +153,22 @@ public static class VertexAIModels
         /// Gemini 3 Pro Image model name.
         /// </summary>
         public const string Gemini3ProImage = "gemini-3-pro-image";
+
+        /// <summary>
+        /// Gemini 3.1 Flash Image (Nano Banana 2) model name.
+        /// </summary>
+        public const string Gemini31FlashImage = "gemini-3.1-flash-image";
+
+        /// <summary>
+        /// Gemini 3.1 Flash-Lite Image (Nano Banana 2 Lite) model name, for high-volume, latency-sensitive workloads.
+        /// </summary>
+        public const string Gemini31FlashLiteImage = "gemini-3.1-flash-lite-image";
+
+        /// <summary>
+        /// Gemini 2.5 Flash Image model name. Scheduled for retirement on March 15, 2027; the replacement is
+        /// <see cref="Gemini31FlashLiteImage"/>.
+        /// </summary>
+        public const string Gemini25FlashImage = "gemini-2.5-flash-image";
 
         /// <summary>
         /// Gemini 3 Flash Preview model name.
@@ -206,16 +219,6 @@ public static class VertexAIModels
         public const string Gemma3n_E2B = "gemma-3n-e2b-it";
 
         /// <summary>
-        /// Gemini 2.0 Flash model name.
-        /// </summary>
-        public const string Gemini2FlashLatest = "gemini-2.0-flash";
-
-        /// <summary>
-        /// Gemini 2.0 Flash-Lite model name.
-        /// </summary>
-        public const string Gemini2FlashLite = "gemini-2.0-flash-lite";
-
-        /// <summary>
         /// Text Embedding 005 model name.
         /// </summary>
         public const string TextEmbedding005 = "text-embedding-005";
@@ -248,29 +251,9 @@ public static class VertexAIModels
     public static class Embeddings
     {
         /// <summary>
-        /// Embeddings for text model names.
-        /// </summary>
-        public const string TextEmbeddingGecko001 = "textembedding-gecko@001";
-
-        /// <summary>
-        /// Text Embedding Gecko 2.0 model name.
-        /// </summary>
-        public const string TextEmbeddingGecko002 = "textembedding-gecko@002";
-
-        /// <summary>
-        /// Text Embedding Gecko model version 003.
-        /// </summary>
-        public const string TextEmbeddingGecko003 = "textembedding-gecko@003";
-
-        /// <summary>
         /// Text Embedding model version 004.
         /// </summary>
         public const string TextEmbedding004 = "text-embedding-004";
-
-        /// <summary>
-        /// Embeddings for text multilingual model names.
-        /// </summary>
-        public const string TextEmbeddingGeckoMultilingual001 = "textembedding-gecko-multilingual@001";
 
         /// <summary>
         /// Text Multilingual Embedding model version 002.
@@ -294,114 +277,20 @@ public static class VertexAIModels
     public static class Video
     {
         /// <summary>
-        /// Veo 2 video generation model.
+        /// Gemini Omni 1.2 Flash: video generation and conversational video editing (up to 15 seconds), video
+        /// extension and upscaling up to 4K, alongside text responses.
         /// </summary>
-        public const string Veo2Generate001 = "veo-2.0-generate-001";
+        public const string GeminiOmni12Flash = "gemini-omni-1.2-flash";
 
         /// <summary>
-        /// Veo 3 video generation preview model.
+        /// Veo 3.1 video generation model.
         /// </summary>
-        public const string Veo3GeneratePreview = "veo-3.0-generate-preview";
+        public const string Veo31Generate001 = "veo-3.1-generate-001";
 
         /// <summary>
-        /// Veo 3 Fast video generation preview model.
+        /// Veo 3.1 Fast video generation model, optimized for lower latency.
         /// </summary>
-        public const string Veo3FastGeneratePreview = "veo-3.0-fast-generate-preview";
-
-        /// <summary>
-        /// Veo 3 video generation model version 001.
-        /// </summary>
-        public const string Veo3Generate001 = "veo-3.0-generate-001";
-
-        /// <summary>
-        /// Veo 3 Fast video generation model version 001.
-        /// </summary>
-        public const string Veo3FastGenerate001 = "veo-3.0-fast-generate-001";
-
-        /// <summary>
-        /// Veo 3.1 video generation preview model.
-        /// </summary>
-        public const string Veo31GeneratePreview = "veo-3.1-generate-preview";
-
-        /// <summary>
-        /// Veo 3.1 Fast video generation preview model.
-        /// </summary>
-        public const string Veo31FastGeneratePreview = "veo-3.1-fast-generate-preview";
-    }
-
-    /// <summary>
-    /// Provides constants for Imagen model variations.
-    /// </summary>
-    public static class Imagen
-    {
-        /// <summary>
-        /// Imagen 3 model names.
-        /// </summary>
-        public const string Imagen3Generate001 = "imagen-3.0-generate-001";
-        /// <summary>
-        /// Imagen 3 fast generation model for quick image generation.
-        /// </summary>
-        public const string Imagen3FastGenerate001 = "imagen-3.0-fast-generate-001";
-
-        /// <summary>
-        /// Imagen 3 generation model version 002.
-        /// </summary>
-        public const string Imagen3Generate002 = "imagen-3.0-generate-002";
-
-        /// <summary>
-        /// Imagen 4 generation model version 001.
-        /// </summary>
-        public const string Imagen4Generate001 = "imagen-4.0-generate-001";
-
-        /// <summary>
-        /// Imagen 4 Ultra generation model version 001.
-        /// </summary>
-        public const string Imagen4UltraGenerate001 = "imagen-4.0-ultra-generate-001";
-
-        /// <summary>
-        /// Imagen 4 Fast generation model version 001.
-        /// </summary>
-        public const string Imagen4FastGenerate001 = "imagen-4.0-fast-generate-001";
-
-        /// <summary>
-        /// Imagen 4 generation preview model from June 6th release.
-        /// </summary>
-        public const string Imagen4GeneratePreview0606 = "imagen-4.0-generate-preview-06-06";
-
-        /// <summary>
-        /// Imagen 4 Ultra generation preview model from June 6th release.
-        /// </summary>
-        public const string Imagen4UltraGeneratePreview0606 = "imagen-4.0-ultra-generate-preview-06-06";
-
-        /// <summary>
-        /// Imagen 2 model names.
-        /// </summary>
-        public const string ImageGeneration006 = "imagegeneration@006";
-        /// <summary>
-        /// Imagen 2 image generation model version 005.
-        /// </summary>
-        public const string ImageGeneration005 = "imagegeneration@005";
-
-        /// <summary>
-        /// Imagen model name.
-        /// </summary>
-        public const string ImageGeneration002 = "imagegeneration@002";
-
-        /// <summary>
-        /// Imagen 3 model name for editing and customization.
-        /// </summary>
-        public const string Imagen3Capability001 = "imagen-3.0-capability-001";
-    }
-
-    /// <summary>
-    /// Provides constants for Codey model variations.
-    /// </summary>
-    public static class Codey
-    {
-        /// <summary>
-        /// Codey for Code Completion model name.
-        /// </summary>
-        public const string CodeGecko = "code-gecko";
+        public const string Veo31FastGenerate001 = "veo-3.1-fast-generate-001";
     }
 
     /// <summary>

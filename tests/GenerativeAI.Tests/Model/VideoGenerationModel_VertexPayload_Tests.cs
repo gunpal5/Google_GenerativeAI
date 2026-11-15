@@ -35,7 +35,7 @@ public class VideoGenerationModel_VertexPayload_Tests
         var handler = new CapturingHandler();
         var platform = new VertextPlatformAdapter("test-project", "us-central1", accessToken: "test-token",
             validateAccessToken: false);
-        var model = new VideoGenerationModel(platform, VertexAIModels.Video.Veo2Generate001, new HttpClient(handler));
+        var model = new VideoGenerationModel(platform, VertexAIModels.Video.Veo31Generate001, new HttpClient(handler));
 
         await model.GenerateVideosAsync(new GenerateVideosRequest
         {

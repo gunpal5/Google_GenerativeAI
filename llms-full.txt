@@ -624,7 +624,9 @@ The SDK uses it when you don't pass a model and the `GOOGLE_AI_MODEL` environmen
 | `Gemini4Carbon` | `models/gemini-4-carbon` | Gemini 4, GA |
 | `Gemini4Argon` | `models/gemini-4-argon` | Gemini 4, GA |
 | `Gemini38Flash` | `models/gemini-3.8-flash` | Stable; **default model** |
+| `Gemini37Flash` | `models/gemini-3.7-flash` | Stable |
 | `Gemini36Flash` | `models/gemini-3.6-flash` | Stable |
+| `Gemini35Flash` | `models/gemini-3.5-flash` | Stable |
 | `Gemini35FlashLite` | `models/gemini-3.5-flash-lite` | Stable |
 | `Gemini31FlashLite` | `models/gemini-3.1-flash-lite` | Stable; shutdown scheduled May 7, 2027 |
 | `Gemini31ProPreview` | `models/gemini-3.1-pro-preview` | Preview |
@@ -644,12 +646,6 @@ The SDK uses it when you don't pass a model and the `GOOGLE_AI_MODEL` environmen
 |---|---|
 | `Gemma4_26B_A4B` | `models/gemma-4-26b-a4b-it` |
 | `Gemma4_31B` | `models/gemma-4-31b-it` |
-| `Gemma3_1B` | `models/gemma-3-1b-it` |
-| `Gemma3_4B` | `models/gemma-3-4b-it` |
-| `Gemma3_12B` | `models/gemma-3-12b-it` |
-| `Gemmma3_27B` | `gemma-3-27b-it` |
-| `Gemma3n_E4B` | `models/gemma-3n-e4b-it` |
-| `Gemma3n_E2B` | `models/gemma-3n-e2b-it` |
 
 ### Live API, speech and TTS
 
@@ -678,8 +674,8 @@ See [Multimodal Live API](https://github.com/gunpal5/Google_GenerativeAI/wiki/Mu
 | `Gemini3ProImage` | `models/gemini-3-pro-image` | GA |
 | `Gemini25FlashImage` | `models/gemini-2.5-flash-image` | Shutdown scheduled March 15, 2027 |
 
-All Imagen models are shut down on the Gemini API, so use the Gemini image models above. Imagen still works on Vertex AI
-(see `VertexAIModels.Imagen` below). See [Image Generation](https://github.com/gunpal5/Google_GenerativeAI/wiki/Image-Generation).
+All Imagen models are retired, on the Gemini API and (since June 30, 2026) on Vertex AI, so use the Gemini image
+models above. See [Image Generation](https://github.com/gunpal5/Google_GenerativeAI/wiki/Image-Generation).
 
 ### Video generation (`GoogleAIModels.Video`)
 
@@ -737,16 +733,25 @@ See [Interactions API](https://github.com/gunpal5/Google_GenerativeAI/wiki/Inter
 | `Gemini4Hydrogen` | `gemini-4-hydrogen` |
 | `Gemini4Carbon` | `gemini-4-carbon` |
 | `Gemini4Argon` | `gemini-4-argon` |
+| `Gemini4CarbonCyberPermissive` | `gemini-4-carbon-cyber-permissive` (allowlist) |
+| `Gemini4ArgonCyberPermissive` | `gemini-4-argon-cyber-permissive` (allowlist) |
 | `Gemini38Flash` | `gemini-3.8-flash` |
-| `Gemini36Flash` | `gemini-3.6-flash` |
+| `Gemini38FlashCyber` | `gemini-3.8-flash-cyber` |
+| `Gemini37Flash` | `gemini-3.7-flash` (retires Jan 28, 2027) |
+| `Gemini36Flash` | `gemini-3.6-flash` (retires Nov 19, 2026) |
+| `Gemini35Flash` | `gemini-3.5-flash` |
 | `Gemini35FlashLite` | `gemini-3.5-flash-lite` |
 | `Gemini31FlashLite` | `gemini-3.1-flash-lite` |
 | `Gemini31ProPreview` | `gemini-3.1-pro-preview` |
 | `Gemini3FlashPreview` | `gemini-3-flash-preview` |
 | `Gemini38Live` | `gemini-3.8-live` |
 | `Gemini38FlashTts` | `gemini-3.8-flash-tts` |
+| `Gemini38FlashLiteTts` | `gemini-3.8-flash-lite-tts` |
 | `GeminiNanoBanana21` | `gemini-nano-banana-2.1` |
 | `Gemini3ProImage` | `gemini-3-pro-image` |
+| `Gemini31FlashImage` | `gemini-3.1-flash-image` |
+| `Gemini31FlashLiteImage` | `gemini-3.1-flash-lite-image` |
+| `Gemini25FlashImage` | `gemini-2.5-flash-image` (retires Mar 15, 2027) |
 | `Gemini25Pro` | `gemini-2.5-pro` |
 | `Gemini25Flash` | `gemini-2.5-flash` |
 | `Gemini25FlashLite` | `gemini-2.5-flash-lite` |
@@ -754,9 +759,9 @@ See [Interactions API](https://github.com/gunpal5/Google_GenerativeAI/wiki/Inter
 | `Gemma3_1B` / `Gemma3_4B` / `Gemma3_12B` / `Gemmma3_27B` | `gemma-3-1b-it` / `gemma-3-4b-it` / `gemma-3-12b-it` / `gemma-3-27b-it` |
 | `Gemma3n_E4B` / `Gemma3n_E2B` | `gemma-3n-e4b-it` / `gemma-3n-e2b-it` |
 
-`VertexAIModels.Gemini` also still has older 2.0 and 2.5 preview IDs, such as `Gemini2Flash`, `Gemini2FlashLite`,
-`Gemini25ProPreview0325`, `Gemini25FlashPreviewTTS`, `Gemini3ProPreview` and `Gemini3ProImagePreview`. They are not
-marked `[Obsolete]` in this class, but many of them are retired on Vertex AI as well. Use the current IDs above.
+`VertexAIModels.Gemini` also keeps a few preview IDs (`Gemini25FlashPreviewTTS`, `Gemini25ProPreviewTTS`,
+`Gemini25FlashImagePreview`, `Gemini3FlashPreview`, `Gemini3ProPreview`, `Gemini3ProImagePreview`). Prefer the GA
+IDs above. Retired 2.0 and old 2.5 preview IDs were removed in 4.0.1.
 
 ### `VertexAIModels.Embeddings`
 
@@ -765,96 +770,82 @@ marked `[Obsolete]` in this class, but many of them are retired on Vertex AI as 
 | `GeminiEmbedding001` | `gemini-embedding-001` |
 | `TextMultilingualEmbedding002` | `text-multilingual-embedding-002` |
 | `TextEmbedding004` | `text-embedding-004` |
-| `TextEmbeddingGecko001` / `002` / `003` | `textembedding-gecko@001` / `@002` / `@003` |
-| `TextEmbeddingGeckoMultilingual001` | `textembedding-gecko-multilingual@001` |
 | `MultimodalEmbedding` | `multimodalembedding` |
 
 On Vertex AI, the SDK sends Gemini and model-as-a-service embedding models to `embedContent`/`batchEmbedContents`.
-It sends other text embedding models, such as `text-embedding-005`, gecko and multilingual, to `predict`.
-
-### `VertexAIModels.Imagen`
-
-`Imagen4Generate001`, `Imagen4UltraGenerate001`, `Imagen4FastGenerate001`, `Imagen4GeneratePreview0606`,
-`Imagen4UltraGeneratePreview0606`, `Imagen3Generate001`, `Imagen3FastGenerate001`, `Imagen3Generate002`,
-`Imagen3Capability001` (editing and customization), and `ImageGeneration006`/`005`/`002`.
-Their IDs are the same strings without a prefix, for example `imagen-4.0-generate-001`.
+It sends other text embedding models, such as `text-embedding-005`, `text-embedding-004` and `text-multilingual-embedding-002`, to `predict`.
 
 ### `VertexAIModels.Video`
 
-`Veo2Generate001`, `Veo3Generate001`, `Veo3FastGenerate001`, `Veo3GeneratePreview`, `Veo3FastGeneratePreview`,
-`Veo31GeneratePreview` and `Veo31FastGeneratePreview`. For example, `Veo31GeneratePreview` is `veo-3.1-generate-preview`.
+| Constant | Model ID |
+|---|---|
+| `GeminiOmni12Flash` | `gemini-omni-1.2-flash` (video generation and editing) |
+| `Veo31Generate001` | `veo-3.1-generate-001` (default for `VideoGenerationModel`) |
+| `Veo31FastGenerate001` | `veo-3.1-fast-generate-001` |
 
 ### Other
 
 - `VertexAIModels.Gemma`: `GemmaModel` (`gemma`), `CodeGemma` (`codegemma`), `PaliGemma` (`paligemma`)
-- `VertexAIModels.Codey`: `CodeGecko` (`code-gecko`)
 - `VertexAIModels.MedLM`: `MedLMMedium` (`medlm-medium`), `MedLMLarge` (`medlm-large`)
 
 ---
 
-## Deprecated and shut-down constants
-
-The SDK keeps these `GoogleAIModels` constants so existing code still compiles. They are marked
-`[Obsolete(..., false)]`, which means using one gives compiler warning CS0618, not an error.
-The replacements below come from the attribute messages.
+## Deprecated and removed constants
 
 ### Deprecated, but still served for now
+
+These constants still work, but they are marked `[Obsolete(..., false)]`, so using one gives compiler warning
+CS0618. The replacement is in the warning message.
 
 | Constant | Status | Use instead |
 |---|---|---|
 | `Gemini25Flash` | Deprecated; from Dec 1, 2026 requests are routed to gemini-3.5-flash-lite | `Gemini38Flash` or `Gemini35FlashLite` |
 | `Gemini25Pro` | Deprecated; from Dec 1, 2026 requests are routed to gemini-3.8-flash | `Gemini38Flash` or a Gemini 4 model |
 | `Gemini25FlashPreviewTts`, `Gemini25ProPreviewTts` | Shutdown Dec 18, 2026 | `Gemini38FlashTts` |
-| `GeminiEmbeddingExp` | Deprecated | `GeminiEmbedding2` or `GeminiEmbedding` |
-| `Embedding` (`models/embedding-001`) | Older model | `GeminiEmbedding2` or `GeminiEmbedding` |
+| `Gemini3ProImagePreview` | Shut down Jun 25, 2026 (still listed by the API) | `Gemini3ProImage` |
+| `Gemini25ComputerUsePreview102025` | Shut down Jul 28, 2026 (still listed by the API) | Computer Use is now a GA tool on current Gemini models |
+| `Gemini25FlashNativeAudioLatest`, `Gemini25FlashNativeAudioPreview092025` | No longer in Google's docs | `Gemini38Live` |
 | `Aqa` | No longer in Google's docs | See [Legacy Semantic Retrieval (AQA)](https://github.com/gunpal5/Google_GenerativeAI/wiki/Legacy-Semantic-Retrieval-(AQA)) |
+| `VertexAIModels.Gemini.Gemini36Flash` | Retires on Vertex AI Nov 19, 2026 | `VertexAIModels.Gemini.Gemini38Flash` |
+| `VertexAIModels.Gemini.Gemini25Flash`, `Gemini25Pro`, `Gemini25FlashLite` | Listed by Google as retired on Vertex AI since Oct 20, 2026 | `Gemini38Flash`, `Gemini35Flash` or `Gemini35FlashLite` |
 
-### Shut down or no longer listed
+### Removed in 4.0.1
 
-| Constant(s) | Status | Use instead |
-|---|---|---|
-| `Gemini3ProPreview` | Shut down Mar 9, 2026 | `Gemini31ProPreview` or a Gemini 4 model |
-| `Gemini3ProImagePreview` | Shut down Jun 25, 2026 | `Gemini3ProImage` |
-| `Gemini2Flash`, `Gemini2FlashLatest` | Shut down Jun 1, 2026 | `Gemini38Flash` |
-| `Gemini2FlashLite` | Shut down Jun 1, 2026 | `Gemini35FlashLite` |
-| `Gemini2FlashLitePreview` | Shut down Dec 9, 2025 | `Gemini35FlashLite` |
-| `Gemini2FlashExp`, `Gemini2FlashThinkingExp0121`, `Gemini25FlashPreview0417` | No longer listed | `Gemini38Flash` |
-| `Gemini25ProPreview0520`, `Gemini25FlashPreview092025` | Shut down | `Gemini38Flash` |
-| `Gemini25FlashLitePreview092025`, `Gemini25FlashLitePreview0617` | Shut down / no longer listed | `Gemini35FlashLite` (or `Gemini25FlashLite`) |
-| `Gemini25ProExp0325`, `Gemini25ProPreview0325`, `Gemini25ProPreview0506`, `Gemini25ProPreview0605` | Shut down / no longer listed | A Gemini 4 model |
-| `Gemini2FlashLive001`, `GeminiLive25FlashPreview`, `Gemini25FlashLivePreview`, `Gemini25FlashNativeAudioLatest`, `Gemini25FlashPreviewNativeAudioDialog` | Shut down / no longer listed | `Gemini38Live` |
-| `Gemini25FlashNativeAudioPreview092025` | No longer listed | `Gemini38Live` or `Gemini25FlashNativeAudioPreview122025` |
-| `Gemini25FlashPreviewNativeAudioThinkingDialog` | No longer listed | `Gemini38LiveExtendedThinking` |
-| `Gemini25FlashImagePreview` | Shut down Jan 15, 2026 | `GeminiNanoBanana21` or `Gemini31FlashImage` |
-| `Gemini2FlashExpImageGeneration`, `Gemini2FlashPreviewImageGeneration` | Shut down / no longer listed | `GeminiNanoBanana21` |
-| `Gemini25ComputerUsePreview102025` | Shut down Jul 28, 2026 | Computer Use is now a GA tool on current Gemini models |
-| `GeminiRoboticsEr15Preview` | Shut down Apr 30, 2026 | `GeminiRoboticsEr2Preview` |
-| `TextEmbedding` (`models/text-embedding-004`) | Shut down Jan 14, 2026 | `GeminiEmbedding2` or `GeminiEmbedding` |
-| `Experimental.LearnLM2FlashExp` | No longer listed | — |
+Constants for models that Google has shut down were **removed** in version 4.0.1, so code that uses them no longer
+compiles. Replace them as follows. If you need one of these IDs anyway, pass the model ID as a string.
 
-### Imagen on the Gemini API (`GoogleAIModels.Imagen`)
+**Gemini API (`GoogleAIModels`)**
 
-| Constant | Status | Use instead |
-|---|---|---|
-| `Imagen.Imagen3Generate002` | Shut down Nov 10, 2025 | `GeminiNanoBanana21` |
-| `Imagen.Imagen4Generate001` | Shut down Aug 17, 2026 | `GeminiNanoBanana21` |
-| `Imagen.Imagen4UltraGenerate001` | Shut down Aug 17, 2026 | `Gemini3ProImage` |
-| `Imagen.Imagen4FastGenerate001` | Shut down Aug 17, 2026 | `Gemini31FlashLiteImage` |
-| `Imagen.Imagen4GeneratePreview0606` | Shut down Feb 17, 2026 | `GeminiNanoBanana21` |
-| `Imagen.Imagen4UltraGeneratePreview0606` | Shut down Feb 17, 2026 | `Gemini3ProImage` |
+| Removed constant(s) | Use instead |
+|---|---|
+| `Gemini2Flash`, `Gemini2FlashLatest`, `Gemini2FlashExp`, `Gemini2FlashThinkingExp0121`, `Gemini25FlashPreview0417`, `Gemini25ProPreview0520`, `Gemini25FlashPreview092025` | `Gemini38Flash` |
+| `Gemini2FlashLite`, `Gemini2FlashLitePreview`, `Gemini25FlashLitePreview092025`, `Gemini25FlashLitePreview0617` | `Gemini35FlashLite` |
+| `Gemini3ProPreview`, `Gemini25ProExp0325`, `Gemini25ProPreview0325`, `Gemini25ProPreview0506`, `Gemini25ProPreview0605` | `Gemini31ProPreview` or a Gemini 4 model |
+| `Gemini2FlashLive001`, `GeminiLive25FlashPreview`, `Gemini25FlashLivePreview`, `Gemini25FlashPreviewNativeAudioDialog` | `Gemini38Live` |
+| `Gemini25FlashPreviewNativeAudioThinkingDialog` | `Gemini38LiveExtendedThinking` |
+| `Gemini25FlashImagePreview`, `Gemini2FlashExpImageGeneration`, `Gemini2FlashPreviewImageGeneration` | `GeminiNanoBanana21` or `Gemini31FlashImage` |
+| `GeminiRoboticsEr15Preview` | `GeminiRoboticsEr2Preview` |
+| `TextEmbedding` (`text-embedding-004`), `Embedding` (`embedding-001`), `GeminiEmbeddingExp` | `GeminiEmbedding2` or `GeminiEmbedding` |
+| `Gemma3_1B`, `Gemma3_4B`, `Gemma3_12B`, `Gemmma3_27B`, `Gemma3n_E4B`, `Gemma3n_E2B` (Gemma 3 is still on Vertex AI through `VertexAIModels.Gemini`) | `Gemma4_26B_A4B` or `Gemma4_31B` |
+| `Experimental.LearnLM2FlashExp` | — |
+| The whole `Imagen` class | `GeminiNanoBanana21`, `Gemini3ProImage` or `Gemini31FlashLiteImage` (see [Image Generation](https://github.com/gunpal5/Google_GenerativeAI/wiki/Image-Generation)) |
+| `Video.Veo2Generate001`, `Video.Veo3Generate001`, `Video.Veo3FastGenerate001`, `Video.Veo3GeneratePreview`, `Video.Veo3FastGeneratePreview`, `Video.Veo31GeneratePreview`, `Video.Veo31FastGeneratePreview` | `Video.GeminiOmni12Flash` |
 
-The other `GoogleAIModels.Imagen` constants have Vertex-style IDs without a prefix, for example `imagen-3.0-generate-001`,
-`imagegeneration@006` and `imagen-3.0-capability-001`. They are not marked obsolete, but they only work on Vertex AI.
+**Vertex AI (`VertexAIModels`)**
 
-### Veo on the Gemini API (`GoogleAIModels.Video`)
+Based on Google's [retired models table](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/model-versions).
 
-| Constant | Status | Use instead |
-|---|---|---|
-| `Video.Veo2Generate001`, `Video.Veo3Generate001`, `Video.Veo3FastGenerate001` | Shut down Jun 30, 2026 | `Video.GeminiOmni12Flash` |
-| `Video.Veo3GeneratePreview`, `Video.Veo3FastGeneratePreview` | Shut down Nov 12, 2025 | `Video.GeminiOmni12Flash` |
-| `Video.Veo31GeneratePreview`, `Video.Veo31FastGeneratePreview` | Shut down Oct 22, 2026 | `Video.GeminiOmni12Flash` |
+| Removed constant(s) | Use instead |
+|---|---|
+| `Gemini.Gemini2Flash`, `Gemini2FlashLatest`, `Gemini2ProExp`, `Gemini25ProExp0325`, `Gemini25ProPreview0325`, `Gemini25ProPreview0506`, `Gemini25FlashPreview0417`, `Gemini25FlashPreview0520` | `Gemini.Gemini38Flash` |
+| `Gemini.Gemini2FlashLite` | `Gemini.Gemini35FlashLite` |
+| `Gemini.Gemini2FlashLive001` | `Gemini.Gemini38Live` |
+| `Embeddings.TextEmbeddingGecko001`, `TextEmbeddingGecko002`, `TextEmbeddingGecko003`, `TextEmbeddingGeckoMultilingual001` | `Embeddings.GeminiEmbedding001` |
+| `Codey.CodeGecko` (and the `Codey` class) | `Gemini.Gemini35FlashLite` |
+| The whole `Imagen` class (all Imagen and `imagegeneration@` models, retired Jun 30, 2026) | `Gemini.GeminiNanoBanana21`, `Gemini3ProImage`, `Gemini31FlashImage` or `Gemini25FlashImage` |
+| `Video.Veo2Generate001`, `Video.Veo3Generate001`, `Video.Veo3FastGenerate001` (retired Jun 30, 2026), `Video.Veo3GeneratePreview`, `Video.Veo3FastGeneratePreview`, `Video.Veo31GeneratePreview`, `Video.Veo31FastGeneratePreview` | `Video.Veo31Generate001` or `Video.Veo31FastGenerate001` |
 
-Veo is still available on Vertex AI through `VertexAIModels.Video`.
+`VideoGenerationModel` and `VertexAI.CreateVideoGenerationModel()` now default to `Video.Veo31Generate001`.
 
 
 ---
@@ -975,8 +966,15 @@ Other defaults changed to replace retired models:
 
 ### 2.4 Retired model constants now produce warnings
 
-Constants for models that Google has shut down or deprecated are marked `[Obsolete(..., false)]`. Using one gives
-compiler **warning CS0618**, which **breaks the build if you use `TreatWarningsAsErrors`**. Common replacements:
+Constants for models that Google has deprecated are marked `[Obsolete(..., false)]`. Using one gives compiler
+**warning CS0618**, which **breaks the build if you use `TreatWarningsAsErrors`**.
+
+> **4.0.1:** constants for models that Google has already **shut down** were **removed**, so code using them no longer
+> compiles. This covers the Gemini 2.0 and old 2.5 preview models, the old embeddings, Gemma 3 on the Gemini API,
+> every Imagen and retired Veo model, and the gecko models. The full list and replacements are in
+> [Supported Models](https://github.com/gunpal5/Google_GenerativeAI/wiki/Supported-Models#removed-in-401).
+
+Common replacements:
 
 | v3.x constant | Use instead |
 |---|---|
@@ -989,7 +987,7 @@ compiler **warning CS0618**, which **breaks the build if you use `TreatWarningsA
 | `GoogleAIModels.Gemini25FlashImagePreview` | `GeminiNanoBanana21` |
 | `GoogleAIModels.Gemini25FlashPreviewTts` / `Gemini25ProPreviewTts` | `Gemini38FlashTts` |
 | `GoogleAIModels.TextEmbedding` (`text-embedding-004`) | `GeminiEmbedding2` or `GeminiEmbedding` |
-| `GoogleAIModels.Imagen.Imagen4Generate001` (and other Imagen on the Gemini API) | `GeminiNanoBanana21` (or Imagen on Vertex AI) |
+| `GoogleAIModels.Imagen.Imagen4Generate001` (and other Imagen on the Gemini API) | `GeminiNanoBanana21` |
 | `GoogleAIModels.Video.Veo*` | `GoogleAIModels.Video.GeminiOmni12Flash` through the Interactions API, or Veo on Vertex AI |
 | `GoogleAIModels.Aqa` | [File Search](https://github.com/gunpal5/Google_GenerativeAI/wiki/File-Search) or [Vertex RAG Engine](https://github.com/gunpal5/Google_GenerativeAI/wiki/Vertex-RAG-Engine) |
 
@@ -1077,7 +1075,7 @@ that binds to these constructors. See [Configuration and Error Handling](https:/
 | Microsoft.Extensions.AI chat client | The model's function-call turn was added once per call, which broke parallel calls. Streaming only looked for function calls in the last chunk | Fixed: one model turn, and parts collected across the whole stream |
 | `RemoteFileContent` (MEAI) | Sent an empty file URI when the remote file had none | Throws `InvalidOperationException` ("upload the file before referencing it") |
 | `MultiModalLiveClient` | Exceptions in the message handler (including your event handlers) could crash the process. Reconnects didn't re-send setup. `SafetySettings` were not sent | Exceptions go to `ErrorOccurred`. Setup is re-sent after a reconnect, resuming with the last handle (`ResendSetupOnReconnect`, default `true`). `SafetySettings` are sent. New `TurnCompleted` event |
-| Imagen through MEAI (`GenerativeAIImagenGenerator`) | Default `Imagen3Generate002` | Same default (it is shut down on the Gemini API). Pass a Vertex model, or use `GenerativeAIImageGenerator` with `GeminiNanoBanana21` |
+| Imagen through MEAI (`GenerativeAIImagenGenerator`) | Default `Imagen3Generate002` | `[Obsolete]`: every Imagen model is retired (Vertex AI on June 30, 2026). Use `GenerativeAIImageGenerator`, which defaults to `GeminiNanoBanana21` |
 
 ---
 
@@ -1216,7 +1214,7 @@ Previous release: 3.6.9.
 
 ## Model and platform changes
 
-- **Imagen retired on the Gemini API:** use the Gemini image models. Imagen still works on Vertex AI.
+- **Imagen retired:** Google retired Imagen on the Gemini API and, on June 30, 2026, on Vertex AI. `ImagenModel`, `GenAI.CreateImageModel`, `GenerativeAIImagenGenerator` and the Imagen model constants are marked `[Obsolete]`; use the Gemini image models and `GenerativeAIImageGenerator`.
 - **Veo retired on the Gemini API:** `VideoGenerationModel` now throws `NotSupportedException` on the Gemini API. Use
   Veo on Vertex AI or Gemini Omni.
 - **Retired and deprecated model constants** are `[Obsolete]` with replacement guidance. `text-embedding-004`, the
@@ -3951,7 +3949,7 @@ TuningClient geminiTuning = googleAi.CreateTuningClient();
 
 ```csharp
 TuningJob job = await tuning.TuneAsync(
-    VertexAIModels.Gemini.Gemini25Flash,
+    "gemini-2.5-flash",
     new TuningDataset { GcsUri = "gs://my-bucket/tuning/train.jsonl" },
     new CreateTuningJobConfig
     {
@@ -4523,7 +4521,7 @@ catch (ApiException ex) when (ex.ErrorCode is 403 or 404 || ex.ErrorStatus == "F
 
 Gemini's native image models (the "Nano Banana" family) create and edit images through the normal `generateContent` call: you send text, optionally with images, and the response contains image parts. This works on both the Gemini API and Vertex AI.
 
-The older Imagen models are **retired on the Gemini API**. The SDK still supports Imagen through `ImagenModel` on **Vertex AI only**.
+The older **Imagen models are retired** on both the Gemini API and Vertex AI (Vertex AI retired them on June 30, 2026). Use the Gemini image models described on this page.
 
 **NuGet packages**
 
@@ -4645,37 +4643,20 @@ foreach (var image in result.Contents.OfType<DataContent>())
 
 With `GenerativeAIChatClient` you can also get images from a chat by setting `AdditionalPropertiesKeys.ResponseModalities` and the `ImageConfig*` keys in `ChatOptions.AdditionalProperties` (see [Microsoft.Extensions.AI IChatClient](https://github.com/gunpal5/Google_GenerativeAI/wiki/Microsoft.Extensions.AI-IChatClient-Implementation#gemini-specific-options)).
 
-## Imagen on Vertex AI
+## Imagen (retired)
 
-Imagen models are shut down on the Gemini API, and the `GoogleAIModels.Imagen` constants are kept only for compatibility. On **Vertex AI**, `ImagenModel` (namespace `GenerativeAI.Clients`) still calls Imagen's `predict` endpoint.
+Google has retired every Imagen model: on the Gemini API, and on Vertex AI on June 30, 2026, where Google names
+`gemini-2.5-flash-image` as the replacement. The SDK's Imagen APIs are therefore marked `[Obsolete]` and produce
+warning `CS0618`:
 
-```csharp
-using GenerativeAI;
-using GenerativeAI.Authenticators; // Google_GenerativeAI.Auth package
-using GenerativeAI.Types;
+| Obsolete API | Use instead |
+|---|---|
+| `ImagenModel`, `GenAI.CreateImageModel(...)`, `ImageTextModel`, `VertexAI.CreateImageTextModel()` | `CreateGenerativeModel` with a Gemini image model and the `IMAGE` response modality (see above) |
+| `GenerativeAIImagenGenerator` (Microsoft.Extensions.AI) | `GenerativeAIImageGenerator` |
+| `GoogleAIModels.Imagen.*`, `VertexAIModels.Imagen.*` (**removed** in 4.0.1) | `GoogleAIModels.GeminiNanoBanana21`, `Gemini3ProImage` or `Gemini31FlashImage`, and the matching `VertexAIModels.Gemini` constants |
 
-var vertexAi = new VertexAI(
-    projectId: "your-project-id",
-    region: "us-central1",
-    authenticator: new GoogleServiceAccountAuthenticator("service-account.json"));
-
-var imagen = vertexAi.CreateImageModel(VertexAIModels.Imagen.Imagen4Generate001);
-
-var response = await imagen.GenerateImagesAsync(
-    "A dog catching a ball",
-    parameters: new ImageGenerationParameters { SampleCount = 1, AspectRatio = "16:9" });
-
-foreach (var prediction in response?.Predictions ?? new List<VisionGenerativeModelResult>())
-{
-    if (prediction.BytesBase64Encoded is { } data)
-        await File.WriteAllBytesAsync("dog.png", Convert.FromBase64String(data));
-}
-```
-
-- `GenerateImagesAsync(string prompt, ImageSource? imageSource = null, ImageGenerationParameters? parameters = null, CancellationToken cancellationToken = default)`, or pass a full `GenerateImageRequest`.
-- `ImageGenerationParameters` also has `Seed`, `EnhancePrompt`, `NegativePrompt`, `OutputOptions`, `SampleImageStyle`, `PersonGeneration`, `SafetySetting`, `AddWatermark`, `StorageUri`, `Mode` and `UpscaleConfig`.
-- Vertex AI Imagen constants: `VertexAIModels.Imagen.Imagen4Generate001`, `Imagen4UltraGenerate001`, `Imagen4FastGenerate001`, `Imagen3Generate002`, `Imagen3Capability001` and others.
-- `GenerativeAIImagenGenerator(GenAI genai, string modelName)` exposes Imagen as an MEAI `IImageGenerator`; pass a `VertexAI` instance and a Vertex Imagen model name. Its default model is a retired Gemini API Imagen model, so always pass `modelName`.
+Requests to Imagen models fail with an `ApiException` (HTTP 404), so migrate any remaining Imagen code to the Gemini
+image models.
 
 ### Legacy: image captioning and visual question answering
 
@@ -4735,7 +4716,7 @@ var vertexAi = new VertexAI(
     region: "us-central1",
     authenticator: new GoogleServiceAccountAuthenticator("service-account.json"));
 
-var videoModel = vertexAi.CreateVideoGenerationModel(VertexAIModels.Video.Veo3FastGenerate001);
+var videoModel = vertexAi.CreateVideoGenerationModel(VertexAIModels.Video.Veo31FastGenerate001);
 
 var operation = await videoModel.GenerateVideosAsync(
     "A dog catching a ball in a sunny park",
@@ -4761,7 +4742,7 @@ if (result?.Done == true && result.Result?.GeneratedVideos is { Count: > 0 } vid
 }
 ```
 
-You can also construct the model directly: `new VideoGenerationModel(platformAdapter, VertexAIModels.Video.Veo3FastGenerate001)`, where `platformAdapter` must be a `VertextPlatformAdapter`.
+You can also construct the model directly: `new VideoGenerationModel(platformAdapter, VertexAIModels.Video.Veo31FastGenerate001)`, where `platformAdapter` must be a `VertextPlatformAdapter`.
 
 ### API
 
@@ -5406,7 +5387,7 @@ Pass the corpus name as `corpusIdForRag` when you create the model. It adds a Ve
 
 ```csharp
 var model = vertexAi.CreateGenerativeModel(
-    VertexAIModels.Gemini.Gemini25Flash,     // a model served in your region
+    "gemini-2.5-flash",     // a model served in your region (the newest models are global-only)
     corpusIdForRag: corpus.Name);
 
 var result = await model.GenerateContentAsync("What does the manual say about factory resets?");
@@ -5417,7 +5398,7 @@ Tune retrieval with `ragRetrievalConfig`:
 
 ```csharp
 var model = vertexAi.CreateGenerativeModel(
-    VertexAIModels.Gemini.Gemini25Flash,
+    "gemini-2.5-flash",
     corpusIdForRag: corpus.Name,
     ragRetrievalConfig: new RagRetrievalConfig
     {
@@ -5481,7 +5462,7 @@ The **Google_GenerativeAI.Microsoft** package implements the [Microsoft.Extensio
 |---|---|---|
 | `IChatClient` | `GenerativeAIChatClient` | `GenerativeModel` |
 | `IEmbeddingGenerator<string, Embedding<float>>` | `GenerativeAIEmbeddingGenerator` | `EmbeddingModel` (see [Embeddings](https://github.com/gunpal5/Google_GenerativeAI/wiki/Embeddings)) |
-| `IImageGenerator` | `GenerativeAIImageGenerator` (Gemini image models), `GenerativeAIImagenGenerator` (Imagen, Vertex AI only) | see [Image Generation](https://github.com/gunpal5/Google_GenerativeAI/wiki/Image-Generation) |
+| `IImageGenerator` | `GenerativeAIImageGenerator` (Gemini image models), `GenerativeAIImagenGenerator` (obsolete: Imagen is retired) | see [Image Generation](https://github.com/gunpal5/Google_GenerativeAI/wiki/Image-Generation) |
 
 ## Installation
 

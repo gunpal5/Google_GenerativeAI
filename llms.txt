@@ -18,7 +18,8 @@ Key facts for code generation:
   Message types use the official SDK names (`LiveClientMessage`, `LiveServerMessage`, ...).
 - `GenerativeAI.Types.Environment` exists, so write `System.Environment.GetEnvironmentVariable(...)` when
   `using GenerativeAI.Types;` is present.
-- Video generation (Veo) is Vertex AI only; Imagen is not available on the Gemini API.
+- Video generation (Veo) is Vertex AI only. Imagen is retired everywhere (its APIs are `[Obsolete]`); generate images
+  with Gemini image models such as `GoogleAIModels.GeminiNanoBanana21` or `GenerativeAIImageGenerator`.
 
 ## Docs
 

@@ -28,7 +28,7 @@ namespace GenerativeAI
         /// <param name="platform">The platform adapter for integrating with the API.</param>
         /// <param name="httpClient">Optional HTTP client instance for making API calls.</param>
         /// <param name="logger">Optional logger instance for logging operations.</param>
-        public VideoGenerationModel(IPlatformAdapter platform, string model = VertexAIModels.Video.Veo2Generate001,
+        public VideoGenerationModel(IPlatformAdapter platform, string model = VertexAIModels.Video.Veo31Generate001,
             HttpClient? httpClient = null,
             ILogger? logger = null)
             : base(platform, httpClient, logger)

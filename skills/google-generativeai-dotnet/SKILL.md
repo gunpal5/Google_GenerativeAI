@@ -70,9 +70,10 @@ var data = await model.GenerateObjectAsync<MyDto>("Return JSON"); // JSON mode
 7. **Interactions API:** `googleAi.CreateInteractionsClient()`; `CreateAsync(new CreateInteractionRequest { Model =
    InteractionModels.Gemini38Flash, Input = "..." })`; read `OutputText`. Use `low`, `medium` or `high` thinking
    levels with Gemini 3.8 Flash.
-8. **Media:** Veo video generation works on Vertex AI only (`VertexAI.CreateVideoGenerationModel`); Imagen is not
-   available on the Gemini API. For images on the Gemini API, use a Gemini image model with
-   `ResponseModalities = { Modality.TEXT, Modality.IMAGE }` or `GenerativeAIImageGenerator`.
+8. **Media:** Veo video generation works on Vertex AI only (`VertexAI.CreateVideoGenerationModel`). Imagen is
+   retired on both platforms, and `ImagenModel`, `CreateImageModel` and `GenerativeAIImagenGenerator` are `[Obsolete]`.
+   For images, use a Gemini image model (for example `GoogleAIModels.GeminiNanoBanana21`) with
+   `ResponseModalities = { Modality.TEXT, Modality.IMAGE }`, or `GenerativeAIImageGenerator`.
 9. **Microsoft.Extensions.AI:** `IChatClient client = new GenerativeAIChatClient(apiKey, GoogleAIModels.Gemini38Flash);`
    then `GetResponseAsync` / `GetStreamingResponseAsync` (not the old `CompleteAsync`).
 10. **ASP.NET Core:** `services.AddGenerativeAI(new GenerativeAIOptions { Credentials = new GoogleAICredentials(key),

@@ -246,6 +246,11 @@ public class MultiModalLiveClient : IDisposable
     /// <summary>
     /// Represents a client for managing multi-modal interactions with generative models.
     /// </summary>
+    /// <remarks>
+    /// When <paramref name="config"/> is <c>null</c>, the client requests <see cref="Modality.AUDIO"/> responses, which
+    /// current Live models require. Set <paramref name="outputAudioTranscriptionEnabled"/> to also receive the spoken
+    /// text through <see cref="OutputTranscriptionReceived"/>.
+    /// </remarks>
     public MultiModalLiveClient(IPlatformAdapter platformAdapter, string modelName, GenerationConfig? config = null,
         ICollection<SafetySetting>? safetySettings = null,
         string? systemInstruction = null,
@@ -259,9 +264,10 @@ public class MultiModalLiveClient : IDisposable
         _platformAdapter = platformAdapter ?? throw new ArgumentNullException(nameof(platformAdapter));
 #endif
         ModelName = platformAdapter.GetFullyQualifiedModelName(modelName) ?? throw new InvalidOperationException($"Failed to get multimodal live model name for '{modelName}'");
+        // Current Live models (for example gemini-3.8-live) only respond with audio.
         Config = config ?? new GenerationConfig()
         {
-            ResponseModalities = new List<Modality> { Modality.TEXT }
+            ResponseModalities = new List<Modality> { Modality.AUDIO }
         };
         InputAudioTranscriptionEnabled = inputAudioTranscriptionEnabled;
         OutputAudioTranscriptionEnabled = outputAudioTranscriptionEnabled;

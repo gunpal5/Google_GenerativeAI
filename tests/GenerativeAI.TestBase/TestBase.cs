@@ -138,7 +138,12 @@ public abstract class TestBase
     /// Model for tests that need a regional Vertex AI endpoint (for example RAG). The newest Gemini models are
     /// only served from the global endpoint.
     /// </summary>
-    protected const string VertexRegionalTestModel = VertexAIModels.Gemini.Gemini25Flash;
+    /// <remarks>
+    /// As of November 2026, gemini-2.5-flash is the only Gemini model that still answers in us-central1 for the test
+    /// project (3.5 Flash, 3.7 Flash, 3.8 Flash and Gemini 4 return 404 there), even though Google lists it as
+    /// retired. The literal is used because <c>VertexAIModels.Gemini.Gemini25Flash</c> is marked obsolete.
+    /// </remarks>
+    protected const string VertexRegionalTestModel = "gemini-2.5-flash";
 
     /// <summary>
     /// A regional location for services that are not available on the global endpoint (for example the RAG

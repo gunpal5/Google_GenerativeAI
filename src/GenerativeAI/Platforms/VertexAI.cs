@@ -60,6 +60,7 @@ public class VertexAI : GenAI, IGenerativeAI
     /// Creates and returns a new instance of the <see cref="ImageTextModel"/> class initialized with the platform adapter, HTTP client, and logger available in the current <see cref="VertexAI"/> instance.
     /// </summary>
     /// <returns>An instance of <see cref="ImageTextModel"/> configured with the current platform adapter, HTTP client, and logger.</returns>
+    [Obsolete("The imagetext model was retired on Vertex AI on September 24, 2025. Send the image to a Gemini model for captions and visual question answering.", false)]
     public ImageTextModel CreateImageTextModel()
     {
         return new ImageTextModel(this.Platform, this.HttpClient, this.Logger);
@@ -103,7 +104,7 @@ public class VertexAI : GenAI, IGenerativeAI
     /// </summary>
     /// <param name="modelName">The name of the video generation model to instantiate. Defaults to "veo-2.0-generate-001".</param>
     /// <returns>An instance of <see cref="VideoGenerationModel"/> configured with the specified model name.</returns>
-    public VideoGenerationModel CreateVideoGenerationModel(string modelName = VertexAIModels.Video.Veo2Generate001)
+    public VideoGenerationModel CreateVideoGenerationModel(string modelName = VertexAIModels.Video.Veo31Generate001)
     {
         return new VideoGenerationModel(this.Platform, modelName, this.HttpClient, this.Logger);
     }

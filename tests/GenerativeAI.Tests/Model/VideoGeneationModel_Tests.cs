@@ -23,11 +23,11 @@ public class VideoGeneationModel_Tests:TestBase
     [RunnableInDebugOnly]
     public async Task ShouldGenerateVideos()
     {
-        var model = new VideoGenerationModel(GetTestVertexAIPlatform(),VertexAIModels.Video.Veo2Generate001);
+        var model = new VideoGenerationModel(GetTestVertexAIPlatform(),VertexAIModels.Video.Veo31Generate001);
        
         var request = new GenerateVideosRequest()
         {
-            Model = "veo2-generate-001",
+            Model = VertexAIModels.Video.Veo31Generate001,
             Prompt = "A dog catching a ball",
             Config = new GenerateVideosConfig()
             {

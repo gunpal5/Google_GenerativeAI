@@ -25,21 +25,14 @@ public static class SupportedEmbedingModels
     /// </remarks>
     public static readonly List<string> All = new()
     {
-        // From GeminiConstants
+        // Gemini API (models are compared without the "models/" prefix)
         GoogleAIModels.GeminiEmbedding2,
         GoogleAIModels.GeminiEmbedding,
-#pragma warning disable CS0618 // Kept so existing callers of the shut-down model still pass validation
-        GoogleAIModels.TextEmbedding,
-#pragma warning restore CS0618
 
-        // From VertexAIModels.Embeddings
+        // Vertex AI
         VertexAIModels.Embeddings.GeminiEmbedding001,
         VertexAIModels.Gemini.TextEmbedding005,
-        VertexAIModels.Embeddings.TextEmbeddingGecko001,
-        VertexAIModels.Embeddings.TextEmbeddingGecko002,
-        VertexAIModels.Embeddings.TextEmbeddingGecko003,
         VertexAIModels.Embeddings.TextEmbedding004,
-        VertexAIModels.Embeddings.TextEmbeddingGeckoMultilingual001,
         VertexAIModels.Embeddings.TextMultilingualEmbedding002,
         VertexAIModels.Embeddings.MultimodalEmbedding
     };
