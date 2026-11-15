@@ -583,6 +583,48 @@ public class InteractionsClient_Tests
     }
 
     [Fact]
+    public async Task StreamAsync_ResumesFromLastEventWhenStreamBreaks()
+    {
+        const string broken =
+            "event: interaction.created\n" +
+            "data: {\"event_type\":\"interaction.created\",\"event_id\":\"e1\",\"interaction\":{\"id\":\"v1_s\",\"status\":\"in_progress\"}}\n\n" +
+            "event: step.start\n" +
+            "data: {\"event_type\":\"step.start\",\"event_id\":\"e2\",\"index\":0,\"step\":{\"type\":\"model_output\"}}\n\n" +
+            "data: {\"event_type\":\"step.delta\",\"event_id\":\"e3\",\"index\":0,\"del"; // connection drops mid-event
+        const string resumed =
+            "data: {\"event_type\":\"interaction.completed\",\"event_id\":\"e4\",\"interaction\":{\"id\":\"v1_s\",\"status\":\"completed\"}}\n\n" +
+            "data: [DONE]\n\n";
+        var handler = new CapturingHandler().Enqueue(broken, "text/event-stream").Enqueue(resumed, "text/event-stream");
+        var client = new InteractionsClient(new GoogleAIPlatformAdapter("test-key"), new HttpClient(handler));
+
+        var events = new List<InteractionSseEvent>();
+        await foreach (var e in client.StreamAsync(new CreateInteractionRequest { Model = "gemini-3.8-flash", Input = "hi" },
+                           TestContext.Current.CancellationToken))
+            events.Add(e);
+
+        handler.Requests.Count.ShouldBe(2);
+        handler.Requests[1].Method.ShouldBe(HttpMethod.Get);
+        handler.Requests[1].Url.AbsoluteUri.ShouldBe(GoogleBase + "/v1_s?last_event_id=e2&stream=true");
+        events.Select(e => e.EventId).ShouldBe(new[] { "e1", "e2", "e4" });
+    }
+
+    [Fact]
+    public async Task StreamAsync_BreakBeforeInteractionCreated_Throws()
+    {
+        var handler = new CapturingHandler().Enqueue("data: {\"event_type\":\"interaction.cre", "text/event-stream");
+        var client = new InteractionsClient(new GoogleAIPlatformAdapter("test-key"), new HttpClient(handler));
+
+        await Should.ThrowAsync<Exception>(async () =>
+        {
+            await foreach (var _ in client.StreamAsync(new CreateInteractionRequest { Model = "gemini-3.8-flash", Input = "hi" },
+                               TestContext.Current.CancellationToken))
+            {
+            }
+        });
+        handler.Requests.Count.ShouldBe(1);
+    }
+
+    [Fact]
     public async Task CreateAsync_AutomaticallyContinuesAndCombinesSteps()
     {
         const string hop1 = """

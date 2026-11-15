@@ -139,6 +139,70 @@ public class InteractionsClient : BaseClient
         Validate(request);
         var body = request.Clone();
         body.Stream = true;
+
+        string? interactionId = null;
+        string? lastEventId = null;
+        var reconnects = 0;
+        IAsyncEnumerable<InteractionSseEvent> source = CreateStreamAsync(body, cancellationToken);
+
+        while (true)
+        {
+            Exception? failure = null;
+            var enumerator = source.GetAsyncEnumerator(cancellationToken);
+            try
+            {
+                while (true)
+                {
+                    InteractionSseEvent item;
+                    try
+                    {
+                        if (!await enumerator.MoveNextAsync().ConfigureAwait(false))
+                            break;
+                        item = enumerator.Current;
+                    }
+#pragma warning disable CA1031 // Swallowed only when the stream can be resumed; otherwise rethrown below
+                    catch (Exception ex) when (ex is not OperationCanceledException)
+                    {
+                        failure = ex;
+                        break;
+                    }
+#pragma warning restore CA1031
+
+                    if (item is InteractionCreatedEvent { Interaction.Id: { } id })
+                        interactionId = id;
+                    if (!string.IsNullOrEmpty(item.EventId))
+                        lastEventId = item.EventId;
+                    yield return item;
+                }
+            }
+            finally
+            {
+                await enumerator.DisposeAsync().ConfigureAwait(false);
+            }
+
+            if (failure == null)
+                yield break;
+
+            // Resume a dropped stream from the last event, like the official SDKs' stream reconnection.
+            if (interactionId == null || lastEventId == null || reconnects >= MaxStreamReconnects)
+                System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(failure).Throw();
+
+            reconnects++;
+            Logger?.LogWarning(failure, "Interaction stream for {InteractionId} failed; resuming after event {EventId}",
+                interactionId, lastEventId);
+            source = ResumeStreamAsync(interactionId!, lastEventId, cancellationToken: cancellationToken);
+        }
+    }
+
+    /// <summary>
+    /// How many times <see cref="StreamAsync(CreateInteractionRequest, CancellationToken)"/> resumes a stream that
+    /// fails after the interaction was created, using the last received event ID (default 3; 0 disables it).
+    /// </summary>
+    public int MaxStreamReconnects { get; set; } = 3;
+
+    private async IAsyncEnumerable<InteractionSseEvent> CreateStreamAsync(CreateInteractionRequest body,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
+    {
         using var response = await SendJsonAsync(HttpMethod.Post, GetInteractionsUrl(), body,
             HttpCompletionOption.ResponseHeadersRead, true, cancellationToken).ConfigureAwait(false);
         await foreach (var item in ReadEventsAsync(response, cancellationToken).ConfigureAwait(false))
