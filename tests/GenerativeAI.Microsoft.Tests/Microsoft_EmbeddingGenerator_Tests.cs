@@ -18,7 +18,7 @@ namespace GenerativeAI.Tests.Microsoft;
 /// <summary>
 /// Tests for <see cref="GenerativeAIEmbeddingGenerator"/>.
 /// </summary>
-[TestCaseOrderer(typeof(TestPriorityAttribute))]
+[TestCaseOrderer(typeof(PriorityOrderer))]
 public class Microsoft_EmbeddingGenerator_Tests : TestBase
 {
     private const string DefaultTestEmbeddingModel = GoogleAIModels.GeminiEmbedding;
@@ -140,7 +140,7 @@ public class Microsoft_EmbeddingGenerator_Tests : TestBase
         var emptyInput = new List<string>();
 
         // Act
-        var result = await generator.GenerateAsync(emptyInput);
+        var result = await generator.GenerateAsync(emptyInput, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldNotBeNull();
@@ -157,7 +157,7 @@ public class Microsoft_EmbeddingGenerator_Tests : TestBase
         var input = new[] { "Test text" };
 
         // Act
-        var result = await generator.GenerateAsync(input, null);
+        var result = await generator.GenerateAsync(input, null, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldNotBeNull();
@@ -196,7 +196,7 @@ public class Microsoft_EmbeddingGenerator_Tests : TestBase
         };
 
         // Act
-        var result = await generator.GenerateAsync(input, options);
+        var result = await generator.GenerateAsync(input, options, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldNotBeNull();
@@ -220,7 +220,7 @@ public class Microsoft_EmbeddingGenerator_Tests : TestBase
         };
 
         // Act
-        var result = await generator.GenerateAsync(input, options);
+        var result = await generator.GenerateAsync(input, options, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldNotBeNull();
@@ -238,7 +238,7 @@ public class Microsoft_EmbeddingGenerator_Tests : TestBase
         var options = new EmbeddingGenerationOptions().WithTaskType(TaskType.CODE_RETRIEVAL_QUERY);
 
         // Act
-        var result = await generator.GenerateAsync(input, options);
+        var result = await generator.GenerateAsync(input, options, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldNotBeNull();
@@ -304,7 +304,7 @@ public class Microsoft_EmbeddingGenerator_Tests : TestBase
 
         // Assert
         generator.ShouldNotBeNull();
-        generator.Model.Model.ShouldBe("text-embedding-004");
+        generator.Model.Model.ShouldBe(GoogleAIModels.GeminiEmbedding);
     }
 
     [Fact, TestPriority(15)]
@@ -335,7 +335,7 @@ public class Microsoft_EmbeddingGenerator_Tests : TestBase
 
         // Assert
         generator.ShouldNotBeNull();
-        generator.Model.Model.ShouldBe("text-embedding-004");
+        generator.Model.Model.ShouldBe(GoogleAIModels.GeminiEmbedding);
     }
 
     [Fact, TestPriority(17)]
@@ -345,7 +345,7 @@ public class Microsoft_EmbeddingGenerator_Tests : TestBase
 
         // Arrange
         var adapter = GetTestGooglePlatform();
-        var modelName = "textembedding-gecko";
+        var modelName = GoogleAIModels.GeminiEmbedding2;
 
         // Act
         var generator = adapter.AsEmbeddingGenerator(modelName);
@@ -421,10 +421,10 @@ public class Microsoft_EmbeddingGenerator_Tests : TestBase
     #region Model Support Tests
 
     [Theory, TestPriority(22)]
-    [InlineData("text-embedding-004")]
+    [InlineData("models/gemini-embedding-2")]
     [InlineData("text-multilingual-embedding-002")]
-    [InlineData("textembedding-gecko")]
-    [InlineData("textembedding-gecko-multilingual")]
+    [InlineData("models/gemini-embedding-001")]
+    [InlineData("text-embedding-005")]
     public void Constructor_WithSupportedModels_ShouldInitialize(string modelName)
     {
         // Arrange & Act
@@ -454,7 +454,7 @@ public class Microsoft_EmbeddingGenerator_Tests : TestBase
         };
 
         // Act
-        var result = await generator.GenerateAsync(inputs);
+        var result = await generator.GenerateAsync(inputs, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldNotBeNull();
@@ -475,7 +475,7 @@ public class Microsoft_EmbeddingGenerator_Tests : TestBase
         var input = new[] { "Text for usage tracking" };
 
         // Act
-        var result = await generator.GenerateAsync(input);
+        var result = await generator.GenerateAsync(input, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         result.Usage.ShouldNotBeNull();

@@ -134,6 +134,37 @@ public abstract class TestBase
         return new VertextPlatformAdapter(projectId, region, false, apiKey);
     }
 
+    /// <summary>
+    /// Model for tests that need a regional Vertex AI endpoint (for example RAG). The newest Gemini models are
+    /// only served from the global endpoint.
+    /// </summary>
+    protected const string VertexRegionalTestModel = VertexAIModels.Gemini.Gemini25Flash;
+
+    /// <summary>
+    /// A regional location for services that are not available on the global endpoint (for example the RAG
+    /// Engine): GOOGLE_REGION when it is not "global", otherwise VERTEX_REGIONAL_LOCATION, otherwise us-central1.
+    /// </summary>
+    protected static string VertexRegionalLocation
+    {
+        get
+        {
+            var region = Environment.GetEnvironmentVariable("GOOGLE_REGION");
+            if (!string.IsNullOrWhiteSpace(region) && !string.Equals(region, "global", StringComparison.OrdinalIgnoreCase))
+                return region!;
+            var fallback = Environment.GetEnvironmentVariable("VERTEX_REGIONAL_LOCATION");
+            return string.IsNullOrWhiteSpace(fallback) ? "us-central1" : fallback!;
+        }
+    }
+
+    /// <summary>A Vertex AI adapter for <see cref="VertexRegionalLocation"/>.</summary>
+    protected virtual IPlatformAdapter GetTestVertexAIRegionalPlatform()
+    {
+        var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY");
+        var projectId = Environment.GetEnvironmentVariable("GOOGLE_PROJECT_ID");
+
+        return new VertextPlatformAdapter(projectId, VertexRegionalLocation, false, apiKey);
+    }
+
     protected bool GitHubEnvironment()
     {
         return IsGitHubEnvironment;

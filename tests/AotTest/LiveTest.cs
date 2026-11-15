@@ -11,7 +11,7 @@ public class LiveTest
     {
         var exitEvent = new ManualResetEvent(false);
         var multiModalLive = new MultiModalLiveClient(new GoogleAIPlatformAdapter(EnvironmentVariables.GOOGLE_API_KEY),
-            "gemini-2.0-flash-exp", new GenerationConfig()
+            GoogleAIModels.Gemini38Live, new GenerationConfig()
             {
                 ResponseModalities = [Modality.TEXT]
             });

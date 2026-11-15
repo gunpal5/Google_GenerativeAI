@@ -67,6 +67,18 @@ public class BidiGenerateContentServerContent
     /// </summary>
     [JsonPropertyName("waitingForInput")]
     public bool? WaitingForInput { get; set; }
+
+    /// <summary>
+    /// Output only. Low latency transcription updated while the user is speaking.
+    /// </summary>
+    [JsonPropertyName("interimInputTranscription")]
+    public Transcription? InterimInputTranscription { get; set; }
+
+    /// <summary>
+    /// Output only. The current activity status of the live session. Always sent alongside <see cref="TurnComplete"/>.
+    /// </summary>
+    [JsonPropertyName("interactionStatus")]
+    public InteractionStatus? InteractionStatus { get; set; }
 }
 
 /// <summary>
@@ -85,6 +97,60 @@ public class Transcription
     /// </summary>
     [JsonPropertyName("text")]
     public string? Text { get; set; }
+
+    /// <summary>
+    /// The BCP-47 language code of the transcription.
+    /// </summary>
+    [JsonPropertyName("languageCode")]
+    public string? LanguageCode { get; set; }
+
+    /// <summary>
+    /// A label identifying the speaker of this audio segment (e.g. "spk_1", "spk_2").
+    /// </summary>
+    [JsonPropertyName("speakerLabel")]
+    public string? SpeakerLabel { get; set; }
+
+    /// <summary>
+    /// Detailed word-level transcriptions and timing details.
+    /// </summary>
+    [JsonPropertyName("words")]
+    public List<WordInfo>? Words { get; set; }
+
+    /// <summary>
+    /// Start offset in time of the transcription relative to the start of the audio (a duration string such as <c>"1.5s"</c>).
+    /// </summary>
+    [JsonPropertyName("startOffset")]
+    public string? StartOffset { get; set; }
+
+    /// <summary>
+    /// End offset in time of the transcription relative to the start of the audio (a duration string such as <c>"1.5s"</c>).
+    /// </summary>
+    [JsonPropertyName("endOffset")]
+    public string? EndOffset { get; set; }
+}
+
+/// <summary>
+/// Information about a single recognized word in a <see cref="Transcription"/>.
+/// </summary>
+public class WordInfo
+{
+    /// <summary>
+    /// Transcript of the word.
+    /// </summary>
+    [JsonPropertyName("word")]
+    public string? Word { get; set; }
+
+    /// <summary>
+    /// Start offset in time of the word relative to the start of the audio (a duration string such as <c>"1.5s"</c>).
+    /// </summary>
+    [JsonPropertyName("startOffset")]
+    public string? StartOffset { get; set; }
+
+    /// <summary>
+    /// End offset in time of the word relative to the start of the audio (a duration string such as <c>"1.5s"</c>).
+    /// </summary>
+    [JsonPropertyName("endOffset")]
+    public string? EndOffset { get; set; }
 }
 /// <summary>
 /// Status of the url retrieval.
@@ -104,7 +170,17 @@ public enum UrlRetrievalStatus
     /// <summary>
     /// Url retrieval is failed due to error.
     /// </summary>
-    URL_RETRIEVAL_STATUS_ERROR
+    URL_RETRIEVAL_STATUS_ERROR,
+
+    /// <summary>
+    /// Url retrieval is failed because the content is behind paywall. Not supported in Vertex AI.
+    /// </summary>
+    URL_RETRIEVAL_STATUS_PAYWALL,
+
+    /// <summary>
+    /// Url retrieval is failed because the content is unsafe. Not supported in Vertex AI.
+    /// </summary>
+    URL_RETRIEVAL_STATUS_UNSAFE
 }
 
 /// <summary>

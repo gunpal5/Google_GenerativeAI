@@ -53,7 +53,9 @@ public class ParallelWebCrawler
                             _allText.Add(text);
 
                             var links = doc.DocumentNode.SelectNodes("//a[@href]")
-                                ?.Select(node => node.Attributes["href"].Value).ToList();
+                                ?.Select(node => node.Attributes["href"]?.Value)
+                                .OfType<string>()
+                                .ToList();
                             if (links != null)
                             {
                                 foreach (var link in links)

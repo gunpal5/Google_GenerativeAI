@@ -37,4 +37,10 @@ public class GroundingChunkMaps
     /// </summary>
     [JsonPropertyName("uri")]
     public string? Uri { get; set; }
+
+    /// <summary>
+    /// Route information returned by Google Maps grounding.
+    /// </summary>
+    [JsonPropertyName("route")]
+    public GroundingChunkMapsRoute? Route { get; set; }
 }

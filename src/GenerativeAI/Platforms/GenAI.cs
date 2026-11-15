@@ -145,4 +145,87 @@ public abstract class GenAI
     {
         return new ImagenModel(this.Platform, modelName, this.HttpClient, this.Logger);
     }
+
+    /// <summary>
+    /// Creates a client for the Interactions API (stateful model and agent interactions such as Deep Research
+    /// and Antigravity, with background execution, streaming and continuation).
+    /// </summary>
+    /// <returns>An <see cref="GenerativeAI.Clients.InteractionsClient"/> that uses this instance's platform, HTTP client and logger.</returns>
+    public GenerativeAI.Clients.InteractionsClient CreateInteractionsClient()
+    {
+        return new GenerativeAI.Clients.InteractionsClient(this.Platform, this.HttpClient, this.Logger);
+    }
+
+    /// <summary>
+    /// Creates a client for the Webhooks API (event notifications for batch jobs, interactions and video
+    /// generation, plus signing secret rotation).
+    /// </summary>
+    /// <returns>A <see cref="GenerativeAI.Clients.WebhooksClient"/> that uses this instance's platform, HTTP client and logger.</returns>
+    public GenerativeAI.Clients.WebhooksClient CreateWebhooksClient()
+    {
+        return new GenerativeAI.Clients.WebhooksClient(this.Platform, this.HttpClient, this.Logger);
+    }
+
+    /// <summary>
+    /// Creates a client for the Voices API (voice design, remixing and replication for text-to-speech).
+    /// </summary>
+    /// <returns>A <see cref="GenerativeAI.Clients.VoicesClient"/> that uses this instance's platform, HTTP client and logger.</returns>
+    public GenerativeAI.Clients.VoicesClient CreateVoicesClient()
+    {
+        return new GenerativeAI.Clients.VoicesClient(this.Platform, this.HttpClient, this.Logger);
+    }
+
+    /// <summary>
+    /// Creates a client for the managed Agents API.
+    /// </summary>
+    /// <returns>An <see cref="GenerativeAI.Clients.AgentsClient"/> that uses this instance's platform, HTTP client and logger.</returns>
+    public GenerativeAI.Clients.AgentsClient CreateAgentsClient()
+    {
+        return new GenerativeAI.Clients.AgentsClient(this.Platform, this.HttpClient, this.Logger);
+    }
+
+    /// <summary>
+    /// Creates a client for the Environments API (agent sandbox environments and their workspace files).
+    /// </summary>
+    /// <returns>An <see cref="GenerativeAI.Clients.EnvironmentsClient"/> that uses this instance's platform, HTTP client and logger.</returns>
+    public GenerativeAI.Clients.EnvironmentsClient CreateEnvironmentsClient()
+    {
+        return new GenerativeAI.Clients.EnvironmentsClient(this.Platform, this.HttpClient, this.Logger);
+    }
+
+    /// <summary>
+    /// Creates a client for the Triggers API (scheduled agent interactions).
+    /// </summary>
+    /// <returns>A <see cref="GenerativeAI.Clients.TriggersClient"/> that uses this instance's platform, HTTP client and logger.</returns>
+    public GenerativeAI.Clients.TriggersClient CreateTriggersClient()
+    {
+        return new GenerativeAI.Clients.TriggersClient(this.Platform, this.HttpClient, this.Logger);
+    }
+
+    /// <summary>
+    /// Creates a client for the Credentials API (secrets used by agent environments).
+    /// </summary>
+    /// <returns>A <see cref="GenerativeAI.Clients.CredentialsClient"/> that uses this instance's platform, HTTP client and logger.</returns>
+    public GenerativeAI.Clients.CredentialsClient CreateCredentialsClient()
+    {
+        return new GenerativeAI.Clients.CredentialsClient(this.Platform, this.HttpClient, this.Logger);
+    }
+
+    /// <summary>
+    /// Creates a client for the Decisions API (structured yes/no, choice and score questions).
+    /// </summary>
+    /// <returns>A <see cref="GenerativeAI.Clients.DecisionsClient"/> that uses this instance's platform, HTTP client and logger.</returns>
+    public GenerativeAI.Clients.DecisionsClient CreateDecisionsClient()
+    {
+        return new GenerativeAI.Clients.DecisionsClient(this.Platform, this.HttpClient, this.Logger);
+    }
+
+    /// <summary>
+    /// Creates a client for model tuning (Vertex AI tuning jobs or Gemini API tuned models).
+    /// </summary>
+    /// <returns>A <see cref="GenerativeAI.Clients.TuningClient"/> that uses this instance's platform, HTTP client and logger.</returns>
+    public GenerativeAI.Clients.TuningClient CreateTuningClient()
+    {
+        return new GenerativeAI.Clients.TuningClient(this.Platform, this.HttpClient, this.Logger);
+    }
 }

@@ -69,5 +69,29 @@ public class Tool
     /// </summary>
     [JsonPropertyName("computerUse")]
     public ComputerUse? ComputerUse { get; set; }
+
+    /// <summary>
+    /// Retrieves relevant content from File Search stores.
+    /// </summary>
+    [JsonPropertyName("fileSearch")]
+    public FileSearch? FileSearch { get; set; }
+
+    /// <summary>
+    /// Remote MCP servers that the model calls server-side.
+    /// </summary>
+    [JsonPropertyName("mcpServers")]
+    public List<McpServer>? McpServers { get; set; }
+
+    /// <summary>
+    /// Web search through Parallel AI. Vertex AI only.
+    /// </summary>
+    [JsonPropertyName("parallelAiSearch")]
+    public ToolParallelAiSearch? ParallelAiSearch { get; set; }
+
+    /// <summary>
+    /// Web search through Exa AI. Vertex AI only.
+    /// </summary>
+    [JsonPropertyName("exaAiSearch")]
+    public ToolExaAiSearch? ExaAiSearch { get; set; }
 }
 

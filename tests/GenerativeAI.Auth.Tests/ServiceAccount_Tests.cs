@@ -29,6 +29,8 @@ public class ServiceAccount_Tests:TestBase
         var email = Environment.GetEnvironmentVariable("Google_Service_Account_Email", EnvironmentVariableTarget.User);
         var key = Environment.GetEnvironmentVariable("Google_Service_Account_Key", EnvironmentVariableTarget.User);
         var password = Environment.GetEnvironmentVariable("Google_key_password", EnvironmentVariableTarget.User);
+        Assert.SkipWhen(string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(key) || !File.Exists(key),
+            "Set the Google_Service_Account_Email and Google_Service_Account_Key (path to an existing .p12 key) user environment variables.");
 
         return new GoogleServiceAccountAuthenticator(email, key, password);
 

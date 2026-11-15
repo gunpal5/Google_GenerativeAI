@@ -39,4 +39,25 @@ public class BidiGenerateContentRealtimeInput
     /// </summary>
     [JsonPropertyName("text")]
     public string? Text { get; set; }
+
+    /// <summary>
+    /// Indicates that the audio stream has ended, e.g. because the microphone was turned off.
+    /// This should only be sent when automatic activity detection is enabled (which is the default).
+    /// The client can reopen the stream by sending an audio message.
+    /// Gemini Developer API only; not supported by Vertex AI.
+    /// </summary>
+    [JsonPropertyName("audioStreamEnd")]
+    public bool? AudioStreamEnd { get; set; }
+
+    /// <summary>
+    /// Marks the start of user activity. This can only be sent if automatic (i.e. server-side) activity detection is disabled.
+    /// </summary>
+    [JsonPropertyName("activityStart")]
+    public ActivityStart? ActivityStart { get; set; }
+
+    /// <summary>
+    /// Marks the end of user activity. This can only be sent if automatic (i.e. server-side) activity detection is disabled.
+    /// </summary>
+    [JsonPropertyName("activityEnd")]
+    public ActivityEnd? ActivityEnd { get; set; }
 }

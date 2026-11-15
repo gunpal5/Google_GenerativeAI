@@ -15,7 +15,7 @@ namespace GenerativeAI.Tests.Model
         typeof(PriorityOrderer))]
     public class GenerativeModelEmbedding_Tests : TestBase
     {
-        private const string DefaultTestModelName = GoogleAIModels.TextEmbedding;
+        private const string DefaultTestModelName = GoogleAIModels.GeminiEmbedding2;
 
         public GenerativeModelEmbedding_Tests(ITestOutputHelper helper) : base(helper)
         {

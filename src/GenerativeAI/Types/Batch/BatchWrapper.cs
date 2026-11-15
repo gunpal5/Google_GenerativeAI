@@ -30,4 +30,11 @@ public class BatchConfig
     /// </summary>
     [JsonPropertyName("displayName")]
     public string? DisplayName { get; set; }
+
+    /// <summary>
+    /// Webhook configuration for receiving notifications when the batch operation completes
+    /// (Gemini Developer API only).
+    /// </summary>
+    [JsonPropertyName("webhookConfig")]
+    public WebhookConfig? WebhookConfig { get; set; }
 }

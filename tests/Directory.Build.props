@@ -2,5 +2,8 @@
   <PropertyGroup>
     <!-- Disable nullable reference warnings in test projects -->
     <NoWarn>$(NoWarn);CS8600;CS8601;CS8602;CS8603;CS8604;CS8605;CS8618;CS8619;CS8620;CS8625;CS8629;CS8631;CS8634</NoWarn>
+    <!-- xUnit v3 4.x defaults to Microsoft.Testing.Platform, which the .NET 10+ SDK only runs through the new
+         `dotnet test` mode. Keep the VSTest runner so `dotnet test` (CI) and IDE runners work unchanged. -->
+    <IsTestingPlatformApplication>false</IsTestingPlatformApplication>
   </PropertyGroup>
 </Project>

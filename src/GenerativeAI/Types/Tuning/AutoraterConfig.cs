@@ -31,4 +31,10 @@ public class AutoraterConfig
     /// </summary>
     [JsonPropertyName("autoraterModel")]
     public string? AutoraterModel { get; set; }
+
+    /// <summary>
+    /// Configuration options for the autorater model generation and outputs.
+    /// </summary>
+    [JsonPropertyName("generationConfig")]
+    public GenerationConfig? GenerationConfig { get; set; }
 }

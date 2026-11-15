@@ -8,6 +8,31 @@
 public static class EnvironmentVariables
 {
     /// <summary>
+    /// The API version to use when none is passed to a platform adapter, from the "GOOGLE_GENAI_API_VERSION"
+    /// environment variable (the same variable the official SDKs read). "beta" means v1beta on the Gemini API
+    /// and v1beta1 on Vertex AI. Read each time it is accessed; null if not set.
+    /// </summary>
+    public static string? GOOGLE_GENAI_API_VERSION => Environment.GetEnvironmentVariable("GOOGLE_GENAI_API_VERSION");
+
+    /// <summary>
+    /// Resolves the API version: the explicit value if given, else <see cref="GOOGLE_GENAI_API_VERSION"/>
+    /// (mapping "beta" to <paramref name="betaVersion"/>), else <paramref name="defaultVersion"/>.
+    /// </summary>
+    internal static string ResolveApiVersion(string? explicitVersion, string defaultVersion, string betaVersion)
+    {
+        if (!string.IsNullOrWhiteSpace(explicitVersion))
+            return explicitVersion!;
+
+        var fromEnvironment = GOOGLE_GENAI_API_VERSION;
+        if (string.IsNullOrWhiteSpace(fromEnvironment))
+            return defaultVersion;
+
+        return string.Equals(fromEnvironment, "beta", StringComparison.OrdinalIgnoreCase)
+            ? betaVersion
+            : fromEnvironment!.Trim();
+    }
+
+    /// <summary>
     /// Represents the Google Cloud Project ID for the application.
     /// This variable is sourced from the "GOOGLE_PROJECT_ID" environment variable.
     /// It is used to identify the specific Google Cloud project being utilized

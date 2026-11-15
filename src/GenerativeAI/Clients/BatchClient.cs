@@ -41,16 +41,42 @@ public class BatchClient : BaseClient
     /// The job status can be monitored using <see cref="GetAsync"/> with the returned job name.
     /// </remarks>
     /// <seealso href="https://ai.google.dev/api/batch#method:-models.batchgeneratecontent">See Official API Documentation</seealso>
-    public async Task<BatchJob> CreateAsync(
+    public Task<BatchJob> CreateAsync(
         string model,
         BatchJobSource source,
         BatchJobDestination? destination = null,
         CancellationToken cancellationToken = default)
     {
+        return CreateAsync(model, source, destination, null, cancellationToken);
+    }
+
+    /// <summary>
+    /// Creates a batch job for content generation asynchronously, optionally with a per-job webhook configuration.
+    /// </summary>
+    /// <param name="model">The name of the model to use for batch generation.</param>
+    /// <param name="source">The source configuration specifying input data location (GCS, BigQuery, or inlined requests).</param>
+    /// <param name="destination">Optional destination configuration for output data.</param>
+    /// <param name="webhookConfig">Optional webhook configuration for receiving notifications when the batch
+    /// operation completes (sent as <c>batch.webhookConfig</c>). Only supported by the Gemini Developer API.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>A task that represents the asynchronous operation, containing the created <see cref="BatchJob"/>.</returns>
+    /// <exception cref="NotSupportedException">Thrown when <paramref name="webhookConfig"/> is set on Vertex AI.</exception>
+    /// <seealso href="https://ai.google.dev/api/batch#method:-models.batchgeneratecontent">See Official API Documentation</seealso>
+    public async Task<BatchJob> CreateAsync(
+        string model,
+        BatchJobSource source,
+        BatchJobDestination? destination,
+        WebhookConfig? webhookConfig,
+        CancellationToken cancellationToken = default)
+    {
         if (string.IsNullOrWhiteSpace(model))
             throw new ArgumentException("Model name cannot be null or empty.", nameof(model));
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(source);
+#else
         if (source == null)
             throw new ArgumentNullException(nameof(source));
+#endif
 
         var modelId = model;
 
@@ -94,7 +120,7 @@ public class BatchClient : BaseClient
 
             var requestBody = new BatchWrapper
             {
-                Batch = new BatchConfig { InputConfig = inputConfig }
+                Batch = new BatchConfig { InputConfig = inputConfig, WebhookConfig = webhookConfig }
             };
 
             var response = await SendAsync<BatchWrapper, BatchJobResponse>(url, requestBody, HttpMethod.Post, cancellationToken).ConfigureAwait(false);
@@ -110,6 +136,9 @@ public class BatchClient : BaseClient
             var url = $"{Platform.GetBaseUrl(true,false)}/batchPredictionJobs";
 
             // Validate unsupported parameters for Vertex AI
+            if (webhookConfig != null)
+                throw new NotSupportedException("WebhookConfig is only supported by the Gemini Developer API, not Vertex AI.");
+
             if (source.FileName != null)
                 throw new NotSupportedException("FileName is not supported in Vertex AI. Use GcsUri or BigqueryUri instead.");
 
@@ -180,8 +209,12 @@ public class BatchClient : BaseClient
     {
         if (string.IsNullOrWhiteSpace(model))
             throw new ArgumentException("Model name cannot be null or empty.", nameof(model));
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(source);
+#else
         if (source == null)
             throw new ArgumentNullException(nameof(source));
+#endif
 
         // Embeddings batch is only supported in Google AI (MLDev)
         if (Platform is not GoogleAIPlatformAdapter)
@@ -352,7 +385,7 @@ public class BatchClient : BaseClient
              url = $"{Platform.GetBaseUrl()}/{name}:cancel";
         else
         {
-            url =  $"{Platform.GetBaseUrl(true, false, false,false)}/{name}";
+            url = $"{Platform.GetBaseUrl(true, false, false, false)}/{name}:cancel";
         }
 
         // Cancel doesn't return any meaningful response, just need to send the POST request

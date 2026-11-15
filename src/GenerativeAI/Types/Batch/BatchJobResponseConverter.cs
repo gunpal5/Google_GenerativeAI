@@ -61,11 +61,19 @@ public class BatchJobResponseConverter : JsonConverter<BatchJobResponse>
         {
             var metadataType = response.Metadata?.Type ?? string.Empty;
 
+#if NET6_0_OR_GREATER
+            if (metadataType.Contains("EmbedContent", StringComparison.OrdinalIgnoreCase))
+#else
             if (metadataType.IndexOf("EmbedContent", StringComparison.OrdinalIgnoreCase) >= 0)
+#endif
             {
                 response.EmbeddingOutput = JsonSerializer.Deserialize(responseElement, TypesSerializerContext.Default.BatchEmbeddingOutput);
             }
+#if NET6_0_OR_GREATER
+            else if (metadataType.Contains("GenerateContent", StringComparison.OrdinalIgnoreCase))
+#else
             else if (metadataType.IndexOf("GenerateContent", StringComparison.OrdinalIgnoreCase) >= 0)
+#endif
             {
                 response.ContentOutput = JsonSerializer.Deserialize(responseElement, TypesSerializerContext.Default.BatchContentOutput);
             }
@@ -79,6 +87,13 @@ public class BatchJobResponseConverter : JsonConverter<BatchJobResponse>
     /// </summary>
     public override void Write(Utf8JsonWriter writer, BatchJobResponse value, JsonSerializerOptions options)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(writer);
+        ArgumentNullException.ThrowIfNull(value);
+#else
+        if (writer == null) throw new ArgumentNullException(nameof(writer));
+        if (value == null) throw new ArgumentNullException(nameof(value));
+#endif
         writer.WriteStartObject();
 
         if (!string.IsNullOrEmpty(value.Name))

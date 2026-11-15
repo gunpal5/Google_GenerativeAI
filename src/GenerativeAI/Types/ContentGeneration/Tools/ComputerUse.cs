@@ -22,4 +22,16 @@ public class ComputerUse
     /// </summary>
     [JsonPropertyName("excludedPredefinedFunctions")]
     public List<string>? ExcludedPredefinedFunctions { get; set; }
+
+    /// <summary>
+    /// Whether to detect prompt injection in content seen while operating the computer.
+    /// </summary>
+    [JsonPropertyName("enablePromptInjectionDetection")]
+    public bool? EnablePromptInjectionDetection { get; set; }
+
+    /// <summary>
+    /// Safety policies to disable, so the model does not ask for confirmation for those actions.
+    /// </summary>
+    [JsonPropertyName("disabledSafetyPolicies")]
+    public List<SafetyPolicy>? DisabledSafetyPolicies { get; set; }
 }

@@ -290,8 +290,10 @@ public class Gemini3_ThinkingConfig_Tests
     public void GoogleAIModels_ShouldContain_Gemini3Models()
     {
         // Assert
-        GoogleAIModels.Gemini3ProPreview.ShouldBe("models/gemini-3-pro-preview");
-        GoogleAIModels.Gemini3FlashPreview.ShouldBe("models/gemini-3-flash-preview");
+        GoogleAIModels.Gemini3FlashPreview.ShouldBe("gemini-3-flash-preview");
+        GoogleAIModels.Gemini31ProPreview.ShouldBe("models/gemini-3.1-pro-preview");
+        GoogleAIModels.Gemini38Flash.ShouldBe("models/gemini-3.8-flash");
+        GoogleAIModels.DefaultGeminiModel.ShouldBe(GoogleAIModels.Gemini38Flash);
     }
 
     #endregion

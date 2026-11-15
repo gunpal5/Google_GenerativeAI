@@ -13,7 +13,7 @@ public class GenerateVideosRequest
     /// <summary>
     /// Required. The identifier of the model to use for video generation.
     /// For a list of available models, refer to the Google AI documentation.
-    /// Example: "models/gemini-1.5-flash" or a specific Veo model ID if available.
+    /// Example: a Veo model ID such as "veo-3.1-generate-001" (Vertex AI).
     /// </summary>
     [JsonPropertyName("model")]
     public string? Model { get; set; } // Marked as optional in Python but likely required by API

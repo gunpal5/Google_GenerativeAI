@@ -93,6 +93,48 @@ public class Part
     /// </summary>
     [JsonPropertyName("thoughtSignature")]
     public string? ThoughtSignature { get; set; }
+
+    /// <summary>
+    /// Media resolution for this part. Overrides GenerationConfig.MediaResolution for this part.
+    /// </summary>
+    [JsonPropertyName("mediaResolution")]
+    public PartMediaResolution? MediaResolution { get; set; }
+
+    /// <summary>
+    /// How the model processes this part's media.
+    /// </summary>
+    [JsonPropertyName("mediaProcessing")]
+    public MediaProcessing? MediaProcessing { get; set; }
+
+    /// <summary>
+    /// A call to a server-side tool made by the model. Only returned when ToolConfig.IncludeServerSideToolInvocations is true.
+    /// </summary>
+    [JsonPropertyName("toolCall")]
+    public ToolCall? ToolCall { get; set; }
+
+    /// <summary>
+    /// The result of a server-side tool call. Only returned when ToolConfig.IncludeServerSideToolInvocations is true.
+    /// </summary>
+    [JsonPropertyName("toolResponse")]
+    public ToolResponse? ToolResponse { get; set; }
+
+    /// <summary>
+    /// Speaker and style metadata for generated speech.
+    /// </summary>
+    [JsonPropertyName("speechMetadata")]
+    public SpeechMetadata? SpeechMetadata { get; set; }
+
+    /// <summary>
+    /// Custom metadata attached to the part (Gemini API only).
+    /// </summary>
+    [JsonPropertyName("partMetadata")]
+    public System.Text.Json.Nodes.JsonObject? PartMetadata { get; set; }
+
+    /// <summary>
+    /// Transcript of the audio in this part.
+    /// </summary>
+    [JsonPropertyName("audioTranscription")]
+    public Transcription? AudioTranscription { get; set; }
 }
 
 /// <summary>

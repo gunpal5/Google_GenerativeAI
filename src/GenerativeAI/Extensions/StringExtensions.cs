@@ -89,7 +89,11 @@ public static class StringExtensions
                 if (corpusName.Contains("ragCorpora"))
 #endif
                 {
+#if NET11_0_OR_GREATER
+                    return $"ragCorpora/{corpusName.Substring(corpusName.LastIndexOf('/', StringComparison.Ordinal) + 1)}";
+#else
                     return $"ragCorpora/{corpusName.Substring(corpusName.LastIndexOf('/') + 1)}";
+#endif
                 }
 
                 throw new ArgumentException($"Invalid corpus name. {corpusName}");
@@ -253,7 +257,11 @@ public static class StringExtensions
             }
             else
             {
+#if NET11_0_OR_GREATER
+                var opId = operationId.Substring(operationId.LastIndexOf('/', StringComparison.Ordinal) + 1);
+#else
                 var opId = operationId.Substring(operationId.LastIndexOf('/') + 1);
+#endif
                 return $"operations/{opId}";
             }
         }

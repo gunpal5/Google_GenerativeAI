@@ -34,7 +34,7 @@ namespace GenerativeAI.Tools.Mcp;
 ///
 /// using var mcpTool = await McpTool.CreateAsync(transport);
 ///
-/// var model = new GenerativeModel(apiKey, "gemini-2.0-flash-exp");
+/// var model = new GenerativeModel(apiKey, GoogleAIModels.Gemini38Flash);
 /// model.AddFunctionTool(mcpTool);
 ///
 /// var result = await model.GenerateContentAsync("Your query here");
@@ -191,7 +191,7 @@ public class McpTool : GoogleFunctionTool, IDisposable, IAsyncDisposable
         }
     }
 
-    private FunctionDeclaration ConvertMcpToolToFunctionDeclaration(McpClientTool mcpTool)
+    private static FunctionDeclaration ConvertMcpToolToFunctionDeclaration(McpClientTool mcpTool)
     {
         var declaration = new FunctionDeclaration
         {
@@ -239,8 +239,12 @@ public class McpTool : GoogleFunctionTool, IDisposable, IAsyncDisposable
         FunctionCall functionCall,
         CancellationToken cancellationToken = default)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(functionCall);
+#else
         if (functionCall == null)
             throw new ArgumentNullException(nameof(functionCall));
+#endif
 
         if (!IsContainFunction(functionCall.Name))
         {
@@ -285,7 +289,7 @@ public class McpTool : GoogleFunctionTool, IDisposable, IAsyncDisposable
             };
 
             // MCP returns content as a list of content items
-            if (result.Content != null && result.Content.Any())
+            if (result.Content != null && result.Content.Count > 0)
             {
                 var contentArray = new JsonArray();
                 foreach (var content in result.Content)
@@ -435,6 +439,10 @@ public class McpTool : GoogleFunctionTool, IDisposable, IAsyncDisposable
         GC.SuppressFinalize(this);
     }
 
+    /// <summary>
+    /// Releases resources used by the tool.
+    /// </summary>
+    /// <param name="disposing">true when called from <see cref="Dispose()"/>; false when called from <see cref="DisposeAsync"/>.</param>
     protected virtual void Dispose(bool disposing)
     {
         if (_disposed)
@@ -451,10 +459,12 @@ public class McpTool : GoogleFunctionTool, IDisposable, IAsyncDisposable
                 {
                     _client.DisposeAsync().AsTask().GetAwaiter().GetResult();
                 }
+#pragma warning disable CA1031 // Dispose must not throw; cleanup is best effort
                 catch
                 {
                     // Best effort cleanup
                 }
+#pragma warning restore CA1031
             }
 
             if (_transport != null)
@@ -470,16 +480,22 @@ public class McpTool : GoogleFunctionTool, IDisposable, IAsyncDisposable
                         disposable.Dispose();
                     }
                 }
+#pragma warning disable CA1031 // Dispose must not throw; cleanup is best effort
                 catch
                 {
                     // Best effort cleanup
                 }
+#pragma warning restore CA1031
             }
         }
 
         _disposed = true;
     }
 
+    /// <summary>
+    /// Asynchronously releases the MCP client and transport.
+    /// </summary>
+    /// <returns>A task that completes when cleanup has finished.</returns>
     protected virtual async ValueTask DisposeAsyncCore()
     {
         if (_client != null)

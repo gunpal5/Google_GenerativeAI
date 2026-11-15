@@ -11,7 +11,7 @@ if (string.IsNullOrEmpty(apiKey))
 restart:
 
 //Initialize Model
-var model = new GenerativeModel(apiKey, GoogleAIModels.Gemini2Flash);
+var model = new GenerativeModel(apiKey, "models/gemini-3.8-flash");
 
 //Initialize Javascript Code Executor
 var javascripExecutor = new JavascriptCodeExecutor();

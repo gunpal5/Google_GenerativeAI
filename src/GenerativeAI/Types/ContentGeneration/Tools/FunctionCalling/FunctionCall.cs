@@ -45,4 +45,15 @@ public class FunctionCall
     /// </summary>
     public FunctionCall() : this("") { }
 
+    /// <summary>
+    /// Streamed pieces of the arguments, sent when FunctionCallingConfig.StreamFunctionCallArguments is true. Vertex AI only.
+    /// </summary>
+    [JsonPropertyName("partialArgs")]
+    public List<PartialArg>? PartialArgs { get; set; }
+
+    /// <summary>
+    /// True if more chunks of this function call will follow in the stream. Vertex AI only.
+    /// </summary>
+    [JsonPropertyName("willContinue")]
+    public bool? WillContinue { get; set; }
 }

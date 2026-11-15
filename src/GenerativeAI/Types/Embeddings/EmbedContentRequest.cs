@@ -42,4 +42,41 @@ public class EmbedContentRequest
     /// </summary>
     [JsonPropertyName("outputDimensionality")]
     public int? OutputDimensionality { get; set; }
+
+    /// <summary>
+    /// Whether to truncate input that exceeds the model's maximum length instead of failing. Vertex AI only.
+    /// </summary>
+    /// <remarks>Not part of the Gemini API request body; the SDK places it where Vertex AI expects it.</remarks>
+    [JsonIgnore]
+    public bool? AutoTruncate { get; set; }
+
+    /// <summary>
+    /// Whether to run OCR on documents (for example PDFs) before embedding.
+    /// Vertex AI only, Gemini embedding models.
+    /// </summary>
+    /// <remarks>Not part of the Gemini API request body; the SDK places it where Vertex AI expects it.</remarks>
+    [JsonIgnore]
+    public bool? DocumentOcr { get; set; }
+
+    /// <summary>
+    /// Whether to extract and embed the audio track of video input.
+    /// Vertex AI only, Gemini embedding models.
+    /// </summary>
+    /// <remarks>Not part of the Gemini API request body; the SDK places it where Vertex AI expects it.</remarks>
+    [JsonIgnore]
+    public bool? AudioTrackExtraction { get; set; }
+
+    /// <summary>
+    /// MIME type of the content.
+    /// Vertex AI only, text embedding models that use the predict method (for example text-embedding-005).
+    /// </summary>
+    /// <remarks>Not part of the Gemini API request body; the SDK places it where Vertex AI expects it.</remarks>
+    [JsonIgnore]
+    public string? MimeType { get; set; }
+
+    /// <summary>
+    /// True if any option that only Vertex AI supports is set.
+    /// </summary>
+    internal bool HasVertexOnlyOptions =>
+        AutoTruncate != null || DocumentOcr != null || AudioTrackExtraction != null || MimeType != null;
 }

@@ -34,7 +34,7 @@ public class Gemini3_FunctionCalling_Tests : TestBase
         // Arrange - Use a model that supports thinking
         var model = new GenerativeModel(
             platform: GetTestGooglePlatform(),
-            model: GoogleAIModels.Gemini25Flash,
+            model: GoogleAIModels.Gemini38Flash,
             config: new GenerationConfig
             {
                 ThinkingConfig = new ThinkingConfig
@@ -86,7 +86,7 @@ public class Gemini3_FunctionCalling_Tests : TestBase
         // Arrange - Disable auto function calling to inspect the raw response
         var model = new GenerativeModel(
             platform: GetTestGooglePlatform(),
-            model: GoogleAIModels.Gemini25Flash,
+            model: GoogleAIModels.Gemini38Flash,
             config: new GenerationConfig
             {
                 ThinkingConfig = new ThinkingConfig
@@ -158,7 +158,7 @@ public class Gemini3_FunctionCalling_Tests : TestBase
         // Arrange
         var model = new GenerativeModel(
             platform: GetTestGooglePlatform(),
-            model: GoogleAIModels.Gemini25Flash,
+            model: GoogleAIModels.Gemini38Flash,
             config: new GenerationConfig
             {
                 ThinkingConfig = new ThinkingConfig
@@ -206,7 +206,7 @@ public class Gemini3_FunctionCalling_Tests : TestBase
         // Step 2: Execute the function and send response back
         Console.WriteLine($"\n=== Step 2: Executing function {functionCallPart.FunctionCall.Name} ===");
 
-        var functionResponse = await tool.CallAsync(functionCallPart.FunctionCall);
+        var functionResponse = await tool.CallAsync(functionCallPart.FunctionCall, cancellationToken: TestContext.Current.CancellationToken);
         Console.WriteLine($"Function result: {functionResponse?.Response?.ToJsonString()}");
 
         // Step 3: Build the next request with the model's response (including thought signature) and function result
@@ -222,7 +222,7 @@ public class Gemini3_FunctionCalling_Tests : TestBase
         // Add function response
         var functionResponseContent = new Content
         {
-            Role = Roles.Function,
+            Role = Roles.User,
             Parts = new List<Part>
             {
                 new Part { FunctionResponse = functionResponse }
@@ -276,7 +276,7 @@ public class Gemini3_FunctionCalling_Tests : TestBase
 
         var model = new GenerativeModel(
             platform: GetTestGooglePlatform(),
-            model: GoogleAIModels.Gemini25Flash,
+            model: GoogleAIModels.Gemini38Flash,
             config: new GenerationConfig
             {
                 ThinkingConfig = new ThinkingConfig
@@ -316,7 +316,7 @@ public class Gemini3_FunctionCalling_Tests : TestBase
 
         var model = new GenerativeModel(
             platform: GetTestGooglePlatform(),
-            model: GoogleAIModels.Gemini25Flash,
+            model: GoogleAIModels.Gemini38Flash,
             config: new GenerationConfig
             {
                 ThinkingConfig = new ThinkingConfig
@@ -359,7 +359,7 @@ public class Gemini3_FunctionCalling_Tests : TestBase
         var chatSession = new ChatSession(
             history: null,
             platform: GetTestGooglePlatform(),
-            model: GoogleAIModels.Gemini25Flash,
+            model: GoogleAIModels.Gemini38Flash,
             config: new GenerationConfig
             {
                 ThinkingConfig = new ThinkingConfig
@@ -436,7 +436,7 @@ public class Gemini3_FunctionCalling_Tests : TestBase
         // Arrange - Use Gemini 3 model (ThinkingLevel is only supported by Gemini 3+)
         var model = new GenerativeModel(
             platform: GetTestGooglePlatform(),
-            model: GoogleAIModels.Gemini3FlashPreview,
+            model: GoogleAIModels.Gemini38Flash,
             config: new GenerationConfig
             {
                 ThinkingConfig = new ThinkingConfig

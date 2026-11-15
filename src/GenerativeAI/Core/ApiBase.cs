@@ -101,7 +101,11 @@ namespace GenerativeAI.Core
                 // Deserialize and return the response
                 if (SerializerOptions == null)
                     throw new InvalidOperationException("SerializerOptions is not initialized");
+#if NET11_0_OR_GREATER
+                var typeInfo = SerializerOptions.GetTypeInfo<T>();
+#else
                 var typeInfo = SerializerOptions.GetTypeInfo(typeof(T));
+#endif
                 if (typeInfo == null)
                     throw new InvalidOperationException($"Could not get type info for {typeof(T)}");
                 return JsonSerializer.Deserialize(content, (JsonTypeInfo<T>) typeInfo) ??
@@ -146,7 +150,11 @@ namespace GenerativeAI.Core
                 // Serialize payload and create request
                 if (SerializerOptions == null)
                     throw new InvalidOperationException("SerializerOptions is not initialized");
+#if NET11_0_OR_GREATER
+                var typeInfo = SerializerOptions.GetTypeInfo<TRequest>();
+#else
                 var typeInfo = SerializerOptions.GetTypeInfo(typeof(TRequest));
+#endif
                 if (typeInfo == null)
                     throw new InvalidOperationException($"Could not get type info for {typeof(TRequest)}");
                 var jsonPayload = JsonSerializer.Serialize(payload, typeInfo);
@@ -200,34 +208,87 @@ namespace GenerativeAI.Core
             {
                 _logger?.LogNonSuccessStatusCode((int)response.StatusCode, url.MaskApiKey());
 
+                string? content = null;
+#pragma warning disable CA1031 // An unreadable body must still produce a meaningful exception below
                 try
                 {
-                    var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-
-                    var errorDocument = JsonDocument.Parse(content);
-                    var error = errorDocument.RootElement.GetProperty("error");
-                    if (error.ValueKind == JsonValueKind.Null)
-                        throw new InvalidOperationException("API error response is missing required fields.");
-                    error.TryGetProperty("status", out var status);
-                    error.TryGetProperty("message", out var message);
-                    error.TryGetProperty("code", out var code);
-                    if (message.ValueKind == JsonValueKind.Null)
-                    {
-                        throw new InvalidOperationException("API error response is missing required fields.");
-                    }
-
-                    throw new ApiException(code.GetInt32(), message.GetString() ?? "Unknown error", status.GetString() ?? "Unknown status");
+                    content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                catch (ApiException)
+                catch (Exception ex)
                 {
-                    throw;
+                    _logger?.LogError(ex, "Failed to read error response body from {Url}", url.MaskApiKey());
                 }
-                catch
-                {
-                    throw new HttpRequestException(
-                        $"Request to {url.MaskApiKey()} failed with status code {response.StatusCode}");
-                }
+#pragma warning restore CA1031
+
+                var apiException = TryParseApiError(content, (int)response.StatusCode);
+                if (apiException != null)
+                    throw apiException;
+
+                throw new HttpRequestException(
+                    $"Request to {url.MaskApiKey()} failed with status code {(int)response.StatusCode} ({response.StatusCode})" +
+                    (string.IsNullOrWhiteSpace(content) ? "." : $": {Truncate(content!, 500)}"));
             }
+        }
+
+        /// <summary>
+        /// Parses a Google API error body into an <see cref="ApiException"/>. Google returns either
+        /// <c>{"error": {...}}</c> or, from some endpoints, an array <c>[{"error": {...}}]</c>.
+        /// </summary>
+        /// <param name="content">The response body.</param>
+        /// <param name="httpStatusCode">The HTTP status code, used when the body has no numeric code.</param>
+        /// <returns>The exception, or null if the body is not a recognizable Google error.</returns>
+        internal static ApiException? TryParseApiError(string? content, int httpStatusCode)
+        {
+            if (string.IsNullOrWhiteSpace(content))
+                return null;
+
+            try
+            {
+                using var document = JsonDocument.Parse(content!);
+                var root = document.RootElement;
+                if (root.ValueKind == JsonValueKind.Array)
+                {
+                    if (root.GetArrayLength() == 0)
+                        return null;
+                    root = root[0];
+                }
+
+                if (root.ValueKind != JsonValueKind.Object ||
+                    !root.TryGetProperty("error", out var error) ||
+                    error.ValueKind != JsonValueKind.Object)
+                    return null;
+
+                var message = error.TryGetProperty("message", out var m) && m.ValueKind == JsonValueKind.String
+                    ? m.GetString()
+                    : null;
+                if (string.IsNullOrEmpty(message))
+                    return null;
+
+                var code = error.TryGetProperty("code", out var c) && c.ValueKind == JsonValueKind.Number &&
+                           c.TryGetInt32(out var parsedCode)
+                    ? parsedCode
+                    : httpStatusCode;
+                var status = error.TryGetProperty("status", out var s) && s.ValueKind == JsonValueKind.String
+                    ? s.GetString()
+                    : null;
+
+                return new ApiException(code, message!, status ?? "Unknown status");
+            }
+            catch (JsonException)
+            {
+                return null;
+            }
+        }
+
+        private static string Truncate(string value, int maxLength)
+        {
+            if (value.Length <= maxLength)
+                return value;
+#if NET6_0_OR_GREATER
+            return string.Concat(value.AsSpan(0, maxLength), "...");
+#else
+            return value.Substring(0, maxLength) + "...";
+#endif
         }
 
         /// <summary>
@@ -258,7 +319,11 @@ namespace GenerativeAI.Core
         {
             if (SerializerOptions == null)
                 throw new InvalidOperationException("SerializerOptions is not initialized");
+#if NET11_0_OR_GREATER
+            var typeInfo = SerializerOptions.GetTypeInfo<T>();
+#else
             var typeInfo = SerializerOptions.GetTypeInfo(typeof(T));
+#endif
             if (typeInfo == null)
                 throw new InvalidOperationException($"Could not get type info for {typeof(T)}");
             return (T?) JsonSerializer.Deserialize(json, typeInfo);
@@ -371,12 +436,8 @@ namespace GenerativeAI.Core
                     .SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken)
                     .ConfigureAwait(false);
 
-                if (!response.IsSuccessStatusCode)
-                {
-                    _logger?.LogNonSuccessStatusCode((int)response.StatusCode, url.MaskApiKey());
-                    throw new HttpRequestException(
-                        $"File upload to {url.MaskApiKey()} failed with status code {response.StatusCode}");
-                }
+                // Throws ApiException with Google's error details (or HttpRequestException) on failure.
+                await CheckAndHandleErrors(response, url).ConfigureAwait(false);
 
 #if NET5_0_OR_GREATER
                 var responseContent = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
@@ -418,7 +479,11 @@ namespace GenerativeAI.Core
             using var ms = new MemoryStream();
             if (SerializerOptions == null)
                 throw new InvalidOperationException("SerializerOptions is not initialized");
+#if NET11_0_OR_GREATER
+            var typeInfo = SerializerOptions.GetTypeInfo<TRequest>();
+#else
             var typeInfo = SerializerOptions.GetTypeInfo(typeof(TRequest));
+#endif
             if (typeInfo == null)
                 throw new InvalidOperationException($"Could not get type info for {typeof(TRequest)}");
             await JsonSerializer.SerializeAsync(ms, payload, typeInfo, cancellationToken).ConfigureAwait(false);
@@ -437,8 +502,8 @@ namespace GenerativeAI.Core
             using var response = await HttpClient
                 .SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
 
-            // Ensure success (or handle the status code if needed)
-            response.EnsureSuccessStatusCode();
+            // Throws ApiException with Google's error details (or HttpRequestException) on failure.
+            await CheckAndHandleErrors(response, url).ConfigureAwait(false);
 
             // Read and deserialize the response stream asynchronously
             if (response.Content != null)
@@ -452,7 +517,11 @@ namespace GenerativeAI.Core
                 
                 if (SerializerOptions == null)
                     throw new InvalidOperationException("SerializerOptions is not initialized");
+#if NET11_0_OR_GREATER
+                var responseTypeInfo = SerializerOptions.GetTypeInfo<TResponse>();
+#else
                 var responseTypeInfo = SerializerOptions.GetTypeInfo(typeof(TResponse));
+#endif
                 if (responseTypeInfo == null)
                     throw new InvalidOperationException($"Could not get type info for {typeof(TResponse)}");
                 

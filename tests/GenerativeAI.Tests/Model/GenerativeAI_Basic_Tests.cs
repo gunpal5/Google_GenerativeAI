@@ -16,7 +16,7 @@ namespace GenerativeAI.Tests.Model
         ordererType: typeof(PriorityOrderer))]
     public class GenerativeModel_Tests : TestBase
     {
-        private const string DefaultTestModelName = "gemini-2.5-flash";
+        private const string DefaultTestModelName = GoogleAIModels.Gemini38Flash;
 
         public GenerativeModel_Tests(ITestOutputHelper helper) : base(testOutputHelper: helper)
         {

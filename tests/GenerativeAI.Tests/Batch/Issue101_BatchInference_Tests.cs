@@ -561,7 +561,7 @@ public class Issue101_BatchInference_Tests : TestBase
 
         // Create the batch job
         var batchJob = await client.CreateAsync(
-            GoogleAIModels.Gemini3FlashPreview,
+            GoogleAIModels.Gemini38Flash,
             source,
             cancellationToken: TestContext.Current.CancellationToken);
 
@@ -682,7 +682,7 @@ public class Issue101_BatchInference_Tests : TestBase
 
         // Act
         var batchJob = await client.CreateAsync(
-            VertexAIModels.Gemini.Gemini25Flash,
+            VertexAIModels.Gemini.Gemini38Flash,
             source,
             destination,
             cancellationToken: TestContext.Current.CancellationToken);
@@ -737,7 +737,7 @@ public class Issue101_BatchInference_Tests : TestBase
 
         // Create the batch job
         var batchJob = await client.CreateAsync(
-            VertexAIModels.Gemini.Gemini25Flash,
+            VertexAIModels.Gemini.Gemini38Flash,
             source,
             destination,
             cancellationToken: TestContext.Current.CancellationToken);

@@ -21,7 +21,7 @@ public sealed class GenerativeAIEmbeddingGenerator : IEmbeddingGenerator<string,
     /// Initializes a new instance of the <see cref="GenerativeAIEmbeddingGenerator"/> class.
     /// </summary>
     /// <param name="apiKey">The API key for authenticating with Google AI.</param>
-    /// <param name="modelName">The name of the embedding model to use. Defaults to "text-embedding-004".</param>
+    /// <param name="modelName">The name of the embedding model to use. Defaults to "models/gemini-embedding-001".</param>
     public GenerativeAIEmbeddingGenerator(string apiKey, string modelName = GoogleAIModels.GeminiEmbedding)
     {
         Model = new EmbeddingModel(apiKey, modelName);
@@ -32,7 +32,7 @@ public sealed class GenerativeAIEmbeddingGenerator : IEmbeddingGenerator<string,
     /// Initializes a new instance of the <see cref="GenerativeAIEmbeddingGenerator"/> class.
     /// </summary>
     /// <param name="adapter">The platform adapter to use for API calls.</param>
-    /// <param name="modelName">The name of the embedding model to use. Defaults to "text-embedding-004".</param>
+    /// <param name="modelName">The name of the embedding model to use. Defaults to "models/gemini-embedding-001".</param>
     public GenerativeAIEmbeddingGenerator(IPlatformAdapter adapter, string modelName = GoogleAIModels.GeminiEmbedding)
     {
         Model = new EmbeddingModel(adapter, modelName);

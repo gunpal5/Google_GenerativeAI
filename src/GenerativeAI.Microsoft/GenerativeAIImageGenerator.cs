@@ -28,7 +28,7 @@ public sealed class GenerativeAIImageGenerator : IImageGenerator
     /// <summary>
     /// Creates a new instance using an API key and optional model name.
     /// </summary>
-    public GenerativeAIImageGenerator(string apiKey, string modelName = GoogleAIModels.Gemini25FlashImagePreview)
+    public GenerativeAIImageGenerator(string apiKey, string modelName = GoogleAIModels.GeminiNanoBanana21)
     {
         model = new GenerativeModel(apiKey, modelName);
     }
@@ -36,7 +36,7 @@ public sealed class GenerativeAIImageGenerator : IImageGenerator
     /// <summary>
     /// Creates a new instance using a platform adapter and optional model name.
     /// </summary>
-    public GenerativeAIImageGenerator(IPlatformAdapter adapter, string modelName = GoogleAIModels.Gemini25FlashImagePreview)
+    public GenerativeAIImageGenerator(IPlatformAdapter adapter, string modelName = GoogleAIModels.GeminiNanoBanana21)
     {
         model = new GenerativeModel(adapter, modelName);
     }

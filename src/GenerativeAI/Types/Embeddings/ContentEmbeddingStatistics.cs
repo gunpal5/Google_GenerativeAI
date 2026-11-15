@@ -18,4 +18,10 @@ public class ContentEmbeddingStatistics
     /// </summary>
     [JsonPropertyName("tokenCount")]
     public double? TokenCount { get; set; }
+
+    /// <summary>
+    /// Token counts per input modality.
+    /// </summary>
+    [JsonPropertyName("tokensDetails")]
+    public List<ModalityTokenCount>? TokensDetails { get; set; }
 }

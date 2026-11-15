@@ -166,7 +166,11 @@ public static class GoogleSchemaHelper
         };
 
         newJsonOptions.Converters.Clear();
+#if NET11_0_OR_GREATER
+        var typeInfo = newJsonOptions.GetTypeInfo<T>();
+#else
         var typeInfo = newJsonOptions.GetTypeInfo(typeof(T));
+#endif
 
         var schema = GetSchema(typeInfo,null);
         return JsonSerializer.Deserialize(schema.ToJsonString(),TypesSerializerContext.Default.Schema)?? ConvertToCompatibleSchemaSubset(schema);

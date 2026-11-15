@@ -13,6 +13,11 @@ jobs:
     name: Creating Github Release
     uses: gunpal5/workflows/.github/workflows/dotnet_build-test-publish.yml@main       
     with:
+      dotnet-version: |
+        8.0.x
+        9.0.x
+        10.0.x
+        11.0.x
       generate-build-number: false
       create-release: true
       publish: true

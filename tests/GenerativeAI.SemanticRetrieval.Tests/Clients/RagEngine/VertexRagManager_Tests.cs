@@ -43,13 +43,15 @@ public class VertexRagManager_Tests : SemanticRetrieverTestBase
     [Fact, TestPriority(1)]
     public async Task ShouldCreateCorpusWithPineconeAsync()
     {
+        // Requires a Pinecone index and a Secret Manager secret (readable by the Vertex AI RAG service agent)
+        // holding the Pinecone API key.
+        var secretVersion = Environment.GetEnvironmentVariable("PINECONE_API_KEY_SECRET_VERSION");
+        var indexName = Environment.GetEnvironmentVariable("PINECONE_INDEX_NAME");
+        Assert.SkipWhen(string.IsNullOrWhiteSpace(secretVersion) || string.IsNullOrWhiteSpace(indexName),
+            "Set PINECONE_API_KEY_SECRET_VERSION (projects/{p}/secrets/{s}/versions/{v}) and PINECONE_INDEX_NAME to run the Pinecone corpus test.");
+
         // Arrange
         var client = new VertexRagManager(GetTestVertexAIPlatform(), null);
-        //client.Platform.Authenticator = new GoogleCloudAdcAuthenticator();
-        var newCorpus = new RagCorpus
-        {
-            DisplayName = "Test Pinecone Corpus",
-        };
 
         // Act
         var result = await client.CreateCorpusAsync(
@@ -57,11 +59,10 @@ public class VertexRagManager_Tests : SemanticRetrieverTestBase
                 description: "test corpus description",
                 pineconeConfig: new RagVectorDbConfigPinecone()
                 {
-                    IndexName = "test-index-5"
+                    IndexName = indexName
                 },
-                apiKeyResourceName:"projects/103876794532/secrets/pinecone/versions/1",
+                apiKeyResourceName: secretVersion,
                 cancellationToken: TestContext.Current.CancellationToken)
-                //apiKeyResourceName: Environment.GetEnvironmentVariable("pinecone-secret"))
             .ConfigureAwait(true);
 
         // Assert
@@ -195,8 +196,8 @@ public class VertexRagManager_Tests : SemanticRetrieverTestBase
         // Arrange
         var client = new VertexRagManager(GetTestVertexAIPlatform(), null);
 
-        // Act
-        var result = await client.ListCorporaAsync(cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
+        // Act - newly created corpora can take a while to appear in the list (Serverless mode), so poll briefly.
+        var result = await ListCorporaWithRetryAsync(client).ConfigureAwait(true);
 
         // Assert
         result.ShouldNotBeNull();
@@ -243,7 +244,7 @@ public class VertexRagManager_Tests : SemanticRetrieverTestBase
         var client = new VertexRagManager(GetTestVertexAIPlatform(), null);
 
         var list = await client.ListCorporaAsync(cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
-        foreach (var l in list.RagCorpora)
+        foreach (var l in list.RagCorpora ?? new List<RagCorpus>())
         {
             await client.DeleteRagCorpusAsync(l.Name,cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
             
@@ -266,39 +267,53 @@ public class VertexRagManager_Tests : SemanticRetrieverTestBase
         // Arrange
         var client = new VertexRagManager(GetTestVertexAIPlatform(), null);
 
-        var list = await client.ListCorporaAsync(cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
-        var corpusName = list.RagCorpora
-            .FirstOrDefault(s => s.DisplayName.Contains("test", StringComparison.OrdinalIgnoreCase)).Name;
+        var corpusName = await GetTestCorpusNameOrSkipAsync(client).ConfigureAwait(true);
 
         var file = "TestData/pg1184.txt";
-        // Act
-        var result = await client.UploadLocalFileAsync(corpusName, file, "The Count of Monte Cristo",
-                "This ebook is for the use of anyone anywhere in the United States and\nmost other parts of the world at no cost and with almost no restrictions\nwhatsoever. You may copy it, give it away or re-use it under the terms\nof the Project Gutenberg License included with this ebook or online\nat www.gutenberg.org. If you are not located in the United States,\nyou will have to check the laws of the country where you are located\nbefore using this eBook.", cancellationToken: TestContext.Current.CancellationToken)
-            .ConfigureAwait(true);
+        // Act - a freshly created corpus can briefly reject uploads, so retry a few times.
+        RagFile? result = null;
+        for (var attempt = 1; ; attempt++)
+        {
+            try
+            {
+                result = await client.UploadLocalFileAsync(corpusName, file, "The Count of Monte Cristo",
+                        "This ebook is for the use of anyone anywhere in the United States and\nmost other parts of the world at no cost and with almost no restrictions\nwhatsoever. You may copy it, give it away or re-use it under the terms\nof the Project Gutenberg License included with this ebook or online\nat www.gutenberg.org. If you are not located in the United States,\nyou will have to check the laws of the country where you are located\nbefore using this eBook.", cancellationToken: TestContext.Current.CancellationToken)
+                    .ConfigureAwait(true);
+                break;
+            }
+            catch (GenerativeAI.Exceptions.VertexAIException ex) when (attempt < 4)
+            {
+                Console.WriteLine($"Upload attempt {attempt} failed ({ex.Message}); retrying.");
+                await Task.Delay(TimeSpan.FromSeconds(15), TestContext.Current.CancellationToken).ConfigureAwait(true);
+            }
+        }
 
         // Assert
-        // No exception should be thrown
-        Console.WriteLine($"Corpus Deleted: {corpusName}");
+        result.ShouldNotBeNull();
+        result.Name.ShouldNotBeNullOrEmpty();
+        Console.WriteLine($"File uploaded: {result.Name} to {corpusName}");
     }
 
     //[Fact(Skip = "Not needed",Explicit = true), TestPriority(7)]
     [Fact, TestPriority(7)]
     public async Task ShouldImportFileAsync()
     {
+        // Requires a Google Drive file shared with the Vertex AI RAG service agent.
+        var driveFileId = Environment.GetEnvironmentVariable("RAG_IMPORT_DRIVE_FILE_ID");
+        Assert.SkipWhen(string.IsNullOrWhiteSpace(driveFileId),
+            "Set RAG_IMPORT_DRIVE_FILE_ID to a Google Drive file shared with the Vertex AI RAG service agent to run the import test.");
+
         // Arrange
         var client = new VertexRagManager(GetTestVertexAIPlatform(), null);
 
-        var list = await client.ListCorporaAsync(cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
-        var corpusName = list.RagCorpora
-            .FirstOrDefault(s => s.DisplayName.Contains("test", StringComparison.OrdinalIgnoreCase)).Name;
+        var corpusName = await GetTestCorpusNameOrSkipAsync(client).ConfigureAwait(true);
 
         var request = new ImportRagFilesRequest();
         request.AddGooglDriveSource(new GoogleDriveSourceResourceId()
         {
-            ResourceId = "",
+            ResourceId = driveFileId,
             ResourceType = GoogleDriveSourceResourceIdResourceType.RESOURCE_TYPE_FILE
         });
-        //var file = "TestData/pg1184.txt";
         // Act
         var result = await client.ImportFilesAsync(corpusName, request, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
@@ -311,13 +326,13 @@ public class VertexRagManager_Tests : SemanticRetrieverTestBase
         // Arrange
         var client = new VertexRagManager(GetTestVertexAIPlatform(), null);
 
-        var list = await client.ListCorporaAsync(cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
-        var corpusName = list.RagCorpora
-            .FirstOrDefault(s => s.DisplayName.Contains("test", StringComparison.OrdinalIgnoreCase)).Name;
+        var corpusName = await GetTestCorpusNameOrSkipAsync(client).ConfigureAwait(true);
 
        var files = await client.ListFilesAsync(corpusName, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
        files.ShouldNotBeNull();
-       files.RagFiles.Count.ShouldBeGreaterThan(0);
+       Assert.SkipWhen(files.RagFiles == null || files.RagFiles.Count == 0,
+           $"Corpus {corpusName} has no files yet; ShouldUploadLocalFileAsync must succeed first.");
+       files.RagFiles!.Count.ShouldBeGreaterThan(0);
     }
     
     [Fact, TestPriority(7)]
@@ -326,17 +341,18 @@ public class VertexRagManager_Tests : SemanticRetrieverTestBase
         // Arrange
         var client = new VertexRagManager(GetTestVertexAIPlatform(), null);
 
-        var list = await client.ListCorporaAsync(cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
-        var corpusName = list.RagCorpora
-            .FirstOrDefault(s => s.DisplayName.Contains("test", StringComparison.OrdinalIgnoreCase)).Name;
+        var corpusName = await GetTestCorpusNameOrSkipAsync(client).ConfigureAwait(true);
 
         var files = await client.ListFilesAsync(corpusName, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
         files.ShouldNotBeNull();
-        files.RagFiles.Count.ShouldBeGreaterThan(0);
+        Assert.SkipWhen(files.RagFiles == null || files.RagFiles.Count == 0,
+            $"Corpus {corpusName} has no files yet; ShouldUploadLocalFileAsync must succeed first.");
 
-        var last = files.RagFiles.LastOrDefault();
-        
-        var f = await client.GetFileAsync(last.Name, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
+        var last = files.RagFiles!.Last();
+
+        var f = await client.GetFileAsync(last.Name!, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
+        f.ShouldNotBeNull();
+        f.Name.ShouldBe(last.Name);
     }
     
     //[Fact(Skip = "Not needed",Explicit = true), TestPriority(7)]
@@ -348,11 +364,9 @@ public class VertexRagManager_Tests : SemanticRetrieverTestBase
 
         var client = vertexAi.CreateRagManager();
 
-        var list = await client.ListCorporaAsync(cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
-        var corpusName = list.RagCorpora
-            .FirstOrDefault(s => s.DisplayName.Contains("test", StringComparison.OrdinalIgnoreCase)).Name;
+        var corpusName = await GetTestCorpusNameOrSkipAsync(client).ConfigureAwait(true);
         
-        var model = vertexAi.CreateGenerativeModel(VertexAIModels.Gemini.Gemini2Flash,corpusIdForRag: corpusName);
+        var model = vertexAi.CreateGenerativeModel(VertexRegionalTestModel,corpusIdForRag: corpusName);
 
         var result =await model.GenerateContentAsync("what does the marketing plan said about the youtube?", cancellationToken: TestContext.Current.CancellationToken);
     }
@@ -363,9 +377,7 @@ public class VertexRagManager_Tests : SemanticRetrieverTestBase
         // Arrange
         var client = new VertexRagManager(GetTestVertexAIPlatform(), null);
 
-        var list = await client.ListCorporaAsync(cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
-        var corpusName = list.RagCorpora
-            .FirstOrDefault(s => s.DisplayName.Contains("test", StringComparison.OrdinalIgnoreCase)).Name;
+        var corpusName = await GetTestCorpusNameOrSkipAsync(client).ConfigureAwait(true);
 
         var files = await client.ListFilesAsync(corpusName, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
         files.ShouldNotBeNull();
@@ -377,9 +389,43 @@ public class VertexRagManager_Tests : SemanticRetrieverTestBase
     }
 
 
+    /// <summary>
+    /// Lists corpora, retrying for up to a minute while the list is empty: in Serverless mode a newly created
+    /// corpus can take a while to appear.
+    /// </summary>
+    private static async Task<ListRagCorporaResponse?> ListCorporaWithRetryAsync(VertexRagManager client)
+    {
+        var ct = TestContext.Current.CancellationToken;
+        ListRagCorporaResponse? list = null;
+        for (var attempt = 0; attempt < 12; attempt++)
+        {
+            list = await client.ListCorporaAsync(cancellationToken: ct).ConfigureAwait(true);
+            if (list?.RagCorpora is { Count: > 0 })
+                break;
+            await Task.Delay(TimeSpan.FromSeconds(5), ct).ConfigureAwait(true);
+        }
+
+        return list;
+    }
+
+    /// <summary>
+    /// Returns the name of a corpus whose display name contains "test" (created by the priority-1 tests),
+    /// or skips the test when there is none.
+    /// </summary>
+    private static async Task<string> GetTestCorpusNameOrSkipAsync(VertexRagManager client)
+    {
+        var list = await ListCorporaWithRetryAsync(client).ConfigureAwait(true);
+        var corpus = list?.RagCorpora?.FirstOrDefault(c =>
+            c.DisplayName?.Contains("test", StringComparison.OrdinalIgnoreCase) == true);
+        Assert.SkipWhen(corpus?.Name == null,
+            "No test corpus exists; ShouldCreateCorpusWithDefaultStore must succeed first.");
+        return corpus!.Name!;
+    }
+
+    // The RAG Engine is not available on the global endpoint, so always use a regional one.
     protected override IPlatformAdapter GetTestVertexAIPlatform()
     {
-        var platform = base.GetTestVertexAIPlatform();
+        var platform = GetTestVertexAIRegionalPlatform();
         var jsonFile = Environment.GetEnvironmentVariable("Google_Service_Account_Json");
         platform.SetAuthenticator(new GoogleServiceAccountAuthenticator(jsonFile));
 

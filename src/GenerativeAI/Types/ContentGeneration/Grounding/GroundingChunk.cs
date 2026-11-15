@@ -25,4 +25,10 @@ public class GroundingChunk
     /// </summary>
     [JsonPropertyName("web")]
     public Web? Web { get; set; }
+
+    /// <summary>
+    /// Grounding chunk from an image search result.
+    /// </summary>
+    [JsonPropertyName("image")]
+    public GroundingChunkImage? Image { get; set; }
 }

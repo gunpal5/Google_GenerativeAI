@@ -38,7 +38,7 @@ public class WeatherServiceTests
     {
         var service = new ComplexDataTypeService();
         var tool = new GenericFunctionTool(service.AsTools(), service.AsCalls());
-        var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.Gemini2Flash);
+        var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.Gemini38Flash);
         model.AddFunctionTool(tool);
         var result = await model.GenerateContentAsync("how's Deepak Siwach is doing in Senior Grade for enrollment year 01-01-2024 to 01-01-2025", cancellationToken: CancellationToken.None);
         Console.WriteLine(result.Text());

@@ -203,7 +203,7 @@ public static class MicrosoftExtensions
             {
                 FileData = new FileData
                 {
-                    FileUri = rfc.RemoteFile.Uri,
+                    FileUri = rfc.RemoteFile.Uri ?? throw new InvalidOperationException("RemoteFileContent.RemoteFile has no URI; upload the file before referencing it."),
                     MimeType = rfc.MimeType ?? rfc.RemoteFile.MimeType,
                 }
             },
@@ -469,6 +469,7 @@ public static class MicrosoftExtensions
     /// Transforms a <see cref="GenerateContentResponse"/> into a <see cref="ChatResponse"/>.
     /// </summary>
     /// <param name="response">The <see cref="GenerateContentResponse"/> instance to convert.</param>
+    /// <param name="options">Optional chat options used while converting the response (for example, tool schemas).</param>
     /// <returns>A <see cref="ChatResponse"/> object if the transformation is successful; otherwise, null.</returns>
     public static ChatResponse? ToChatResponse(this GenerateContentResponse? response, ChatOptions? options = null)
     {
@@ -492,6 +493,7 @@ public static class MicrosoftExtensions
     /// Converts a <see cref="GenerateContentResponse"/> instance into a <see cref="ChatResponseUpdate"/> object.
     /// </summary>
     /// <param name="response">The input <see cref="GenerateContentResponse"/> to transform into a chat response update.</param>
+    /// <param name="options">Optional chat options used while converting the response (for example, tool schemas).</param>
     /// <returns>A new <see cref="ChatResponseUpdate"/> object reflecting the data in the provided <see cref="GenerateContentResponse"/>.</returns>
     public static ChatResponseUpdate ToChatResponseUpdate(this GenerateContentResponse? response, ChatOptions? options = null)
     {
@@ -571,6 +573,7 @@ public static class MicrosoftExtensions
     /// Converts a <see cref="GenerateContentResponse"/> instance into a <see cref="ChatMessage"/>.
     /// </summary>
     /// <param name="response">The <see cref="GenerateContentResponse"/> to be transformed into a <see cref="ChatMessage"/>.</param>
+    /// <param name="options">Optional chat options used while converting the response (for example, tool schemas).</param>
     /// <returns>A <see cref="ChatMessage"/> representing the data contained in the <see cref="GenerateContentResponse"/>.</returns>
     private static ChatMessage ToChatMessage(GenerateContentResponse response, ChatOptions? options = null)
     {
@@ -587,12 +590,17 @@ public static class MicrosoftExtensions
     /// Converts a <see cref="GenerateContentResponse"/> instance into a <see cref="ChatMessage"/>.
     /// </summary>
     /// <param name="contents">The <see cref="Content"/> to be transformed into a <see cref="ChatMessage"/>.</param>
+    /// <param name="options">Optional chat options used while converting the response (for example, tool schemas).</param>
     /// <returns>A <see cref="ChatMessage"/> representing the data contained in the <see cref="GenerateContentResponse"/>.</returns>
     public static IEnumerable<ChatMessage> ToChatMessages(this List<Content>? contents, ChatOptions? options = null)
     {
         return (from content in contents
             let aiContents = content.Parts.ToAiContents(options)
-            select new ChatMessage(ToChatRole(content.Role), aiContents)).ToList();
+            // Function results are sent with the "user" role (newer models reject "function"); map them back to Tool.
+            let role = content.Parts.Count > 0 && content.Parts.All(p => p.FunctionResponse != null)
+                ? ChatRole.Tool
+                : ToChatRole(content.Role)
+            select new ChatMessage(role, aiContents)).ToList();
     }
 
     /// <summary>
@@ -729,7 +737,7 @@ public static class MicrosoftExtensions
                 if (function?.JsonSchema != null)
                 {
                     var schemaNode = JsonSerializer.SerializeToNode(function.JsonSchema);
-                    var pathParts = parameterName.Split('.');
+                    var pathParts = parameterName!.Split('.');
                     var currentSchema = schemaNode?["properties"];
                     
                     foreach (var part in pathParts)
@@ -862,7 +870,7 @@ public static class MicrosoftExtensions
                 if (function?.JsonSchema != null)
                 {
                     var schemaNode = JsonSerializer.SerializeToNode(function.JsonSchema);
-                    var pathParts = parameterName.Split('.');
+                    var pathParts = parameterName!.Split('.');
                     var currentSchema = schemaNode?["properties"];
                     
                     foreach (var part in pathParts)
@@ -930,7 +938,7 @@ public static class MicrosoftExtensions
                     else if (!string.IsNullOrEmpty(parameterName))
                     {
                         // For complex objects in arrays, look up the property in the item schema
-                        var pathParts = parameterName.Split('.');
+                        var pathParts = parameterName!.Split('.');
                         var currentSchema = arrayItemSchema["properties"];
                         
                         foreach (var part in pathParts)
@@ -974,7 +982,7 @@ public static class MicrosoftExtensions
                 else
                 {
                     // Split the parameter name to handle nested properties like "appointment.date" or "events.schedule.startDate"
-                    var pathParts = parameterName.Split('.');
+                    var pathParts = parameterName!.Split('.');
                     var currentSchema = schemaNode?["properties"];
                     
                     foreach (var part in pathParts)
@@ -1063,7 +1071,11 @@ public static class MicrosoftExtensions
                                         return JsonValue.Create(dateTime.ToString("HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture));
                                     }
                                     // If already in correct format, return as-is
-                                    else if (stringValue.Contains(':'))
+#if NET6_0_OR_GREATER
+                                    else if (stringValue.Contains(':', StringComparison.Ordinal))
+#else
+                                    else if (stringValue.IndexOf(':') >= 0)
+#endif
                                     {
                                         return JsonValue.Create(stringValue);
                                     }
@@ -1245,9 +1257,9 @@ public static class MicrosoftExtensions
     /// Creates a GenerativeAIEmbeddingGenerator from an API key and optional model name.
     /// </summary>
     /// <param name="apiKey">The API key for authenticating with Google AI.</param>
-    /// <param name="modelName">The name of the embedding model to use. Defaults to "text-embedding-004".</param>
+    /// <param name="modelName">The name of the embedding model to use. Defaults to "models/gemini-embedding-001".</param>
     /// <returns>A new instance of GenerativeAIEmbeddingGenerator.</returns>
-    public static GenerativeAIEmbeddingGenerator AsEmbeddingGenerator(this string apiKey, string modelName = "text-embedding-004")
+    public static GenerativeAIEmbeddingGenerator AsEmbeddingGenerator(this string apiKey, string modelName = GoogleAIModels.GeminiEmbedding)
     {
         return new GenerativeAIEmbeddingGenerator(apiKey, modelName);
     }
@@ -1256,9 +1268,9 @@ public static class MicrosoftExtensions
     /// Creates a GenerativeAIEmbeddingGenerator from a platform adapter and optional model name.
     /// </summary>
     /// <param name="adapter">The platform adapter to use for API calls.</param>
-    /// <param name="modelName">The name of the embedding model to use. Defaults to "text-embedding-004".</param>
+    /// <param name="modelName">The name of the embedding model to use. Defaults to "models/gemini-embedding-001".</param>
     /// <returns>A new instance of GenerativeAIEmbeddingGenerator.</returns>
-    public static GenerativeAIEmbeddingGenerator AsEmbeddingGenerator(this IPlatformAdapter adapter, string modelName = "text-embedding-004")
+    public static GenerativeAIEmbeddingGenerator AsEmbeddingGenerator(this IPlatformAdapter adapter, string modelName = GoogleAIModels.GeminiEmbedding)
     {
         return new GenerativeAIEmbeddingGenerator(adapter, modelName);
     }
@@ -1271,6 +1283,11 @@ public static class MicrosoftExtensions
     /// <returns>The modified embedding generation options.</returns>
     public static EmbeddingGenerationOptions WithTaskType(this EmbeddingGenerationOptions options, TaskType taskType)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(options);
+#else
+        if (options == null) throw new ArgumentNullException(nameof(options));
+#endif
         options.AdditionalProperties ??= new AdditionalPropertiesDictionary();
         options.AdditionalProperties["TaskType"] = taskType;
         return options;

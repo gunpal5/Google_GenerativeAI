@@ -1,4 +1,6 @@
-﻿namespace GenerativeAI.Types;
+﻿using System.Text.Json.Serialization;
+
+namespace GenerativeAI.Types;
 
 /// <summary>
 /// GoogleSearch tool type. Tool to support Google Search in Model. Powered by Google.
@@ -6,5 +8,27 @@
 /// <seealso href="https://ai.google.dev/api/caching#GoogleSearch">See Official API Documentation</seealso> 
 public class GoogleSearchTool // Renamed to GoogleSearchTool
 {
-    // No properties as of the provided documentation
+    /// <summary>
+    /// The kinds of search to use (web and/or image). Defaults to web search.
+    /// </summary>
+    [JsonPropertyName("searchTypes")]
+    public SearchTypes? SearchTypes { get; set; }
+
+    /// <summary>
+    /// Restricts results to pages published within this time range.
+    /// </summary>
+    [JsonPropertyName("timeRangeFilter")]
+    public Interval? TimeRangeFilter { get; set; }
+
+    /// <summary>
+    /// Domains to exclude from search results. Vertex AI only.
+    /// </summary>
+    [JsonPropertyName("excludeDomains")]
+    public List<string>? ExcludeDomains { get; set; }
+
+    /// <summary>
+    /// Blocks search results from sites at or above this phishing confidence. Vertex AI only.
+    /// </summary>
+    [JsonPropertyName("blockingConfidence")]
+    public PhishBlockThreshold? BlockingConfidence { get; set; }
 }

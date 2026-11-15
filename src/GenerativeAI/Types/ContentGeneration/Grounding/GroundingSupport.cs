@@ -28,4 +28,10 @@ public class GroundingSupport
     /// </summary>
     [JsonPropertyName("segment")]
     public Segment? Segment { get; set; }
+
+    /// <summary>
+    /// Indices of the response parts this support applies to.
+    /// </summary>
+    [JsonPropertyName("renderedParts")]
+    public List<int>? RenderedParts { get; set; }
 }

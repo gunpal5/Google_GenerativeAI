@@ -20,7 +20,8 @@ namespace GenerativeAI.IntegrationTests;
 /// </summary>
 public class VertexAI_CorpusWithFunctionCalling_Tests : TestBase
 {
-    private const string DefaultTestModelName = VertexAIModels.Gemini.Gemini25Flash;
+    // The RAG Engine is regional-only, so these tests run against a regional endpoint and a model served there.
+    private const string DefaultTestModelName = VertexRegionalTestModel;
     private const string TestCorpusDisplayName = "Issue102-Test-Corpus";
     private const string TestDocumentDisplayName = "Issue102-Test-Document";
 
@@ -36,7 +37,7 @@ public class VertexAI_CorpusWithFunctionCalling_Tests : TestBase
     /// </summary>
     private VertexAI CreateVertexAI()
     {
-        var platform = GetTestVertexAIPlatform();
+        var platform = GetTestVertexAIRegionalPlatform();
         return new VertexAI(platform);
     }
 

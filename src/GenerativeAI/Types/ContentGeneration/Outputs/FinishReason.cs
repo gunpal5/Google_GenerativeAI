@@ -117,4 +117,29 @@ public enum FinishReason
     /// Documented in generativelanguagepb (SDK/proto contract).
     /// </summary>
     TOO_MANY_TOOL_CALLS = 18,
+
+    /// <summary>
+    /// The request is missing a required thought signature from a previous turn.
+    /// </summary>
+    MISSING_THOUGHT_SIGNATURE,
+
+    /// <summary>
+    /// The model produced a malformed response.
+    /// </summary>
+    MALFORMED_RESPONSE,
+
+    /// <summary>
+    /// Generation stopped because the request was escalated.
+    /// </summary>
+    ESCALATION,
+
+    /// <summary>
+    /// Generation stopped because the feature is limited or disabled for this project.
+    /// </summary>
+    PUP_LIMITED_DISABLED,
+
+    /// <summary>
+    /// The response is incomplete; pass the candidate's continuation token in a follow-up request to resume it.
+    /// </summary>
+    CONTINUATION
 }

@@ -1,0 +1,19 @@
+<Project>
+  <!--
+    Native AOT / self-contained projects pull runtime packs (Microsoft.NETCore.App.Runtime.*,
+    Microsoft.AspNetCore.App.Runtime.*) and Microsoft.DotNet.ILCompiler at the "latest patch"
+    version known to whichever SDK performs the restore. Older SDKs resolve vulnerable 9.0.x
+    packs, so pin the net9.0 packs to a patched release regardless of SDK.
+    Only the entries matching the project's TargetFramework are used by the SDK.
+  -->
+  <PropertyGroup>
+    <PatchedNet9RuntimeVersion>9.0.23</PatchedNet9RuntimeVersion>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(PublishAot)' == 'true' and '$(TargetFramework)' == 'net9.0'">
+    <KnownFrameworkReference Update="Microsoft.NETCore.App;Microsoft.AspNetCore.App"
+                             LatestRuntimeFrameworkVersion="$(PatchedNet9RuntimeVersion)" />
+    <KnownILCompilerPack Update="Microsoft.DotNet.ILCompiler"
+                         ILCompilerPackVersion="$(PatchedNet9RuntimeVersion)" />
+  </ItemGroup>
+</Project>

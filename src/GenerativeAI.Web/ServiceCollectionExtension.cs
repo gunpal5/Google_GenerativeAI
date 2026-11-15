@@ -92,7 +92,14 @@ public static class ServiceCollectionExtension
                 o.ProjectId = options.ProjectId;
                 o.Region = options.Region;
                 o.Model = options.Model;
-                o.IsVertex = options.IsVertex;
+                // An explicit Gemini API key without a project means the Gemini API, even when GOOGLE_PROJECT_ID
+                // is set in the environment (which otherwise switches the default to Vertex AI).
+                o.IsVertex = options.IsVertex ??
+                             (string.IsNullOrEmpty(options.ProjectId) &&
+                              !string.IsNullOrEmpty(options.Credentials?.ApiKey) &&
+                              options.ExpressMode != true
+                                 ? false
+                                 : null);
                 o.ExpressMode = options.ExpressMode;
                 o.ApiVersion = options.ApiVersion;
                 o.Authenticator = options.Authenticator;

@@ -231,7 +231,7 @@ public class QuickTool_Tests : TestBase
 
         var tool = quickFt;
             
-        var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.Gemini2Flash);
+        var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.Gemini38Flash);
             
         model.AddFunctionTool(tool);
 
@@ -269,7 +269,7 @@ public class QuickTool_Tests : TestBase
     //     var gradesTool = new QuickTool(getGradesFunc, "GetGrades", "Get student grades");
     //     var attendanceTool = new QuickTool(getAttendanceFunc, "GetAttendance", "Get student attendance");
     //
-    //     var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.Gemini2Flash);
+    //     var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.Gemini38Flash);
     //
     //     model.AddFunctionTool(studentTool);
     //     model.AddFunctionTool(gradesTool);
@@ -314,7 +314,7 @@ public class QuickTool_Tests : TestBase
     //     var gradesTool = new QuickTool(getGradesFunc, "GetGrades", "Get student grades");
     //     var attendanceTool = new QuickTool(getAttendanceFunc, "GetAttendance", "Get student attendance");
     //
-    //     var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.Gemini2Flash);
+    //     var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.Gemini38Flash);
     //
     //     model.AddFunctionTool(studentTool);
     //     model.AddFunctionTool(gradesTool);
@@ -341,7 +341,7 @@ public class QuickTool_Tests : TestBase
     //     Assert.SkipUnless(IsGoogleApiKeySet, GoogleTestSkipMessage);
     //
     //     // Recreate the exact scenario from issue #55
-    //     var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.Gemini2Flash);
+    //     var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.Gemini38Flash);
     //
     //     model.AddFunctionTool(new QuickTool(
     //         () =>
@@ -384,7 +384,7 @@ public class QuickTool_Tests : TestBase
     //     Assert.SkipUnless(IsGoogleApiKeySet, GoogleTestSkipMessage);
     //
     //     // Test the workaround using QuickTools collection
-    //     var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.Gemini2Flash);
+    //     var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.Gemini38Flash);
     //
     //     var getProcessesTool = new QuickTool(
     //         () =>
@@ -428,7 +428,7 @@ public class QuickTool_Tests : TestBase
     {
         Assert.SkipUnless(IsGoogleApiKeySet, GoogleTestSkipMessage);
         // Unit test to verify that multiple AddFunctionTool calls actually add tools to the list
-        var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.Gemini2Flash);
+        var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.Gemini38Flash);
 
         var tool1 = new QuickTool(
             () => "result1",
@@ -462,7 +462,7 @@ public class QuickTool_Tests : TestBase
     {
         Assert.SkipUnless(IsGoogleApiKeySet, GoogleTestSkipMessage);
 
-        var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.Gemini2Flash);
+        var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.Gemini38Flash);
 
         model.AddFunctionTool(new QuickTool(
             () => "Process list result",
@@ -660,7 +660,7 @@ public class QuickTool_Tests : TestBase
         var quickTool = new QuickTool(dynamicFunc, "get_temperature",
             "Get temperature for a location. Parameters: location (string), unit (optional string: celsius or fahrenheit)");
 
-        var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.Gemini2Flash);
+        var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.Gemini38Flash);
         model.AddFunctionTool(quickTool);
 
         // Act

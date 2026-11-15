@@ -58,4 +58,10 @@ public class GroundingMetadata
     /// </summary>
     [JsonPropertyName("sourceFlaggingUris")]
     public List<GroundingMetadataSourceFlaggingUri>? SourceFlaggingUris { get; set; }
+
+    /// <summary>
+    /// Image search queries used for grounding.
+    /// </summary>
+    [JsonPropertyName("imageSearchQueries")]
+    public List<string>? ImageSearchQueries { get; set; }
 }

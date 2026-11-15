@@ -79,7 +79,7 @@ class Program
         Console.WriteLine();
 
         // Create a Gemini model and add the MCP tool
-        var model = new GenerativeModel(apiKey, "gemini-2.0-flash-exp");
+        var model = new GenerativeModel(apiKey, GoogleAIModels.Gemini38Flash);
         model.AddFunctionTool(mcpTool);
 
         // Enable automatic function calling
@@ -124,7 +124,7 @@ class Program
             Console.WriteLine();
 
             // Use with Gemini model
-            var model = new GenerativeModel(apiKey, "gemini-2.0-flash-exp");
+            var model = new GenerativeModel(apiKey, GoogleAIModels.Gemini38Flash);
             model.AddFunctionTool(mcpTool);
             model.FunctionCallingBehaviour.AutoCallFunction = true;
 
@@ -174,7 +174,7 @@ class Program
         Console.WriteLine();
 
         // Create a model and add all MCP tools
-        var model = new GenerativeModel(apiKey, "gemini-2.0-flash-exp");
+        var model = new GenerativeModel(apiKey, GoogleAIModels.Gemini38Flash);
         foreach (var tool in mcpTools)
         {
             model.AddFunctionTool(tool);
@@ -260,7 +260,7 @@ class Program
         Console.WriteLine();
 
         // Use the tool with a model
-        var model = new GenerativeModel(apiKey, "gemini-2.0-flash-exp");
+        var model = new GenerativeModel(apiKey, GoogleAIModels.Gemini38Flash);
         model.AddFunctionTool(mcpTool);
         model.FunctionCallingBehaviour.AutoCallFunction = true;
 
@@ -299,7 +299,7 @@ class Program
         Console.WriteLine("up to 3 times using the transport factory.\n");
 
         // Use with Gemini
-        var model = new GenerativeModel(apiKey, "gemini-2.0-flash-exp");
+        var model = new GenerativeModel(apiKey, GoogleAIModels.Gemini38Flash);
         model.AddFunctionTool(mcpTool);
         model.FunctionCallingBehaviour.AutoCallFunction = true;
 

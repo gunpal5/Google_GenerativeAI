@@ -74,6 +74,11 @@ public class GenerationConfig
     /// of the <see cref="Model">Model</see> returned from the <c>getModel</c> function.
     /// Values can range from.
     /// </summary>
+    /// <remarks>
+    /// Deprecated by Google for Gemini 3.6 and later models (July 2026), along with <see cref="TopP"/> and
+    /// <see cref="TopK"/>; leave unset for those models. See
+    /// <see href="https://ai.google.dev/gemini-api/docs/whats-new-gemini-3.6#sampling-parameter-deprecation"/>.
+    /// </remarks>
     [JsonPropertyName("temperature")]
     public double? Temperature { get; set; }
 
@@ -89,6 +94,7 @@ public class GenerationConfig
     /// An empty <see cref="TopK"/> attribute indicates that the model doesn't apply top-k sampling
     /// and doesn't allow setting <see cref="TopK"/> on requests.
     /// </summary>
+    /// <remarks>Deprecated by Google for Gemini 3.6 and later models; see <see cref="Temperature"/>.</remarks>
     [JsonPropertyName("topP")]
     public double? TopP { get; set; }
 
@@ -102,6 +108,7 @@ public class GenerationConfig
     /// An empty <see cref="TopK"/> attribute indicates that the model doesn't apply top-k sampling
     /// and doesn't allow setting <see cref="TopK"/> on requests.
     /// </summary>
+    /// <remarks>Deprecated by Google for Gemini 3.6 and later models; see <see cref="Temperature"/>.</remarks>
     [JsonPropertyName("topK")]
     public int? TopK { get; set; }
 
@@ -215,6 +222,24 @@ public class GenerationConfig
     /// </summary>
     [JsonPropertyName("imageConfig")]
     public ImageConfig? ImageConfig { get; set; }
+
+    /// <summary>
+    /// Speech recognition settings for audio input, such as language codes, custom vocabulary and diarization.
+    /// </summary>
+    [JsonPropertyName("audioTranscriptionConfig")]
+    public AudioTranscriptionConfig? AudioTranscriptionConfig { get; set; }
+
+    /// <summary>
+    /// Real-time speech translation settings (Live API).
+    /// </summary>
+    [JsonPropertyName("translationConfig")]
+    public TranslationConfig? TranslationConfig { get; set; }
+
+    /// <summary>
+    /// Output format per response modality. Vertex AI only.
+    /// </summary>
+    [JsonPropertyName("responseFormat")]
+    public List<ResponseFormat>? ResponseFormat { get; set; }
 }
 
 
@@ -263,7 +288,22 @@ public enum ThinkingLevel
     /// High thinking level - deeper reasoning with potentially slower responses.
     /// Recommended for complex tasks.
     /// </summary>
-    HIGH
+    HIGH,
+
+    /// <summary>
+    /// Minimal thinking - the fastest responses with the least reasoning.
+    /// </summary>
+    MINIMAL,
+
+    /// <summary>
+    /// Medium thinking level - balances speed and reasoning depth.
+    /// </summary>
+    MEDIUM,
+
+    /// <summary>
+    /// Extra-high thinking level - the deepest reasoning, for the hardest tasks.
+    /// </summary>
+    XHIGH
 }
 
 /// <summary>
@@ -396,6 +436,30 @@ public class ManualRoutingMode
       /// </remarks>
       [JsonPropertyName("imageOutputOptions")]
       public ImageOutputOptions? ImageOutputOptions { get; set; }
+
+      /// <summary>
+      /// Whether people may be generated, for example ALLOW_ADULT or DONT_ALLOW. Vertex AI only.
+      /// </summary>
+      [JsonPropertyName("personGeneration")]
+      public string? PersonGeneration { get; set; }
+
+      /// <summary>
+      /// Whether images of prominent people may be generated. Vertex AI only.
+      /// </summary>
+      [JsonPropertyName("prominentPeople")]
+      public ProminentPeople? ProminentPeople { get; set; }
+
+      /// <summary>
+      /// MIME type of the generated image, for example image/jpeg. Vertex AI only.
+      /// </summary>
+      [JsonPropertyName("outputMimeType")]
+      public string? OutputMimeType { get; set; }
+
+      /// <summary>
+      /// JPEG compression quality (0-100). Vertex AI only.
+      /// </summary>
+      [JsonPropertyName("outputCompressionQuality")]
+      public int? OutputCompressionQuality { get; set; }
   }
 
   /// <summary>

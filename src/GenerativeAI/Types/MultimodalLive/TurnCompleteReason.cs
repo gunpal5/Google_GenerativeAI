@@ -26,5 +26,125 @@ public enum TurnCompleteReason
     /// <summary>
     /// Needs more input from the user.
     /// </summary>
-    NEED_MORE_INPUT = 3
+    NEED_MORE_INPUT = 3,
+
+    /// <summary>
+    /// Input content is prohibited.
+    /// </summary>
+    PROHIBITED_INPUT_CONTENT = 4,
+
+    /// <summary>
+    /// Input image contains prohibited content.
+    /// </summary>
+    IMAGE_PROHIBITED_INPUT_CONTENT = 5,
+
+    /// <summary>
+    /// Input text contains prominent person reference.
+    /// </summary>
+    INPUT_TEXT_CONTAIN_PROMINENT_PERSON_PROHIBITED = 6,
+
+    /// <summary>
+    /// Input image contains celebrity.
+    /// </summary>
+    INPUT_IMAGE_CELEBRITY = 7,
+
+    /// <summary>
+    /// Input image contains photo realistic child.
+    /// </summary>
+    INPUT_IMAGE_PHOTO_REALISTIC_CHILD_PROHIBITED = 8,
+
+    /// <summary>
+    /// Input text contains NCII content.
+    /// </summary>
+    INPUT_TEXT_NCII_PROHIBITED = 9,
+
+    /// <summary>
+    /// Other input safety issue.
+    /// </summary>
+    INPUT_OTHER = 10,
+
+    /// <summary>
+    /// Input contains IP violation.
+    /// </summary>
+    INPUT_IP_PROHIBITED = 11,
+
+    /// <summary>
+    /// Input matched blocklist.
+    /// </summary>
+    BLOCKLIST = 12,
+
+    /// <summary>
+    /// Input is unsafe for image generation.
+    /// </summary>
+    UNSAFE_PROMPT_FOR_IMAGE_GENERATION = 13,
+
+    /// <summary>
+    /// Generated image failed safety check.
+    /// </summary>
+    GENERATED_IMAGE_SAFETY = 14,
+
+    /// <summary>
+    /// Generated content failed safety check.
+    /// </summary>
+    GENERATED_CONTENT_SAFETY = 15,
+
+    /// <summary>
+    /// Generated audio failed safety check.
+    /// </summary>
+    GENERATED_AUDIO_SAFETY = 16,
+
+    /// <summary>
+    /// Generated video failed safety check.
+    /// </summary>
+    GENERATED_VIDEO_SAFETY = 17,
+
+    /// <summary>
+    /// Generated content is prohibited.
+    /// </summary>
+    GENERATED_CONTENT_PROHIBITED = 18,
+
+    /// <summary>
+    /// Generated content matched blocklist.
+    /// </summary>
+    GENERATED_CONTENT_BLOCKLIST = 19,
+
+    /// <summary>
+    /// Generated image is prohibited.
+    /// </summary>
+    GENERATED_IMAGE_PROHIBITED = 20,
+
+    /// <summary>
+    /// Generated image contains celebrity.
+    /// </summary>
+    GENERATED_IMAGE_CELEBRITY = 21,
+
+    /// <summary>
+    /// Generated image contains prominent people detected by rewriter.
+    /// </summary>
+    GENERATED_IMAGE_PROMINENT_PEOPLE_DETECTED_BY_REWRITER = 22,
+
+    /// <summary>
+    /// Generated image contains identifiable people.
+    /// </summary>
+    GENERATED_IMAGE_IDENTIFIABLE_PEOPLE = 23,
+
+    /// <summary>
+    /// Generated image contains minors.
+    /// </summary>
+    GENERATED_IMAGE_MINORS = 24,
+
+    /// <summary>
+    /// Generated image contains IP violation.
+    /// </summary>
+    OUTPUT_IMAGE_IP_PROHIBITED = 25,
+
+    /// <summary>
+    /// Other generated content issue.
+    /// </summary>
+    GENERATED_OTHER = 26,
+
+    /// <summary>
+    /// Max regeneration attempts reached.
+    /// </summary>
+    MAX_REGENERATION_REACHED = 27
 }

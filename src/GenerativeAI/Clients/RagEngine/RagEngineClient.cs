@@ -35,6 +35,42 @@ public class RagCorpusClient : BaseClient
     }
 
     /// <summary>
+    /// Gets the RAG Engine configuration (for example Serverless or Spanner mode) for the platform's location.
+    /// </summary>
+    /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
+    /// <returns>The current <see cref="RagEngineConfig"/>.</returns>
+    /// <seealso href="https://cloud.google.com/vertex-ai/generative-ai/docs/rag-engine/switching-modes">See Official API Documentation</seealso>
+    public async Task<RagEngineConfig?> GetRagEngineConfigAsync(CancellationToken cancellationToken = default)
+    {
+        var url = $"{Platform.GetBaseUrl(appendPublisher: false)}/ragEngineConfig";
+        return await GetAsync<RagEngineConfig>(url, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Updates the RAG Engine configuration for the platform's location, for example to switch between
+    /// Serverless and Spanner mode.
+    /// </summary>
+    /// <param name="config">The new configuration. <see cref="RagEngineConfig.Name"/> may be left empty.</param>
+    /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
+    /// <returns>The long-running operation that applies the change.</returns>
+    /// <remarks>
+    /// Choosing <see cref="RagManagedDbSpanner.Unprovisioned"/> disables the RAG Engine and permanently deletes its data.
+    /// </remarks>
+    /// <seealso href="https://cloud.google.com/vertex-ai/generative-ai/docs/rag-engine/switching-modes">See Official API Documentation</seealso>
+    public async Task<GoogleLongRunningOperation?> UpdateRagEngineConfigAsync(RagEngineConfig config,
+        CancellationToken cancellationToken = default)
+    {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(config);
+#else
+        if (config == null) throw new ArgumentNullException(nameof(config));
+#endif
+        var url = $"{Platform.GetBaseUrl(appendPublisher: false)}/ragEngineConfig";
+        return await SendAsync<RagEngineConfig, GoogleLongRunningOperation>(url, config, new HttpMethod("PATCH"),
+            cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
     /// Lists available <see cref="RagCorpus"/> resources.
     /// </summary>
     /// <param name="pageSize">The maximum number of <see cref="RagCorpus"/> resources to return.</param>

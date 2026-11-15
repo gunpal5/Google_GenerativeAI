@@ -44,6 +44,11 @@ public static class BatchJsonLGenerator
         IEnumerable<string> prompts,
         BatchOptions? options = null)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(prompts);
+#else
+        if (prompts == null) throw new ArgumentNullException(nameof(prompts));
+#endif
         var opts = options ?? new BatchOptions();
         var jsonOptions = GetJsonLOptions();
         var sb = new StringBuilder();
@@ -115,6 +120,11 @@ public static class BatchJsonLGenerator
         IEnumerable<BatchRequestItem> requests,
         BatchOptions? options = null)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(requests);
+#else
+        if (requests == null) throw new ArgumentNullException(nameof(requests));
+#endif
         var opts = options ?? new BatchOptions();
         var jsonOptions = GetJsonLOptions();
         var sb = new StringBuilder();
@@ -168,6 +178,11 @@ public static class BatchJsonLGenerator
     /// <returns>A string containing JSONL content with "request" wrapper format.</returns>
     public static string GenerateFromInlinedRequests(IEnumerable<InlinedRequest> requests)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(requests);
+#else
+        if (requests == null) throw new ArgumentNullException(nameof(requests));
+#endif
         var jsonOptions = GetJsonLOptions();
         var sb = new StringBuilder();
 
@@ -221,6 +236,11 @@ public static class BatchJsonLGenerator
     /// </example>
     public static string GenerateEmbeddingJsonL(IEnumerable<string> texts)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(texts);
+#else
+        if (texts == null) throw new ArgumentNullException(nameof(texts));
+#endif
         var jsonOptions = GetJsonLOptions();
         var sb = new StringBuilder();
 
@@ -254,6 +274,11 @@ public static class BatchJsonLGenerator
     /// <returns>A string containing JSONL content.</returns>
     public static string GenerateJsonL<T>(IEnumerable<T> items) where T : class
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(items);
+#else
+        if (items == null) throw new ArgumentNullException(nameof(items));
+#endif
         var jsonOptions = GetJsonLOptions();
         var sb = new StringBuilder();
 
@@ -317,6 +342,11 @@ public static class BatchJsonLGenerator
         Content? systemInstruction = null,
         JsonSerializerOptions? options = null)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(prompts);
+#else
+        if (prompts == null) throw new ArgumentNullException(nameof(prompts));
+#endif
         return GenerateContentJsonL(prompts, new BatchOptions
         {
             ResponseSchemaType = responseSchemaType,
@@ -358,6 +388,11 @@ public static class BatchJsonLGenerator
         string model,
         JsonSerializerOptions? options = null)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(texts);
+#else
+        if (texts == null) throw new ArgumentNullException(nameof(texts));
+#endif
         return GenerateEmbeddingJsonL(texts);
     }
 

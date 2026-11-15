@@ -16,5 +16,15 @@ public enum Environment
     /// <summary>
     /// Operates in a web browser.
     /// </summary>
-    ENVIRONMENT_BROWSER = 1
+    ENVIRONMENT_BROWSER = 1,
+
+    /// <summary>
+    /// Operates in a mobile environment.
+    /// </summary>
+    ENVIRONMENT_MOBILE,
+
+    /// <summary>
+    /// Operates in a desktop environment.
+    /// </summary>
+    ENVIRONMENT_DESKTOP
 }

@@ -32,7 +32,7 @@
 	</PropertyGroup>
 
 	<ItemGroup Label="Source Link">
-		<PackageReference Include="DotNet.ReproducibleBuilds" Version="1.1.1">
+		<PackageReference Include="DotNet.ReproducibleBuilds" Version="2.0.5">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
@@ -45,6 +45,10 @@
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<AnalysisLevel>latest</AnalysisLevel>
 		<AnalysisMode>All</AnalysisMode>
+		<!-- CA2263 (prefer GetTypeInfo<T>()): whether the generic overload exists depends on the System.Text.Json
+		     version each target framework resolves (8.x on net6/net7, 10.x on net8/net9/net10, 11.x on net11,
+		     netstandard2.0 and net462), so one call site cannot satisfy it on every target. -->
+		<NoWarn>$(NoWarn);CA2263</NoWarn>
 	</PropertyGroup>
 	<PropertyGroup>
 		<!-- If you already have some warnings disabled, just add ";CS8618" -->

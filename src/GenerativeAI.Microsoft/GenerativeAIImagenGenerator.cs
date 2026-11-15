@@ -25,6 +25,10 @@ public sealed class GenerativeAIImagenGenerator : IImageGenerator
     /// </summary>
     public ImagenModel model { get; }
 
+    // Imagen models are shut down on the Gemini API; the default is kept for compatibility
+    // (Vertex AI callers pass their own model name). For Gemini API image generation use
+    // GenerativeAIImageGenerator with GoogleAIModels.GeminiNanoBanana21.
+#pragma warning disable CS0618
     /// <summary>
     /// Creates a new instance using an API key and optional model name.
     /// </summary>
@@ -37,6 +41,7 @@ public sealed class GenerativeAIImagenGenerator : IImageGenerator
     /// Creates a new instance using an existing <see cref="GenAI"/> factory and optional model name.
     /// </summary>
     public GenerativeAIImagenGenerator(GenAI genai, string modelName = GoogleAIModels.Imagen.Imagen3Generate002)
+#pragma warning restore CS0618
     {
 #if NET6_0_OR_GREATER
         ArgumentNullException.ThrowIfNull(genai);

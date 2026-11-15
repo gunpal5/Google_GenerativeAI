@@ -41,4 +41,10 @@ public class SupervisedTuningSpec
     /// </summary>
     [JsonPropertyName("exportLastCheckpointOnly")]
     public bool? ExportLastCheckpointOnly { get; set; }
+
+    /// <summary>
+    /// Optional. Evaluation config for the tuning job.
+    /// </summary>
+    [JsonPropertyName("evaluationConfig")]
+    public EvaluationConfig? EvaluationConfig { get; set; }
 }

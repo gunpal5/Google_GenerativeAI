@@ -64,7 +64,7 @@ public partial class MainWindow : FluentWindow, INotifyPropertyChanged
 
     // Only this model supports tools (function calling, Google Search) with Live API
    // private const string Model = "gemini-2.5-flash-native-audio-preview-12-2025";
-   private const string Model = "gemini-3.1-flash-live-preview";
+   private const string Model = GoogleAIModels.Gemini38Live;
     private CancellationTokenSource? _cancellationTokenSource;
     private bool _isRecording = false;
     private string _inputTranscript = string.Empty;

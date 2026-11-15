@@ -1,6 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>net8.0;netstandard2.0;net9.0;net462</TargetFrameworks>
+        <TargetFrameworks>net8.0;netstandard2.0;net9.0;net10.0;net462</TargetFrameworks>
+        <!-- net11.0 requires the .NET 11 SDK; skip it on older SDKs so local builds keep working -->
+        <TargetFrameworks Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(NETCoreSdkVersion)', '11.0'))">$(TargetFrameworks);net11.0</TargetFrameworks>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
@@ -18,9 +20,9 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <RepositoryUrl>https://github.com/gunpal5/Google_GenerativeAI</RepositoryUrl>
         <PackageTags>GenerativeAI,Google,Gemini,Tools,SDK,GoogleGemini.Net,Google,Gemini,Gemini.Net</PackageTags>
-        <Version>3.6.9</Version>
-        <AssemblyVersion>3.6.9</AssemblyVersion>
-        <FileVersion>3.6.9</FileVersion>
+        <Version>4.0.0</Version>
+        <AssemblyVersion>4.0.0</AssemblyVersion>
+        <FileVersion>4.0.0</FileVersion>
         <SignAssembly>True</SignAssembly>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
         <NoWarn>NU5104</NoWarn>
@@ -32,13 +34,22 @@
       <ProjectReference Include="..\GenerativeAI\GenerativeAI.csproj" />
     </ItemGroup>
     <ItemGroup>
-      <PackageReference Include="CSharpToJsonSchema" Version="3.10.2-dev.69" />
-      <PackageReference Include="ModelContextProtocol" Version="0.4.0-preview.3" />
-      <PackageReference Update="DotNet.ReproducibleBuilds" Version="1.2.39">
+      <PackageReference Include="CSharpToJsonSchema" Version="3.10.6" />
+      <PackageReference Include="ModelContextProtocol" Version="2.4.0" />
+      <PackageReference Update="DotNet.ReproducibleBuilds" Version="2.0.5">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
-      <PackageReference Include="ModelContextProtocol.Core" Version="0.4.0-preview.3" />
+      <PackageReference Include="ModelContextProtocol.Core" Version="2.4.0" />
+      <!-- Pin transitive dependency to a patched version (CVE: .NET Denial of Service, <= 9.0.13) -->
+    </ItemGroup>
+
+    <!-- Microsoft.Extensions 11.x supports net10.0+, netstandard2.0 and net462; net8.0/net9.0 use the 10.x line -->
+    <ItemGroup Condition="'$(TargetFramework)' == 'net8.0' or '$(TargetFramework)' == 'net9.0'">
+        <PackageReference Include="Microsoft.Bcl.Memory" Version="10.0.15" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' != 'net8.0' and '$(TargetFramework)' != 'net9.0'">
+        <PackageReference Include="Microsoft.Bcl.Memory" Version="11.0.0" />
     </ItemGroup>
 
 </Project>

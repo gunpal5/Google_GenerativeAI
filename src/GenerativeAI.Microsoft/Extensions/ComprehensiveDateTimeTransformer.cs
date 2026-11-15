@@ -23,7 +23,7 @@ namespace GenerativeAI.Microsoft.Extensions
             Array
         }
 
-        private class TransformationMetadata
+        private sealed class TransformationMetadata
         {
             public TransformationType Type { get; set; } = TransformationType.None;
             public JsonNode? Schema { get; set; }
@@ -411,7 +411,7 @@ namespace GenerativeAI.Microsoft.Extensions
             // First try parsing the time directly with formats
             if (DateTime.TryParseExact(stringValue, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
             {
-                System.Diagnostics.Debug.WriteLine($"[TimeOnly] Direct format parse '{stringValue}' -> '{dateTime.ToString("HH:mm:ss")}'");
+                System.Diagnostics.Debug.WriteLine($"[TimeOnly] Direct format parse '{stringValue}' -> '{dateTime.ToString("HH:mm:ss", CultureInfo.InvariantCulture)}'");
                 return JsonValue.Create(dateTime.ToString("HH:mm:ss", CultureInfo.InvariantCulture));
             }
 
@@ -420,7 +420,7 @@ namespace GenerativeAI.Microsoft.Extensions
                 formats.Select(f => "yyyy-MM-dd " + f).ToArray(), 
                 CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
             {
-                System.Diagnostics.Debug.WriteLine($"[TimeOnly] Prefixed format parse '{stringValue}' -> '{dateTime.ToString("HH:mm:ss")}'");
+                System.Diagnostics.Debug.WriteLine($"[TimeOnly] Prefixed format parse '{stringValue}' -> '{dateTime.ToString("HH:mm:ss", CultureInfo.InvariantCulture)}'");
                 return JsonValue.Create(dateTime.ToString("HH:mm:ss", CultureInfo.InvariantCulture));
             }
 

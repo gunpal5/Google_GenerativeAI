@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using ModelContextProtocol.Client;
 
@@ -33,7 +34,7 @@ public class McpToolOptions
     /// If false, failures will be returned as error responses.
     /// Default is false.
     /// </summary>
-    public bool ThrowOnToolCallFailure { get; set; } = false;
+    public bool ThrowOnToolCallFailure { get; set; }
 
     /// <summary>
     /// Gets or sets whether to include detailed error information in function responses.
@@ -70,7 +71,7 @@ public static class McpTransportFactory
             Command = command,
             Arguments = new List<string>(arguments),
             EnvironmentVariables = environmentVariables != null
-                ? new Dictionary<string, string>(environmentVariables)
+                ? environmentVariables.ToDictionary(kv => kv.Key, kv => (string?)kv.Value)
                 : null,
             WorkingDirectory = workingDirectory
         };
@@ -85,14 +86,29 @@ public static class McpTransportFactory
     /// <param name="httpClient">Optional custom HttpClient instance.</param>
     /// <param name="additionalHeaders">Optional additional HTTP headers.</param>
     /// <returns>A configured HttpClientTransport.</returns>
+#pragma warning disable CA1054 // Convenience overload; the Uri overload is the primary API
     public static IClientTransport CreateHttpTransport(
         string baseUrl,
+#pragma warning restore CA1054
+        HttpClient? httpClient = null,
+        IDictionary<string, string>? additionalHeaders = null)
+        => CreateHttpTransport(new Uri(baseUrl), httpClient, additionalHeaders);
+
+    /// <summary>
+    /// Creates an HTTP/SSE transport for connecting to a remote MCP server via HTTP.
+    /// </summary>
+    /// <param name="baseUrl">The base URL of the MCP server (e.g., "http://localhost:8080").</param>
+    /// <param name="httpClient">Optional custom HttpClient instance.</param>
+    /// <param name="additionalHeaders">Optional additional HTTP headers.</param>
+    /// <returns>A configured HttpClientTransport.</returns>
+    public static IClientTransport CreateHttpTransport(
+        Uri baseUrl,
         HttpClient? httpClient = null,
         IDictionary<string, string>? additionalHeaders = null)
     {
         var options = new HttpClientTransportOptions
         {
-            Endpoint = new Uri(baseUrl),
+            Endpoint = baseUrl,
             AdditionalHeaders = additionalHeaders != null
                 ? new Dictionary<string, string>(additionalHeaders)
                 : null
@@ -110,8 +126,23 @@ public static class McpTransportFactory
     /// <param name="authToken">Authentication token (will be sent as "Authorization: Bearer {token}").</param>
     /// <param name="httpClient">Optional custom HttpClient instance.</param>
     /// <returns>A configured HttpClientTransport with authentication.</returns>
+#pragma warning disable CA1054 // Convenience overload; the Uri overload is the primary API
     public static IClientTransport CreateHttpTransportWithAuth(
         string baseUrl,
+#pragma warning restore CA1054
+        string authToken,
+        HttpClient? httpClient = null)
+        => CreateHttpTransportWithAuth(new Uri(baseUrl), authToken, httpClient);
+
+    /// <summary>
+    /// Creates an HTTP/SSE transport with authentication headers.
+    /// </summary>
+    /// <param name="baseUrl">The base URL of the MCP server.</param>
+    /// <param name="authToken">Authentication token (will be sent as "Authorization: Bearer {token}").</param>
+    /// <param name="httpClient">Optional custom HttpClient instance.</param>
+    /// <returns>A configured HttpClientTransport with authentication.</returns>
+    public static IClientTransport CreateHttpTransportWithAuth(
+        Uri baseUrl,
         string authToken,
         HttpClient? httpClient = null)
     {
@@ -130,11 +161,24 @@ public static class McpTransportFactory
     /// <param name="headers">Custom HTTP headers.</param>
     /// <param name="httpClient">Optional custom HttpClient instance.</param>
     /// <returns>A configured HttpClientTransport with custom headers.</returns>
+#pragma warning disable CA1054 // Convenience overload; the Uri overload is the primary API
     public static IClientTransport CreateHttpTransportWithHeaders(
         string baseUrl,
+#pragma warning restore CA1054
         IDictionary<string, string> headers,
         HttpClient? httpClient = null)
-    {
-        return CreateHttpTransport(baseUrl, httpClient, headers);
-    }
+        => CreateHttpTransportWithHeaders(new Uri(baseUrl), headers, httpClient);
+
+    /// <summary>
+    /// Creates an HTTP/SSE transport with custom headers.
+    /// </summary>
+    /// <param name="baseUrl">The base URL of the MCP server.</param>
+    /// <param name="headers">Custom HTTP headers.</param>
+    /// <param name="httpClient">Optional custom HttpClient instance.</param>
+    /// <returns>A configured HttpClientTransport with custom headers.</returns>
+    public static IClientTransport CreateHttpTransportWithHeaders(
+        Uri baseUrl,
+        IDictionary<string, string> headers,
+        HttpClient? httpClient = null)
+        => CreateHttpTransport(baseUrl, httpClient, headers);
 }

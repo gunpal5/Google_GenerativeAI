@@ -22,4 +22,10 @@ public class CodeExecutionResult
     /// </summary>
     [JsonPropertyName("output")]
     public string? Output { get; set; }
+
+    /// <summary>
+    /// Identifier of the ExecutableCode this result belongs to.
+    /// </summary>
+    [JsonPropertyName("id")]
+    public string? Id { get; set; }
 }

@@ -25,4 +25,10 @@ public class EvaluationConfig
     /// </summary>
     [JsonPropertyName("autoraterConfig")]
     public AutoraterConfig? AutoraterConfig { get; set; }
+
+    /// <summary>
+    /// Generation config used for inference of the tuned model during evaluation.
+    /// </summary>
+    [JsonPropertyName("inferenceGenerationConfig")]
+    public GenerationConfig? InferenceGenerationConfig { get; set; }
 }

@@ -43,17 +43,67 @@ public class MultiModalLiveClient : IDisposable
                 KeepAliveInterval = TimeSpan.FromSeconds(10),
             }
         };
+        var ephemeralToken = EphemeralToken;
+        if (ephemeralToken != null)
+        {
+            client.Options.SetRequestHeader("Authorization", $"Token {ephemeralToken}");
+            return client;
+        }
+
         var accessToken = await _platformAdapter.GetAccessTokenAsync().ConfigureAwait(false);
         if(accessToken != null)
             client.Options.SetRequestHeader("Authorization", $"Bearer {accessToken.AccessToken}");
         return client;
     }
+
+    /// <summary>
+    /// The ephemeral auth token (<c>auth_tokens/...</c>) used as the API key, or null when a regular API key or
+    /// Vertex AI credentials are used. Create tokens with <c>AuthTokensClient</c>.
+    /// </summary>
+    private string? EphemeralToken =>
+        _platformAdapter is GoogleAIPlatformAdapter { Credentials.ApiKey: { } key }
+        && key.StartsWith(EphemeralTokenPrefix, StringComparison.Ordinal)
+            ? key
+            : null;
+
+    private const string EphemeralTokenPrefix = "auth_tokens/";
+
+    /// <summary>
+    /// The constrained Live endpoint used with ephemeral tokens (v1alpha). The token is sent in the
+    /// <c>Authorization: Token ...</c> header rather than as a key query parameter.
+    /// </summary>
+    internal static string GetConstrainedLiveUrl() =>
+#if NET6_0_OR_GREATER
+        BaseUrls.GoogleMultiModalLive.Replace("{version}", ApiVersions.v1Alpha, StringComparison.Ordinal)
+#else
+        BaseUrls.GoogleMultiModalLive.Replace("{version}", ApiVersions.v1Alpha)
+#endif
+        + "Constrained";
     
     private List<byte> _audioBuffer;
+#pragma warning disable CA2213 // Disposed in DisconnectAsync, which Dispose(bool) calls
     private IWebsocketClient? _client;
+#pragma warning restore CA2213
     private readonly Guid _connectionId;
+    private readonly List<IDisposable> _subscriptions = new();
+    private BidiGenerateContentSetup? _lastSetup;
+    private bool _textReceivedInTurn;
     private readonly ILogger? _logger;
     private readonly IPlatformAdapter _platformAdapter;
+
+    private static JsonTypeInfo<BidiResponsePayload> BidiResponsePayloadTypeInfo =>
+#if NET11_0_OR_GREATER
+        DefaultSerializerOptions.Options.GetTypeInfo<BidiResponsePayload>();
+#else
+        (JsonTypeInfo<BidiResponsePayload>)DefaultSerializerOptions.Options.GetTypeInfo(typeof(BidiResponsePayload));
+#endif
+
+    private static JsonTypeInfo<BidiClientPayload> BidiClientPayloadTypeInfo =>
+#if NET11_0_OR_GREATER
+        DefaultSerializerOptions.Options.GetTypeInfo<BidiClientPayload>();
+#else
+        (JsonTypeInfo<BidiClientPayload>)DefaultSerializerOptions.Options.GetTypeInfo(typeof(BidiClientPayload));
+#endif
 
     #endregion
 
@@ -119,6 +169,75 @@ public class MultiModalLiveClient : IDisposable
     /// Indicates whether transcription of output audio is enabled.
     /// </summary>
     public bool OutputAudioTranscriptionEnabled { get; set; }
+
+    /// <summary>
+    /// Options for transcribing input audio (languages, vocabulary, diarization and so on).
+    /// When set, input transcription is enabled with these options regardless of <see cref="InputAudioTranscriptionEnabled"/>.
+    /// </summary>
+    public AudioTranscriptionConfig? InputAudioTranscriptionConfig { get; set; }
+
+    /// <summary>
+    /// Options for transcribing output audio.
+    /// When set, output transcription is enabled with these options regardless of <see cref="OutputAudioTranscriptionEnabled"/>.
+    /// </summary>
+    public AudioTranscriptionConfig? OutputAudioTranscriptionConfig { get; set; }
+
+    /// <summary>
+    /// Voice activity detection and turn-taking settings sent in the setup message.
+    /// Set <see cref="AutomaticActivityDetection.Disabled"/> to true to signal turns yourself with
+    /// <see cref="SendActivityStartAsync"/> and <see cref="SendActivityEndAsync"/>.
+    /// </summary>
+    public RealtimeInputConfig? RealtimeInputConfig { get; set; }
+
+    /// <summary>
+    /// Session resumption settings sent in the setup message. To resume a previous session, set
+    /// <see cref="SessionResumptionConfig.Handle"/> to <see cref="LastSessionResumptionHandle"/> from that session.
+    /// </summary>
+    public SessionResumptionConfig? SessionResumption { get; set; }
+
+    /// <summary>
+    /// Context window compression settings sent in the setup message, allowing sessions longer than the context window.
+    /// </summary>
+    public ContextWindowCompressionConfig? ContextWindowCompression { get; set; }
+
+    /// <summary>
+    /// Proactivity settings sent in the setup message (for example proactive audio).
+    /// </summary>
+    public ProactivityConfig? Proactivity { get; set; }
+
+    /// <summary>
+    /// History settings sent in the setup message.
+    /// </summary>
+    public HistoryConfig? HistoryConfig { get; set; }
+
+    /// <summary>
+    /// The most recent resumable session handle received from the server, or null if none has been received.
+    /// Only populated when <see cref="SessionResumption"/> is set.
+    /// </summary>
+    public string? LastSessionResumptionHandle { get; private set; }
+
+    /// <summary>
+    /// Whether to re-send the last setup message automatically after the websocket reconnects (default true).
+    /// The Live API requires a setup message at the start of every connection. If <see cref="SessionResumption"/>
+    /// is set and a resumable handle has been received, the session is resumed with that handle.
+    /// </summary>
+    public bool ResendSetupOnReconnect { get; set; } = true;
+
+    /// <summary>
+    /// Optional factory that <see cref="ConnectAsync"/> uses to create the WebSocket client instead of the default
+    /// reconnecting <see cref="WebsocketClient"/>. It receives the Live API endpoint URL from the platform adapter
+    /// (which, for the Gemini API, already contains the API key) and must return a client that has not been started;
+    /// <see cref="ConnectAsync"/> subscribes to it and then calls <see cref="IWebsocketClient.Start"/>.
+    /// When null (the default), the client is created as before.
+    /// </summary>
+    /// <remarks>
+    /// The factory is responsible for any request headers the endpoint needs. In particular, the default client adds
+    /// an <c>Authorization: Bearer</c> header from <see cref="IPlatformAdapter.GetAccessTokenAsync"/> (required by Vertex AI);
+    /// a custom factory must add it itself. With an ephemeral token (<c>auth_tokens/...</c>) as the API key, the URL is the
+    /// constrained endpoint and the factory must send <c>Authorization: Token {token}</c> instead.
+    /// This is useful for custom transports, proxies, and unit testing.
+    /// </remarks>
+    public Func<string, IWebsocketClient>? WebsocketClientFactory { get; set; }
 
     #endregion
 
@@ -203,6 +322,11 @@ public class MultiModalLiveClient : IDisposable
     public event EventHandler<TextChunkReceivedArgs>? TextChunkReceived;
 
     /// <summary>
+    /// Occurs when the server signals that the model's turn is complete (for both text and audio responses).
+    /// </summary>
+    public event EventHandler? TurnCompleted;
+
+    /// <summary>
     /// Event triggered upon receiving input transcription data.
     /// </summary>
     public event EventHandler<Transcription>? InputTranscriptionReceived;
@@ -236,6 +360,7 @@ public class MultiModalLiveClient : IDisposable
 
     private async void ProcessReceivedMessage(ResponseMessage msg)
     {
+        // async void: any exception that escapes here would crash the process, so everything is caught below.
         _logger?.LogMessageReceived(msg.MessageType);
 
         try
@@ -243,7 +368,7 @@ public class MultiModalLiveClient : IDisposable
             BidiResponsePayload? responsePayload = null;
             if (msg.MessageType == WebSocketMessageType.Binary)
             {
-                responsePayload = JsonSerializer.Deserialize(msg.Binary,(JsonTypeInfo<BidiResponsePayload>) DefaultSerializerOptions.Options.GetTypeInfo(typeof(BidiResponsePayload)));
+                responsePayload = JsonSerializer.Deserialize(msg.Binary,BidiResponsePayloadTypeInfo);
             }
             else
             {
@@ -252,7 +377,7 @@ public class MultiModalLiveClient : IDisposable
                     _logger?.LogWarning("Received null text message");
                     return;
                 }
-                responsePayload = JsonSerializer.Deserialize(msg.Text,(JsonTypeInfo<BidiResponsePayload>) DefaultSerializerOptions.Options.GetTypeInfo(typeof(BidiResponsePayload)));
+                responsePayload = JsonSerializer.Deserialize(msg.Text,BidiResponsePayloadTypeInfo);
             }
 
             if (responsePayload == null)
@@ -278,6 +403,20 @@ public class MultiModalLiveClient : IDisposable
             _logger?.LogError(ex, "Error deserializing message: {MessageType}", msg.MessageType);
             // Optionally re-throw or handle the error as appropriate
         }
+#pragma warning disable CA1031 // Exceptions (including from user event handlers) must not escape an async void method
+        catch (Exception ex)
+        {
+            _logger?.LogError(ex, "Error processing message for connection {ConnectionId}", _connectionId);
+            try
+            {
+                ErrorOccurred?.Invoke(this, new ErrorEventArgs(ex));
+            }
+            catch (Exception handlerEx)
+            {
+                _logger?.LogError(handlerEx, "ErrorOccurred handler threw for connection {ConnectionId}", _connectionId);
+            }
+        }
+#pragma warning restore CA1031
     }
 
    
@@ -293,6 +432,7 @@ public class MultiModalLiveClient : IDisposable
         }
 #endif
 
+        var textInThisMessage = false;
         if (responsePayload.ServerContent?.ModelTurn != null)
         {
             var textParts = responsePayload.ServerContent.ModelTurn.Parts;
@@ -301,22 +441,33 @@ public class MultiModalLiveClient : IDisposable
             {
                 if (part.Text != null)
                 {
+                    textInThisMessage = true;
+                    _textReceivedInTurn = true;
                     this.TextChunkReceived?.Invoke(this,
                         new TextChunkReceivedArgs(part.Text, responsePayload.ServerContent.TurnComplete == true));
-                    _logger?.LogInformation("Text chunk received: {Text}", part.Text);
+                    if (_logger?.IsEnabled(LogLevel.Information) == true)
+                        _logger.LogInformation("Text chunk received: {Text}", part.Text);
                 }
             }
         }
 
         if (responsePayload.ServerContent?.TurnComplete == true)
         {
+            // The server often sends turnComplete in its own message without text. Raise a final, empty chunk
+            // so text consumers still see IsTurnFinish (only when the turn produced text).
+            if (_textReceivedInTurn && !textInThisMessage)
+                this.TextChunkReceived?.Invoke(this, new TextChunkReceivedArgs(string.Empty, true));
+
+            _textReceivedInTurn = false;
             _logger?.LogInformation("Text generation completed.");
+            TurnCompleted?.Invoke(this, EventArgs.Empty);
         }
 
         if (responsePayload.ServerContent?.Interrupted == true)
         {
+            // HandleInterruption is called by ProcessAudioChunk; calling it here too raised GenerationInterrupted twice.
+            _textReceivedInTurn = false;
             _logger?.LogWarning("Text generation interrupted.");
-            HandleInterruption();
         }
     }
 
@@ -458,7 +609,11 @@ public class MultiModalLiveClient : IDisposable
     {
         if (responsePayload.SessionResumptionUpdate != null)
         {
-            SessionResumableUpdateReceived?.Invoke(this, responsePayload.SessionResumptionUpdate);
+            var update = responsePayload.SessionResumptionUpdate;
+            if (update.Resumable == true && !string.IsNullOrEmpty(update.NewHandle))
+                LastSessionResumptionHandle = update.NewHandle;
+
+            SessionResumableUpdateReceived?.Invoke(this, update);
         }
     }
     
@@ -565,31 +720,48 @@ public class MultiModalLiveClient : IDisposable
     {
         _logger?.LogConnectionAttempt();
 
-        var url = _platformAdapter.GetMultiModalLiveUrl();
+        // Connecting again replaces the previous websocket; release it so it and its subscriptions don't leak.
+        ReleaseClient();
+
+        var ephemeralToken = EphemeralToken;
+        var url = ephemeralToken != null
+            ? GetConstrainedLiveUrl()
+            : _platformAdapter.GetMultiModalLiveUrl();
+        if (WebsocketClientFactory != null)
+        {
+            _client = WebsocketClientFactory(url)
+                ?? throw new InvalidOperationException($"{nameof(WebsocketClientFactory)} returned null.");
+        }
+        else
+        {
 #pragma warning disable CA2000 // Dispose objects before losing scope - object is disposed in Dispose method
-        var socketClient = await GetClient().ConfigureAwait(false);
-        _client = socketClient.WithReconnect(url); // Use the factory and an extension method for clarity
+            var socketClient = await GetClient().ConfigureAwait(false);
+            _client = socketClient.WithReconnect(url); // Use the factory and an extension method for clarity
 #pragma warning restore CA2000
+        }
 
         ClientCreated?.Invoke(this, new ClientCreatedEventArgs(_client));
 
-        _client.ReconnectionHappened.Subscribe(info =>
+        _subscriptions.Add(_client.ReconnectionHappened.Subscribe(info =>
         {
-#pragma warning disable CA2254 // Template should be a static expression
-            _logger?.LogInformation($"Reconnection happened: {info.Type}");
-#pragma warning restore CA2254
-            // Consider re-sending setup or other state restoration here
-        });
+            if (_logger?.IsEnabled(LogLevel.Information) == true)
+                _logger.LogInformation("Reconnection happened: {ReconnectionType}", info.Type);
 
-        _client.MessageReceived.ObserveOn(TaskPoolScheduler.Default)
+            // The initial connection's setup is sent by ConnectAsync; after a reconnect the server
+            // expects a new setup message before anything else.
+            if (info.Type != ReconnectionType.Initial && ResendSetupOnReconnect && _lastSetup != null)
+                _ = ResendSetupAfterReconnectAsync(_lastSetup);
+        }));
+
+        _subscriptions.Add(_client.MessageReceived.ObserveOn(TaskPoolScheduler.Default)
             .Subscribe(ProcessReceivedMessage, ex =>
             {
                 _logger?.LogError(ex, "Error in MessageReceived subscription for connection {ConnectionId}",
                     _connectionId);
-                ErrorOccurred?.Invoke(this, new ErrorEventArgs(ex)); 
-            });
+                ErrorOccurred?.Invoke(this, new ErrorEventArgs(ex));
+            }));
 
-        _client.DisconnectionHappened.Subscribe(info =>
+        _subscriptions.Add(_client.DisconnectionHappened.Subscribe(info =>
         {
             if (info.Exception is not null)
             {
@@ -610,7 +782,7 @@ public class MultiModalLiveClient : IDisposable
                 new ErrorMessageEventArgs(info.CloseStatusDescription) :
                 EventArgs.Empty;
             Disconnected?.Invoke(this, eventArgs);
-        });
+        }));
 
         try
         {
@@ -628,6 +800,40 @@ public class MultiModalLiveClient : IDisposable
             ErrorOccurred?.Invoke(this, new ErrorEventArgs(ex));
             throw;
         }
+    }
+
+    private async Task ResendSetupAfterReconnectAsync(BidiGenerateContentSetup setup)
+    {
+        if (setup.SessionResumption != null && !string.IsNullOrEmpty(LastSessionResumptionHandle))
+        {
+            setup.SessionResumption = new SessionResumptionConfig
+            {
+                Handle = LastSessionResumptionHandle,
+                Transparent = setup.SessionResumption.Transparent
+            };
+        }
+
+#pragma warning disable CA1031 // Fire-and-forget from the reconnection callback; failures are reported via ErrorOccurred
+        try
+        {
+            await SendSetupAsync(setup).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            _logger?.LogError(ex, "Failed to re-send setup after reconnect for connection {ConnectionId}", _connectionId);
+            ErrorOccurred?.Invoke(this, new ErrorEventArgs(ex));
+        }
+#pragma warning restore CA1031
+    }
+
+    private void ReleaseClient()
+    {
+        foreach (var subscription in _subscriptions)
+            subscription.Dispose();
+        _subscriptions.Clear();
+
+        _client?.Dispose();
+        _client = null;
     }
 
     /// <summary>
@@ -653,8 +859,16 @@ public class MultiModalLiveClient : IDisposable
                  ? new Content(this.SystemInstruction, Roles.System)
                  : null,
             Tools = tools.Count > 0 ? tools.ToArray() : null,
-            InputAudioTranscription = InputAudioTranscriptionEnabled ? new AudioTranscriptionConfig(): null,
-            OutputAudioTranscription = OutputAudioTranscriptionEnabled ? new AudioTranscriptionConfig() : null,
+            InputAudioTranscription = InputAudioTranscriptionConfig
+                ?? (InputAudioTranscriptionEnabled ? new AudioTranscriptionConfig() : null),
+            OutputAudioTranscription = OutputAudioTranscriptionConfig
+                ?? (OutputAudioTranscriptionEnabled ? new AudioTranscriptionConfig() : null),
+            SafetySettings = SafetySettings is { Count: > 0 } ? SafetySettings.ToList() : null,
+            RealtimeInputConfig = RealtimeInputConfig,
+            SessionResumption = SessionResumption,
+            ContextWindowCompression = ContextWindowCompression,
+            Proactivity = Proactivity,
+            HistoryConfig = HistoryConfig,
         };
         await SendSetupAsync(setup, cancellationToken).ConfigureAwait(false);
     }
@@ -688,8 +902,8 @@ public class MultiModalLiveClient : IDisposable
 #pragma warning restore CA1031
             finally
             {
-                _client.Dispose();
-                _client = null;
+                // Release the subscriptions too, so a disposed client's events can't reach this instance.
+                ReleaseClient();
             }
         }
     }
@@ -742,6 +956,7 @@ public class MultiModalLiveClient : IDisposable
                 setup.Tools = tools.ToArray();
         }
 
+        _lastSetup = setup;
         var payload = new BidiClientPayload { Setup = setup };
         await SendAsync(payload, cancellationToken).ConfigureAwait(false);
     }
@@ -789,7 +1004,7 @@ public class MultiModalLiveClient : IDisposable
 
         try
         {
-            var json = JsonSerializer.Serialize(payload,DefaultSerializerOptions.Options.GetTypeInfo(typeof(BidiClientPayload)));
+            var json = JsonSerializer.Serialize(payload,BidiClientPayloadTypeInfo);
             _logger?.LogMessageSent(json);
 
             _client.Send(json);
@@ -860,6 +1075,136 @@ public class MultiModalLiveClient : IDisposable
 
         var payload = new BidiClientPayload { ClientContent = clientContent };
         await SendAsync(payload, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a realtime input message (audio, video, text or activity signals).
+    /// </summary>
+    /// <param name="realtimeInput">The realtime input to send.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    public async Task SendRealtimeInputAsync(BidiGenerateContentRealtimeInput realtimeInput,
+        CancellationToken cancellationToken = default)
+    {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(realtimeInput);
+#else
+        if (realtimeInput == null) throw new ArgumentNullException(nameof(realtimeInput));
+#endif
+        var payload = new BidiClientPayload { RealtimeInput = realtimeInput };
+        await SendAsync(payload, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a video frame (for example a camera or screen capture image) as realtime input.
+    /// </summary>
+    /// <param name="frameData">The encoded frame.</param>
+    /// <param name="mimeType">The MIME type of the frame. Defaults to "image/jpeg".</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    public Task SendVideoFrameAsync(byte[] frameData, string mimeType = "image/jpeg",
+        CancellationToken cancellationToken = default)
+    {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(frameData);
+#else
+        if (frameData == null) throw new ArgumentNullException(nameof(frameData));
+#endif
+        return SendRealtimeInputAsync(new BidiGenerateContentRealtimeInput
+        {
+            Video = new Blob { Data = Convert.ToBase64String(frameData), MimeType = mimeType }
+        }, cancellationToken);
+    }
+
+    /// <summary>
+    /// Sends text as realtime input. Unlike <see cref="SentTextAsync"/>, which sends a complete user turn,
+    /// realtime text is processed like streamed audio and can interrupt the model.
+    /// </summary>
+    /// <param name="text">The text to send.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    public Task SendRealtimeTextAsync(string text, CancellationToken cancellationToken = default)
+    {
+        return SendRealtimeInputAsync(new BidiGenerateContentRealtimeInput { Text = text }, cancellationToken);
+    }
+
+    /// <summary>
+    /// Signals that the user has started speaking. Only use this when automatic activity detection is disabled
+    /// through <see cref="RealtimeInputConfig"/>.
+    /// </summary>
+    /// <remarks>
+    /// Activity markers delimit audio input. The Gemini API rejects realtime text sent between
+    /// <see cref="SendActivityStartAsync"/> and <see cref="SendActivityEndAsync"/> ("Precondition check failed");
+    /// send text with <see cref="SendRealtimeTextAsync"/> outside the markers instead.
+    /// </remarks>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    public Task SendActivityStartAsync(CancellationToken cancellationToken = default)
+    {
+        return SendRealtimeInputAsync(new BidiGenerateContentRealtimeInput { ActivityStart = new ActivityStart() },
+            cancellationToken);
+    }
+
+    /// <summary>
+    /// Signals that the user has stopped speaking. Only use this when automatic activity detection is disabled
+    /// through <see cref="RealtimeInputConfig"/>.
+    /// </summary>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    public Task SendActivityEndAsync(CancellationToken cancellationToken = default)
+    {
+        return SendRealtimeInputAsync(new BidiGenerateContentRealtimeInput { ActivityEnd = new ActivityEnd() },
+            cancellationToken);
+    }
+
+    /// <summary>
+    /// Signals that the audio stream has ended, for example because the microphone was turned off,
+    /// so the server can flush any buffered audio. Gemini API only.
+    /// </summary>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    public Task SendAudioStreamEndAsync(CancellationToken cancellationToken = default)
+    {
+        return SendRealtimeInputAsync(new BidiGenerateContentRealtimeInput { AudioStreamEnd = true }, cancellationToken);
+    }
+
+    /// <summary>
+    /// Updates the system instruction and/or tools of the running session without reconnecting.
+    /// </summary>
+    /// <param name="contextUpdate">The context update to send.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    public async Task SendContextUpdateAsync(BidiGenerateContentContextUpdate contextUpdate,
+        CancellationToken cancellationToken = default)
+    {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(contextUpdate);
+#else
+        if (contextUpdate == null) throw new ArgumentNullException(nameof(contextUpdate));
+#endif
+        var payload = new BidiClientPayload { ContextUpdate = contextUpdate };
+        await SendAsync(payload, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Updates the system instruction and/or tools of the running session without reconnecting.
+    /// </summary>
+    /// <param name="systemInstruction">The new system instruction, or null to keep the current one.</param>
+    /// <param name="tools">
+    /// The new set of tools, or null to keep the current ones. An empty collection removes all tools.
+    /// This does not change <see cref="FunctionTools"/>, which the client uses to execute function calls;
+    /// update it as well if you add or remove function declarations.
+    /// </param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    public Task SendContextUpdateAsync(string? systemInstruction, IEnumerable<Tool>? tools = null,
+        CancellationToken cancellationToken = default)
+    {
+        return SendContextUpdateAsync(new BidiGenerateContentContextUpdate
+        {
+            SystemInstruction = systemInstruction is null ? null : new Content(systemInstruction, Roles.System),
+            Tools = tools is null ? null : new ContextUpdateTools { Tools = tools.ToArray() }
+        }, cancellationToken);
     }
 
     #endregion

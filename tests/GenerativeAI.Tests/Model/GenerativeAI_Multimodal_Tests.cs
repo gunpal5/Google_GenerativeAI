@@ -6,7 +6,7 @@ namespace GenerativeAI.Tests.Model
     public class GenerativeAI_Multimodal_Tests : TestBase
     {
         private  ITestOutputHelper _console;
-        private const string TestModel = GoogleAIModels.Gemini2Flash;
+        private const string TestModel = GoogleAIModels.Gemini38Flash;
 
         public GenerativeAI_Multimodal_Tests(ITestOutputHelper helper)
         {

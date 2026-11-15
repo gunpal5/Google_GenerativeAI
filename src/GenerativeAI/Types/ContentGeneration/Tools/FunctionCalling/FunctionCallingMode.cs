@@ -31,4 +31,9 @@ public enum FunctionCallingMode // Renamed to FunctionCallingMode
     /// Model will not predict any function call. Model behavior is same as when not passing any function declarations.
     /// </summary>
     NONE = 3,
+
+    /// <summary>
+    /// The model may call functions or respond in natural language, and function calls are validated against the declared schemas.
+    /// </summary>
+    VALIDATED
 }
