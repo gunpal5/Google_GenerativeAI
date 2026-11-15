@@ -6,6 +6,7 @@ namespace GenerativeAI.Types;
 /// TunedModelCheckpoint for the Tuned Model of a Tuning Job.
 /// Represents a specific checkpoint during the tuning process.
 /// </summary>
+[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
 public class TunedModelCheckpoint
 {
     /// <summary>
