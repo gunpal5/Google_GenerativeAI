@@ -33,7 +33,7 @@ async Task AddBooksToCorpus(CorporaManager corporaManager, string corpusName, st
 
 //Initialize Retriever Model
 var serviceAccountConfigFile =
-    Environment.GetEnvironmentVariable("Google_Service_Account_Json");
+    System.Environment.GetEnvironmentVariable("Google_Service_Account_Json");
 if (string.IsNullOrEmpty(serviceAccountConfigFile) || !File.Exists(serviceAccountConfigFile))
 {
     Console.WriteLine("Please set the \"Google_Service_Account_Json\" environment variable to the path of the service account json file.");

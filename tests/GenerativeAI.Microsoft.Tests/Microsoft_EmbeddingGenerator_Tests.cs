@@ -18,7 +18,7 @@ namespace GenerativeAI.Tests.Microsoft;
 /// <summary>
 /// Tests for <see cref="GenerativeAIEmbeddingGenerator"/>.
 /// </summary>
-[TestCaseOrderer(typeof(TestPriorityAttribute))]
+[TestCaseOrderer(typeof(PriorityOrderer))]
 public class Microsoft_EmbeddingGenerator_Tests : TestBase
 {
     private const string DefaultTestEmbeddingModel = GoogleAIModels.GeminiEmbedding;

@@ -30,16 +30,16 @@
   </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net9.0'">
-        <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.3"/>
-        <PackageReference Include="System.Text.Json" Version="9.0.3"/>
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.15"/>
+        <PackageReference Include="System.Text.Json" Version="10.0.15"/>
     </ItemGroup>
     <!-- System.Text.Json ships in-box with net10.0+ -->
     <ItemGroup Condition=" '$(TargetFramework)' == 'net10.0' or '$(TargetFramework)' == 'net11.0'">
-        <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.3"/>
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="11.0.0"/>
     </ItemGroup>
     <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0'">
-        <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.3"/>
-        <PackageReference Include="System.Text.Json" Version="9.0.3"/>
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.15"/>
+        <PackageReference Include="System.Text.Json" Version="10.0.15"/>
     </ItemGroup>
     <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0'">
         <PackageReference Include="JsonSchema.Net.Generation" Version="3.5.1"/>
@@ -52,8 +52,8 @@
         <PackageReference Include="System.Text.Json" Version="8.0.5"/>
     </ItemGroup>
     <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
-        <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.1"/>
-        <PackageReference Include="System.Text.Json" Version="9.0.3"/>
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="11.0.0"/>
+        <PackageReference Include="System.Text.Json" Version="11.0.0"/>
         <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0"/>
         <PackageReference Include="System.Net.Http" Version="4.3.4"/>
     </ItemGroup>
@@ -64,8 +64,8 @@
     </ItemGroup> -->
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net462'">
-        <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.3"/>
-        <PackageReference Include="System.Text.Json" Version="9.0.3"/>
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="11.0.0"/>
+        <PackageReference Include="System.Text.Json" Version="11.0.0"/>
         <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0"/>
         <PackageReference Include="System.Net.Http" Version="4.3.4"/>
     </ItemGroup>

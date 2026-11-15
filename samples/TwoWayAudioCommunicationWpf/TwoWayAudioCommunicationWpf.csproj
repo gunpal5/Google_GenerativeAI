@@ -12,11 +12,11 @@
 
     <ItemGroup>
       <PackageReference Include="MdXaml.Full" Version="1.27.0" />
-      <PackageReference Include="NAudio" Version="2.2.1" />
+      <PackageReference Include="NAudio" Version="3.3.0" />
       <PackageReference Include="PvRecorder" Version="1.2.13" />
-      <PackageReference Include="WPF-UI" Version="4.0.3" />
+      <PackageReference Include="WPF-UI" Version="4.3.0" />
       <!-- Pin transitive dependency to a patched version (GHSA-rxg9-xrhp-64gj, < 4.7.2) -->
-      <PackageReference Include="System.Drawing.Common" Version="9.0.23" />
+      <PackageReference Include="System.Drawing.Common" Version="10.0.15" />
     </ItemGroup>
 
     <ItemGroup>

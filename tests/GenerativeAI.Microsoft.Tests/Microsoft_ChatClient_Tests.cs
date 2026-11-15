@@ -18,7 +18,7 @@ namespace GenerativeAI.Tests.Microsoft;
 /// using xUnit and Shouldly for assertions.
 /// </summary>
 [TestCaseOrderer(
-    typeof(TestPriorityAttribute))]
+    typeof(PriorityOrderer))]
 public class Microsoft_ChatClient_Tests : TestBase
 {
     private const string DefaultTestModelName = GoogleAIModels.DefaultGeminiModel;

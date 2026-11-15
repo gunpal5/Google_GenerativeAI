@@ -7,7 +7,7 @@ public class NAudioHelper
 {
     public event EventHandler<byte[]>? AudioDataReceived;
     private BufferedWaveProvider? bufferedWaveProvider = null; //new BufferedWaveProvider(new WaveFormat(16000, 16, 1));
-    private WaveOutEvent? waveOut = null;
+    private WaveOut? waveOut = null;
 
     public bool IsRecording;
 
@@ -24,12 +24,11 @@ public class NAudioHelper
                 // 2. Use BufferedWaveProvider:
                 memoryStream.Position = 0; // Reset stream position
                 var waveFormat = new WaveFormat(sampleRate, bitsPerSample, channels);
-                bufferedWaveProvider = new BufferedWaveProvider(waveFormat);
-                bufferedWaveProvider.BufferDuration = new TimeSpan(0, 15, 0);
+                bufferedWaveProvider = new BufferedWaveProvider(waveFormat, TimeSpan.FromMinutes(15));
                 // Add the entire WAV data to the buffer
                 bufferedWaveProvider.AddSamples(memoryStream.ToArray(), 0, (int)memoryStream.Length);
 
-                waveOut = new WaveOutEvent();
+                waveOut = new WaveOut();
                 waveOut.Init(bufferedWaveProvider);
                 waveOut.Play();
             }
@@ -50,11 +49,11 @@ public class NAudioHelper
         this.bufferedWaveProvider = null;
     }
     
-    private WaveInEvent? waveIn;
+    private WaveIn? waveIn;
 
     public void StartRecording(int deviceIndex, int sampleRate = 16000, int channels = 1, int bitsPerSample = 16)
     {
-        waveIn = new WaveInEvent();
+        waveIn = new WaveIn();
         waveIn.DeviceNumber = deviceIndex;
         waveIn.WaveFormat = new WaveFormat(sampleRate, bitsPerSample, channels);
         waveIn.DataAvailable += WaveIn_DataAvailable;
