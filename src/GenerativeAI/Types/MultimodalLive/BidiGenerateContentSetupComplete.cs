@@ -13,4 +13,10 @@ public class BidiGenerateContentSetupComplete
     /// </summary>
     [JsonPropertyName("sessionId")]
     public string? SessionId { get; set; }
+
+    /// <summary>
+    /// Signature proving voice-replication consent was verified; reuse it in ReplicatedVoiceConfig.VoiceConsentSignature to skip resending consent audio.
+    /// </summary>
+    [JsonPropertyName("voiceConsentSignature")]
+    public VoiceConsentSignature? VoiceConsentSignature { get; set; }
 }

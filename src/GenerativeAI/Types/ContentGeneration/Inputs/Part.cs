@@ -129,6 +129,12 @@ public class Part
     /// </summary>
     [JsonPropertyName("partMetadata")]
     public System.Text.Json.Nodes.JsonObject? PartMetadata { get; set; }
+
+    /// <summary>
+    /// Transcript of the audio in this part.
+    /// </summary>
+    [JsonPropertyName("audioTranscription")]
+    public Transcription? AudioTranscription { get; set; }
 }
 
 /// <summary>

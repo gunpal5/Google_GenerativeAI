@@ -126,6 +126,27 @@ public class ApiFieldUpdates_Tests
     }
 
     [Fact]
+    public void CrossReferencedLiveTypes_SerializeAndDeserialize()
+    {
+        var config = new GenerationConfig
+        {
+            AudioTranscriptionConfig = new AudioTranscriptionConfig(),
+            TranslationConfig = new TranslationConfig { TargetLanguageCode = "fr-FR" }
+        };
+        var json = Serialize(config);
+        json["audioTranscriptionConfig"].ShouldNotBeNull();
+        json["translationConfig"]!["targetLanguageCode"]!.GetValue<string>().ShouldBe("fr-FR");
+
+        var part = Deserialize<Part>("""{"audioTranscription": {"text": "hello", "languageCode": "en-US"}}""");
+        part.AudioTranscription!.Text.ShouldBe("hello");
+        part.AudioTranscription.LanguageCode.ShouldBe("en-US");
+
+        var setupComplete = Deserialize<BidiGenerateContentSetupComplete>(
+            """{"sessionId": "s1", "voiceConsentSignature": {"signature": "sig"}}""");
+        setupComplete.VoiceConsentSignature!.Signature.ShouldBe("sig");
+    }
+
+    [Fact]
     public void FunctionCallingMode_Validated_RoundTrips()
     {
         var json = JsonSerializer.Serialize(FunctionCallingMode.VALIDATED, DefaultSerializerOptions.Options);

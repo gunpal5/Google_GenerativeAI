@@ -215,6 +215,18 @@ public class GenerationConfig
     /// </summary>
     [JsonPropertyName("imageConfig")]
     public ImageConfig? ImageConfig { get; set; }
+
+    /// <summary>
+    /// Speech recognition settings for audio input, such as language codes, custom vocabulary and diarization.
+    /// </summary>
+    [JsonPropertyName("audioTranscriptionConfig")]
+    public AudioTranscriptionConfig? AudioTranscriptionConfig { get; set; }
+
+    /// <summary>
+    /// Real-time speech translation settings (Live API).
+    /// </summary>
+    [JsonPropertyName("translationConfig")]
+    public TranslationConfig? TranslationConfig { get; set; }
 }
 
 
