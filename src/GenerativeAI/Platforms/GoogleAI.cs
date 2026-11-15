@@ -111,4 +111,13 @@ public class GoogleAi : GenAI,IGenerativeAI
         }
         return new SemanticRetrieverModel(this.Platform, modelName, safetyRatings, this.HttpClient, this.Logger);
     }
+
+    /// <summary>
+    /// Creates a client for File Search stores and their documents (managed retrieval-augmented generation).
+    /// </summary>
+    /// <returns>A <see cref="FileSearchStoresClient"/> that shares this instance's platform, HTTP client and logger.</returns>
+    public FileSearchStoresClient CreateFileSearchStoresClient()
+    {
+        return new FileSearchStoresClient(this.Platform, this.HttpClient, this.Logger);
+    }
 }
