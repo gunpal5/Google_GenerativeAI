@@ -74,6 +74,11 @@ public class GenerationConfig
     /// of the <see cref="Model">Model</see> returned from the <c>getModel</c> function.
     /// Values can range from.
     /// </summary>
+    /// <remarks>
+    /// Deprecated by Google for Gemini 3.6 and later models (July 2026), along with <see cref="TopP"/> and
+    /// <see cref="TopK"/>; leave unset for those models. See
+    /// <see href="https://ai.google.dev/gemini-api/docs/whats-new-gemini-3.6#sampling-parameter-deprecation"/>.
+    /// </remarks>
     [JsonPropertyName("temperature")]
     public double? Temperature { get; set; }
 
@@ -89,6 +94,7 @@ public class GenerationConfig
     /// An empty <see cref="TopK"/> attribute indicates that the model doesn't apply top-k sampling
     /// and doesn't allow setting <see cref="TopK"/> on requests.
     /// </summary>
+    /// <remarks>Deprecated by Google for Gemini 3.6 and later models; see <see cref="Temperature"/>.</remarks>
     [JsonPropertyName("topP")]
     public double? TopP { get; set; }
 
@@ -102,6 +108,7 @@ public class GenerationConfig
     /// An empty <see cref="TopK"/> attribute indicates that the model doesn't apply top-k sampling
     /// and doesn't allow setting <see cref="TopK"/> on requests.
     /// </summary>
+    /// <remarks>Deprecated by Google for Gemini 3.6 and later models; see <see cref="Temperature"/>.</remarks>
     [JsonPropertyName("topK")]
     public int? TopK { get; set; }
 
