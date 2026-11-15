@@ -47,7 +47,7 @@ The recommended approach for applications running on Google Cloud (Compute Engin
 
 ```csharp
 // In Program.cs or Startup.cs
-using Google_GenerativeAI.Web;
+using GenerativeAI.Web;
 
 builder.Services.AddGenerativeAI().builder.Services.WithGoogleAdcAuthentication(); // Or any other AddGenerativeAI overload.
 ```
@@ -85,7 +85,7 @@ Set the following environment variables:
 - GOOGLE_API_KEY: Your Google AI API key (for Gemini). Required if not using one of the authentication methods above. 
 - GOOGLE_PROJECT_ID: Your Google Cloud project ID (for Vertex AI). If set, Vertex AI will be used. 
 - GOOGLE_REGION: The Google Cloud region (e.g., us-central1). Defaults to us-central1.
-- GOOGLE_AI_MODEL: The model name (e.g., gemini-1.5-pro-002). Defaults to gemini-1.0-pro.
+- GOOGLE_AI_MODEL: The model name (e.g., models/gemini-3.8-flash). Defaults to `GoogleAIModels.DefaultGeminiModel`.
 
 ```csharp
 // In Program.cs or Startup.cs
@@ -105,7 +105,7 @@ builder.Services.AddGenerativeAI(); // Reads from environment variables.
     },
     "ProjectId": "YOUR_PROJECT_ID", // Optional (for Vertex AI)
     "Region": "us-central1",        // Optional (defaults to us-central1)
-    "Model": "gemini-pro",          // Optional (defaults to gemini-1.0-pro)
+    "Model": "models/gemini-3.8-flash", // Optional (defaults to GoogleAIModels.DefaultGeminiModel)
     "IsVertex": false,              // Optional.  Set to true to force Vertex AI.
     "ExpressMode": false            // Optional
   }
@@ -123,8 +123,8 @@ builder.Services.AddGenerativeAI("GenerativeAI");
 **Directly in Code (using GenerativeAIOptions):**
 
 ```csharp
-using Google_GenerativeAI.Web;
-using GenerativeAI.GoogleAuth;
+using GenerativeAI;
+using GenerativeAI.Web;
 
 // API Key:
 builder.Services.AddGenerativeAI(new GenerativeAIOptions
@@ -132,7 +132,7 @@ builder.Services.AddGenerativeAI(new GenerativeAIOptions
     Credentials = new GoogleAICredentials("YOUR_API_KEY"),
     ProjectId = "YOUR_PROJECT_ID", // Optional (for Vertex AI)
     Region = "us-central1",        // Optional
-    Model = "gemini-pro"           // Optional
+    Model = GoogleAIModels.Gemini38Flash // Optional
 });
 
 // OR, for OAuth 2.0 Access Token:
@@ -141,7 +141,7 @@ builder.Services.AddGenerativeAI(new GenerativeAIOptions
     Credentials = new GoogleAICredentials(null, "YOUR_ACCESS_TOKEN", DateTime.UtcNow.AddHours(1)), // Access token with expiry
     ProjectId = "YOUR_PROJECT_ID", // Optional
     Region = "us-central1",        // Optional
-    Model = "gemini-pro"           // Optional
+    Model = GoogleAIModels.Gemini38Flash // Optional
 });
 
 // OR, using an Action:
@@ -152,7 +152,7 @@ builder.Services.AddGenerativeAI(options =>
     // options.Credentials = new GoogleAICredentials(null, "YOUR_ACCESS_TOKEN", DateTime.UtcNow.AddHours(1));
     options.ProjectId = "YOUR_PROJECT_ID"; // Optional
     options.Region = "us-central1";        // Optional
-    options.Model = "gemini-pro";          // Optional
+    options.Model = GoogleAIModels.Gemini38Flash; // Optional
 });
 ```
 
@@ -198,8 +198,7 @@ public class MyController : Controller
 
 ```csharp
 using GenerativeAI;
-using Google_GenerativeAI.Web;
-using GenerativeAI.GoogleAuth;
+using GenerativeAI.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 

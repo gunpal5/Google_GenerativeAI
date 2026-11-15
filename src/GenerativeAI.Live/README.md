@@ -50,8 +50,8 @@ public async Task RunGeminiLiveAsync()
     IPlatformAdapter platformAdapter = new GoogleAIPlatformAdapter(); // or VertextPlatformAdapter
 
     // 2. Create the MultiModalLiveClient
-    var client = new MultiModalLiveClient(platformAdapter, "gemini-1.5-flash-exp", // Model Name
-        new GenerationConfig { ResponseModalities = { Modality.AUDIO } }, // Generation Config
+    var client = new MultiModalLiveClient(platformAdapter, GoogleAIModels.Gemini38Live, // Model Name
+        new GenerationConfig { ResponseModalities = new List<Modality> { Modality.AUDIO } }, // Live models respond with audio
         null, // Safety Settings (Optional)
         "You are a helpful assistant."); // System Instruction (Optional) 
 
@@ -115,11 +115,11 @@ public async Task RunGeminiLiveAsync()
     var googleAi = new GoogleAi(apiKey);
 
     // 2. Initialize GenerativeModel
-    var generativeModel = googleAi.CreateGenerativeModel('gemini-1.5-flash-exp')
+    var generativeModel = googleAi.CreateGenerativeModel(GoogleAIModels.Gemini38Live);
 
     // 2. Create the MultiModalLiveClient using the extension method
     var client = generativeModel.CreateMultiModalLiveClient(
-        new GenerationConfig { ResponseModalities = { Modality.TEXT, Modality.AUDIO } }, // Generation Config
+        new GenerationConfig { ResponseModalities = new List<Modality> { Modality.AUDIO } }, // Live models respond with audio
         null, // Safety Settings (Optional)
         "You are a helpful assistant."); // System Instruction (Optional) 
 
