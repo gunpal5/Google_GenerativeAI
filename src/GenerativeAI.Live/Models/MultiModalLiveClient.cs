@@ -136,6 +136,52 @@ public class MultiModalLiveClient : IDisposable
     /// </summary>
     public bool OutputAudioTranscriptionEnabled { get; set; }
 
+    /// <summary>
+    /// Options for transcribing input audio (languages, vocabulary, diarization and so on).
+    /// When set, input transcription is enabled with these options regardless of <see cref="InputAudioTranscriptionEnabled"/>.
+    /// </summary>
+    public AudioTranscriptionConfig? InputAudioTranscriptionConfig { get; set; }
+
+    /// <summary>
+    /// Options for transcribing output audio.
+    /// When set, output transcription is enabled with these options regardless of <see cref="OutputAudioTranscriptionEnabled"/>.
+    /// </summary>
+    public AudioTranscriptionConfig? OutputAudioTranscriptionConfig { get; set; }
+
+    /// <summary>
+    /// Voice activity detection and turn-taking settings sent in the setup message.
+    /// Set <see cref="AutomaticActivityDetection.Disabled"/> to true to signal turns yourself with
+    /// <see cref="SendActivityStartAsync"/> and <see cref="SendActivityEndAsync"/>.
+    /// </summary>
+    public RealtimeInputConfig? RealtimeInputConfig { get; set; }
+
+    /// <summary>
+    /// Session resumption settings sent in the setup message. To resume a previous session, set
+    /// <see cref="SessionResumptionConfig.Handle"/> to <see cref="LastSessionResumptionHandle"/> from that session.
+    /// </summary>
+    public SessionResumptionConfig? SessionResumption { get; set; }
+
+    /// <summary>
+    /// Context window compression settings sent in the setup message, allowing sessions longer than the context window.
+    /// </summary>
+    public ContextWindowCompressionConfig? ContextWindowCompression { get; set; }
+
+    /// <summary>
+    /// Proactivity settings sent in the setup message (for example proactive audio).
+    /// </summary>
+    public ProactivityConfig? Proactivity { get; set; }
+
+    /// <summary>
+    /// History settings sent in the setup message.
+    /// </summary>
+    public HistoryConfig? HistoryConfig { get; set; }
+
+    /// <summary>
+    /// The most recent resumable session handle received from the server, or null if none has been received.
+    /// Only populated when <see cref="SessionResumption"/> is set.
+    /// </summary>
+    public string? LastSessionResumptionHandle { get; private set; }
+
     #endregion
 
     #region Constructors
@@ -475,7 +521,11 @@ public class MultiModalLiveClient : IDisposable
     {
         if (responsePayload.SessionResumptionUpdate != null)
         {
-            SessionResumableUpdateReceived?.Invoke(this, responsePayload.SessionResumptionUpdate);
+            var update = responsePayload.SessionResumptionUpdate;
+            if (update.Resumable == true && !string.IsNullOrEmpty(update.NewHandle))
+                LastSessionResumptionHandle = update.NewHandle;
+
+            SessionResumableUpdateReceived?.Invoke(this, update);
         }
     }
     
@@ -669,8 +719,16 @@ public class MultiModalLiveClient : IDisposable
                  ? new Content(this.SystemInstruction, Roles.System)
                  : null,
             Tools = tools.Count > 0 ? tools.ToArray() : null,
-            InputAudioTranscription = InputAudioTranscriptionEnabled ? new AudioTranscriptionConfig(): null,
-            OutputAudioTranscription = OutputAudioTranscriptionEnabled ? new AudioTranscriptionConfig() : null,
+            InputAudioTranscription = InputAudioTranscriptionConfig
+                ?? (InputAudioTranscriptionEnabled ? new AudioTranscriptionConfig() : null),
+            OutputAudioTranscription = OutputAudioTranscriptionConfig
+                ?? (OutputAudioTranscriptionEnabled ? new AudioTranscriptionConfig() : null),
+            SafetySettings = SafetySettings is { Count: > 0 } ? SafetySettings.ToList() : null,
+            RealtimeInputConfig = RealtimeInputConfig,
+            SessionResumption = SessionResumption,
+            ContextWindowCompression = ContextWindowCompression,
+            Proactivity = Proactivity,
+            HistoryConfig = HistoryConfig,
         };
         await SendSetupAsync(setup, cancellationToken).ConfigureAwait(false);
     }
@@ -876,6 +934,131 @@ public class MultiModalLiveClient : IDisposable
 
         var payload = new BidiClientPayload { ClientContent = clientContent };
         await SendAsync(payload, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a realtime input message (audio, video, text or activity signals).
+    /// </summary>
+    /// <param name="realtimeInput">The realtime input to send.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    public async Task SendRealtimeInputAsync(BidiGenerateContentRealtimeInput realtimeInput,
+        CancellationToken cancellationToken = default)
+    {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(realtimeInput);
+#else
+        if (realtimeInput == null) throw new ArgumentNullException(nameof(realtimeInput));
+#endif
+        var payload = new BidiClientPayload { RealtimeInput = realtimeInput };
+        await SendAsync(payload, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a video frame (for example a camera or screen capture image) as realtime input.
+    /// </summary>
+    /// <param name="frameData">The encoded frame.</param>
+    /// <param name="mimeType">The MIME type of the frame. Defaults to "image/jpeg".</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    public Task SendVideoFrameAsync(byte[] frameData, string mimeType = "image/jpeg",
+        CancellationToken cancellationToken = default)
+    {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(frameData);
+#else
+        if (frameData == null) throw new ArgumentNullException(nameof(frameData));
+#endif
+        return SendRealtimeInputAsync(new BidiGenerateContentRealtimeInput
+        {
+            Video = new Blob { Data = Convert.ToBase64String(frameData), MimeType = mimeType }
+        }, cancellationToken);
+    }
+
+    /// <summary>
+    /// Sends text as realtime input. Unlike <see cref="SentTextAsync"/>, which sends a complete user turn,
+    /// realtime text is processed like streamed audio and can interrupt the model.
+    /// </summary>
+    /// <param name="text">The text to send.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    public Task SendRealtimeTextAsync(string text, CancellationToken cancellationToken = default)
+    {
+        return SendRealtimeInputAsync(new BidiGenerateContentRealtimeInput { Text = text }, cancellationToken);
+    }
+
+    /// <summary>
+    /// Signals that the user has started speaking. Only use this when automatic activity detection is disabled
+    /// through <see cref="RealtimeInputConfig"/>.
+    /// </summary>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    public Task SendActivityStartAsync(CancellationToken cancellationToken = default)
+    {
+        return SendRealtimeInputAsync(new BidiGenerateContentRealtimeInput { ActivityStart = new ActivityStart() },
+            cancellationToken);
+    }
+
+    /// <summary>
+    /// Signals that the user has stopped speaking. Only use this when automatic activity detection is disabled
+    /// through <see cref="RealtimeInputConfig"/>.
+    /// </summary>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    public Task SendActivityEndAsync(CancellationToken cancellationToken = default)
+    {
+        return SendRealtimeInputAsync(new BidiGenerateContentRealtimeInput { ActivityEnd = new ActivityEnd() },
+            cancellationToken);
+    }
+
+    /// <summary>
+    /// Signals that the audio stream has ended, for example because the microphone was turned off,
+    /// so the server can flush any buffered audio. Gemini API only.
+    /// </summary>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    public Task SendAudioStreamEndAsync(CancellationToken cancellationToken = default)
+    {
+        return SendRealtimeInputAsync(new BidiGenerateContentRealtimeInput { AudioStreamEnd = true }, cancellationToken);
+    }
+
+    /// <summary>
+    /// Updates the system instruction and/or tools of the running session without reconnecting.
+    /// </summary>
+    /// <param name="contextUpdate">The context update to send.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    public async Task SendContextUpdateAsync(BidiGenerateContentContextUpdate contextUpdate,
+        CancellationToken cancellationToken = default)
+    {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(contextUpdate);
+#else
+        if (contextUpdate == null) throw new ArgumentNullException(nameof(contextUpdate));
+#endif
+        var payload = new BidiClientPayload { ContextUpdate = contextUpdate };
+        await SendAsync(payload, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Updates the system instruction and/or tools of the running session without reconnecting.
+    /// </summary>
+    /// <param name="systemInstruction">The new system instruction, or null to keep the current one.</param>
+    /// <param name="tools">
+    /// The new set of tools, or null to keep the current ones. An empty collection removes all tools.
+    /// This does not change <see cref="FunctionTools"/>, which the client uses to execute function calls;
+    /// update it as well if you add or remove function declarations.
+    /// </param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    public Task SendContextUpdateAsync(string? systemInstruction, IEnumerable<Tool>? tools = null,
+        CancellationToken cancellationToken = default)
+    {
+        return SendContextUpdateAsync(new BidiGenerateContentContextUpdate
+        {
+            SystemInstruction = systemInstruction is null ? null : new Content(systemInstruction, Roles.System),
+            Tools = tools is null ? null : new ContextUpdateTools { Tools = tools.ToArray() }
+        }, cancellationToken);
     }
 
     #endregion
