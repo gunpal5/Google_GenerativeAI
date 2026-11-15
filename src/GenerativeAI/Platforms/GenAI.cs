@@ -141,6 +141,7 @@ public abstract class GenAI
     /// </summary>
     /// <param name="modelName">The name of the image generation model to initialize.</param>
     /// <returns>An instance of <see cref="ImagenModel"/> configured for generating images using the specified model name.</returns>
+    [Obsolete("Imagen models are retired on the Gemini API and on Vertex AI (June 30, 2026). Use CreateGenerativeModel with a Gemini image model, such as GoogleAIModels.GeminiNanoBanana21, and the IMAGE response modality.", false)]
     public ImagenModel CreateImageModel(string modelName)
     {
         return new ImagenModel(this.Platform, modelName, this.HttpClient, this.Logger);

@@ -678,8 +678,8 @@ See [Multimodal Live API](https://github.com/gunpal5/Google_GenerativeAI/wiki/Mu
 | `Gemini3ProImage` | `models/gemini-3-pro-image` | GA |
 | `Gemini25FlashImage` | `models/gemini-2.5-flash-image` | Shutdown scheduled March 15, 2027 |
 
-All Imagen models are shut down on the Gemini API, so use the Gemini image models above. Imagen still works on Vertex AI
-(see `VertexAIModels.Imagen` below). See [Image Generation](https://github.com/gunpal5/Google_GenerativeAI/wiki/Image-Generation).
+All Imagen models are retired, on the Gemini API and (since June 30, 2026) on Vertex AI, so use the Gemini image
+models above. See [Image Generation](https://github.com/gunpal5/Google_GenerativeAI/wiki/Image-Generation).
 
 ### Video generation (`GoogleAIModels.Video`)
 
@@ -772,9 +772,11 @@ marked `[Obsolete]` in this class, but many of them are retired on Vertex AI as 
 On Vertex AI, the SDK sends Gemini and model-as-a-service embedding models to `embedContent`/`batchEmbedContents`.
 It sends other text embedding models, such as `text-embedding-005`, gecko and multilingual, to `predict`.
 
-### `VertexAIModels.Imagen`
+### `VertexAIModels.Imagen` (retired)
 
-`Imagen4Generate001`, `Imagen4UltraGenerate001`, `Imagen4FastGenerate001`, `Imagen4GeneratePreview0606`,
+Vertex AI retired all Imagen models on June 30, 2026, and the whole class is `[Obsolete]`. Google's recommended
+replacement is a Gemini image model, such as `VertexAIModels.Gemini.GeminiNanoBanana21` or `Gemini3ProImage`. The
+retired constants are `Imagen4Generate001`, `Imagen4UltraGenerate001`, `Imagen4FastGenerate001`, `Imagen4GeneratePreview0606`,
 `Imagen4UltraGeneratePreview0606`, `Imagen3Generate001`, `Imagen3FastGenerate001`, `Imagen3Generate002`,
 `Imagen3Capability001` (editing and customization), and `ImageGeneration006`/`005`/`002`.
 Their IDs are the same strings without a prefix, for example `imagen-4.0-generate-001`.
@@ -989,7 +991,7 @@ compiler **warning CS0618**, which **breaks the build if you use `TreatWarningsA
 | `GoogleAIModels.Gemini25FlashImagePreview` | `GeminiNanoBanana21` |
 | `GoogleAIModels.Gemini25FlashPreviewTts` / `Gemini25ProPreviewTts` | `Gemini38FlashTts` |
 | `GoogleAIModels.TextEmbedding` (`text-embedding-004`) | `GeminiEmbedding2` or `GeminiEmbedding` |
-| `GoogleAIModels.Imagen.Imagen4Generate001` (and other Imagen on the Gemini API) | `GeminiNanoBanana21` (or Imagen on Vertex AI) |
+| `GoogleAIModels.Imagen.Imagen4Generate001` (and other Imagen on the Gemini API) | `GeminiNanoBanana21` |
 | `GoogleAIModels.Video.Veo*` | `GoogleAIModels.Video.GeminiOmni12Flash` through the Interactions API, or Veo on Vertex AI |
 | `GoogleAIModels.Aqa` | [File Search](https://github.com/gunpal5/Google_GenerativeAI/wiki/File-Search) or [Vertex RAG Engine](https://github.com/gunpal5/Google_GenerativeAI/wiki/Vertex-RAG-Engine) |
 
@@ -1077,7 +1079,7 @@ that binds to these constructors. See [Configuration and Error Handling](https:/
 | Microsoft.Extensions.AI chat client | The model's function-call turn was added once per call, which broke parallel calls. Streaming only looked for function calls in the last chunk | Fixed: one model turn, and parts collected across the whole stream |
 | `RemoteFileContent` (MEAI) | Sent an empty file URI when the remote file had none | Throws `InvalidOperationException` ("upload the file before referencing it") |
 | `MultiModalLiveClient` | Exceptions in the message handler (including your event handlers) could crash the process. Reconnects didn't re-send setup. `SafetySettings` were not sent | Exceptions go to `ErrorOccurred`. Setup is re-sent after a reconnect, resuming with the last handle (`ResendSetupOnReconnect`, default `true`). `SafetySettings` are sent. New `TurnCompleted` event |
-| Imagen through MEAI (`GenerativeAIImagenGenerator`) | Default `Imagen3Generate002` | Same default (it is shut down on the Gemini API). Pass a Vertex model, or use `GenerativeAIImageGenerator` with `GeminiNanoBanana21` |
+| Imagen through MEAI (`GenerativeAIImagenGenerator`) | Default `Imagen3Generate002` | `[Obsolete]`: every Imagen model is retired (Vertex AI on June 30, 2026). Use `GenerativeAIImageGenerator`, which defaults to `GeminiNanoBanana21` |
 
 ---
 
@@ -1216,7 +1218,7 @@ Previous release: 3.6.9.
 
 ## Model and platform changes
 
-- **Imagen retired on the Gemini API:** use the Gemini image models. Imagen still works on Vertex AI.
+- **Imagen retired:** Google retired Imagen on the Gemini API and, on June 30, 2026, on Vertex AI. `ImagenModel`, `GenAI.CreateImageModel`, `GenerativeAIImagenGenerator` and the Imagen model constants are marked `[Obsolete]`; use the Gemini image models and `GenerativeAIImageGenerator`.
 - **Veo retired on the Gemini API:** `VideoGenerationModel` now throws `NotSupportedException` on the Gemini API. Use
   Veo on Vertex AI or Gemini Omni.
 - **Retired and deprecated model constants** are `[Obsolete]` with replacement guidance. `text-embedding-004`, the
@@ -4523,7 +4525,7 @@ catch (ApiException ex) when (ex.ErrorCode is 403 or 404 || ex.ErrorStatus == "F
 
 Gemini's native image models (the "Nano Banana" family) create and edit images through the normal `generateContent` call: you send text, optionally with images, and the response contains image parts. This works on both the Gemini API and Vertex AI.
 
-The older Imagen models are **retired on the Gemini API**. The SDK still supports Imagen through `ImagenModel` on **Vertex AI only**.
+The older **Imagen models are retired** on both the Gemini API and Vertex AI (Vertex AI retired them on June 30, 2026). Use the Gemini image models described on this page.
 
 **NuGet packages**
 
@@ -4645,37 +4647,20 @@ foreach (var image in result.Contents.OfType<DataContent>())
 
 With `GenerativeAIChatClient` you can also get images from a chat by setting `AdditionalPropertiesKeys.ResponseModalities` and the `ImageConfig*` keys in `ChatOptions.AdditionalProperties` (see [Microsoft.Extensions.AI IChatClient](https://github.com/gunpal5/Google_GenerativeAI/wiki/Microsoft.Extensions.AI-IChatClient-Implementation#gemini-specific-options)).
 
-## Imagen on Vertex AI
+## Imagen (retired)
 
-Imagen models are shut down on the Gemini API, and the `GoogleAIModels.Imagen` constants are kept only for compatibility. On **Vertex AI**, `ImagenModel` (namespace `GenerativeAI.Clients`) still calls Imagen's `predict` endpoint.
+Google has retired every Imagen model: on the Gemini API, and on Vertex AI on June 30, 2026, where Google names
+`gemini-2.5-flash-image` as the replacement. The SDK's Imagen APIs are therefore marked `[Obsolete]` and produce
+warning `CS0618`:
 
-```csharp
-using GenerativeAI;
-using GenerativeAI.Authenticators; // Google_GenerativeAI.Auth package
-using GenerativeAI.Types;
+| Obsolete API | Use instead |
+|---|---|
+| `ImagenModel`, `GenAI.CreateImageModel(...)` | `CreateGenerativeModel` with a Gemini image model and the `IMAGE` response modality (see above) |
+| `GenerativeAIImagenGenerator` (Microsoft.Extensions.AI) | `GenerativeAIImageGenerator` |
+| `GoogleAIModels.Imagen.*`, `VertexAIModels.Imagen.*` | `GoogleAIModels.GeminiNanoBanana21`, `Gemini3ProImage` or `Gemini31FlashImage`, and the matching `VertexAIModels.Gemini` constants |
 
-var vertexAi = new VertexAI(
-    projectId: "your-project-id",
-    region: "us-central1",
-    authenticator: new GoogleServiceAccountAuthenticator("service-account.json"));
-
-var imagen = vertexAi.CreateImageModel(VertexAIModels.Imagen.Imagen4Generate001);
-
-var response = await imagen.GenerateImagesAsync(
-    "A dog catching a ball",
-    parameters: new ImageGenerationParameters { SampleCount = 1, AspectRatio = "16:9" });
-
-foreach (var prediction in response?.Predictions ?? new List<VisionGenerativeModelResult>())
-{
-    if (prediction.BytesBase64Encoded is { } data)
-        await File.WriteAllBytesAsync("dog.png", Convert.FromBase64String(data));
-}
-```
-
-- `GenerateImagesAsync(string prompt, ImageSource? imageSource = null, ImageGenerationParameters? parameters = null, CancellationToken cancellationToken = default)`, or pass a full `GenerateImageRequest`.
-- `ImageGenerationParameters` also has `Seed`, `EnhancePrompt`, `NegativePrompt`, `OutputOptions`, `SampleImageStyle`, `PersonGeneration`, `SafetySetting`, `AddWatermark`, `StorageUri`, `Mode` and `UpscaleConfig`.
-- Vertex AI Imagen constants: `VertexAIModels.Imagen.Imagen4Generate001`, `Imagen4UltraGenerate001`, `Imagen4FastGenerate001`, `Imagen3Generate002`, `Imagen3Capability001` and others.
-- `GenerativeAIImagenGenerator(GenAI genai, string modelName)` exposes Imagen as an MEAI `IImageGenerator`; pass a `VertexAI` instance and a Vertex Imagen model name. Its default model is a retired Gemini API Imagen model, so always pass `modelName`.
+Requests to Imagen models fail with an `ApiException` (HTTP 404), so migrate any remaining Imagen code to the Gemini
+image models.
 
 ### Legacy: image captioning and visual question answering
 
@@ -5481,7 +5466,7 @@ The **Google_GenerativeAI.Microsoft** package implements the [Microsoft.Extensio
 |---|---|---|
 | `IChatClient` | `GenerativeAIChatClient` | `GenerativeModel` |
 | `IEmbeddingGenerator<string, Embedding<float>>` | `GenerativeAIEmbeddingGenerator` | `EmbeddingModel` (see [Embeddings](https://github.com/gunpal5/Google_GenerativeAI/wiki/Embeddings)) |
-| `IImageGenerator` | `GenerativeAIImageGenerator` (Gemini image models), `GenerativeAIImagenGenerator` (Imagen, Vertex AI only) | see [Image Generation](https://github.com/gunpal5/Google_GenerativeAI/wiki/Image-Generation) |
+| `IImageGenerator` | `GenerativeAIImageGenerator` (Gemini image models), `GenerativeAIImagenGenerator` (obsolete: Imagen is retired) | see [Image Generation](https://github.com/gunpal5/Google_GenerativeAI/wiki/Image-Generation) |
 
 ## Installation
 

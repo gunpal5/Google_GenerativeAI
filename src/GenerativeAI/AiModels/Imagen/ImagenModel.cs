@@ -8,6 +8,12 @@ namespace GenerativeAI.Clients;
 /// A client for interacting with the Imagen API to generate images.
 /// </summary>
 /// <seealso href="https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/imagen-api">See Official API Documentation</seealso>
+/// <remarks>
+/// All Imagen models are retired: on the Gemini API, and on Vertex AI since June 30, 2026. Generate images with a
+/// Gemini image model instead (for example <see cref="GoogleAIModels.GeminiNanoBanana21"/>) through
+/// <see cref="GenerativeModel"/> with the <c>IMAGE</c> response modality.
+/// </remarks>
+[Obsolete("Imagen models are retired on the Gemini API and on Vertex AI (June 30, 2026). Use a Gemini image model, such as GoogleAIModels.GeminiNanoBanana21, with GenerativeModel and the IMAGE response modality.", false)]
 public class ImagenModel : BaseClient
 {
     string _modelName;

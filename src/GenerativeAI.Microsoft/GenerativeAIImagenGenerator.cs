@@ -18,6 +18,11 @@ namespace GenerativeAI.Microsoft;
 /// Implements Microsoft.Extensions.AI.IImageGenerator by creating an ImagenModel via GenAI.CreateImageModel
 /// and calling <see cref="GenerativeAI.Clients.ImagenModel.GenerateImagesAsync(GenerateImageRequest, CancellationToken)"/>.
 /// </summary>
+/// <remarks>
+/// All Imagen models are retired (Gemini API, and Vertex AI since June 30, 2026). Use
+/// <see cref="GenerativeAIImageGenerator"/>, which generates and edits images with Gemini image models.
+/// </remarks>
+[Obsolete("Imagen models are retired on the Gemini API and on Vertex AI (June 30, 2026). Use GenerativeAIImageGenerator, which uses Gemini image models such as GoogleAIModels.GeminiNanoBanana21.", false)]
 public sealed class GenerativeAIImagenGenerator : IImageGenerator
 {
     /// <summary>

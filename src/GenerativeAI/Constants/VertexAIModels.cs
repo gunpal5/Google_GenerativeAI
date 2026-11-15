@@ -332,6 +332,11 @@ public static class VertexAIModels
     /// <summary>
     /// Provides constants for Imagen model variations.
     /// </summary>
+    /// <remarks>
+    /// All Imagen models on Vertex AI were retired on June 30, 2026; Google's recommended replacement is a Gemini image
+    /// model (for example <c>gemini-2.5-flash-image</c> or <see cref="Gemini.GeminiNanoBanana21"/>).
+    /// </remarks>
+    [Obsolete("Imagen models on Vertex AI were retired on June 30, 2026. Use a Gemini image model, such as VertexAIModels.Gemini.GeminiNanoBanana21.", false)]
     public static class Imagen
     {
         /// <summary>

@@ -1,4 +1,5 @@
 #pragma warning disable MEAI001
+#pragma warning disable CS0618 // These tests cover the obsolete Imagen APIs.
 using System;
 using System.Collections.Generic;
 using System.Threading;

@@ -540,6 +540,7 @@ public static class GoogleAIModels
     /// All Imagen models on the Gemini API are shut down. Use the Gemini image models
     /// (for example <see cref="GeminiNanoBanana21"/>) instead.
     /// </remarks>
+    [Obsolete("Imagen models are shut down on the Gemini API. Use a Gemini image model, such as GoogleAIModels.GeminiNanoBanana21.", false)]
     public static class Imagen
     {
         /// <summary>
