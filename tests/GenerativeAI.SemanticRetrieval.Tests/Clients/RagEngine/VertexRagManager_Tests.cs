@@ -352,7 +352,7 @@ public class VertexRagManager_Tests : SemanticRetrieverTestBase
         var corpusName = list.RagCorpora
             .FirstOrDefault(s => s.DisplayName.Contains("test", StringComparison.OrdinalIgnoreCase)).Name;
         
-        var model = vertexAi.CreateGenerativeModel(VertexAIModels.Gemini.Gemini38Flash,corpusIdForRag: corpusName);
+        var model = vertexAi.CreateGenerativeModel(VertexRegionalTestModel,corpusIdForRag: corpusName);
 
         var result =await model.GenerateContentAsync("what does the marketing plan said about the youtube?", cancellationToken: TestContext.Current.CancellationToken);
     }
@@ -377,9 +377,10 @@ public class VertexRagManager_Tests : SemanticRetrieverTestBase
     }
 
 
+    // The RAG Engine is not available on the global endpoint, so always use a regional one.
     protected override IPlatformAdapter GetTestVertexAIPlatform()
     {
-        var platform = base.GetTestVertexAIPlatform();
+        var platform = GetTestVertexAIRegionalPlatform();
         var jsonFile = Environment.GetEnvironmentVariable("Google_Service_Account_Json");
         platform.SetAuthenticator(new GoogleServiceAccountAuthenticator(jsonFile));
 

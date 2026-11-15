@@ -132,7 +132,7 @@ public class VertexRagManager : BaseClient
                     .ConfigureAwait(false);
             
             await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
-        } while (longRunningOperation?.Done != true && sw.ElapsedMilliseconds < LongRunningOperationTimeout);
+        } while (longRunningOperation?.Done != true && sw.ElapsedMilliseconds < timeOut);
 
         if (longRunningOperation != null && longRunningOperation.Done == true && longRunningOperation.Error != null)
         {
@@ -140,6 +140,46 @@ public class VertexRagManager : BaseClient
         }
 
         return longRunningOperation;
+    }
+
+    /// <summary>
+    /// Gets the RAG Engine configuration (Serverless or Spanner mode) for the platform's location.
+    /// </summary>
+    /// <param name="cancellationToken">An optional token to observe and respond to cancellation requests.</param>
+    /// <returns>The current <see cref="RagEngineConfig"/>.</returns>
+    public Task<RagEngineConfig?> GetEngineConfigAsync(CancellationToken cancellationToken = default)
+    {
+        return RagCorpusClient.GetRagEngineConfigAsync(cancellationToken);
+    }
+
+    /// <summary>
+    /// Updates the RAG Engine configuration for the platform's location and waits for the change to complete.
+    /// </summary>
+    /// <param name="config">The new configuration, for example <c>new RagEngineConfig { RagManagedDbConfig = RagManagedDbConfig.CreateServerless() }</c>.</param>
+    /// <param name="cancellationToken">An optional token to observe and respond to cancellation requests.</param>
+    /// <returns>The updated <see cref="RagEngineConfig"/>.</returns>
+    /// <remarks>
+    /// Choosing <see cref="RagManagedDbSpanner.Unprovisioned"/> disables the RAG Engine and permanently deletes its data.
+    /// </remarks>
+    public async Task<RagEngineConfig?> UpdateEngineConfigAsync(RagEngineConfig config,
+        CancellationToken cancellationToken = default)
+    {
+        var operation = await RagCorpusClient.UpdateRagEngineConfigAsync(config, cancellationToken).ConfigureAwait(false);
+        if (operation?.Name != null && operation.Done != true)
+            await AwaitForLongRunningOperation(operation.Name, cancellationToken: cancellationToken).ConfigureAwait(false);
+
+        return await GetEngineConfigAsync(cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Switches the RAG Engine for the platform's location to Serverless mode and waits for the change to complete.
+    /// </summary>
+    /// <param name="cancellationToken">An optional token to observe and respond to cancellation requests.</param>
+    /// <returns>The updated <see cref="RagEngineConfig"/>.</returns>
+    public Task<RagEngineConfig?> SwitchToServerlessModeAsync(CancellationToken cancellationToken = default)
+    {
+        return UpdateEngineConfigAsync(new RagEngineConfig { RagManagedDbConfig = RagManagedDbConfig.CreateServerless() },
+            cancellationToken);
     }
 
     /// <summary>
