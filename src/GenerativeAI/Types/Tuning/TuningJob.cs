@@ -170,4 +170,72 @@ public class TuningJob
     /// </summary>
     [JsonPropertyName("veoTuningSpec")]
     public VeoTuningSpec? VeoTuningSpec { get; set; }
+
+    /// <summary>
+    /// Tuning Spec for Preference Optimization.
+    /// </summary>
+    [JsonPropertyName("preferenceOptimizationSpec")]
+    public PreferenceOptimizationSpec? PreferenceOptimizationSpec { get; set; }
+
+    /// <summary>
+    /// Tuning Spec for Distillation.
+    /// </summary>
+    [JsonPropertyName("distillationSpec")]
+    public DistillationSpec? DistillationSpec { get; set; }
+
+    /// <summary>
+    /// Tuning Spec for Reinforcement Tuning.
+    /// </summary>
+    [JsonPropertyName("reinforcementTuningSpec")]
+    public ReinforcementTuningSpec? ReinforcementTuningSpec { get; set; }
+
+    /// <summary>
+    /// Tuning Spec for Full Fine Tuning.
+    /// </summary>
+    [JsonPropertyName("fullFineTuningSpec")]
+    public FullFineTuningSpec? FullFineTuningSpec { get; set; }
+
+    /// <summary>
+    /// Tuning Spec for Veo LoRA Tuning.
+    /// </summary>
+    [JsonPropertyName("veoLoraTuningSpec")]
+    public VeoLoraTuningSpec? VeoLoraTuningSpec { get; set; }
+
+    /// <summary>
+    /// Spec for the teacher model sampling of a distillation job.
+    /// </summary>
+    [JsonPropertyName("distillationSamplingSpec")]
+    public DistillationSamplingSpec? DistillationSamplingSpec { get; set; }
+
+    /// <summary>
+    /// Output only. Evaluation runs for the tuning job.
+    /// </summary>
+    [JsonPropertyName("evaluateDatasetRuns")]
+    public List<EvaluateDatasetRun>? EvaluateDatasetRuns { get; set; }
+
+    /// <summary>
+    /// Output only. The detail state of the tuning job (while the overall <see cref="State"/> is running).
+    /// </summary>
+    [JsonPropertyName("tuningJobState")]
+    public TuningJobState? TuningJobState { get; set; }
+
+    /// <summary>
+    /// Output only. Tuning job metadata.
+    /// </summary>
+    [JsonPropertyName("tuningJobMetadata")]
+    public TuningJobMetadata? TuningJobMetadata { get; set; }
+
+    /// <summary>
+    /// Output only. The Cloud Storage metrics URI associated with this tuning job.
+    /// </summary>
+    [JsonPropertyName("gcsMetricsUri")]
+    public string? GcsMetricsUri { get; set; }
+
+    /// <summary>
+    /// Returns <see langword="true"/> when the job reached a terminal state (succeeded, partially succeeded,
+    /// failed, cancelled or expired).
+    /// </summary>
+    [JsonIgnore]
+    public bool IsCompleted => State is JobState.JOB_STATE_SUCCEEDED or JobState.JOB_STATE_PARTIALLY_SUCCEEDED
+        or JobState.JOB_STATE_FAILED or JobState.JOB_STATE_CANCELLED or JobState.JOB_STATE_EXPIRED;
 }

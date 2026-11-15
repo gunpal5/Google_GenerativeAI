@@ -455,6 +455,11 @@ namespace GenerativeAI.Types;
 [JsonSerializable(typeof(VertexPredictEmbeddingStatistics))]
 [JsonSerializable(typeof(AuthToken))]
 [JsonSerializable(typeof(CreateAuthTokenRequest))]
+[JsonSerializable(typeof(UpdateModelConfig))]
+[JsonSerializable(typeof(ComputeTokensRequest))]
+[JsonSerializable(typeof(ComputeTokensResponse))]
+[JsonSerializable(typeof(RegisterFilesRequest))]
+[JsonSerializable(typeof(RegisterFilesResponse))]
 
 [JsonSourceGenerationOptions(WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull, UseStringEnumConverter = true)]
 

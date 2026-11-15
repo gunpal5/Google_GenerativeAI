@@ -5,6 +5,7 @@ namespace GenerativeAI.Types;
 /// <summary>
 /// Hyperparameters for Supervised Fine-Tuning (SFT).
 /// </summary>
+[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
 public class SupervisedHyperParameters
 {
     /// <summary>

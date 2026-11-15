@@ -155,4 +155,13 @@ public abstract class GenAI
     {
         return new GenerativeAI.Clients.InteractionsClient(this.Platform, this.HttpClient, this.Logger);
     }
+
+    /// <summary>
+    /// Creates a client for model tuning (Vertex AI tuning jobs or Gemini API tuned models).
+    /// </summary>
+    /// <returns>A <see cref="GenerativeAI.Clients.TuningClient"/> that uses this instance's platform, HTTP client and logger.</returns>
+    public GenerativeAI.Clients.TuningClient CreateTuningClient()
+    {
+        return new GenerativeAI.Clients.TuningClient(this.Platform, this.HttpClient, this.Logger);
+    }
 }
