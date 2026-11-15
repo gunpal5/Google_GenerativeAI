@@ -1,0 +1,13 @@
+{
+  "_comment": "Maps python-genai type names to this SDK's names, and lists fields that exist only inside the Python SDK (not on the wire). Used by scripts/drift/check_drift.py dto.",
+  "classes": {
+    "VideoMetadata": "VideoMetadataResult"
+  },
+  "ignoreFields": [
+    "sdkHttpResponse",
+    "httpOptions",
+    "shouldReturnHttpResponse",
+    "parsed",
+    "automaticFunctionCallingHistory"
+  ]
+}

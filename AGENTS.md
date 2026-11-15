@@ -90,10 +90,15 @@ keeps one open issue (label `api-drift`) per kind of drift:
   (needs the `GEMINI_API_KEY` repository secret).
 - **api**: new or removed request/response types and fields in the Gemini API discovery document.
 - **python-genai**: new releases of python-genai, the reference SDK.
+- **dto**: types, fields and enum values in python-genai's `types.py` that the SDK's DTOs don't have yet. The check
+  parses `types.py` (without running it) and the C# sources (`[JsonPropertyName]` and property names), matches classes by
+  name, and reports only gaps that are new since `.github/drift/dto-baseline.json`. Renamed types and Python-only
+  fields go in `.github/drift/dto-map.json`.
 
 After handling a drift, refresh its baseline and commit `.github/drift/`:
-`python scripts/drift/check_drift.py <models|api|python-genai> --update`. Model IDs that intentionally have no constant
-go in `.github/drift/models-ignore.txt`.
+`python scripts/drift/check_drift.py <models|api|python-genai|dto> --update`. Model IDs that intentionally have no
+constant go in `.github/drift/models-ignore.txt`. To see every known DTO gap (not just new ones), read
+`.github/drift/dto-baseline.json`.
 
 ## Git conventions
 

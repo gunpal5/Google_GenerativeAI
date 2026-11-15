@@ -206,7 +206,199 @@ def check_python_genai(update: bool) -> tuple[bool, str]:
     return True, "\n".join(lines) + "\n"
 
 
-CHECKS = {"models": check_models, "api": check_api, "python-genai": check_python_genai}
+# ------------------------------------------------------------------------------------------------ dto
+
+DTO_BASELINE = DRIFT_DIR / "dto-baseline.json"
+DTO_MAP = DRIFT_DIR / "dto-map.json"
+PYGENAI_TYPES_URL = "https://raw.githubusercontent.com/googleapis/python-genai/v{version}/google/genai/types.py"
+SRC_DIR = ROOT / "src"
+
+
+def to_camel(snake: str) -> str:
+    """python-genai's pydantic alias generator: response_mime_type -> responseMimeType."""
+    head, *rest = snake.split("_")
+    return head + "".join(part[:1].upper() + part[1:] for part in rest)
+
+
+def python_types(version: str) -> tuple[dict[str, set[str]], dict[str, set[str]]]:
+    """Parses python-genai's types.py (without executing it) into {class: camelCase fields} and {enum: values}."""
+    import ast
+
+    request = urllib.request.Request(PYGENAI_TYPES_URL.format(version=version),
+                                     headers={"User-Agent": "sdk-drift-check"})
+    import warnings
+
+    with urllib.request.urlopen(request, timeout=60) as response:
+        source = response.read().decode("utf-8")
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", SyntaxWarning)  # docstrings in types.py contain "\/"
+        tree = ast.parse(source)
+
+    def base_names(node: "ast.ClassDef") -> set[str]:
+        return {b.attr if isinstance(b, ast.Attribute) else getattr(b, "id", "") for b in node.bases}
+
+    classes, enums = {}, {}
+    for node in tree.body:
+        if not isinstance(node, ast.ClassDef):
+            continue
+        bases = base_names(node)
+        if "BaseModel" in bases:
+            classes[node.name] = {to_camel(stmt.target.id) for stmt in node.body
+                                  if isinstance(stmt, ast.AnnAssign) and isinstance(stmt.target, ast.Name)
+                                  and not stmt.target.id.startswith("_") and stmt.target.id != "model_config"}
+        elif "CaseInSensitiveEnum" in bases or "Enum" in bases:
+            enums[node.name] = {stmt.value.value for stmt in node.body
+                                if isinstance(stmt, ast.Assign) and isinstance(stmt.value, ast.Constant)
+                                and isinstance(stmt.value.value, str)}
+    return classes, enums
+
+
+TYPE_DECL = re.compile(r"\b(class|record|struct|enum|interface)\s+(\w+)")
+JSON_NAME = re.compile(r'JsonPropertyName\(\s*"([^"]+)"\s*\)')
+ENUM_NAME = re.compile(r'(?:JsonStringEnumMemberName|EnumMember\s*\(\s*Value\s*=)\s*\(?\s*"([^"]+)"')
+PROPERTY = re.compile(r"^\s*public\s+(?:required\s+|virtual\s+|override\s+|new\s+)*[\w<>\[\]?,. ]+\s+(\w+)\s*\{\s*get")
+ENUM_MEMBER = re.compile(r"^\s*([A-Za-z_]\w*)\s*(?:=\s*[^,]+)?,?\s*$")
+
+
+def csharp_types() -> tuple[dict[str, set[str]], dict[str, set[str]]]:
+    """Collects {class: JSON names} and {enum: JSON values} from the SDK sources (a lightweight parser)."""
+    classes: dict[str, set[str]] = {}
+    enums: dict[str, set[str]] = {}
+    for path in SRC_DIR.rglob("*.cs"):
+        if any(part in ("bin", "obj") for part in path.parts):
+            continue
+        stack: list[tuple[str, str, int]] = []
+        pending: tuple[str, str] | None = None
+        pending_json: str | None = None
+        depth = 0
+        for raw in path.read_text(encoding="utf-8-sig", errors="replace").splitlines():
+            line = raw.strip()
+            if line.startswith("//"):
+                continue
+            decl = TYPE_DECL.search(line)
+            if decl and not line.startswith("["):
+                pending = (decl.group(1), decl.group(2))
+            current = stack[-1] if stack else None
+            if current:
+                kind, name, _ = current
+                if kind == "enum":
+                    attr = ENUM_NAME.search(line)
+                    if attr:
+                        pending_json = attr.group(1)
+                    else:
+                        member = ENUM_MEMBER.match(line)
+                        if member and line not in ("{", "}"):
+                            enums.setdefault(name, set()).add(pending_json or member.group(1))
+                            pending_json = None
+                else:
+                    attr = JSON_NAME.search(line)
+                    if attr:
+                        classes.setdefault(name, set()).add(attr.group(1))
+                    prop = PROPERTY.match(raw)
+                    if prop:
+                        classes.setdefault(name, set()).add(prop.group(1)[:1].lower() + prop.group(1)[1:])
+            for char in line:
+                if char == "{":
+                    depth += 1
+                    if pending:
+                        stack.append((pending[0], pending[1], depth))
+                        if pending[0] == "enum":
+                            enums.setdefault(pending[1], set())
+                        else:
+                            classes.setdefault(pending[1], set())
+                        pending = None
+                elif char == "}":
+                    while stack and stack[-1][2] >= depth:
+                        stack.pop()
+                    depth -= 1
+            if pending and line.endswith(";"):
+                pending = None  # e.g. "record Foo(...);" without a body
+    return classes, enums
+
+
+def dto_gaps(version: str) -> dict:
+    py_classes, py_enums = python_types(version)
+    python_types_cache.update(py_classes)
+    cs_classes, cs_enums = csharp_types()
+    mapping = json.loads(DTO_MAP.read_text(encoding="utf-8")) if DTO_MAP.exists() else {}
+    renames = mapping.get("classes", {})
+    ignore_fields = set(mapping.get("ignoreFields", []))
+
+    missing_classes, missing_fields, missing_enums, missing_values = [], {}, [], {}
+    for name, fields in sorted(py_classes.items()):
+        cs_name = renames.get(name, name)
+        if cs_name not in cs_classes:
+            missing_classes.append(name)
+            continue
+        gap = sorted(fields - cs_classes[cs_name] - ignore_fields)
+        if gap:
+            missing_fields[name] = gap
+    for name, values in sorted(py_enums.items()):
+        cs_name = renames.get(name, name)
+        if cs_name not in cs_enums:
+            missing_enums.append(name)
+            continue
+        cs_values = {v.upper() for v in cs_enums[cs_name]}
+        gap = sorted(v for v in values if v.upper() not in cs_values)
+        if gap:
+            missing_values[name] = gap
+    return {"python_genai": version, "missing_classes": missing_classes, "missing_fields": missing_fields,
+            "missing_enums": missing_enums, "missing_enum_values": missing_values,
+            "counts": {"python_classes": len(py_classes), "python_enums": len(py_enums)}}
+
+
+def check_dto(update: bool) -> tuple[bool, str]:
+    version = http_json(PYPI_URL)["info"]["version"]
+    current = dto_gaps(version)
+    if update or not DTO_BASELINE.exists():
+        DTO_BASELINE.parent.mkdir(parents=True, exist_ok=True)
+        DTO_BASELINE.write_text(json.dumps(current, indent=1, sort_keys=True) + "\n", encoding="utf-8")
+        return False, (f"Recorded the DTO baseline against python-genai {version}: "
+                       f"{len(current['missing_classes'])} classes and {len(current['missing_fields'])} classes with "
+                       f"field gaps are known.\n")
+
+    base = json.loads(DTO_BASELINE.read_text(encoding="utf-8"))
+    new_classes = [c for c in current["missing_classes"] if c not in base["missing_classes"]]
+    new_enums = [e for e in current["missing_enums"] if e not in base["missing_enums"]]
+    new_fields = {c: [f for f in fs if f not in base["missing_fields"].get(c, [])]
+                  for c, fs in current["missing_fields"].items()}
+    new_fields = {c: fs for c, fs in new_fields.items() if fs and c not in new_classes}
+    new_values = {e: [v for v in vs if v not in base["missing_enum_values"].get(e, [])]
+                  for e, vs in current["missing_enum_values"].items()}
+    new_values = {e: vs for e, vs in new_values.items() if vs and e not in new_enums}
+    fixed = [c for c in base["missing_classes"] if c not in current["missing_classes"]]
+
+    lines = [f"Compared python-genai {version} ({current['counts']['python_classes']} classes, "
+             f"{current['counts']['python_enums']} enums) with the SDK's DTOs. Baseline: python-genai "
+             f"{base.get('python_genai')}. Only gaps that are **new since the baseline** are listed.\n"]
+    if new_fields:
+        lines.append("\n### Fields missing from existing SDK types\n")
+        lines += [f"- `{c}`: {', '.join(f'`{f}`' for f in fs)}" for c, fs in sorted(new_fields.items())]
+    if new_classes:
+        lines.append("\n### python-genai types with no SDK equivalent\n\nAdd them, or map renamed types in "
+                     "`.github/drift/dto-map.json`.\n")
+        lines += [f"- `{c}`: {', '.join(f'`{f}`' for f in sorted(dto_py_fields)) or '(no fields)'}"
+                  for c, dto_py_fields in ((c, python_types_cache.get(c, set())) for c in new_classes)]
+    if new_values:
+        lines.append("\n### Enum values missing from existing SDK enums\n")
+        lines += [f"- `{e}`: {', '.join(f'`{v}`' for v in vs)}" for e, vs in sorted(new_values.items())]
+    if new_enums:
+        lines.append("\n### python-genai enums with no SDK equivalent\n")
+        lines += [f"- `{e}`" for e in new_enums]
+    if fixed:
+        lines.append(f"\n{len(fixed)} type(s) from the baseline now exist in the SDK; run `--update` to record that.")
+    drift = bool(new_fields or new_classes or new_values or new_enums)
+    if drift:
+        lines.append("\nAfter adding the missing types and fields, run "
+                     "`python scripts/drift/check_drift.py dto --update` and commit `.github/drift/`.")
+    else:
+        lines.append("\nNo new DTO gaps.")
+    return drift, "\n".join(lines) + "\n"
+
+
+python_types_cache: dict[str, set[str]] = {}
+
+CHECKS = {"models": check_models, "api": check_api, "python-genai": check_python_genai, "dto": check_dto}
 
 
 def main() -> int:

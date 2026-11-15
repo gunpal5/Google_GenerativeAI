@@ -7,6 +7,8 @@ name: API drift check
 #                 Needs the GEMINI_API_KEY repository secret; skipped without it.
 #   api           Changes in the Gemini API's discovery document (new or removed request/response types and fields).
 #   python-genai  New releases of python-genai, the reference SDK this SDK mirrors.
+#   dto           Types, fields and enum values in python-genai's types.py that this SDK's DTOs don't have yet
+#                 (only gaps that are new since .github/drift/dto-baseline.json are reported).
 #
 # After handling a drift, refresh its baseline locally and commit .github/drift/:
 #   python scripts/drift/check_drift.py <models|api|python-genai> --update
@@ -33,6 +35,8 @@ jobs:
             title: "[Drift] Gemini API request/response types"
           - check: python-genai
             title: "[Drift] New python-genai release"
+          - check: dto
+            title: "[Drift] DTOs behind python-genai"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
