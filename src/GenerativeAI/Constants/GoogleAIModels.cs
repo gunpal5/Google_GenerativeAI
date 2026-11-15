@@ -45,9 +45,19 @@ public static class GoogleAIModels
     public const string Gemini38Flash = "models/gemini-3.8-flash";
 
     /// <summary>
+    /// Gemini 3.7 Flash model name (stable).
+    /// </summary>
+    public const string Gemini37Flash = "models/gemini-3.7-flash";
+
+    /// <summary>
     /// Gemini 3.6 Flash model name (stable).
     /// </summary>
     public const string Gemini36Flash = "models/gemini-3.6-flash";
+
+    /// <summary>
+    /// Gemini 3.5 Flash model name (stable).
+    /// </summary>
+    public const string Gemini35Flash = "models/gemini-3.5-flash";
 
     /// <summary>
     /// Gemini 3.5 Flash-Lite model name (stable).

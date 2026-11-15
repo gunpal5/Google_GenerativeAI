@@ -113,14 +113,40 @@ public static class VertexAIModels
         public const string Gemini4Argon = "gemini-4-argon";
 
         /// <summary>
+        /// Gemini 4 Carbon for defensive cybersecurity use cases. Available behind an allowlist.
+        /// </summary>
+        public const string Gemini4CarbonCyberPermissive = "gemini-4-carbon-cyber-permissive";
+
+        /// <summary>
+        /// Gemini 4 Argon for defensive cybersecurity use cases. Available behind an allowlist.
+        /// </summary>
+        public const string Gemini4ArgonCyberPermissive = "gemini-4-argon-cyber-permissive";
+
+        /// <summary>
         /// Gemini 3.8 Flash model name.
         /// </summary>
         public const string Gemini38Flash = "gemini-3.8-flash";
 
         /// <summary>
+        /// Gemini 3.8 Flash Cyber model name, optimized for cybersecurity.
+        /// </summary>
+        public const string Gemini38FlashCyber = "gemini-3.8-flash-cyber";
+
+        /// <summary>
+        /// Gemini 3.7 Flash model name. Scheduled for retirement on January 28, 2027; the replacement is
+        /// <see cref="Gemini38Flash"/>.
+        /// </summary>
+        public const string Gemini37Flash = "gemini-3.7-flash";
+
+        /// <summary>
         /// Gemini 3.6 Flash model name.
         /// </summary>
         public const string Gemini36Flash = "gemini-3.6-flash";
+
+        /// <summary>
+        /// Gemini 3.5 Flash model name.
+        /// </summary>
+        public const string Gemini35Flash = "gemini-3.5-flash";
 
         /// <summary>
         /// Gemini 3.5 Flash-Lite model name.
@@ -148,6 +174,11 @@ public static class VertexAIModels
         public const string Gemini38FlashTts = "gemini-3.8-flash-tts";
 
         /// <summary>
+        /// Gemini 3.8 Flash-Lite text-to-speech model name.
+        /// </summary>
+        public const string Gemini38FlashLiteTts = "gemini-3.8-flash-lite-tts";
+
+        /// <summary>
         /// Gemini Nano Banana 2.1 image generation model name.
         /// </summary>
         public const string GeminiNanoBanana21 = "gemini-nano-banana-2.1";
@@ -156,6 +187,22 @@ public static class VertexAIModels
         /// Gemini 3 Pro Image model name.
         /// </summary>
         public const string Gemini3ProImage = "gemini-3-pro-image";
+
+        /// <summary>
+        /// Gemini 3.1 Flash Image (Nano Banana 2) model name.
+        /// </summary>
+        public const string Gemini31FlashImage = "gemini-3.1-flash-image";
+
+        /// <summary>
+        /// Gemini 3.1 Flash-Lite Image (Nano Banana 2 Lite) model name, for high-volume, latency-sensitive workloads.
+        /// </summary>
+        public const string Gemini31FlashLiteImage = "gemini-3.1-flash-lite-image";
+
+        /// <summary>
+        /// Gemini 2.5 Flash Image model name. Scheduled for retirement on March 15, 2027; the replacement is
+        /// <see cref="Gemini31FlashLiteImage"/>.
+        /// </summary>
+        public const string Gemini25FlashImage = "gemini-2.5-flash-image";
 
         /// <summary>
         /// Gemini 3 Flash Preview model name.
@@ -293,6 +340,12 @@ public static class VertexAIModels
     /// </summary>
     public static class Video
     {
+        /// <summary>
+        /// Gemini Omni 1.2 Flash: video generation and conversational video editing (up to 15 seconds), video
+        /// extension and upscaling up to 4K, alongside text responses.
+        /// </summary>
+        public const string GeminiOmni12Flash = "gemini-omni-1.2-flash";
+
         /// <summary>
         /// Veo 2 video generation model.
         /// </summary>
