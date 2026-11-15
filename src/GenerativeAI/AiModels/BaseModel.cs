@@ -117,9 +117,10 @@ public abstract class BaseModel : BaseClient
     /// <param name="request">
     /// The batch <see cref="BatchEmbedContentRequest"/> containing the content and optional settings for embedding.
     /// </param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The <see cref="BatchEmbedContentsResponse"/> containing the content embeddings.</returns>
     /// <seealso href="https://ai.google.dev/api/embeddings">See Official API Documentation</seealso>
-    protected virtual async Task<BatchEmbedContentsResponse> BatchEmbedContentAsync(string model, BatchEmbedContentRequest request)
+    protected virtual async Task<BatchEmbedContentsResponse> BatchEmbedContentAsync(string model, BatchEmbedContentRequest request, CancellationToken cancellationToken = default)
     {
 #if NET6_0_OR_GREATER
         ArgumentNullException.ThrowIfNull(request);
@@ -135,11 +136,11 @@ public abstract class BaseModel : BaseClient
         }
 
         if (Platform is VertextPlatformAdapter)
-            return await VertexBatchEmbedContentAsync(model, request.Requests ?? new List<EmbedContentRequest>())
+            return await VertexBatchEmbedContentAsync(model, request.Requests ?? new List<EmbedContentRequest>(), cancellationToken)
                 .ConfigureAwait(false);
 
         var url = $"{Platform.GetBaseUrl()}/{model.ToModelId()}:{GenerativeModelTasks.BatchEmbedContents}";
-        return await SendAsync<BatchEmbedContentRequest, BatchEmbedContentsResponse>(url, request, HttpMethod.Post).ConfigureAwait(false);
+        return await SendAsync<BatchEmbedContentRequest, BatchEmbedContentsResponse>(url, request, HttpMethod.Post, cancellationToken).ConfigureAwait(false);
     }
 
     private void ValidateEmbeddingRequest(string model, EmbedContentRequest req)
@@ -155,22 +156,22 @@ public abstract class BaseModel : BaseClient
                 "AutoTruncate, DocumentOcr, AudioTrackExtraction and MimeType are only supported on Vertex AI.");
     }
 
-    private async Task<EmbedContentResponse> VertexEmbedContentAsync(string model, EmbedContentRequest request)
+    private async Task<EmbedContentResponse> VertexEmbedContentAsync(string model, EmbedContentRequest request, CancellationToken cancellationToken)
     {
         if (VertexEmbeddingMapper.UsesEmbedContent(model))
         {
             var url = $"{Platform.GetBaseUrl()}/{model.ToModelId()}:{GenerativeModelTasks.EmbedContent}";
             var response = await SendAsync<VertexEmbedContentRequest, VertexEmbedContentResponse>(url,
-                VertexEmbeddingMapper.ToEmbedContentRequest(request), HttpMethod.Post).ConfigureAwait(false);
+                VertexEmbeddingMapper.ToEmbedContentRequest(request), HttpMethod.Post, cancellationToken).ConfigureAwait(false);
             return VertexEmbeddingMapper.ToEmbedContentResponse(response);
         }
 
-        var embeddings = await VertexPredictEmbeddingsAsync(model, new List<EmbedContentRequest> { request }).ConfigureAwait(false);
+        var embeddings = await VertexPredictEmbeddingsAsync(model, new List<EmbedContentRequest> { request }, cancellationToken).ConfigureAwait(false);
         return new EmbedContentResponse { Embedding = embeddings.FirstOrDefault() };
     }
 
     private async Task<BatchEmbedContentsResponse> VertexBatchEmbedContentAsync(string model,
-        List<EmbedContentRequest> requests)
+        List<EmbedContentRequest> requests, CancellationToken cancellationToken)
     {
         if (requests.Count == 0)
             return new BatchEmbedContentsResponse { Embeddings = new List<ContentEmbedding>() };
@@ -178,7 +179,7 @@ public abstract class BaseModel : BaseClient
         if (!VertexEmbeddingMapper.UsesEmbedContent(model))
             return new BatchEmbedContentsResponse
             {
-                Embeddings = await VertexPredictEmbeddingsAsync(model, requests).ConfigureAwait(false)
+                Embeddings = await VertexPredictEmbeddingsAsync(model, requests, cancellationToken).ConfigureAwait(false)
             };
 
         if (VertexEmbeddingMapper.IsMaas(model) && requests.Count > 1)
@@ -189,16 +190,16 @@ public abstract class BaseModel : BaseClient
         {
             Requests = requests.Select(VertexEmbeddingMapper.ToEmbedContentRequest).ToList()
         };
-        return await SendAsync<VertexBatchEmbedContentsRequest, BatchEmbedContentsResponse>(url, body, HttpMethod.Post)
+        return await SendAsync<VertexBatchEmbedContentsRequest, BatchEmbedContentsResponse>(url, body, HttpMethod.Post, cancellationToken)
             .ConfigureAwait(false);
     }
 
     private async Task<List<ContentEmbedding>> VertexPredictEmbeddingsAsync(string model,
-        List<EmbedContentRequest> requests)
+        List<EmbedContentRequest> requests, CancellationToken cancellationToken)
     {
         var url = $"{Platform.GetBaseUrl()}/{model.ToModelId()}:{VertexEmbeddingMapper.PredictTask}";
         var response = await SendAsync<VertexEmbeddingPredictRequest, VertexEmbeddingPredictResponse>(url,
-            VertexEmbeddingMapper.ToPredictRequest(requests), HttpMethod.Post).ConfigureAwait(false);
+            VertexEmbeddingMapper.ToPredictRequest(requests), HttpMethod.Post, cancellationToken).ConfigureAwait(false);
         return VertexEmbeddingMapper.FromPredictResponse(response);
     }
 
@@ -213,9 +214,10 @@ public abstract class BaseModel : BaseClient
     /// <param name="request">
     /// The <see cref="EmbedContentRequest"/> containing the content and optional settings for embedding.
     /// </param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The <see cref="EmbedContentResponse"/> containing the generated text embedding vector.</returns>
     /// <seealso href="https://ai.google.dev/gemini-api/docs/embeddings">See Official API Documentation</seealso>
-    protected virtual async Task<EmbedContentResponse> EmbedContentAsync(string model, EmbedContentRequest request)
+    protected virtual async Task<EmbedContentResponse> EmbedContentAsync(string model, EmbedContentRequest request, CancellationToken cancellationToken = default)
     {
 #if NET6_0_OR_GREATER
         ArgumentNullException.ThrowIfNull(request);
@@ -225,10 +227,10 @@ public abstract class BaseModel : BaseClient
         ValidateEmbeddingRequest(model, request);
 
         if (Platform is VertextPlatformAdapter)
-            return await VertexEmbedContentAsync(model, request).ConfigureAwait(false);
+            return await VertexEmbedContentAsync(model, request, cancellationToken).ConfigureAwait(false);
 
         var url = $"{Platform.GetBaseUrl()}/{model.ToModelId()}:{GenerativeModelTasks.EmbedContent}";
-        return await SendAsync<EmbedContentRequest, EmbedContentResponse>(url, request, HttpMethod.Post).ConfigureAwait(false);
+        return await SendAsync<EmbedContentRequest, EmbedContentResponse>(url, request, HttpMethod.Post, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>

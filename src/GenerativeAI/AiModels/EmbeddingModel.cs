@@ -73,7 +73,7 @@ public class EmbeddingModel : BaseModel
         EmbedContentRequest request,
         CancellationToken cancellationToken = default)
     {
-        return await EmbedContentAsync(Model, request).ConfigureAwait(false);
+        return await EmbedContentAsync(Model, request, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -128,7 +128,7 @@ public class EmbeddingModel : BaseModel
         CancellationToken cancellationToken = default)
     {
         var request = new BatchEmbedContentRequest { Requests = requests.ToList()};
-        return await BatchEmbedContentAsync(Model, request).ConfigureAwait(false);
+        return await BatchEmbedContentAsync(Model, request, cancellationToken).ConfigureAwait(false);
     }
     
     /// <summary>
