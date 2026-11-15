@@ -105,9 +105,10 @@ The weekly **DTO update** workflow (`.github/workflows/dto-update.yml`) closes D
 python-genai removed as `[Obsolete]`, and generates a new type (in `src/GenerativeAI/Types/Generated/`, registered in
 `TypesSerializerContext`) only when an added field needs it. It never adds client methods. When the `ANTHROPIC_API_KEY`
 secret is set, Claude Haiku (`scripts/drift/dto_review.py`) reviews the proposals first: it can leave out Python-only
-ones and writes the XML doc summaries and the pull request summary, but never writes code. If the build has 0
-warnings and the tests pass, the workflow opens or updates a pull request from `drift/dto-update`; otherwise it
-updates the issue "[Drift] Automated DTO update failed". Run `python scripts/drift/update_dtos.py` (dry run) to
+ones and writes the XML doc summaries and the summary, but never writes code. The workflow first opens or updates
+the issue "[Drift] DTO update from python-genai" listing the changes. If the build has 0 warnings and the tests pass,
+it then opens or updates a pull request from `drift/dto-update` that closes the issue; otherwise it comments on the
+issue with the build or test output. Run `python scripts/drift/update_dtos.py` (dry run) to
 preview; add `--no-ai` to skip the review. Python-only types and fields go in `.github/drift/dto-map.json`
 (`ignoreTypes`, `ignoreFields`, `ignoreClassFields`).
 

@@ -576,7 +576,7 @@ def main() -> int:
     print(f"CHANGED={'true' if changed else 'false'}")
     if cd.os.environ.get("GITHUB_OUTPUT"):
         with open(cd.os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
-            out.write(f"changed={'true' if changed else 'false'}\n")
+            out.write(f"changed={'true' if changed else 'false'}\nversion={version}\n")
     return 0
 
 
