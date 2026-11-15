@@ -1,0 +1,64 @@
+name: Publish API reference
+
+# Regenerates the DocFX API reference and publishes it to https://gunpal5.github.io/generative-ai/
+# (the generative-ai folder of the gunpal5/gunpal5.github.com GitHub Pages repository).
+#
+# Requires the repository secret PAGES_DEPLOY_TOKEN: a fine-grained personal access token with
+# "Contents: Read and write" permission on gunpal5/gunpal5.github.com.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout SDK
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            9.0.x
+            10.0.x
+            11.0.x
+
+      - name: Restore tools
+        run: dotnet tool restore
+
+      - name: Build API reference
+        working-directory: apidocs
+        run: dotnet docfx docfx.json --warningsAsErrors
+
+      - name: Checkout GitHub Pages repository
+        uses: actions/checkout@v4
+        with:
+          repository: gunpal5/gunpal5.github.com
+          token: ${{ secrets.PAGES_DEPLOY_TOKEN }}
+          path: pages
+
+      - name: Replace generative-ai folder
+        shell: pwsh
+        run: |
+          if (Test-Path pages/generative-ai) { Remove-Item pages/generative-ai -Recurse -Force }
+          Copy-Item apidocs/_site pages/generative-ai -Recurse
+          New-Item -ItemType File pages/generative-ai/.nojekyll -Force | Out-Null
+
+      - name: Commit and push
+        working-directory: pages
+        shell: pwsh
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A generative-ai
+          if (git status --porcelain generative-ai) {
+            git commit -m "docs: update Google GenerativeAI API reference (${{ github.sha }})"
+            git push
+          } else {
+            Write-Host "API reference unchanged."
+          }

@@ -77,6 +77,9 @@ dotnet build Google_GenerativeAI.sln
   relevant page when you change public behaviour, then regenerate `llms-full.txt`:
   `python scripts/generate-llms-full.py <wiki-clone> llms-full.txt`.
 - Keep `README.md` short; put details on wiki pages and link to them.
+- The API reference (https://gunpal5.github.io/generative-ai/) is generated with DocFX from `apidocs/`
+  (`dotnet tool restore`, then `dotnet docfx apidocs/docfx.json`) and published by the manual
+  `Publish API reference` workflow.
 
 ## Git conventions
 

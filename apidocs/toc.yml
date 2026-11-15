@@ -1,0 +1,8 @@
+- name: Home
+  href: index.md
+- name: API Reference
+  href: api/
+- name: Documentation (wiki)
+  href: https://github.com/gunpal5/Google_GenerativeAI/wiki
+- name: GitHub
+  href: https://github.com/gunpal5/Google_GenerativeAI
