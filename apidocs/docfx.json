@@ -1,0 +1,54 @@
+{
+  "$schema": "https://raw.githubusercontent.com/dotnet/docfx/main/schemas/docfx.schema.json",
+  "metadata": [
+    {
+      "src": [
+        {
+          "src": "../src",
+          "files": [
+            "GenerativeAI/GenerativeAI.csproj",
+            "GenerativeAI.Tools/GenerativeAI.Tools.csproj",
+            "GenerativeAI.Auth/GenerativeAI.Auth.csproj",
+            "GenerativeAI.Microsoft/GenerativeAI.Microsoft.csproj",
+            "GenerativeAI.Web/GenerativeAI.Web.csproj",
+            "GenerativeAI.Live/GenerativeAI.Live.csproj"
+          ]
+        }
+      ],
+      "dest": "api",
+      "properties": {
+        "TargetFramework": "net10.0"
+      },
+      "outputFormat": "mref",
+      "namespaceLayout": "flattened",
+      "memberLayout": "samePage",
+      "enumSortOrder": "declaringOrder"
+    }
+  ],
+  "build": {
+    "content": [
+      { "files": [ "api/**.yml", "api/index.md" ] },
+      { "files": [ "toc.yml", "index.md" ] }
+    ],
+    "resource": [
+      { "files": [ "images/**" ] },
+      { "files": [ "**/*.htm" ], "src": "legacy", "dest": "html" }
+    ],
+    "overwrite": [
+      { "files": [ "namespaces/**.md" ] }
+    ],
+    "output": "_site",
+    "template": [ "default", "modern" ],
+    "globalMetadata": {
+      "_appName": "Google GenerativeAI .NET SDK",
+      "_appTitle": "Google GenerativeAI .NET SDK",
+      "_appFooter": "Unofficial .NET SDK for Google Gemini and Vertex AI. <a href=\"https://github.com/gunpal5/Google_GenerativeAI\">GitHub</a> · <a href=\"https://github.com/gunpal5/Google_GenerativeAI/wiki\">Documentation</a>",
+      "_enableSearch": true,
+      "_disableContribution": false,
+      "_gitContribute": {
+        "repo": "https://github.com/gunpal5/Google_GenerativeAI",
+        "branch": "main"
+      }
+    }
+  }
+}
