@@ -293,8 +293,9 @@ teaches agents the v4 APIs. Contributors' agents should read [`AGENTS.md`](AGENT
 
 ## Contributing
 
-Issues and pull requests are welcome. Please open an [issue](https://github.com/gunpal5/Google_GenerativeAI/issues) to
-report a bug or discuss a feature.
+Issues and pull requests are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) for the development setup, coding
+guidelines and test conventions, or open an [issue](https://github.com/gunpal5/Google_GenerativeAI/issues) to report
+a bug or discuss a feature.
 
 ## Credits
 
