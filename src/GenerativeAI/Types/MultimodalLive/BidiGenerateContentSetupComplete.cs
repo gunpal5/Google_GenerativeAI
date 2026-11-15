@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace GenerativeAI.Types;
 
 /// <summary>
@@ -6,4 +8,9 @@ namespace GenerativeAI.Types;
 /// <seealso href="https://ai.google.dev/gemini-api/docs/multimodal-live#BidiGenerateContentSetupComplete">See Official API Documentation</seealso>
 public class BidiGenerateContentSetupComplete
 {
+    /// <summary>
+    /// The session id of the live session.
+    /// </summary>
+    [JsonPropertyName("sessionId")]
+    public string? SessionId { get; set; }
 }
