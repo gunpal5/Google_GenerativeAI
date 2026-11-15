@@ -55,25 +55,16 @@ jobs:
         id: generate
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: python scripts/drift/update_dtos.py --apply --report pr-body.md
+        run: python scripts/drift/update_dtos.py --apply --report pr-body.md --issue-report issue-body.md
 
       - name: Open or update the issue
         id: issue
         if: steps.generate.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: ${{ steps.generate.outputs.version }}
         run: |
           gh label create api-drift --color D93F0B --description "SDK is behind a Google API change" --force >/dev/null
-          {
-            echo "python-genai **$VERSION** has data types that the SDK doesn't have yet. The DTO update workflow is"
-            echo "building the changes below; a pull request that closes this issue follows if the build has 0 warnings"
-            echo "and the tests pass."
-            echo
-            cat pr-body.md
-            echo
-            echo "_[Workflow run]($RUN_URL)_"
-          } > issue.md
+          { cat issue-body.md; echo; echo "_[Workflow run]($RUN_URL)_"; } > issue.md
           number=$(gh issue list --state open --label api-drift --search "\"$ISSUE_TITLE\" in:title" --json number,title \
             --jq ".[] | select(.title == env.ISSUE_TITLE) | .number" | head -n 1)
           if [ -n "$number" ]; then
