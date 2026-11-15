@@ -385,7 +385,7 @@ public class BatchClient : BaseClient
              url = $"{Platform.GetBaseUrl()}/{name}:cancel";
         else
         {
-            url =  $"{Platform.GetBaseUrl(true, false, false,false)}/{name}";
+            url = $"{Platform.GetBaseUrl(true, false, false, false)}/{name}:cancel";
         }
 
         // Cancel doesn't return any meaningful response, just need to send the POST request

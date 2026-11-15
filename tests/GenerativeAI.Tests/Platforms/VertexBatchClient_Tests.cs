@@ -202,7 +202,16 @@ public class VertexBatchClient_Tests : TestBase
         await client.CancelAsync(jobName, cancellationToken: ct);
         Console?.WriteLine($"Cancelled batch job: {jobName}");
 
-        var state = (await client.GetAsync(jobName, cancellationToken: ct)).Metadata?.State;
+        // Vertex applies the cancellation asynchronously; poll briefly for the state change.
+        JobState? state = null;
+        for (var attempt = 0; attempt < 12; attempt++)
+        {
+            state = (await client.GetAsync(jobName, cancellationToken: ct)).Metadata?.State;
+            if (state is JobState.JOB_STATE_CANCELLING or JobState.JOB_STATE_CANCELLED)
+                break;
+            await Task.Delay(TimeSpan.FromSeconds(5), ct);
+        }
+
         (state is JobState.JOB_STATE_CANCELLING or JobState.JOB_STATE_CANCELLED).ShouldBeTrue($"Unexpected state {state}");
     }
 
