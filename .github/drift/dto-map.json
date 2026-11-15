@@ -1,5 +1,5 @@
 {
-  "_comment": "Maps python-genai type names to this SDK's names, and lists fields that exist only inside the Python SDK (not on the wire). Used by scripts/drift/check_drift.py dto.",
+  "_comment": "Maps python-genai type names to this SDK's names and lists Python-only parts of python-genai (client options, pagers) that are never sent over the wire. Used by scripts/drift/check_drift.py (dto) and scripts/drift/update_dtos.py.",
   "classes": {
     "VideoMetadata": "VideoMetadataResult"
   },
@@ -9,5 +9,29 @@
     "shouldReturnHttpResponse",
     "parsed",
     "automaticFunctionCallingHistory"
-  ]
+  ],
+  "ignoreTypes": [
+    "HttpOptions",
+    "HttpRetryOptions",
+    "AutomaticFunctionCallingConfig",
+    "GenerateContentConfig",
+    "ClaudeFile"
+  ],
+  "ignoreClassFields": {
+    "InlinedRequest": [
+      "config"
+    ],
+    "ListFilesResponse": [
+      "data",
+      "nextPage"
+    ],
+    "GenerateVideosOperation": [
+      "response"
+    ],
+    "Metric": [
+      "aggregateSummaryFn",
+      "customFunction",
+      "parseAndReduceFn"
+    ]
+  }
 }

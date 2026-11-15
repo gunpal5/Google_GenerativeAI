@@ -100,6 +100,17 @@ After handling a drift, refresh its baseline and commit `.github/drift/`:
 constant go in `.github/drift/models-ignore.txt`. To see every known DTO gap (not just new ones), read
 `.github/drift/dto-baseline.json`.
 
+The weekly **DTO update** workflow (`.github/workflows/dto-update.yml`) closes DTO gaps automatically. It runs
+`scripts/drift/update_dtos.py --apply`, which adds missing fields and enum values to existing types, marks fields that
+python-genai removed as `[Obsolete]`, and generates a new type (in `src/GenerativeAI/Types/Generated/`, registered in
+`TypesSerializerContext`) only when an added field needs it. It never adds client methods. When the `ANTHROPIC_API_KEY`
+secret is set, Claude Haiku (`scripts/drift/dto_review.py`) reviews the proposals first: it can leave out Python-only
+ones and writes the XML doc summaries and the pull request summary, but never writes code. If the build has 0
+warnings and the tests pass, the workflow opens or updates a pull request from `drift/dto-update`; otherwise it
+updates the issue "[Drift] Automated DTO update failed". Run `python scripts/drift/update_dtos.py` (dry run) to
+preview; add `--no-ai` to skip the review. Python-only types and fields go in `.github/drift/dto-map.json`
+(`ignoreTypes`, `ignoreFields`, `ignoreClassFields`).
+
 ## Git conventions
 
 - Conventional commits (`feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`); use `!` for breaking changes.
