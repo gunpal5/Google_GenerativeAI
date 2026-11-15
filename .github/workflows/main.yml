@@ -1,6 +1,11 @@
 name: Publish Nuget Packages
 on:
   workflow_dispatch:
+    inputs:
+      create-github-release:
+        description: "Create a GitHub release and tag (uncheck for patch versions folded into an existing release)"
+        type: boolean
+        default: true
 
 jobs:
   build-test-publish:
@@ -66,6 +71,7 @@ jobs:
 
       - name: Check for existing GitHub release
         id: release-check
+        if: inputs.create-github-release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -77,7 +83,7 @@ jobs:
 
       # Leave hand-written releases (created before publishing) untouched.
       - name: Create GitHub Release
-        if: steps.release-check.outputs.exists != 'true'
+        if: inputs.create-github-release && steps.release-check.outputs.exists != 'true'
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ steps.version.outputs.version }}
