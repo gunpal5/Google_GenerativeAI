@@ -155,4 +155,14 @@ public abstract class GenAI
     {
         return new GenerativeAI.Clients.InteractionsClient(this.Platform, this.HttpClient, this.Logger);
     }
+
+    /// <summary>
+    /// Creates a client for the Webhooks API (event notifications for batch jobs, interactions and video
+    /// generation, plus signing secret rotation).
+    /// </summary>
+    /// <returns>A <see cref="GenerativeAI.Clients.WebhooksClient"/> that uses this instance's platform, HTTP client and logger.</returns>
+    public GenerativeAI.Clients.WebhooksClient CreateWebhooksClient()
+    {
+        return new GenerativeAI.Clients.WebhooksClient(this.Platform, this.HttpClient, this.Logger);
+    }
 }
