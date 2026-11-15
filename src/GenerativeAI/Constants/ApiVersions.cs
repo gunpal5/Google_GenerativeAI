@@ -21,6 +21,11 @@ public static class ApiVersions
     public const string v1Beta = "v1beta";
 
     /// <summary>
+    /// The alpha version of the API, used by preview features such as ephemeral Live API auth tokens.
+    /// </summary>
+    public const string v1Alpha = "v1alpha";
+
+    /// <summary>
     /// Represents the version string "v1beta1", which can be used to specify the first beta version
     /// of the API's features when interacting with services or constructing API request URLs.
     /// </summary>

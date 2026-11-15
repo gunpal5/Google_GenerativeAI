@@ -43,11 +43,42 @@ public class MultiModalLiveClient : IDisposable
                 KeepAliveInterval = TimeSpan.FromSeconds(10),
             }
         };
+        var ephemeralToken = EphemeralToken;
+        if (ephemeralToken != null)
+        {
+            client.Options.SetRequestHeader("Authorization", $"Token {ephemeralToken}");
+            return client;
+        }
+
         var accessToken = await _platformAdapter.GetAccessTokenAsync().ConfigureAwait(false);
         if(accessToken != null)
             client.Options.SetRequestHeader("Authorization", $"Bearer {accessToken.AccessToken}");
         return client;
     }
+
+    /// <summary>
+    /// The ephemeral auth token (<c>auth_tokens/...</c>) used as the API key, or null when a regular API key or
+    /// Vertex AI credentials are used. Create tokens with <c>AuthTokensClient</c>.
+    /// </summary>
+    private string? EphemeralToken =>
+        _platformAdapter is GoogleAIPlatformAdapter { Credentials.ApiKey: { } key }
+        && key.StartsWith(EphemeralTokenPrefix, StringComparison.Ordinal)
+            ? key
+            : null;
+
+    private const string EphemeralTokenPrefix = "auth_tokens/";
+
+    /// <summary>
+    /// The constrained Live endpoint used with ephemeral tokens (v1alpha). The token is sent in the
+    /// <c>Authorization: Token ...</c> header rather than as a key query parameter.
+    /// </summary>
+    internal static string GetConstrainedLiveUrl() =>
+#if NET6_0_OR_GREATER
+        BaseUrls.GoogleMultiModalLive.Replace("{version}", ApiVersions.v1Alpha, StringComparison.Ordinal)
+#else
+        BaseUrls.GoogleMultiModalLive.Replace("{version}", ApiVersions.v1Alpha)
+#endif
+        + "Constrained";
     
     private List<byte> _audioBuffer;
 #pragma warning disable CA2213 // Disposed in DisconnectAsync, which Dispose(bool) calls
@@ -202,7 +233,9 @@ public class MultiModalLiveClient : IDisposable
     /// <remarks>
     /// The factory is responsible for any request headers the endpoint needs. In particular, the default client adds
     /// an <c>Authorization: Bearer</c> header from <see cref="IPlatformAdapter.GetAccessTokenAsync"/> (required by Vertex AI);
-    /// a custom factory must add it itself. This is useful for custom transports, proxies, and unit testing.
+    /// a custom factory must add it itself. With an ephemeral token (<c>auth_tokens/...</c>) as the API key, the URL is the
+    /// constrained endpoint and the factory must send <c>Authorization: Token {token}</c> instead.
+    /// This is useful for custom transports, proxies, and unit testing.
     /// </remarks>
     public Func<string, IWebsocketClient>? WebsocketClientFactory { get; set; }
 
@@ -690,7 +723,10 @@ public class MultiModalLiveClient : IDisposable
         // Connecting again replaces the previous websocket; release it so it and its subscriptions don't leak.
         ReleaseClient();
 
-        var url = _platformAdapter.GetMultiModalLiveUrl();
+        var ephemeralToken = EphemeralToken;
+        var url = ephemeralToken != null
+            ? GetConstrainedLiveUrl()
+            : _platformAdapter.GetMultiModalLiveUrl();
         if (WebsocketClientFactory != null)
         {
             _client = WebsocketClientFactory(url)
