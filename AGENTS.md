@@ -103,9 +103,7 @@ constant go in `.github/drift/models-ignore.txt`. To see every known DTO gap (no
 The weekly **DTO update** workflow (`.github/workflows/dto-update.yml`) closes DTO gaps automatically. It runs
 `scripts/drift/update_dtos.py --apply`, which adds missing fields and enum values to existing types, marks fields that
 python-genai removed as `[Obsolete]`, and generates a new type (in `src/GenerativeAI/Types/Generated/`, registered in
-`TypesSerializerContext`) only when an added field needs it. It never adds client methods. For types that the
-Gemini API discovery document describes, Google's description is the authority: `int32` numbers become `int`, new
-enums use Google's wire values, and the XML docs use Google's descriptions; Vertex-only types follow python-genai. When the `ANTHROPIC_API_KEY`
+`TypesSerializerContext`) only when an added field needs it. It never adds client methods. When the `ANTHROPIC_API_KEY`
 secret is set, Claude Haiku (`scripts/drift/dto_review.py`) reviews the proposals first: it can leave out Python-only
 ones and writes the XML doc summaries and the summary, but never writes code. The workflow first opens or updates
 the issue "[Drift] DTO update from python-genai" listing the changes. If the build has 0 warnings and the tests pass,

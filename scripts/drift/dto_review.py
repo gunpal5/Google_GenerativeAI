@@ -39,9 +39,7 @@ When unsure, include it. Give a short reason for every decision.
 For every item, write "summary": one or two plain sentences for the C# XML <summary> of that member or type. Base it \
 on the Python description; describe what the value means for an API caller; no Python-specific wording (no \
 "Optional", "None", snake_case names, or Python types); no Markdown, no code, no URLs. For enum values, say what the \
-value means. For items with "decide": true and include false, the summary may be empty. Items that have \
-"googleDescription" use Google's own text as the documentation, so leave their summary empty (but use that text when \
-deciding).
+value means. For items with "decide": true and include false, the summary may be empty.
 
 "issueNotes": a short Markdown description for a GitHub issue that reports the gap (3 to 6 bullet points): what the \
 SDK is missing compared with the Gemini API and Vertex AI, grouped by feature area, and what SDK users cannot do \
