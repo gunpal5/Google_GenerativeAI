@@ -11,7 +11,7 @@ public class VertexAIModel_MultiModel_Tests : TestBase
     }
 
    
-    private const string TestModel = GoogleAIModels.Gemini2Flash;
+    private const string TestModel = GoogleAIModels.Gemini38Flash;
 
     private VertexAIModel CreateInitializedModel()
     {

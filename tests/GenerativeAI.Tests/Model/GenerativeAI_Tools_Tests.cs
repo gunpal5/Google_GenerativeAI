@@ -18,7 +18,7 @@ public class GenerativeAI_Tools_Tests:TestBase
 
         return new GenerativeModel(
             platform: GetTestGooglePlatform()!,
-            model: GoogleAIModels.Gemini2Flash
+            model: GoogleAIModels.Gemini38Flash
         )
         {
             UseGoogleSearch = useGoogleSearch,

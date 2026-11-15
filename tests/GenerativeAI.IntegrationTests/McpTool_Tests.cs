@@ -235,7 +235,7 @@ public class McpTool_Tests : TestBase
 
         using var mcpTool = await McpTool.CreateAsync(transport, cancellationToken: TestContext.Current.CancellationToken);
 
-        var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.Gemini2Flash);
+        var model = new GenerativeModel(GetTestGooglePlatform(), GoogleAIModels.Gemini38Flash);
         model.AddFunctionTool(mcpTool);
 
         // Act

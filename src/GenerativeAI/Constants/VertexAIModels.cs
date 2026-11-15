@@ -98,6 +98,66 @@ public static class VertexAIModels
         public const string Gemini25FlashImagePreview = "gemini-2.5-flash-image-preview";
 
         /// <summary>
+        /// Gemini 4 Hydrogen model name.
+        /// </summary>
+        public const string Gemini4Hydrogen = "gemini-4-hydrogen";
+
+        /// <summary>
+        /// Gemini 4 Carbon model name.
+        /// </summary>
+        public const string Gemini4Carbon = "gemini-4-carbon";
+
+        /// <summary>
+        /// Gemini 4 Argon model name.
+        /// </summary>
+        public const string Gemini4Argon = "gemini-4-argon";
+
+        /// <summary>
+        /// Gemini 3.8 Flash model name.
+        /// </summary>
+        public const string Gemini38Flash = "gemini-3.8-flash";
+
+        /// <summary>
+        /// Gemini 3.6 Flash model name.
+        /// </summary>
+        public const string Gemini36Flash = "gemini-3.6-flash";
+
+        /// <summary>
+        /// Gemini 3.5 Flash-Lite model name.
+        /// </summary>
+        public const string Gemini35FlashLite = "gemini-3.5-flash-lite";
+
+        /// <summary>
+        /// Gemini 3.1 Flash-Lite model name.
+        /// </summary>
+        public const string Gemini31FlashLite = "gemini-3.1-flash-lite";
+
+        /// <summary>
+        /// Gemini 3.1 Pro Preview model name.
+        /// </summary>
+        public const string Gemini31ProPreview = "gemini-3.1-pro-preview";
+
+        /// <summary>
+        /// Gemini 3.8 Live model name.
+        /// </summary>
+        public const string Gemini38Live = "gemini-3.8-live";
+
+        /// <summary>
+        /// Gemini 3.8 Flash text-to-speech model name.
+        /// </summary>
+        public const string Gemini38FlashTts = "gemini-3.8-flash-tts";
+
+        /// <summary>
+        /// Gemini Nano Banana 2.1 image generation model name.
+        /// </summary>
+        public const string GeminiNanoBanana21 = "gemini-nano-banana-2.1";
+
+        /// <summary>
+        /// Gemini 3 Pro Image model name.
+        /// </summary>
+        public const string Gemini3ProImage = "gemini-3-pro-image";
+
+        /// <summary>
         /// Gemini 3 Flash Preview model name.
         /// Supports advanced thinking features with thought signatures for function calling.
         /// </summary>
@@ -221,6 +281,11 @@ public static class VertexAIModels
         /// Embeddings for multimodal model name.
         /// </summary>
         public const string MultimodalEmbedding = "multimodalembedding";
+
+        /// <summary>
+        /// Gemini Embedding 001 model name.
+        /// </summary>
+        public const string GeminiEmbedding001 = "gemini-embedding-001";
     }
 
     /// <summary>

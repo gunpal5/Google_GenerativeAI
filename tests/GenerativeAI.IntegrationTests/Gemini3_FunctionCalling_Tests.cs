@@ -34,7 +34,7 @@ public class Gemini3_FunctionCalling_Tests : TestBase
         // Arrange - Use a model that supports thinking
         var model = new GenerativeModel(
             platform: GetTestGooglePlatform(),
-            model: GoogleAIModels.Gemini25Flash,
+            model: GoogleAIModels.Gemini38Flash,
             config: new GenerationConfig
             {
                 ThinkingConfig = new ThinkingConfig
@@ -86,7 +86,7 @@ public class Gemini3_FunctionCalling_Tests : TestBase
         // Arrange - Disable auto function calling to inspect the raw response
         var model = new GenerativeModel(
             platform: GetTestGooglePlatform(),
-            model: GoogleAIModels.Gemini25Flash,
+            model: GoogleAIModels.Gemini38Flash,
             config: new GenerationConfig
             {
                 ThinkingConfig = new ThinkingConfig
@@ -158,7 +158,7 @@ public class Gemini3_FunctionCalling_Tests : TestBase
         // Arrange
         var model = new GenerativeModel(
             platform: GetTestGooglePlatform(),
-            model: GoogleAIModels.Gemini25Flash,
+            model: GoogleAIModels.Gemini38Flash,
             config: new GenerationConfig
             {
                 ThinkingConfig = new ThinkingConfig
@@ -276,7 +276,7 @@ public class Gemini3_FunctionCalling_Tests : TestBase
 
         var model = new GenerativeModel(
             platform: GetTestGooglePlatform(),
-            model: GoogleAIModels.Gemini25Flash,
+            model: GoogleAIModels.Gemini38Flash,
             config: new GenerationConfig
             {
                 ThinkingConfig = new ThinkingConfig
@@ -316,7 +316,7 @@ public class Gemini3_FunctionCalling_Tests : TestBase
 
         var model = new GenerativeModel(
             platform: GetTestGooglePlatform(),
-            model: GoogleAIModels.Gemini25Flash,
+            model: GoogleAIModels.Gemini38Flash,
             config: new GenerationConfig
             {
                 ThinkingConfig = new ThinkingConfig
@@ -359,7 +359,7 @@ public class Gemini3_FunctionCalling_Tests : TestBase
         var chatSession = new ChatSession(
             history: null,
             platform: GetTestGooglePlatform(),
-            model: GoogleAIModels.Gemini25Flash,
+            model: GoogleAIModels.Gemini38Flash,
             config: new GenerationConfig
             {
                 ThinkingConfig = new ThinkingConfig

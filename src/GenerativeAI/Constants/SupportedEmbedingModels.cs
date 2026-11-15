@@ -26,10 +26,14 @@ public static class SupportedEmbedingModels
     public static readonly List<string> All = new()
     {
         // From GeminiConstants
-        GoogleAIModels.TextEmbedding,
+        GoogleAIModels.GeminiEmbedding2,
         GoogleAIModels.GeminiEmbedding,
+#pragma warning disable CS0618 // Kept so existing callers of the shut-down model still pass validation
+        GoogleAIModels.TextEmbedding,
+#pragma warning restore CS0618
 
         // From VertexAIModels.Embeddings
+        VertexAIModels.Embeddings.GeminiEmbedding001,
         VertexAIModels.Embeddings.TextEmbeddingGecko001,
         VertexAIModels.Embeddings.TextEmbeddingGecko002,
         VertexAIModels.Embeddings.TextEmbeddingGecko003,

@@ -25,7 +25,7 @@ namespace GenerativeAI.Tests.Microsoft;
     typeof(TestPriorityAttribute))]
 public class Microsoft_ImageGenerator_Tests : TestBase
 {
-    private const string DefaultTestModelName = GoogleAIModels.Gemini25FlashImagePreview;
+    private const string DefaultTestModelName = GoogleAIModels.GeminiNanoBanana21;
 
     public Microsoft_ImageGenerator_Tests(ITestOutputHelper helper) : base(helper)
     {
