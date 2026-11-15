@@ -209,8 +209,9 @@ class Unmappable(Exception):
 
 
 class Plan:
-    def __init__(self, py_classes, py_enums, cs_types, renames, ignore_types=()):
+    def __init__(self, py_classes, py_enums, cs_types, renames, ignore_types=(), type_overrides=None):
         self.py_classes, self.py_enums, self.cs_types, self.renames = py_classes, py_enums, cs_types, renames
+        self.type_overrides = type_overrides or {}   # python type -> C# type (dto-map.json "typeOverrides")
         self.ignore_types = set(ignore_types)
         self.new_classes: dict[str, PyClass] = {}
         self.new_enums: dict[str, PyEnum] = {}
@@ -244,12 +245,16 @@ class Plan:
     def map_name(self, name: str) -> str:
         if name in PRIMITIVES:
             return PRIMITIVES[name]
+        if name in self.type_overrides:
+            return self.type_overrides[name]
         if name in self.ignore_types:
             raise Unmappable(f"`{name}` is Python-only (listed in dto-map.json ignoreTypes)")
         cs = self.cs_name(name)
         if cs in self.cs_types:
             return cs
         if name in self.py_enums:
+            if enum_style(self.py_enums[name].values) is None:   # mixed or unusual wire values: keep the raw text
+                return "string"
             self.new_enums.setdefault(name, self.py_enums[name])
             return cs
         if name in self.py_classes:
@@ -266,6 +271,27 @@ class Plan:
 
 def pascal(camel: str) -> str:
     return camel[:1].upper() + camel[1:]
+
+
+def enum_style(values: list[str]) -> tuple[str, dict[str, str]] | None:
+    """Chooses the C# member names and the JSON converter for a new enum from its wire values.
+
+    UPPER_SNAKE values keep their names (the SDK's convention, for example STATE_ACTIVE) with JsonStringEnumConverter.
+    Lowercase values get PascalCase members and a converter whose naming policy turns them back into the exact wire
+    text (GenerativeAI.Core.CamelCaseEnumConverter and friends). Returns None when no style round-trips every value.
+    """
+    if not values:
+        return None
+    if all(re.fullmatch(r"[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)*", v) for v in values):
+        return "JsonStringEnumConverter", {v: v for v in values}
+    for pattern, separator, converter in ((r"[a-z][a-z0-9]*(?:_[a-z][a-z0-9]*)+", "_", "SnakeCaseLowerEnumConverter"),
+                                          (r"[a-z][a-z0-9]*(?:-[a-z][a-z0-9]*)+", "-", "KebabCaseLowerEnumConverter")):
+        if all(re.fullmatch(pattern, v) or re.fullmatch(r"[a-z][a-z0-9]*", v) for v in values) \
+                and any(separator in v for v in values):
+            return converter, {v: "".join(p.capitalize() for p in v.split(separator)) for v in values}
+    if all(re.fullmatch(r"[a-z][a-zA-Z0-9]*", v) for v in values):   # lowercase words or camelCase
+        return "CamelCaseEnumConverter", {v: pascal(v) for v in values}
+    return None
 
 
 def xml(text: str) -> str:
@@ -365,9 +391,11 @@ def main() -> int:
     renames = mapping.get("classes", {})
     ignore_fields = set(mapping.get("ignoreFields", []))
     ignore_class_fields = {k: set(v) for k, v in mapping.get("ignoreClassFields", {}).items()}
+    manual_classes = mapping.get("manualClasses", {})   # types copied field by field into another payload
 
     def new_plan() -> Plan:
-        return Plan(py_classes, py_enums, cs_types, renames, mapping.get("ignoreTypes", []))
+        return Plan(py_classes, py_enums, cs_types, renames, mapping.get("ignoreTypes", []),
+                    mapping.get("typeOverrides", {}))
 
     probe = new_plan()   # collects every new type the proposals could need
     skipped: list[str] = []
@@ -384,6 +412,9 @@ def main() -> int:
                 continue
             if pascal(json_name) in target.members or pascal(json_name) == target.name:
                 skipped.append(f"`{target.name}.{json_name}`: a member named `{pascal(json_name)}` already exists")
+                continue
+            if py_name in manual_classes:   # a new property would compile but never reach the API
+                skipped.append(f"`{target.name}.{json_name}`: {manual_classes[py_name]}")
                 continue
             try:
                 cs_type = probe.map_type(py_field.annotation)
@@ -477,7 +508,7 @@ def main() -> int:
         block = []
         for p in proposals:
             suffix = f" = {number}" if number is not None else ""
-            block += [""] + doc_lines(target.indent, summary(p.id, ""), f"{p.value}.") + [
+            block += [""] + doc_lines(target.indent, summary(p.id, ""), f"The API value \"{p.value}\".") + [
                 f"{target.indent}{p.value}{suffix},"]
             if number is not None:
                 number += 1
@@ -529,16 +560,19 @@ def main() -> int:
         generated.append(name)
     for py_name, py_enum in sorted(plan.new_enums.items()):
         name = plan.cs_name(py_name)
+        converter, member_names = enum_style(py_enum.values)   # not None: map_name only queues mappable enums
         members = []
-        for i, value in enumerate(v for v in py_enum.values if re.fullmatch(r"[A-Za-z_]\w*", v)):
+        for i, value in enumerate(py_enum.values):
             members += ([""] if members else []) + doc_lines("    ", summary(f"type:{name}.{value}", ""),
-                                                             f"{value}.") + [f"    {value} = {i},"]
-        if members:
-            members[-1] = members[-1].rstrip(",")
-        content = ["using System.Text.Json.Serialization;", "", "namespace GenerativeAI.Types;", ""] + doc_lines(
+                                                             f"The API value \"{value}\".") + [f"    {member_names[value]} = {i},"]
+        members[-1] = members[-1].rstrip(",")
+        usings = ["using System.Text.Json.Serialization;"]
+        if converter != "JsonStringEnumConverter":
+            usings.insert(0, "using GenerativeAI.Core;")
+        content = usings + ["", "namespace GenerativeAI.Types;", ""] + doc_lines(
             "", summary(f"type:{name}", py_enum.doc), f"{name}.") + [
             "/// <remarks>Generated from python-genai by scripts/drift/update_dtos.py.</remarks>",
-            f"[JsonConverter(typeof(JsonStringEnumConverter<{name}>))]", f"public enum {name}", "{"] + members + ["}", ""]
+            f"[JsonConverter(typeof({converter}<{name}>))]", f"public enum {name}", "{"] + members + ["}", ""]
         editor.new_files[GENERATED_DIR / f"{name}.cs"] = "\n".join(content)
         generated.append(name)
     if generated:

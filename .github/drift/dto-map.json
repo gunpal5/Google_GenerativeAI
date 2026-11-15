@@ -1,7 +1,13 @@
 {
-  "_comment": "Maps python-genai type names to this SDK's names and lists Python-only parts of python-genai (client options, pagers) that are never sent over the wire. Used by scripts/drift/check_drift.py (dto) and scripts/drift/update_dtos.py.",
+  "_comment": "Maps python-genai type names to this SDK's names and lists Python-only parts of python-genai (client options, pagers) that are never sent over the wire. typeOverrides maps a python-genai type to the C# type the SDK already uses for it (for example ServiceTier is a string with the ServiceTiers constants). manualClasses lists types that the SDK copies field by field into another payload; their new fields are reported for a person instead of being added. Used by scripts/drift/check_drift.py (dto) and scripts/drift/update_dtos.py.",
   "classes": {
     "VideoMetadata": "VideoMetadataResult"
+  },
+  "typeOverrides": {
+    "ServiceTier": "string"
+  },
+  "manualClasses": {
+    "GenerateVideosConfig": "copied field by field into VideoParameters by VideoGenerationModel, so a new field also needs that mapping (and the Veo wire name) before it reaches the API"
   },
   "ignoreFields": [
     "sdkHttpResponse",
