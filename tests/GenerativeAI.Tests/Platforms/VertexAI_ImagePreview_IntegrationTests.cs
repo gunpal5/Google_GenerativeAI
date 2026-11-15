@@ -24,7 +24,7 @@ public class VertexAI_ImagePreview_IntegrationTests : TestBase
             region: Environment.GetEnvironmentVariable("GOOGLE_REGION") ?? "us-central1"
         );
         
-        var model = vertexAI.CreateGenerativeModel(VertexAIModels.Gemini.Gemini2Flash);
+        var model = vertexAI.CreateGenerativeModel(VertexAIModels.Gemini.Gemini38Flash);
 
         // Act
         var result = await model.GenerateContentAsync(
@@ -52,7 +52,7 @@ public class VertexAI_ImagePreview_IntegrationTests : TestBase
             region: Environment.GetEnvironmentVariable("GOOGLE_REGION") ?? "us-central1"
         );
         
-        var model = vertexAI.CreateGenerativeModel(VertexAIModels.Gemini.Gemini25FlashImagePreview);
+        var model = vertexAI.CreateGenerativeModel(VertexAIModels.Gemini.GeminiNanoBanana21);
 
         var request = new GenerateContentRequest();
         request.AddInlineFile("image.png", false);
@@ -86,7 +86,7 @@ public class VertexAI_ImagePreview_IntegrationTests : TestBase
             region: Environment.GetEnvironmentVariable("GOOGLE_REGION") ?? "us-central1"
         );
         
-        var model = vertexAI.CreateGenerativeModel(VertexAIModels.Gemini.Gemini25FlashImagePreview);
+        var model = vertexAI.CreateGenerativeModel(VertexAIModels.Gemini.GeminiNanoBanana21);
 
         var responseText = new StringBuilder();
 

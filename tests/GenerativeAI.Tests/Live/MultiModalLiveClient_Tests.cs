@@ -13,7 +13,7 @@ namespace GenerativeAI.Tests.Live;
 /// </summary>
 public class MultiModalLiveClient_Tests
 {
-    private const string ModelName = "gemini-2.0-flash-live-001";
+    private const string ModelName = GoogleAIModels.Gemini38Live;
     private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(10);
 
     private static async Task<(MultiModalLiveClient Client, FakeWebsocketClient Socket)> ConnectAsync(
@@ -82,7 +82,7 @@ public class MultiModalLiveClient_Tests
         using (client)
         {
             var root = LastSent(socket);
-            root.GetProperty("setup").GetProperty("model").GetString().ShouldBe("models/" + ModelName);
+            root.GetProperty("setup").GetProperty("model").GetString().ShouldBe(ModelName);
         }
     }
 
@@ -453,7 +453,7 @@ public class MultiModalLiveClient_Tests
             await client.SendSetupAsync(TestContext.Current.CancellationToken);
 
             var setup = LastSent(socket).GetProperty("setup");
-            setup.GetProperty("model").GetString().ShouldBe("models/" + ModelName);
+            setup.GetProperty("model").GetString().ShouldBe(ModelName);
             setup.GetProperty("generationConfig").GetProperty("responseModalities")[0].GetString().ShouldBe("TEXT");
             setup.GetProperty("systemInstruction").GetProperty("parts")[0].GetProperty("text").GetString()
                 .ShouldBe("You are helpful.");

@@ -64,7 +64,7 @@ public class Microsoft_AIFunction_Tests:TestBase
     {
         Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
         var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
-        var chatClient = new GenerativeAIChatClient(apiKey, modelName:"models/gemini-2.0-flash");
+        var chatClient = new GenerativeAIChatClient(apiKey, modelName: GoogleAIModels.Gemini38Flash);
         var chatOptions = new ChatOptions();
         
         chatOptions.Tools = new List<AITool>{AIFunctionFactory.Create(GetStudentRecordAsync)};
@@ -81,7 +81,7 @@ public class Microsoft_AIFunction_Tests:TestBase
     {
         Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
         var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
-        var chatClient = new GenerativeAIChatClient(apiKey, modelName: "models/gemini-2.0-flash")
+        var chatClient = new GenerativeAIChatClient(apiKey, modelName: GoogleAIModels.Gemini38Flash)
         {
             AutoCallFunction = false
         };
@@ -271,7 +271,7 @@ public class Microsoft_AIFunction_Tests:TestBase
     {
         Assert.SkipUnless(IsGoogleApiKeySet,GoogleTestSkipMessage);
         var apiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY_TEST", EnvironmentVariableTarget.User);
-        var chatClient = new GenerativeAIChatClient(apiKey, modelName: "models/gemini-2.5-flash");;
+        var chatClient = new GenerativeAIChatClient(apiKey, modelName: GoogleAIModels.Gemini38Flash);
         var chatOptions = new ChatOptions();
 
         chatOptions.Tools = new List<AITool>{AIFunctionFactory.Create(GetUserAppointmentAsync)};

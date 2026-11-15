@@ -51,7 +51,7 @@ public class VertexBatchClient_Tests : TestBase
 
         Should.Throw<NotSupportedException>(async () =>
             await client.CreateAsync(
-                VertexAIModels.Gemini.Gemini25Flash,
+                VertexAIModels.Gemini.Gemini38Flash,
                 source,
                 destination,
                 cancellationToken: TestContext.Current.CancellationToken));
@@ -90,7 +90,7 @@ public class VertexBatchClient_Tests : TestBase
         };
 
         var batchJob = await client.CreateAsync(
-            VertexAIModels.Gemini.Gemini25Flash,
+            VertexAIModels.Gemini.Gemini38Flash,
             source,
             destination,
             cancellationToken: TestContext.Current.CancellationToken);
@@ -255,7 +255,7 @@ public class VertexBatchClient_Tests : TestBase
         var destination = new BatchJobDestination { GcsUri = "gs://test-bucket/output/" };
 
         Should.Throw<ArgumentNullException>(async () =>
-            await client.CreateAsync(VertexAIModels.Gemini.Gemini25Flash, null!, destination, cancellationToken: TestContext.Current.CancellationToken));
+            await client.CreateAsync(VertexAIModels.Gemini.Gemini38Flash, null!, destination, cancellationToken: TestContext.Current.CancellationToken));
     }
 
     [Fact]

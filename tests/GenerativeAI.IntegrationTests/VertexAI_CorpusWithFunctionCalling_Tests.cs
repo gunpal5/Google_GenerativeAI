@@ -20,7 +20,7 @@ namespace GenerativeAI.IntegrationTests;
 /// </summary>
 public class VertexAI_CorpusWithFunctionCalling_Tests : TestBase
 {
-    private const string DefaultTestModelName = VertexAIModels.Gemini.Gemini25Flash;
+    private const string DefaultTestModelName = VertexAIModels.Gemini.Gemini38Flash;
     private const string TestCorpusDisplayName = "Issue102-Test-Corpus";
     private const string TestDocumentDisplayName = "Issue102-Test-Document";
 

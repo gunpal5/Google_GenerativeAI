@@ -149,7 +149,7 @@ public class VertexRagManager : BaseClient
     /// <param name="description">A brief description of the corpus being created.</param>
     /// <param name="pineconeConfig">The configuration for the Pinecone vector database to be associated with the corpus.</param>
     /// <param name="apiKeyResourceName">This the full resource name of the secret that is stored in Secret Manager, which contains your Weaviate or Pinecone API key that depends on your choice of vector database. <br/>Format: projects/{PROJECT_NUMBER}/secrets/{SECRET_ID}/versions/{VERSION_ID}</param>
-    /// <param name="embeddingModelName">The name of the embedding model to be used for the corpus. Defaults to text-embedding-004.</param>
+    /// <param name="embeddingModelName">The name of the embedding model to be used for the corpus. If not provided, Vertex AI's default embedding model is used.</param>
     /// <param name="cancellationToken">A token to cancel the operation, if needed. Defaults to <see cref="CancellationToken.None"/>.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation, containing the created <see cref="RagCorpus"/> instance.</returns>
     public async Task<RagCorpus?> CreateCorpusAsync(string displayName, string? description,
@@ -175,7 +175,7 @@ public class VertexRagManager : BaseClient
     /// <param name="weaviateConfig">The configuration for the Weaviate vector database to be associated with the corpus.</param>
     /// <param name="apiKeyResourceName">The full resource name of the secret stored in Secret Manager, which contains the API key for the vector database.
     /// Format: projects/{PROJECT_NUMBER}/secrets/{SECRET_ID}/versions/{VERSION_ID}</param>
-    /// <param name="embeddingModelName">The name of the embedding model to be used for the corpus. If not provided, defaults to text-embedding-004.</param>
+    /// <param name="embeddingModelName">The name of the embedding model to be used for the corpus. If not provided, Vertex AI's default embedding model is used.</param>
     /// <param name="cancellationToken">A token to cancel the operation, if needed. Defaults to <see cref="CancellationToken.None"/>.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation, containing the created <see cref="RagCorpus"/> instance.</returns>
     public async Task<RagCorpus?> CreateCorpusAsync(string displayName, string? description,
@@ -198,7 +198,7 @@ public class VertexRagManager : BaseClient
     /// </summary>
     /// <param name="displayName">The display name of the corpus to be created.</param>
     /// <param name="description">A brief description of the corpus being created.</param>
-    /// <param name="embeddingModelName">The name of the embedding model to be used for the corpus. If not provided, defaults to text-embedding-004.</param>
+    /// <param name="embeddingModelName">The name of the embedding model to be used for the corpus. If not provided, Vertex AI's default embedding model is used.</param>
     /// <param name="cancellationToken">A token to cancel the operation, if needed. Defaults to <see cref="CancellationToken.None"/>.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation, containing the created <see cref="RagCorpus"/> instance.</returns>
     public async Task<RagCorpus?> CreateCorpusAsync(string displayName, string? description,
@@ -221,7 +221,7 @@ public class VertexRagManager : BaseClient
     /// <param name="displayName">The display name for the new corpus.</param>
     /// <param name="description">An optional description of the corpus to provide additional context.</param>
     /// <param name="vertexFeatureStoreConfig">The configuration details for the Vertex feature store to be associated with the corpus.</param>
-    /// <param name="embeddingModelName">The embedding model's name to be used for the corpus, defaults to "text-embedding-004" if not specified.</param>
+    /// <param name="embeddingModelName">The embedding model's name to be used for the corpus, If not provided, Vertex AI's default embedding model is used.</param>
     /// <param name="cancellationToken">An optional token to cancel the operation before completion. Defaults to <see cref="CancellationToken.None"/>.</param>
     /// <returns>A <see cref="Task"/> that represents the asynchronous operation and returns the created <see cref="RagCorpus"/> instance, or null if the operation fails.</returns>
     public async Task<RagCorpus?> CreateCorpusAsync(string displayName, string? description,
@@ -245,7 +245,7 @@ public class VertexRagManager : BaseClient
     /// <param name="displayName">The display name of the RAG corpus to be created.</param>
     /// <param name="description">An optional description of the RAG corpus to provide additional context or details.</param>
     /// <param name="vertexSearchStoreConfig">The configuration parameters for the Vertex feature store to associate with the new corpus.</param>
-    /// <param name="embeddingModelName">The name of the embedding model to use with the corpus. If not provided, the default is "text-embedding-004".</param>
+    /// <param name="embeddingModelName">The name of the embedding model to use with the corpus. If not provided, Vertex AI's default embedding model is used.</param>
     /// <param name="cancellationToken">An optional token to cancel the operation. Defaults to <see cref="CancellationToken.None"/> if not specified.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation, containing the created <see cref="RagCorpus"/> instance, or null if the operation fails.</returns>
     public async Task<RagCorpus?> CreateCorpusAsync(string displayName, string? description,

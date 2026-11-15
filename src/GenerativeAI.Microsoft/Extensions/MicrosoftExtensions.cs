@@ -1253,9 +1253,9 @@ public static class MicrosoftExtensions
     /// Creates a GenerativeAIEmbeddingGenerator from an API key and optional model name.
     /// </summary>
     /// <param name="apiKey">The API key for authenticating with Google AI.</param>
-    /// <param name="modelName">The name of the embedding model to use. Defaults to "text-embedding-004".</param>
+    /// <param name="modelName">The name of the embedding model to use. Defaults to "models/gemini-embedding-001".</param>
     /// <returns>A new instance of GenerativeAIEmbeddingGenerator.</returns>
-    public static GenerativeAIEmbeddingGenerator AsEmbeddingGenerator(this string apiKey, string modelName = "text-embedding-004")
+    public static GenerativeAIEmbeddingGenerator AsEmbeddingGenerator(this string apiKey, string modelName = GoogleAIModels.GeminiEmbedding)
     {
         return new GenerativeAIEmbeddingGenerator(apiKey, modelName);
     }
@@ -1264,9 +1264,9 @@ public static class MicrosoftExtensions
     /// Creates a GenerativeAIEmbeddingGenerator from a platform adapter and optional model name.
     /// </summary>
     /// <param name="adapter">The platform adapter to use for API calls.</param>
-    /// <param name="modelName">The name of the embedding model to use. Defaults to "text-embedding-004".</param>
+    /// <param name="modelName">The name of the embedding model to use. Defaults to "models/gemini-embedding-001".</param>
     /// <returns>A new instance of GenerativeAIEmbeddingGenerator.</returns>
-    public static GenerativeAIEmbeddingGenerator AsEmbeddingGenerator(this IPlatformAdapter adapter, string modelName = "text-embedding-004")
+    public static GenerativeAIEmbeddingGenerator AsEmbeddingGenerator(this IPlatformAdapter adapter, string modelName = GoogleAIModels.GeminiEmbedding)
     {
         return new GenerativeAIEmbeddingGenerator(adapter, modelName);
     }

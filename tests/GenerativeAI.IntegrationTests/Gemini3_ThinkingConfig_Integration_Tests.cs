@@ -30,7 +30,7 @@ public class Gemini3_ThinkingConfig_Integration_Tests : TestBase
         // Arrange
         var model = new GenerativeModel(
             platform: GetTestGooglePlatform(),
-            model: GoogleAIModels.Gemini3FlashPreview,
+            model: GoogleAIModels.Gemini38Flash,
             config: new GenerationConfig
             {
                 ThinkingConfig = new ThinkingConfig
@@ -77,7 +77,7 @@ public class Gemini3_ThinkingConfig_Integration_Tests : TestBase
         // Arrange
         var model = new GenerativeModel(
             platform: GetTestGooglePlatform(),
-            model: GoogleAIModels.Gemini3FlashPreview,
+            model: GoogleAIModels.Gemini38Flash,
             config: new GenerationConfig
             {
                 ThinkingConfig = new ThinkingConfig
@@ -121,7 +121,7 @@ public class Gemini3_ThinkingConfig_Integration_Tests : TestBase
         // Arrange
         var model = new GenerativeModel(
             platform: GetTestGooglePlatform(),
-            model: GoogleAIModels.Gemini3FlashPreview,
+            model: GoogleAIModels.Gemini38Flash,
             config: new GenerationConfig
             {
                 ThinkingConfig = new ThinkingConfig
@@ -181,7 +181,7 @@ public class Gemini3_ThinkingConfig_Integration_Tests : TestBase
         // Arrange
         var model = new GenerativeModel(
             platform: GetTestGooglePlatform(),
-            model: GoogleAIModels.Gemini3FlashPreview,
+            model: GoogleAIModels.Gemini38Flash,
             config: new GenerationConfig
             {
                 ThinkingConfig = new ThinkingConfig
@@ -262,7 +262,7 @@ public class Gemini3_ThinkingConfig_Integration_Tests : TestBase
         // Arrange
         var model = new GenerativeModel(
             platform: GetTestGooglePlatform(),
-            model: GoogleAIModels.Gemini3FlashPreview,
+            model: GoogleAIModels.Gemini38Flash,
             config: new GenerationConfig
             {
                 ThinkingConfig = new ThinkingConfig
@@ -301,7 +301,7 @@ public class Gemini3_ThinkingConfig_Integration_Tests : TestBase
         var chat = new ChatSession(
             history: null,
             platform: GetTestGooglePlatform(),
-            model: GoogleAIModels.Gemini3FlashPreview,
+            model: GoogleAIModels.Gemini38Flash,
             config: new GenerationConfig
             {
                 ThinkingConfig = new ThinkingConfig
@@ -345,7 +345,7 @@ public class Gemini3_ThinkingConfig_Integration_Tests : TestBase
         var chat = new ChatSession(
             history: null,
             platform: GetTestGooglePlatform(),
-            model: GoogleAIModels.Gemini3FlashPreview,
+            model: GoogleAIModels.Gemini38Flash,
             config: new GenerationConfig
             {
                 ThinkingConfig = new ThinkingConfig
@@ -407,7 +407,7 @@ public class Gemini3_ThinkingConfig_Integration_Tests : TestBase
         // Arrange - ThinkingLevel is only supported by Gemini 3
         var model = new GenerativeModel(
             platform: GetTestGooglePlatform(),
-            model: GoogleAIModels.Gemini3FlashPreview,
+            model: GoogleAIModels.Gemini38Flash,
             config: new GenerationConfig
             {
                 ThinkingConfig = new ThinkingConfig
@@ -457,7 +457,7 @@ public class Gemini3_ThinkingConfig_Integration_Tests : TestBase
         // Arrange
         var model = new GenerativeModel(
             platform: GetTestGooglePlatform(),
-            model: GoogleAIModels.Gemini3FlashPreview,
+            model: GoogleAIModels.Gemini38Flash,
             config: new GenerationConfig
             {
                 ThinkingConfig = new ThinkingConfig
@@ -506,7 +506,7 @@ public class Gemini3_ThinkingConfig_Integration_Tests : TestBase
         // Arrange
         var model = new GenerativeModel(
             platform: GetTestGooglePlatform(),
-            model: GoogleAIModels.Gemini3FlashPreview,
+            model: GoogleAIModels.Gemini38Flash,
             config: new GenerationConfig
             {
                 ThinkingConfig = new ThinkingConfig

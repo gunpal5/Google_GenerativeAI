@@ -27,7 +27,7 @@ public class CachingClient_Tests : TestBase
         var cachedContent = new CachedContent
         {
             DisplayName = "Test Cached Content",
-            Model = "models/gemini-2.0-flash",
+            Model = GoogleAIModels.Gemini38Flash,
             Contents = new List<Content>
                 { RequestExtensions.FormatGenerateContentInput(file), },
         };
@@ -38,7 +38,7 @@ public class CachingClient_Tests : TestBase
         // Assert
         result.ShouldNotBeNull();
         result.Name.ShouldNotBeNullOrEmpty();
-        result.Model.ShouldBe("models/gemini-2.0-flash");
+        result.Model.ShouldBe(GoogleAIModels.Gemini38Flash);
         //result.DisplayName.ShouldBe("Test Cached Content");
         result.CreateTime.ShouldNotBeNull();
         result.UsageMetadata.ShouldNotBeNull();

@@ -17,7 +17,7 @@ public class GeminiTestController : Controller
     [HttpGet(template:"generate")]
     public async Task<string> GenerateAsync(string prompt)
     {
-        var model = _generativeAiService.CreateInstance(GoogleAIModels.Gemini2Flash);
+        var model = _generativeAiService.CreateInstance("models/gemini-3.8-flash");
 
         var response = await model.GenerateContentAsync(prompt).ConfigureAwait(false);
         

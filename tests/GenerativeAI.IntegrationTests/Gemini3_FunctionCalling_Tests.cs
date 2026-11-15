@@ -436,7 +436,7 @@ public class Gemini3_FunctionCalling_Tests : TestBase
         // Arrange - Use Gemini 3 model (ThinkingLevel is only supported by Gemini 3+)
         var model = new GenerativeModel(
             platform: GetTestGooglePlatform(),
-            model: GoogleAIModels.Gemini3FlashPreview,
+            model: GoogleAIModels.Gemini38Flash,
             config: new GenerationConfig
             {
                 ThinkingConfig = new ThinkingConfig

@@ -640,7 +640,7 @@ public class FileSearchStoresClient_Tests
     {
         var handler = new CapturingHandler();
         handler.Respond("""{"candidates": [{"content": {"role": "model", "parts": [{"text": "hi"}]}}]}""");
-        var model = new GenerativeModel(new GoogleAIPlatformAdapter("test-api-key"), "gemini-2.5-flash",
+        var model = new GenerativeModel(new GoogleAIPlatformAdapter("test-api-key"), GoogleAIModels.Gemini38Flash,
             httpClient: new HttpClient(handler));
 
         model.UseFileSearch(new[] { "my-store", "fileSearchStores/other" }, topK: 5, metadataFilter: "author = \"x\"");
@@ -660,7 +660,7 @@ public class FileSearchStoresClient_Tests
     {
         var model = new GenerativeModel(
             new VertextPlatformAdapter("test-project", "us-central1", accessToken: "test-token", validateAccessToken: false),
-            "gemini-2.5-flash");
+            GoogleAIModels.Gemini38Flash);
 
         Should.Throw<NotSupportedException>(() => model.UseFileSearch("my-store"));
     }

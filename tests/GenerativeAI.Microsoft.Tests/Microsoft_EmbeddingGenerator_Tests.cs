@@ -304,7 +304,7 @@ public class Microsoft_EmbeddingGenerator_Tests : TestBase
 
         // Assert
         generator.ShouldNotBeNull();
-        generator.Model.Model.ShouldBe("text-embedding-004");
+        generator.Model.Model.ShouldBe(GoogleAIModels.GeminiEmbedding);
     }
 
     [Fact, TestPriority(15)]
@@ -335,7 +335,7 @@ public class Microsoft_EmbeddingGenerator_Tests : TestBase
 
         // Assert
         generator.ShouldNotBeNull();
-        generator.Model.Model.ShouldBe("text-embedding-004");
+        generator.Model.Model.ShouldBe(GoogleAIModels.GeminiEmbedding);
     }
 
     [Fact, TestPriority(17)]
@@ -345,7 +345,7 @@ public class Microsoft_EmbeddingGenerator_Tests : TestBase
 
         // Arrange
         var adapter = GetTestGooglePlatform();
-        var modelName = "textembedding-gecko";
+        var modelName = GoogleAIModels.GeminiEmbedding2;
 
         // Act
         var generator = adapter.AsEmbeddingGenerator(modelName);
@@ -421,10 +421,10 @@ public class Microsoft_EmbeddingGenerator_Tests : TestBase
     #region Model Support Tests
 
     [Theory, TestPriority(22)]
-    [InlineData("text-embedding-004")]
+    [InlineData("models/gemini-embedding-2")]
     [InlineData("text-multilingual-embedding-002")]
-    [InlineData("textembedding-gecko")]
-    [InlineData("textembedding-gecko-multilingual")]
+    [InlineData("models/gemini-embedding-001")]
+    [InlineData("text-embedding-005")]
     public void Constructor_WithSupportedModels_ShouldInitialize(string modelName)
     {
         // Arrange & Act

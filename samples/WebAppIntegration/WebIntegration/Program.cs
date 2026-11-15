@@ -13,7 +13,7 @@ builder.Services.AddSwaggerGen();
 //Add Generative AI
 builder.Services.AddGenerativeAI(new GenerativeAIOptions()
 {
-    Model = GoogleAIModels.Gemini2Flash,
+    Model = "models/gemini-3.8-flash",
     Credentials = new GoogleAICredentials()
     {
         ApiKey = EnvironmentVariables.GOOGLE_API_KEY ?? throw new InvalidOperationException("GOOGLE_API_KEY environment variable is not set")

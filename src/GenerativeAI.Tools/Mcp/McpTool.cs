@@ -34,7 +34,7 @@ namespace GenerativeAI.Tools.Mcp;
 ///
 /// using var mcpTool = await McpTool.CreateAsync(transport);
 ///
-/// var model = new GenerativeModel(apiKey, "gemini-2.0-flash-exp");
+/// var model = new GenerativeModel(apiKey, GoogleAIModels.Gemini38Flash);
 /// model.AddFunctionTool(mcpTool);
 ///
 /// var result = await model.GenerateContentAsync("Your query here");

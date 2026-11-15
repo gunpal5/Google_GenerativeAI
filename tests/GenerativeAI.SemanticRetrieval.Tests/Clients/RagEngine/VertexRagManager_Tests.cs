@@ -352,7 +352,7 @@ public class VertexRagManager_Tests : SemanticRetrieverTestBase
         var corpusName = list.RagCorpora
             .FirstOrDefault(s => s.DisplayName.Contains("test", StringComparison.OrdinalIgnoreCase)).Name;
         
-        var model = vertexAi.CreateGenerativeModel(VertexAIModels.Gemini.Gemini2Flash,corpusIdForRag: corpusName);
+        var model = vertexAi.CreateGenerativeModel(VertexAIModels.Gemini.Gemini38Flash,corpusIdForRag: corpusName);
 
         var result =await model.GenerateContentAsync("what does the marketing plan said about the youtube?", cancellationToken: TestContext.Current.CancellationToken);
     }

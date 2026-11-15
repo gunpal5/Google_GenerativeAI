@@ -30,7 +30,7 @@ public class LiveApiFields_Tests
         {
             Setup = new BidiGenerateContentSetup
             {
-                Model = "models/gemini-live",
+                Model = GoogleAIModels.Gemini38Live,
                 RealtimeInputConfig = new RealtimeInputConfig
                 {
                     AutomaticActivityDetection = new AutomaticActivityDetection

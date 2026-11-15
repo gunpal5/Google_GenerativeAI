@@ -44,7 +44,7 @@ public class VertexRagDemo
             await ScrapeAndImportData(_documentationUrl);
         }
         // Create generative model
-        _model = _vertexAi.CreateGenerativeModel(VertexAIModels.Gemini.Gemini2Flash, corpusIdForRag: _corpus.Name);
+        _model = _vertexAi.CreateGenerativeModel(VertexAIModels.Gemini.Gemini38Flash, corpusIdForRag: _corpus.Name);
 
         // Start QA chat
         await StartQaChat();
