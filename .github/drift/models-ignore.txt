@@ -1,0 +1,13 @@
+# Gemini API model IDs that intentionally have no constant in GoogleAIModels.
+# One ID or glob pattern per line; "#" starts a comment. Used by scripts/drift/check_drift.py (models check).
+
+# Previews of models that have a GA constant
+gemini-3.1-flash-image-preview      # GA: Gemini31FlashImage
+gemini-3.1-flash-lite-preview       # GA: Gemini31FlashLite
+gemini-embedding-2-preview          # GA: GeminiEmbedding2
+gemini-omni-flash-preview           # GA: Video.GeminiOmni12Flash
+nano-banana-pro-preview             # GA: Gemini3ProImage
+
+# Agents used through the Interactions API (InteractionModels / agent names), not generateContent
+antigravity-preview-*
+deep-research-*

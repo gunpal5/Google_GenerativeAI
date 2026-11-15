@@ -1,0 +1,78 @@
+name: API drift check
+
+# Weekly check for drift between this SDK and Google's APIs. Each kind of drift keeps one open issue
+# (label "api-drift") that is updated on every run, so the issue tracker never fills with duplicates.
+#
+#   models        New Gemini API models without a constant, or constants whose model has disappeared.
+#                 Needs the GEMINI_API_KEY repository secret; skipped without it.
+#   api           Changes in the Gemini API's discovery document (new or removed request/response types and fields).
+#   python-genai  New releases of python-genai, the reference SDK this SDK mirrors.
+#
+# After handling a drift, refresh its baseline locally and commit .github/drift/:
+#   python scripts/drift/check_drift.py <models|api|python-genai> --update
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"   # Mondays, 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - check: models
+            title: "[Drift] Gemini API models"
+          - check: api
+            title: "[Drift] Gemini API request/response types"
+          - check: python-genai
+            title: "[Drift] New python-genai release"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run ${{ matrix.check }} check
+        id: check
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python scripts/drift/check_drift.py ${{ matrix.check }} --report report.md
+
+      - name: Add to job summary
+        if: always()
+        run: |
+          if [ -f report.md ]; then
+            { echo "## ${{ matrix.title }}"; echo; cat report.md; } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Open or update the drift issue
+        if: steps.check.outputs.drift == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TITLE: ${{ matrix.title }}
+        run: |
+          gh label create api-drift --color D93F0B --description "SDK is behind a Google API change" --force >/dev/null
+          {
+            cat report.md
+            echo
+            echo "---"
+            echo "_Updated by the [API drift check](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) on $(date -u +%Y-%m-%d)._"
+          } > body.md
+          number=$(gh issue list --state open --label api-drift --search "\"$TITLE\" in:title" --json number,title \
+            --jq ".[] | select(.title == env.TITLE) | .number" | head -n 1)
+          if [ -n "$number" ]; then
+            gh issue edit "$number" --body-file body.md
+            echo "Updated issue #$number"
+          else
+            gh issue create --title "$TITLE" --label api-drift --body-file body.md
+          fi

@@ -81,6 +81,20 @@ dotnet build Google_GenerativeAI.sln
   (`dotnet tool restore`, then `dotnet docfx apidocs/docfx.json`) and published by the manual
   `Publish API reference` workflow.
 
+## Keeping up with Google's APIs
+
+The weekly **API drift check** workflow (`.github/workflows/api-drift.yml`) runs `scripts/drift/check_drift.py` and
+keeps one open issue (label `api-drift`) per kind of drift:
+
+- **models**: new Gemini API models without a constant in `GoogleAIModels`, or constants whose model has disappeared
+  (needs the `GEMINI_API_KEY` repository secret).
+- **api**: new or removed request/response types and fields in the Gemini API discovery document.
+- **python-genai**: new releases of python-genai, the reference SDK.
+
+After handling a drift, refresh its baseline and commit `.github/drift/`:
+`python scripts/drift/check_drift.py <models|api|python-genai> --update`. Model IDs that intentionally have no constant
+go in `.github/drift/models-ignore.txt`.
+
 ## Git conventions
 
 - Conventional commits (`feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`); use `!` for breaking changes.

@@ -1,0 +1,1257 @@
+{
+ "revision": "20261113",
+ "schemas": {
+  "AsyncBatchEmbedContentRequest": [
+   "batch"
+  ],
+  "AttributionSourceId": [
+   "groundingPassage",
+   "semanticRetrieverChunk"
+  ],
+  "AudioResponseFormat": [
+   "bitRate",
+   "delivery",
+   "mimeType",
+   "sampleRate"
+  ],
+  "AudioTranscription": [
+   "speakerLabel",
+   "text",
+   "words"
+  ],
+  "AudioTranscriptionConfig": [
+   "adaptationPhrases",
+   "customVocabulary",
+   "diarization",
+   "languageAuto",
+   "languageCodes",
+   "languageHints",
+   "mode",
+   "sourceText",
+   "wordTimestamp"
+  ],
+  "AuthToken": [
+   "bidiGenerateContentSetup",
+   "expireTime",
+   "fieldMask",
+   "name",
+   "newSessionExpireTime",
+   "uses"
+  ],
+  "AutomaticActivityDetection": [
+   "disabled",
+   "endOfSpeechSensitivity",
+   "prefixPaddingMs",
+   "silenceDurationMs",
+   "startOfSpeechSensitivity"
+  ],
+  "BatchEmbedContentsRequest": [
+   "requests"
+  ],
+  "BatchEmbedContentsResponse": [
+   "embeddings",
+   "usageMetadata"
+  ],
+  "BatchEmbedTextRequest": [
+   "requests",
+   "texts"
+  ],
+  "BatchEmbedTextResponse": [
+   "embeddings"
+  ],
+  "BatchGenerateContentRequest": [
+   "batch"
+  ],
+  "BatchStats": [
+   "failedRequestCount",
+   "pendingRequestCount",
+   "requestCount",
+   "successfulRequestCount"
+  ],
+  "BidiGenerateContentSetup": [
+   "contextWindowCompression",
+   "generationConfig",
+   "historyConfig",
+   "inputAudioTranscription",
+   "labels",
+   "model",
+   "outputAudioTranscription",
+   "proactivity",
+   "realtimeInputConfig",
+   "sessionResumption",
+   "systemInstruction",
+   "tools"
+  ],
+  "Blob": [
+   "data",
+   "displayName",
+   "mimeType"
+  ],
+  "Blobstore2Info": [
+   "blobGeneration",
+   "blobId",
+   "downloadExternalReadToken",
+   "downloadReadHandle",
+   "readToken",
+   "uploadFragmentListCreationInfo",
+   "uploadMetadataContainer"
+  ],
+  "CachedContent": [
+   "contents",
+   "createTime",
+   "displayName",
+   "expireTime",
+   "model",
+   "name",
+   "systemInstruction",
+   "toolConfig",
+   "tools",
+   "ttl",
+   "updateTime",
+   "usageMetadata"
+  ],
+  "CachedContentUsageMetadata": [
+   "totalTokenCount"
+  ],
+  "Candidate": [
+   "avgLogprobs",
+   "citationMetadata",
+   "content",
+   "continuationToken",
+   "finishMessage",
+   "finishReason",
+   "groundingAttributions",
+   "groundingMetadata",
+   "index",
+   "logprobsResult",
+   "safetyRatings",
+   "tokenCount",
+   "urlContextMetadata"
+  ],
+  "ChunkingConfig": [
+   "whiteSpaceConfig"
+  ],
+  "CitationMetadata": [
+   "citationSources"
+  ],
+  "CitationSource": [
+   "endIndex",
+   "license",
+   "startIndex",
+   "uri"
+  ],
+  "CodeExecution": [],
+  "CodeExecutionResult": [
+   "id",
+   "outcome",
+   "output"
+  ],
+  "CompositeMedia": [
+   "blobRef",
+   "blobstore2Info",
+   "cosmoBinaryReference",
+   "crc32cHash",
+   "inline",
+   "length",
+   "md5Hash",
+   "objectId",
+   "path",
+   "referenceType",
+   "sha1Hash"
+  ],
+  "ComputerUse": [
+   "disabledSafetyPolicies",
+   "enablePromptInjectionDetection",
+   "environment",
+   "excludedPredefinedFunctions"
+  ],
+  "Condition": [
+   "numericValue",
+   "operation",
+   "stringValue"
+  ],
+  "Content": [
+   "parts",
+   "role"
+  ],
+  "ContentEmbedding": [
+   "shape",
+   "values"
+  ],
+  "ContentFilter": [
+   "message",
+   "reason"
+  ],
+  "ContentTypeInfo": [
+   "bestGuess",
+   "fromBytes",
+   "fromFileName",
+   "fromFusionId",
+   "fromHeader",
+   "fromUrlPath",
+   "fusionIdDetectionMetadata"
+  ],
+  "ContextWindowCompressionConfig": [
+   "slidingWindow",
+   "triggerTokens"
+  ],
+  "Corpus": [
+   "createTime",
+   "displayName",
+   "name",
+   "updateTime"
+  ],
+  "CountMessageTokensRequest": [
+   "prompt"
+  ],
+  "CountMessageTokensResponse": [
+   "tokenCount"
+  ],
+  "CountTextTokensRequest": [
+   "prompt"
+  ],
+  "CountTextTokensResponse": [
+   "tokenCount"
+  ],
+  "CountTokensRequest": [
+   "contents",
+   "generateContentRequest"
+  ],
+  "CountTokensResponse": [
+   "cacheTokensDetails",
+   "cachedContentTokenCount",
+   "promptTokensDetails",
+   "totalTokens"
+  ],
+  "CreateEnvironmentRequest": [
+   "customConfig",
+   "fromEnvironment",
+   "mode",
+   "networkAllowlist",
+   "networkMode",
+   "sources",
+   "systemInstruction"
+  ],
+  "CreateFileRequest": [
+   "file"
+  ],
+  "CreateFileResponse": [
+   "file"
+  ],
+  "CustomLongRunningOperation": [
+   "done",
+   "error",
+   "metadata",
+   "name",
+   "response"
+  ],
+  "CustomMetadata": [
+   "key",
+   "numericValue",
+   "stringListValue",
+   "stringValue"
+  ],
+  "Dataset": [
+   "examples"
+  ],
+  "DiffChecksumsResponse": [
+   "checksumsLocation",
+   "chunkSizeBytes",
+   "objectLocation",
+   "objectSizeBytes",
+   "objectVersion"
+  ],
+  "DiffDownloadResponse": [
+   "objectLocation"
+  ],
+  "DiffUploadRequest": [
+   "checksumsInfo",
+   "objectInfo",
+   "objectVersion"
+  ],
+  "DiffUploadResponse": [
+   "objectVersion",
+   "originalObject"
+  ],
+  "DiffVersionResponse": [
+   "objectSizeBytes",
+   "objectVersion"
+  ],
+  "Document": [
+   "createTime",
+   "customMetadata",
+   "displayName",
+   "mimeType",
+   "name",
+   "sizeBytes",
+   "state",
+   "updateTime"
+  ],
+  "DownloadFileResponse": [],
+  "DownloadMediaResponse": [
+   "blob"
+  ],
+  "DownloadParameters": [
+   "allowGzipCompression",
+   "ignoreRange"
+  ],
+  "DynamicRetrievalConfig": [
+   "dynamicThreshold",
+   "mode"
+  ],
+  "EgressRule": [
+   "credential",
+   "domain",
+   "mode",
+   "transform"
+  ],
+  "EmbedContentBatch": [
+   "batchStats",
+   "createTime",
+   "displayName",
+   "endTime",
+   "inputConfig",
+   "model",
+   "name",
+   "output",
+   "priority",
+   "state",
+   "updateTime"
+  ],
+  "EmbedContentBatchOutput": [
+   "inlinedResponses",
+   "responsesFile"
+  ],
+  "EmbedContentBatchStats": [
+   "failedRequestCount",
+   "pendingRequestCount",
+   "requestCount",
+   "successfulRequestCount"
+  ],
+  "EmbedContentConfig": [
+   "audioTrackExtraction",
+   "autoTruncate",
+   "documentOcr",
+   "outputDimensionality",
+   "taskType",
+   "title"
+  ],
+  "EmbedContentRequest": [
+   "content",
+   "embedContentConfig",
+   "model",
+   "outputDimensionality",
+   "taskType",
+   "title"
+  ],
+  "EmbedContentResponse": [
+   "embedding",
+   "usageMetadata"
+  ],
+  "EmbedTextRequest": [
+   "model",
+   "text"
+  ],
+  "EmbedTextResponse": [
+   "embedding"
+  ],
+  "Embedding": [
+   "value"
+  ],
+  "EmbeddingUsageMetadata": [
+   "promptTokenCount",
+   "promptTokenDetails"
+  ],
+  "Empty": [],
+  "Environment": [
+   "created",
+   "customConfig",
+   "environmentKey",
+   "fileCount",
+   "id",
+   "lastAccessed",
+   "mode",
+   "networkAllowlist",
+   "networkMode",
+   "sizeBytes",
+   "sources",
+   "status",
+   "updated"
+  ],
+  "EnvironmentFile": [
+   "created",
+   "mime_type",
+   "modified",
+   "name",
+   "path",
+   "size_bytes",
+   "type"
+  ],
+  "EnvironmentNetworkEgressAllowlist": [
+   "allowlist"
+  ],
+  "Example": [
+   "input",
+   "output"
+  ],
+  "ExecutableCode": [
+   "code",
+   "id",
+   "language"
+  ],
+  "File": [
+   "createTime",
+   "displayName",
+   "downloadUri",
+   "error",
+   "expirationTime",
+   "mimeType",
+   "name",
+   "sha256Hash",
+   "sizeBytes",
+   "source",
+   "state",
+   "updateTime",
+   "uri",
+   "videoMetadata"
+  ],
+  "FileData": [
+   "displayName",
+   "fileUri",
+   "mimeType"
+  ],
+  "FileSearch": [
+   "fileSearchStoreNames",
+   "metadataFilter",
+   "topK"
+  ],
+  "FileSearchStore": [
+   "activeDocumentsCount",
+   "createTime",
+   "displayName",
+   "embeddingModel",
+   "failedDocumentsCount",
+   "name",
+   "pendingDocumentsCount",
+   "sizeBytes",
+   "updateTime"
+  ],
+  "FunctionCall": [
+   "args",
+   "id",
+   "name"
+  ],
+  "FunctionCallingConfig": [
+   "allowedFunctionNames",
+   "mode"
+  ],
+  "FunctionDeclaration": [
+   "behavior",
+   "description",
+   "name",
+   "parameters",
+   "parametersJsonSchema",
+   "response",
+   "responseJsonSchema"
+  ],
+  "FunctionResponse": [
+   "id",
+   "name",
+   "parts",
+   "response",
+   "scheduling",
+   "willContinue"
+  ],
+  "FunctionResponseBlob": [
+   "data",
+   "displayName",
+   "mimeType"
+  ],
+  "FunctionResponseFileData": [
+   "displayName",
+   "fileUri",
+   "mimeType"
+  ],
+  "FunctionResponsePart": [
+   "fileData",
+   "inlineData",
+   "mediaProcessing"
+  ],
+  "GdataMedia": [
+   "algorithm",
+   "bigstoreObjectRef",
+   "blobRef",
+   "blobstore2Info",
+   "compositeMedia",
+   "contentType",
+   "contentTypeInfo",
+   "cosmoBinaryReference",
+   "crc32cHash",
+   "diffChecksumsResponse",
+   "diffDownloadResponse",
+   "diffUploadRequest",
+   "diffUploadResponse",
+   "diffVersionResponse",
+   "downloadParameters",
+   "filename",
+   "hash",
+   "hashVerified",
+   "inline",
+   "isPotentialRetry",
+   "length",
+   "md5Hash",
+   "mediaId",
+   "objectId",
+   "path",
+   "referenceType",
+   "sha1Hash",
+   "sha256Hash",
+   "sha512Hash",
+   "timestamp",
+   "token"
+  ],
+  "GenerateAnswerRequest": [
+   "answerStyle",
+   "contents",
+   "inlinePassages",
+   "safetySettings",
+   "semanticRetriever",
+   "temperature"
+  ],
+  "GenerateAnswerResponse": [
+   "answer",
+   "answerableProbability",
+   "inputFeedback"
+  ],
+  "GenerateContentBatch": [
+   "batchStats",
+   "createTime",
+   "displayName",
+   "endTime",
+   "inputConfig",
+   "model",
+   "name",
+   "output",
+   "priority",
+   "state",
+   "updateTime"
+  ],
+  "GenerateContentBatchOutput": [
+   "inlinedResponses",
+   "responsesFile"
+  ],
+  "GenerateContentRequest": [
+   "cachedContent",
+   "contents",
+   "continuationToken",
+   "generationConfig",
+   "labels",
+   "model",
+   "safetySettings",
+   "serviceTier",
+   "store",
+   "systemInstruction",
+   "toolConfig",
+   "tools"
+  ],
+  "GenerateContentResponse": [
+   "candidates",
+   "modelStatus",
+   "modelVersion",
+   "promptFeedback",
+   "responseId",
+   "usageMetadata"
+  ],
+  "GenerateMessageRequest": [
+   "candidateCount",
+   "prompt",
+   "temperature",
+   "topK",
+   "topP"
+  ],
+  "GenerateMessageResponse": [
+   "candidates",
+   "filters",
+   "messages"
+  ],
+  "GenerateTextRequest": [
+   "candidateCount",
+   "maxOutputTokens",
+   "prompt",
+   "safetySettings",
+   "stopSequences",
+   "temperature",
+   "topK",
+   "topP"
+  ],
+  "GenerateTextResponse": [
+   "candidates",
+   "filters",
+   "safetyFeedback"
+  ],
+  "GeneratedFile": [
+   "error",
+   "mimeType",
+   "name",
+   "state"
+  ],
+  "GenerationConfig": [
+   "_responseJsonSchema",
+   "audioTranscriptionConfig",
+   "candidateCount",
+   "enableAffectiveDialog",
+   "enableEnhancedCivicAnswers",
+   "frequencyPenalty",
+   "imageConfig",
+   "logprobs",
+   "maxOutputTokens",
+   "mediaResolution",
+   "presencePenalty",
+   "responseFormat",
+   "responseJsonSchema",
+   "responseLogprobs",
+   "responseMimeType",
+   "responseModalities",
+   "responseSchema",
+   "seed",
+   "speechConfig",
+   "stopSequences",
+   "temperature",
+   "thinkingConfig",
+   "topK",
+   "topP",
+   "translationConfig"
+  ],
+  "GetEnvironmentFilesResponse": [
+   "files",
+   "next_page_token"
+  ],
+  "GoogleAiGenerativelanguageV1betaGroundingSupport": [
+   "confidenceScores",
+   "groundingChunkIndices",
+   "renderedParts",
+   "segment"
+  ],
+  "GoogleAiGenerativelanguageV1betaSegment": [
+   "endIndex",
+   "partIndex",
+   "startIndex",
+   "text"
+  ],
+  "GoogleMaps": [
+   "enableWidget"
+  ],
+  "GoogleSearch": [
+   "searchTypes",
+   "timeRangeFilter"
+  ],
+  "GoogleSearchRetrieval": [
+   "dynamicRetrievalConfig"
+  ],
+  "GroundingAttribution": [
+   "content",
+   "sourceId"
+  ],
+  "GroundingChunk": [
+   "image",
+   "maps",
+   "retrievedContext",
+   "web"
+  ],
+  "GroundingChunkCustomMetadata": [
+   "key",
+   "numericValue",
+   "stringListValue",
+   "stringValue"
+  ],
+  "GroundingChunkStringList": [
+   "values"
+  ],
+  "GroundingMetadata": [
+   "googleMapsWidgetContextToken",
+   "groundingChunks",
+   "groundingSupports",
+   "imageSearchQueries",
+   "retrievalMetadata",
+   "searchEntryPoint",
+   "webSearchQueries"
+  ],
+  "GroundingPassage": [
+   "content",
+   "id"
+  ],
+  "GroundingPassageId": [
+   "partIndex",
+   "passageId"
+  ],
+  "GroundingPassages": [
+   "passages"
+  ],
+  "HistoryConfig": [
+   "initialHistoryInClientContent"
+  ],
+  "HttpBody": [
+   "contentType",
+   "data",
+   "extensions"
+  ],
+  "Hyperparameters": [
+   "batchSize",
+   "epochCount",
+   "learningRate",
+   "learningRateMultiplier"
+  ],
+  "Image": [
+   "domain",
+   "imageUri",
+   "sourceUri",
+   "title"
+  ],
+  "ImageConfig": [
+   "aspectRatio",
+   "imageSize"
+  ],
+  "ImageResponseFormat": [
+   "aspectRatio",
+   "delivery",
+   "imageSize",
+   "mimeType"
+  ],
+  "ImageSearch": [],
+  "ImportFileRequest": [
+   "chunkingConfig",
+   "customMetadata",
+   "fileName"
+  ],
+  "InlinedEmbedContentRequest": [
+   "metadata",
+   "request"
+  ],
+  "InlinedEmbedContentRequests": [
+   "requests"
+  ],
+  "InlinedEmbedContentResponse": [
+   "error",
+   "metadata",
+   "response"
+  ],
+  "InlinedEmbedContentResponses": [
+   "inlinedResponses"
+  ],
+  "InlinedRequest": [
+   "metadata",
+   "request"
+  ],
+  "InlinedRequests": [
+   "requests"
+  ],
+  "InlinedResponse": [
+   "error",
+   "metadata",
+   "response"
+  ],
+  "InlinedResponses": [
+   "inlinedResponses"
+  ],
+  "InputConfig": [
+   "fileName",
+   "requests"
+  ],
+  "InputEmbedContentConfig": [
+   "fileName",
+   "requests"
+  ],
+  "InputFeedback": [
+   "blockReason",
+   "safetyRatings"
+  ],
+  "Interval": [
+   "endTime",
+   "startTime"
+  ],
+  "LanguageAuto": [],
+  "LanguageHints": [
+   "languageCodes"
+  ],
+  "LatLng": [
+   "latitude",
+   "longitude"
+  ],
+  "ListCachedContentsResponse": [
+   "cachedContents",
+   "nextPageToken"
+  ],
+  "ListCorporaResponse": [
+   "corpora",
+   "nextPageToken"
+  ],
+  "ListDocumentsResponse": [
+   "documents",
+   "nextPageToken"
+  ],
+  "ListEnvironmentsResponse": [
+   "environments",
+   "nextPageToken"
+  ],
+  "ListFileSearchStoresResponse": [
+   "fileSearchStores",
+   "nextPageToken"
+  ],
+  "ListFilesResponse": [
+   "files",
+   "nextPageToken"
+  ],
+  "ListGeneratedFilesResponse": [
+   "generatedFiles",
+   "nextPageToken"
+  ],
+  "ListModelsResponse": [
+   "models",
+   "nextPageToken"
+  ],
+  "ListOperationsResponse": [
+   "nextPageToken",
+   "operations",
+   "unreachable"
+  ],
+  "ListPermissionsResponse": [
+   "nextPageToken",
+   "permissions"
+  ],
+  "ListTunedModelsResponse": [
+   "nextPageToken",
+   "tunedModels"
+  ],
+  "LogprobsResult": [
+   "chosenCandidates",
+   "logProbabilitySum",
+   "topCandidates"
+  ],
+  "LogprobsResultCandidate": [
+   "logProbability",
+   "token",
+   "tokenId"
+  ],
+  "Maps": [
+   "placeAnswerSources",
+   "placeId",
+   "text",
+   "title",
+   "uri"
+  ],
+  "McpServer": [
+   "name",
+   "streamableHttpTransport"
+  ],
+  "Message": [
+   "author",
+   "citationMetadata",
+   "content"
+  ],
+  "MessagePrompt": [
+   "context",
+   "examples",
+   "messages"
+  ],
+  "MetadataFilter": [
+   "conditions",
+   "key"
+  ],
+  "ModalityTokenCount": [
+   "modality",
+   "tokenCount"
+  ],
+  "Model": [
+   "baseModelId",
+   "description",
+   "displayName",
+   "inputTokenLimit",
+   "maxTemperature",
+   "name",
+   "outputTokenLimit",
+   "supportedGenerationMethods",
+   "temperature",
+   "thinking",
+   "topK",
+   "topP",
+   "version"
+  ],
+  "ModelStatus": [
+   "message",
+   "modelStage",
+   "retirementTime"
+  ],
+  "MultiSpeakerVoiceConfig": [
+   "speakerVoiceConfigs"
+  ],
+  "ObjectId": [
+   "bucketName",
+   "generation",
+   "objectName"
+  ],
+  "Operation": [
+   "done",
+   "error",
+   "metadata",
+   "name",
+   "response"
+  ],
+  "Part": [
+   "audioTranscription",
+   "codeExecutionResult",
+   "executableCode",
+   "fileData",
+   "functionCall",
+   "functionResponse",
+   "inlineData",
+   "mediaProcessing",
+   "mediaResolution",
+   "partMetadata",
+   "speechMetadata",
+   "text",
+   "thought",
+   "thoughtSignature",
+   "toolCall",
+   "toolResponse",
+   "videoMetadata"
+  ],
+  "Permission": [
+   "emailAddress",
+   "granteeType",
+   "name",
+   "role"
+  ],
+  "PlaceAnswerSources": [
+   "reviewSnippets"
+  ],
+  "PrebuiltVoiceConfig": [
+   "voiceName"
+  ],
+  "PredictLongRunningRequest": [
+   "instances",
+   "labels",
+   "parameters"
+  ],
+  "PredictRequest": [
+   "instances",
+   "labels",
+   "parameters"
+  ],
+  "PredictResponse": [
+   "predictions"
+  ],
+  "ProactivityConfig": [
+   "proactiveAudio",
+   "proactiveVideo"
+  ],
+  "PromptFeedback": [
+   "blockReason",
+   "safetyRatings"
+  ],
+  "RealtimeInputConfig": [
+   "activityHandling",
+   "automaticActivityDetection",
+   "interimTranscriptTimestampEnabled",
+   "turnCoverage"
+  ],
+  "RegisterFilesRequest": [
+   "uris"
+  ],
+  "RegisterFilesResponse": [
+   "files"
+  ],
+  "ResponseFormatConfig": [
+   "audio",
+   "image",
+   "text"
+  ],
+  "RetrievalConfig": [
+   "languageCode",
+   "latLng"
+  ],
+  "RetrievalMetadata": [
+   "googleSearchDynamicRetrievalScore"
+  ],
+  "RetrievedContext": [
+   "customMetadata",
+   "fileSearchStore",
+   "mediaId",
+   "pageNumber",
+   "text",
+   "title",
+   "uri"
+  ],
+  "ReviewSnippet": [
+   "googleMapsUri",
+   "reviewId",
+   "title"
+  ],
+  "SafetyFeedback": [
+   "rating",
+   "setting"
+  ],
+  "SafetyRating": [
+   "blocked",
+   "category",
+   "probability"
+  ],
+  "SafetySetting": [
+   "category",
+   "threshold"
+  ],
+  "Schema": [
+   "anyOf",
+   "default",
+   "description",
+   "enum",
+   "example",
+   "format",
+   "items",
+   "maxItems",
+   "maxLength",
+   "maxProperties",
+   "maximum",
+   "minItems",
+   "minLength",
+   "minProperties",
+   "minimum",
+   "nullable",
+   "pattern",
+   "properties",
+   "propertyOrdering",
+   "required",
+   "title",
+   "type"
+  ],
+  "SearchEntryPoint": [
+   "renderedContent",
+   "sdkBlob"
+  ],
+  "SearchTypes": [
+   "imageSearch",
+   "webSearch"
+  ],
+  "SemanticRetrieverChunk": [
+   "chunk",
+   "source"
+  ],
+  "SemanticRetrieverConfig": [
+   "maxChunksCount",
+   "metadataFilters",
+   "minimumRelevanceScore",
+   "query",
+   "source"
+  ],
+  "SessionResumptionConfig": [
+   "handle"
+  ],
+  "SlidingWindow": [
+   "targetTokens"
+  ],
+  "Source": [
+   "content",
+   "encoding",
+   "source",
+   "target",
+   "type"
+  ],
+  "SpeakerVoiceConfig": [
+   "speaker",
+   "voiceConfig"
+  ],
+  "SpeechConfig": [
+   "languageCode",
+   "multiSpeakerVoiceConfig",
+   "voiceConfig"
+  ],
+  "SpeechMetadata": [
+   "speaker",
+   "style"
+  ],
+  "Status": [
+   "code",
+   "details",
+   "message"
+  ],
+  "StreamableHttpTransport": [
+   "headers",
+   "sseReadTimeout",
+   "terminateOnClose",
+   "timeout",
+   "url"
+  ],
+  "StringList": [
+   "values"
+  ],
+  "TextCompletion": [
+   "citationMetadata",
+   "output",
+   "safetyRatings"
+  ],
+  "TextPrompt": [
+   "text"
+  ],
+  "TextResponseFormat": [
+   "mimeType",
+   "schema"
+  ],
+  "ThinkingConfig": [
+   "includeThoughts",
+   "thinkingBudget",
+   "thinkingLevel"
+  ],
+  "Tool": [
+   "codeExecution",
+   "computerUse",
+   "fileSearch",
+   "functionDeclarations",
+   "googleMaps",
+   "googleSearch",
+   "googleSearchRetrieval",
+   "mcpServers",
+   "urlContext"
+  ],
+  "ToolCall": [
+   "args",
+   "id",
+   "toolName",
+   "toolType"
+  ],
+  "ToolConfig": [
+   "functionCallingConfig",
+   "includeServerSideToolInvocations",
+   "retrievalConfig"
+  ],
+  "ToolResponse": [
+   "id",
+   "response",
+   "toolType"
+  ],
+  "TopCandidates": [
+   "candidates"
+  ],
+  "TransferOwnershipRequest": [
+   "emailAddress"
+  ],
+  "TransferOwnershipResponse": [],
+  "TranslationConfig": [
+   "echoTargetLanguage",
+   "targetLanguageCode"
+  ],
+  "TunedModel": [
+   "baseModel",
+   "createTime",
+   "description",
+   "displayName",
+   "name",
+   "readerProjectNumbers",
+   "state",
+   "temperature",
+   "topK",
+   "topP",
+   "tunedModelSource",
+   "tuningTask",
+   "updateTime"
+  ],
+  "TunedModelSource": [
+   "baseModel",
+   "tunedModel"
+  ],
+  "TuningExample": [
+   "output",
+   "textInput"
+  ],
+  "TuningExamples": [
+   "examples"
+  ],
+  "TuningSnapshot": [
+   "computeTime",
+   "epoch",
+   "meanLoss",
+   "step"
+  ],
+  "TuningTask": [
+   "completeTime",
+   "hyperparameters",
+   "snapshots",
+   "startTime",
+   "trainingData"
+  ],
+  "UploadEnvironmentFileRequest": [
+   "extract",
+   "overwrite"
+  ],
+  "UploadEnvironmentFileResponse": [
+   "files"
+  ],
+  "UploadToFileSearchStoreRequest": [
+   "chunkingConfig",
+   "customMetadata",
+   "displayName",
+   "mimeType"
+  ],
+  "UrlContext": [],
+  "UrlContextMetadata": [
+   "urlMetadata"
+  ],
+  "UrlMetadata": [
+   "retrievedUrl",
+   "urlRetrievalStatus"
+  ],
+  "UsageMetadata": [
+   "cacheTokensDetails",
+   "cachedContentTokenCount",
+   "candidatesTokenCount",
+   "candidatesTokensDetails",
+   "promptTokenCount",
+   "promptTokensDetails",
+   "serviceTier",
+   "thoughtsTokenCount",
+   "toolUsePromptTokenCount",
+   "toolUsePromptTokensDetails",
+   "totalTokenCount"
+  ],
+  "V1mainCreateTunedModelMetadata": [
+   "completedPercent",
+   "completedSteps",
+   "snapshots",
+   "totalSteps",
+   "tunedModel"
+  ],
+  "V1mainMediaResolution": [
+   "level"
+  ],
+  "V1mainTuningSnapshot": [
+   "computeTime",
+   "epoch",
+   "meanLoss",
+   "step"
+  ],
+  "VideoFileMetadata": [
+   "videoDuration"
+  ],
+  "VideoMetadata": [
+   "endOffset",
+   "fps",
+   "startOffset"
+  ],
+  "VoiceConfig": [
+   "prebuiltVoiceConfig",
+   "voice"
+  ],
+  "Web": [
+   "title",
+   "uri"
+  ],
+  "WebSearch": [],
+  "WhiteSpaceConfig": [
+   "maxOverlapTokens",
+   "maxTokensPerChunk"
+  ],
+  "WordInfo": [
+   "endOffset",
+   "startOffset",
+   "word"
+  ]
+ }
+}
