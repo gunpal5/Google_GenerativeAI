@@ -34,6 +34,7 @@ public static class SupportedEmbedingModels
 
         // From VertexAIModels.Embeddings
         VertexAIModels.Embeddings.GeminiEmbedding001,
+        VertexAIModels.Gemini.TextEmbedding005,
         VertexAIModels.Embeddings.TextEmbeddingGecko001,
         VertexAIModels.Embeddings.TextEmbeddingGecko002,
         VertexAIModels.Embeddings.TextEmbeddingGecko003,

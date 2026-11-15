@@ -442,6 +442,17 @@ namespace GenerativeAI.Types;
 [JsonSerializable(typeof(VoiceConsentSignature))]
 [JsonSerializable(typeof(WebSearch))]
 [JsonSerializable(typeof(WordInfo))]
+[JsonSerializable(typeof(VertexEmbedContentConfig))]
+[JsonSerializable(typeof(VertexEmbedContentRequest))]
+[JsonSerializable(typeof(VertexBatchEmbedContentsRequest))]
+[JsonSerializable(typeof(VertexEmbedContentResponse))]
+[JsonSerializable(typeof(VertexEmbeddingPredictRequest))]
+[JsonSerializable(typeof(VertexEmbeddingInstance))]
+[JsonSerializable(typeof(VertexEmbeddingParameters))]
+[JsonSerializable(typeof(VertexEmbeddingPredictResponse))]
+[JsonSerializable(typeof(VertexEmbeddingPrediction))]
+[JsonSerializable(typeof(VertexPredictEmbedding))]
+[JsonSerializable(typeof(VertexPredictEmbeddingStatistics))]
 
 [JsonSourceGenerationOptions(WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull, UseStringEnumConverter = true)]
 

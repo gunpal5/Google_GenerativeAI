@@ -82,6 +82,7 @@ public class VertextPlatformAdapter : IPlatformAdapter
         this.ProjectId = projectId;
         this.Region = region;
         this.DefaultApiVersion = apiVersion;
+        this.ValidateAccessToken = validateAccessToken;
         if (authenticator == null)
             throw new ArgumentNullException(nameof(authenticator), "Authenticator is required for Vertex AI.");
         this.Authenticator = authenticator;
@@ -113,6 +114,7 @@ public class VertextPlatformAdapter : IPlatformAdapter
         this.Region = region ?? EnvironmentVariables.GOOGLE_REGION;
         this.ExpressMode = expressMode;
         this.DefaultApiVersion = apiVersion;
+        this.ValidateAccessToken = validateAccessToken;
         this.Authenticator = authenticator;
         accessToken = accessToken ?? EnvironmentVariables.GOOGLE_ACCESS_TOKEN;
         apiKey = apiKey ?? EnvironmentVariables.GOOGLE_API_KEY;

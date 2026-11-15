@@ -126,7 +126,6 @@ public abstract class BaseModel : BaseClient
 #else
         if (request == null) throw new ArgumentNullException(nameof(request));
 #endif
-        var url = $"{Platform.GetBaseUrl()}/{model.ToModelId()}:{GenerativeModelTasks.BatchEmbedContents}";
         if (request.Requests != null)
         {
             foreach (var req in request.Requests)
@@ -134,10 +133,16 @@ public abstract class BaseModel : BaseClient
                 ValidateEmbeddingRequest(model, req);
             }
         }
+
+        if (Platform is VertextPlatformAdapter)
+            return await VertexBatchEmbedContentAsync(model, request.Requests ?? new List<EmbedContentRequest>())
+                .ConfigureAwait(false);
+
+        var url = $"{Platform.GetBaseUrl()}/{model.ToModelId()}:{GenerativeModelTasks.BatchEmbedContents}";
         return await SendAsync<BatchEmbedContentRequest, BatchEmbedContentsResponse>(url, request, HttpMethod.Post).ConfigureAwait(false);
     }
 
-    private static void ValidateEmbeddingRequest(string model, EmbedContentRequest req)
+    private void ValidateEmbeddingRequest(string model, EmbedContentRequest req)
     {
         req.Model = req.Model ?? model;
 
@@ -145,6 +150,56 @@ public abstract class BaseModel : BaseClient
 
         if (!string.IsNullOrEmpty(req.Title) && req.TaskType != TaskType.RETRIEVAL_DOCUMENT) throw new NotSupportedException("A title can only be specified for tasks of type 'RETRIEVAL_DOCUMENT'.");
 
+        if (req.HasVertexOnlyOptions && Platform is not VertextPlatformAdapter)
+            throw new NotSupportedException(
+                "AutoTruncate, DocumentOcr, AudioTrackExtraction and MimeType are only supported on Vertex AI.");
+    }
+
+    private async Task<EmbedContentResponse> VertexEmbedContentAsync(string model, EmbedContentRequest request)
+    {
+        if (VertexEmbeddingMapper.UsesEmbedContent(model))
+        {
+            var url = $"{Platform.GetBaseUrl()}/{model.ToModelId()}:{GenerativeModelTasks.EmbedContent}";
+            var response = await SendAsync<VertexEmbedContentRequest, VertexEmbedContentResponse>(url,
+                VertexEmbeddingMapper.ToEmbedContentRequest(request), HttpMethod.Post).ConfigureAwait(false);
+            return VertexEmbeddingMapper.ToEmbedContentResponse(response);
+        }
+
+        var embeddings = await VertexPredictEmbeddingsAsync(model, new List<EmbedContentRequest> { request }).ConfigureAwait(false);
+        return new EmbedContentResponse { Embedding = embeddings.FirstOrDefault() };
+    }
+
+    private async Task<BatchEmbedContentsResponse> VertexBatchEmbedContentAsync(string model,
+        List<EmbedContentRequest> requests)
+    {
+        if (requests.Count == 0)
+            return new BatchEmbedContentsResponse { Embeddings = new List<ContentEmbedding>() };
+
+        if (!VertexEmbeddingMapper.UsesEmbedContent(model))
+            return new BatchEmbedContentsResponse
+            {
+                Embeddings = await VertexPredictEmbeddingsAsync(model, requests).ConfigureAwait(false)
+            };
+
+        if (VertexEmbeddingMapper.IsMaas(model) && requests.Count > 1)
+            throw new NotSupportedException("This Vertex AI embedding model only supports one content per request.");
+
+        var url = $"{Platform.GetBaseUrl()}/{model.ToModelId()}:{GenerativeModelTasks.BatchEmbedContents}";
+        var body = new VertexBatchEmbedContentsRequest
+        {
+            Requests = requests.Select(VertexEmbeddingMapper.ToEmbedContentRequest).ToList()
+        };
+        return await SendAsync<VertexBatchEmbedContentsRequest, BatchEmbedContentsResponse>(url, body, HttpMethod.Post)
+            .ConfigureAwait(false);
+    }
+
+    private async Task<List<ContentEmbedding>> VertexPredictEmbeddingsAsync(string model,
+        List<EmbedContentRequest> requests)
+    {
+        var url = $"{Platform.GetBaseUrl()}/{model.ToModelId()}:{VertexEmbeddingMapper.PredictTask}";
+        var response = await SendAsync<VertexEmbeddingPredictRequest, VertexEmbeddingPredictResponse>(url,
+            VertexEmbeddingMapper.ToPredictRequest(requests), HttpMethod.Post).ConfigureAwait(false);
+        return VertexEmbeddingMapper.FromPredictResponse(response);
     }
 
 
@@ -167,8 +222,12 @@ public abstract class BaseModel : BaseClient
 #else
         if (request == null) throw new ArgumentNullException(nameof(request));
 #endif
-        var url = $"{Platform.GetBaseUrl()}/{model.ToModelId()}:{GenerativeModelTasks.EmbedContent}";
         ValidateEmbeddingRequest(model, request);
+
+        if (Platform is VertextPlatformAdapter)
+            return await VertexEmbedContentAsync(model, request).ConfigureAwait(false);
+
+        var url = $"{Platform.GetBaseUrl()}/{model.ToModelId()}:{GenerativeModelTasks.EmbedContent}";
         return await SendAsync<EmbedContentRequest, EmbedContentResponse>(url, request, HttpMethod.Post).ConfigureAwait(false);
     }
 
