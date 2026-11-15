@@ -38,6 +38,9 @@
       "aggregateSummaryFn",
       "customFunction",
       "parseAndReduceFn"
+    ],
+    "EmbedContentResponse": [
+      "embeddings"
     ]
   }
 }
