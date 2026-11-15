@@ -22,4 +22,10 @@ public class FunctionCallingConfig
     /// </summary>
     [JsonPropertyName("allowedFunctionNames")]
     public List<string>? AllowedFunctionNames { get; set; }
+
+    /// <summary>
+    /// Stream function call arguments as PartialArg chunks while they are generated. Vertex AI only.
+    /// </summary>
+    [JsonPropertyName("streamFunctionCallArguments")]
+    public bool? StreamFunctionCallArguments { get; set; }
 }

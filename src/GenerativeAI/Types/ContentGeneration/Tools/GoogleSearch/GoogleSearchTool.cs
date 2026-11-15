@@ -19,4 +19,16 @@ public class GoogleSearchTool // Renamed to GoogleSearchTool
     /// </summary>
     [JsonPropertyName("timeRangeFilter")]
     public Interval? TimeRangeFilter { get; set; }
+
+    /// <summary>
+    /// Domains to exclude from search results. Vertex AI only.
+    /// </summary>
+    [JsonPropertyName("excludeDomains")]
+    public List<string>? ExcludeDomains { get; set; }
+
+    /// <summary>
+    /// Blocks search results from sites at or above this phishing confidence. Vertex AI only.
+    /// </summary>
+    [JsonPropertyName("blockingConfidence")]
+    public PhishBlockThreshold? BlockingConfidence { get; set; }
 }

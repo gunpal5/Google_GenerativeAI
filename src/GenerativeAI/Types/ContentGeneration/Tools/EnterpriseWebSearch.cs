@@ -12,4 +12,10 @@ public class EnterpriseWebSearch
     /// </summary>
     [JsonPropertyName("excludeDomains")]
     public List<string>? ExcludeDomains { get; set; }
+
+    /// <summary>
+    /// Blocks search results from sites at or above this phishing confidence.
+    /// </summary>
+    [JsonPropertyName("blockingConfidence")]
+    public PhishBlockThreshold? BlockingConfidence { get; set; }
 }

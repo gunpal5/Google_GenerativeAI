@@ -146,6 +146,79 @@ public class ApiFieldUpdates_Tests
         setupComplete.VoiceConsentSignature!.Signature.ShouldBe("sig");
     }
 
+    [Theory]
+    [InlineData(typeof(ModelStatus))]
+    [InlineData(typeof(ToolCall))]
+    [InlineData(typeof(FileSearch))]
+    [InlineData(typeof(McpServer))]
+    [InlineData(typeof(ResponseFormat))]
+    [InlineData(typeof(ModelArmorConfig))]
+    [InlineData(typeof(RealtimeInputConfig))]
+    [InlineData(typeof(BidiGenerateContentContextUpdate))]
+    [InlineData(typeof(LiveServerGoAway))]
+    [InlineData(typeof(LiveServerSessionResumptionUpdate))]
+    [InlineData(typeof(ToolType))]
+    [InlineData(typeof(PhishBlockThreshold))]
+    public void SourceGeneratedContext_IncludesNewTypes(Type type)
+    {
+        TypesSerializerContext.Default.GetTypeInfo(type).ShouldNotBeNull();
+    }
+
+    [Fact]
+    public void VertexOnlyFields_SerializeWithWireNames()
+    {
+        var request = new GenerateContentRequest
+        {
+            ModelArmorConfig = new ModelArmorConfig { PromptTemplateName = "projects/p/locations/l/templates/t" },
+            OutputConfig = new GenerationOutputConfig { OutputUriPrefix = "gs://bucket/out/" },
+            GenerationConfig = new GenerationConfig
+            {
+                ResponseFormat = new List<ResponseFormat>
+                {
+                    new() { Image = new ImageResponseFormat { AspectRatio = AspectRatio.ASPECT_RATIO_SIXTEEN_BY_NINE, Delivery = Delivery.URI } }
+                },
+                ImageConfig = new ImageConfig { ProminentPeople = ProminentPeople.BLOCK_PROMINENT_PEOPLE, OutputCompressionQuality = 80 }
+            },
+            ToolConfig = new ToolConfig { FunctionCallingConfig = new FunctionCallingConfig { StreamFunctionCallArguments = true } },
+            Tools = new List<Tool>
+            {
+                new()
+                {
+                    GoogleSearch = new GoogleSearchTool
+                    {
+                        ExcludeDomains = new List<string> { "example.com" },
+                        BlockingConfidence = PhishBlockThreshold.BLOCK_HIGH_AND_ABOVE
+                    },
+                    GoogleMaps = new GoogleMaps { GroundingTypes = new GoogleMapsGroundingTypes { Routing = new GoogleMapsRouting() } }
+                }
+            }
+        };
+
+        var json = Serialize(request);
+
+        json["modelArmorConfig"]!["promptTemplateName"]!.GetValue<string>().ShouldBe("projects/p/locations/l/templates/t");
+        json["outputConfig"]!["outputUriPrefix"]!.GetValue<string>().ShouldBe("gs://bucket/out/");
+        var generationConfig = json["generationConfig"]!;
+        generationConfig["responseFormat"]![0]!["image"]!["aspectRatio"]!.GetValue<string>().ShouldBe("ASPECT_RATIO_SIXTEEN_BY_NINE");
+        generationConfig["responseFormat"]![0]!["image"]!["delivery"]!.GetValue<string>().ShouldBe("URI");
+        generationConfig["imageConfig"]!["prominentPeople"]!.GetValue<string>().ShouldBe("BLOCK_PROMINENT_PEOPLE");
+        generationConfig["imageConfig"]!["outputCompressionQuality"]!.GetValue<int>().ShouldBe(80);
+        json["toolConfig"]!["functionCallingConfig"]!["streamFunctionCallArguments"]!.GetValue<bool>().ShouldBeTrue();
+        json["tools"]![0]!["googleSearch"]!["blockingConfidence"]!.GetValue<string>().ShouldBe("BLOCK_HIGH_AND_ABOVE");
+        json["tools"]![0]!["googleMaps"]!["groundingTypes"]!["routing"].ShouldNotBeNull();
+    }
+
+    [Fact]
+    public void StreamedFunctionCallArguments_Deserialize()
+    {
+        var call = Deserialize<FunctionCall>(
+            """{"name": "lookup", "willContinue": true, "partialArgs": [{"jsonPath": "$.city", "stringValue": "Par", "willContinue": true}]}""");
+
+        call.WillContinue.ShouldBe(true);
+        call.PartialArgs![0].JsonPath.ShouldBe("$.city");
+        call.PartialArgs[0].StringValue.ShouldBe("Par");
+    }
+
     [Fact]
     public void FunctionCallingMode_Validated_RoundTrips()
     {

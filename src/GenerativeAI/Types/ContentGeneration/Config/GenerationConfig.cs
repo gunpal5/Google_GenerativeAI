@@ -227,6 +227,12 @@ public class GenerationConfig
     /// </summary>
     [JsonPropertyName("translationConfig")]
     public TranslationConfig? TranslationConfig { get; set; }
+
+    /// <summary>
+    /// Output format per response modality. Vertex AI only.
+    /// </summary>
+    [JsonPropertyName("responseFormat")]
+    public List<ResponseFormat>? ResponseFormat { get; set; }
 }
 
 
@@ -423,6 +429,30 @@ public class ManualRoutingMode
       /// </remarks>
       [JsonPropertyName("imageOutputOptions")]
       public ImageOutputOptions? ImageOutputOptions { get; set; }
+
+      /// <summary>
+      /// Whether people may be generated, for example ALLOW_ADULT or DONT_ALLOW. Vertex AI only.
+      /// </summary>
+      [JsonPropertyName("personGeneration")]
+      public string? PersonGeneration { get; set; }
+
+      /// <summary>
+      /// Whether images of prominent people may be generated. Vertex AI only.
+      /// </summary>
+      [JsonPropertyName("prominentPeople")]
+      public ProminentPeople? ProminentPeople { get; set; }
+
+      /// <summary>
+      /// MIME type of the generated image, for example image/jpeg. Vertex AI only.
+      /// </summary>
+      [JsonPropertyName("outputMimeType")]
+      public string? OutputMimeType { get; set; }
+
+      /// <summary>
+      /// JPEG compression quality (0-100). Vertex AI only.
+      /// </summary>
+      [JsonPropertyName("outputCompressionQuality")]
+      public int? OutputCompressionQuality { get; set; }
   }
 
   /// <summary>

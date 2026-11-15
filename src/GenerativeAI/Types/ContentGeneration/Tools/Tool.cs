@@ -81,5 +81,17 @@ public class Tool
     /// </summary>
     [JsonPropertyName("mcpServers")]
     public List<McpServer>? McpServers { get; set; }
+
+    /// <summary>
+    /// Web search through Parallel AI. Vertex AI only.
+    /// </summary>
+    [JsonPropertyName("parallelAiSearch")]
+    public ToolParallelAiSearch? ParallelAiSearch { get; set; }
+
+    /// <summary>
+    /// Web search through Exa AI. Vertex AI only.
+    /// </summary>
+    [JsonPropertyName("exaAiSearch")]
+    public ToolExaAiSearch? ExaAiSearch { get; set; }
 }
 

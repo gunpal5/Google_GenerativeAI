@@ -138,4 +138,16 @@ public class GenerateContentRequest:IContentsRequest
     /// </summary>
     [JsonPropertyName("continuationToken")]
     public string? ContinuationToken { get; set; }
+
+    /// <summary>
+    /// Model Armor templates for sanitizing the prompt and response. Vertex AI only.
+    /// </summary>
+    [JsonPropertyName("modelArmorConfig")]
+    public ModelArmorConfig? ModelArmorConfig { get; set; }
+
+    /// <summary>
+    /// Where to write generated output. Vertex AI only.
+    /// </summary>
+    [JsonPropertyName("outputConfig")]
+    public GenerationOutputConfig? OutputConfig { get; set; }
 }

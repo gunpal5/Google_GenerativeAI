@@ -18,4 +18,10 @@ public class GoogleMaps
     /// </summary>
     [JsonPropertyName("enableWidget")]
     public bool? EnableWidget { get; set; }
+
+    /// <summary>
+    /// The kinds of Maps grounding to use (places and/or routing). Vertex AI only.
+    /// </summary>
+    [JsonPropertyName("groundingTypes")]
+    public GoogleMapsGroundingTypes? GroundingTypes { get; set; }
 }
