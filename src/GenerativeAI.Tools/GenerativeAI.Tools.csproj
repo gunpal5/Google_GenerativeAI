@@ -39,6 +39,8 @@
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
       <PackageReference Include="ModelContextProtocol.Core" Version="0.4.0-preview.3" />
+      <!-- Pin transitive dependency to a patched version (CVE: .NET Denial of Service, <= 9.0.13) -->
+      <PackageReference Include="Microsoft.Bcl.Memory" Version="9.0.23" />
     </ItemGroup>
 
 </Project>
