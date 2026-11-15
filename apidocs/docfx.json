@@ -31,7 +31,8 @@
       { "files": [ "toc.yml", "index.md" ] }
     ],
     "resource": [
-      { "files": [ "images/**" ] }
+      { "files": [ "images/**" ] },
+      { "files": [ "**/*.htm" ], "src": "legacy", "dest": "html" }
     ],
     "overwrite": [
       { "files": [ "namespaces/**.md" ] }
