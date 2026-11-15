@@ -145,4 +145,14 @@ public abstract class GenAI
     {
         return new ImagenModel(this.Platform, modelName, this.HttpClient, this.Logger);
     }
+
+    /// <summary>
+    /// Creates a client for the Interactions API (stateful model and agent interactions such as Deep Research
+    /// and Antigravity, with background execution, streaming and continuation).
+    /// </summary>
+    /// <returns>An <see cref="GenerativeAI.Clients.InteractionsClient"/> that uses this instance's platform, HTTP client and logger.</returns>
+    public GenerativeAI.Clients.InteractionsClient CreateInteractionsClient()
+    {
+        return new GenerativeAI.Clients.InteractionsClient(this.Platform, this.HttpClient, this.Logger);
+    }
 }
