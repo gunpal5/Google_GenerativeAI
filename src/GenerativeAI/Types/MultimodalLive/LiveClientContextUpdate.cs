@@ -6,10 +6,10 @@ namespace GenerativeAI.Types;
 /// Updates to the context of the current live session.
 /// Only fields that are set will be updated. Updates are guaranteed to be processed in order with the rest of the inputs.
 /// </summary>
-public class BidiGenerateContentContextUpdate
+public class LiveClientContextUpdate
 {
     /// <summary>
-    /// Updated system instruction for the model. If set, overrides <see cref="BidiGenerateContentSetup.SystemInstruction"/>.
+    /// Updated system instruction for the model. If set, overrides <see cref="LiveClientSetup.SystemInstruction"/>.
     /// The system instructions are part of the model preamble, so updating them invalidates the prefix cache.
     /// Only update this field when strictly necessary as it might have a performance impact on model generation.
     /// </summary>
@@ -25,7 +25,7 @@ public class BidiGenerateContentContextUpdate
 }
 
 /// <summary>
-/// A wrapper around the list of tools in a <see cref="BidiGenerateContentContextUpdate"/>.
+/// A wrapper around the list of tools in a <see cref="LiveClientContextUpdate"/>.
 /// The wrapper distinguishes "no tools update" (wrapper unset) from "clear all tools" (wrapper set with an empty list).
 /// </summary>
 public class ContextUpdateTools

@@ -33,6 +33,21 @@ public class VideoInstance
     /// Gets or sets the optional input image for video generation.
     /// </summary>
     [JsonPropertyName("image")] public ImageSample? Image { get; set; }
+
+    /// <summary>
+    /// Gets or sets the optional image to use as the last frame of the video.
+    /// </summary>
+    [JsonPropertyName("lastFrame")] public ImageSample? LastFrame { get; set; }
+
+    /// <summary>
+    /// Gets or sets optional asset or style reference images.
+    /// </summary>
+    [JsonPropertyName("referenceImages")] public List<VideoGenerationReferenceImage>? ReferenceImages { get; set; }
+
+    /// <summary>
+    /// Gets or sets an optional mask for inserting, removing or outpainting content.
+    /// </summary>
+    [JsonPropertyName("mask")] public VideoGenerationMask? Mask { get; set; }
 }
 
 /// <summary>
@@ -104,4 +119,14 @@ public class VideoParameters
     /// Gets or sets the Pub/Sub topic for receiving generation status updates.
     /// </summary>
     [JsonPropertyName("pubsubTopic")] public string? PubSubTopic { get; set; }
+
+    /// <summary>
+    /// Gets or sets whether to generate audio together with the video.
+    /// </summary>
+    [JsonPropertyName("generateAudio")] public bool? GenerateAudio { get; set; }
+
+    /// <summary>
+    /// Gets or sets the compression quality of the generated video.
+    /// </summary>
+    [JsonPropertyName("compressionQuality")] public VideoCompressionQuality? CompressionQuality { get; set; }
 }

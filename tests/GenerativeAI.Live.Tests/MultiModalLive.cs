@@ -59,7 +59,7 @@ public class MultiModalLive_Tests
             var content = System.Console.ReadLine();
             if (content?.ToLower() == "exit") break;
             
-            var clientContent = new BidiGenerateContentClientContent();
+            var clientContent = new LiveClientContent();
             clientContent.Turns = new[] { new Content(content, Roles.User) };
             clientContent.TurnComplete = true;
             await multiModalLive.SendClientContentAsync(clientContent, CancellationToken.None);

@@ -199,7 +199,7 @@ public partial class MainWindow : FluentWindow, INotifyPropertyChanged
             RegisterClientEvents();
 
             await _multiModalLiveClient.ConnectAsync(false, cancellationToken);
-            await _multiModalLiveClient.SendSetupAsync(new BidiGenerateContentSetup()
+            await _multiModalLiveClient.SendSetupAsync(new LiveClientSetup()
             {
                 Model = Model.ToModelId(),
                 GenerationConfig = config,

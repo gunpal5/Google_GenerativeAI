@@ -3,10 +3,10 @@ using System.Text.Json.Serialization;
 namespace GenerativeAI.Types;
 
 /// <summary>
-/// Sent in response to a <see cref="BidiGenerateContentSetup"/> message from the client.
+/// Sent in response to a <see cref="LiveClientSetup"/> message from the client.
 /// </summary>
-/// <seealso href="https://ai.google.dev/gemini-api/docs/multimodal-live#BidiGenerateContentSetupComplete">See Official API Documentation</seealso>
-public class BidiGenerateContentSetupComplete
+/// <seealso href="https://ai.google.dev/gemini-api/docs/multimodal-live#LiveServerSetupComplete">See Official API Documentation</seealso>
+public class LiveServerSetupComplete
 {
     /// <summary>
     /// The session id of the live session.

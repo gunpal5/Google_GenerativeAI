@@ -6,7 +6,7 @@ namespace GenerativeAI.Types;
 /// Request for the client to execute the <see cref="FunctionCall"/> and return the responses with the matching <c>id</c>s.
 /// </summary>
 /// <seealso href="https://ai.google.dev/gemini-api/docs/multimodal-live#bidigeneratecontenttoolcall">See Official API Documentation</seealso>
-public class BidiGenerateContentToolCall
+public class LiveServerToolCall
 {
     /// <summary>
     /// Output only. The function call to be executed.

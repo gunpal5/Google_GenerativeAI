@@ -1,0 +1,68 @@
+# Google GenerativeAI .NET SDK
+
+> Unofficial .NET SDK (C#) for Google Gemini (Gemini API / Google AI Studio) and Vertex AI. Version 4.x. Install with
+> `dotnet add package Google_GenerativeAI`. Entry points: `new GoogleAi(apiKey)` (Gemini API) or
+> `new VertexAI(projectId, region)` (Vertex AI), then `CreateGenerativeModel(GoogleAIModels.Gemini38Flash)` and
+> `GenerateContentAsync` / `StreamContentAsync` / `StartChat`. Targets .NET 6-11, .NET Standard 2.0 and .NET Framework 4.6.2.
+
+Key facts for code generation:
+
+- Use current model constants (`GoogleAIModels.Gemini38Flash`, `GoogleAIModels.Gemini38Live`,
+  `GoogleAIModels.GeminiEmbedding`, `VertexAIModels.Gemini.Gemini38Flash`). Constants marked `[Obsolete]` are retired.
+- The newest Gemini models on Vertex AI are served from the `global` location; the RAG Engine and some embedding
+  models need a regional location such as `us-central1`.
+- Get text with the `response.Text()` extension method. Errors are thrown as `GenerativeAI.Exceptions.ApiException`
+  (`ErrorCode`, `ErrorStatus`, `ErrorMessage`).
+- Function calling needs `Google_GenerativeAI.Tools`; tools run automatically and results are sent with the `user` role.
+- Live API (`Google_GenerativeAI.Live`): `MultiModalLiveClient`; Live models require `Modality.AUDIO` responses.
+  Message types use the official SDK names (`LiveClientMessage`, `LiveServerMessage`, ...).
+- `GenerativeAI.Types.Environment` exists, so write `System.Environment.GetEnvironmentVariable(...)` when
+  `using GenerativeAI.Types;` is present.
+- Video generation (Veo) is Vertex AI only; Imagen is not available on the Gemini API.
+
+## Docs
+
+- [Full documentation (single file)](https://raw.githubusercontent.com/gunpal5/Google_GenerativeAI/main/llms-full.txt): every wiki page concatenated
+- [README](https://github.com/gunpal5/Google_GenerativeAI/blob/main/README.md): overview, packages and quick start
+- [Initialization](https://github.com/gunpal5/Google_GenerativeAI/wiki/Initialization): creating `GoogleAi` / `VertexAI` clients and models
+- [Authentication](https://github.com/gunpal5/Google_GenerativeAI/wiki/Authentication): API keys, ADC, service accounts, OAuth
+- [Configuration & Error Handling](https://github.com/gunpal5/Google_GenerativeAI/wiki/Configuration-and-Error-Handling): environment variables, locations, exceptions
+- [Supported Models](https://github.com/gunpal5/Google_GenerativeAI/wiki/Supported-Models): current model constants and replacements
+- [Generate Content](https://github.com/gunpal5/Google_GenerativeAI/wiki/Generate-Content): requests, generation config, thinking
+- [Chat Session](https://github.com/gunpal5/Google_GenerativeAI/wiki/Chat-Session): multi-turn chat and history
+- [Streaming](https://github.com/gunpal5/Google_GenerativeAI/wiki/Streaming): `StreamContentAsync`
+- [Multimodal Features](https://github.com/gunpal5/Google_GenerativeAI/wiki/Multimodal-Features): images, audio, video, PDF input
+- [JSON Mode](https://github.com/gunpal5/Google_GenerativeAI/wiki/Json-Mode): structured output, `GenerateObjectAsync<T>`
+- [Function Calling](https://github.com/gunpal5/Google_GenerativeAI/wiki/Function-Calling): tools and built-in tools
+- [Embeddings](https://github.com/gunpal5/Google_GenerativeAI/wiki/Embeddings): Gemini API and Vertex AI embeddings
+- [Context Caching](https://github.com/gunpal5/Google_GenerativeAI/wiki/Context-Caching): `CachingClient`
+
+## Gemini APIs
+
+- [Interactions API](https://github.com/gunpal5/Google_GenerativeAI/wiki/Interactions-API): `InteractionsClient`, background runs, continuation
+- [Multimodal Live API](https://github.com/gunpal5/Google_GenerativeAI/wiki/Multimodal-Live-API): real-time audio/video, ephemeral tokens, Live Music
+- [File Search](https://github.com/gunpal5/Google_GenerativeAI/wiki/File-Search): managed RAG stores
+- [Batch API](https://github.com/gunpal5/Google_GenerativeAI/wiki/Batch-API): `BatchClient` for Gemini API and Vertex AI
+- [Model Tuning](https://github.com/gunpal5/Google_GenerativeAI/wiki/Model-Tuning): `TuningClient`
+- [Webhooks](https://github.com/gunpal5/Google_GenerativeAI/wiki/Webhooks): `WebhooksClient`
+- [Agent APIs](https://github.com/gunpal5/Google_GenerativeAI/wiki/Agent-APIs): decisions, voices, agents, environments, triggers, credentials
+- [Image Generation](https://github.com/gunpal5/Google_GenerativeAI/wiki/Image-Generation): Gemini native image models
+- [Video Generation](https://github.com/gunpal5/Google_GenerativeAI/wiki/Video-Generation): Veo on Vertex AI
+- [Speech Generation](https://github.com/gunpal5/Google_GenerativeAI/wiki/Speech-Generation): text-to-speech
+- [Files Client](https://github.com/gunpal5/Google_GenerativeAI/wiki/Files-Client): upload, register and download files
+- [Model Client](https://github.com/gunpal5/Google_GenerativeAI/wiki/Model-Client): list, get, update and delete models
+- [Vertex RAG Engine](https://github.com/gunpal5/Google_GenerativeAI/wiki/Vertex-RAG-Engine): corpora and retrieval on Vertex AI
+
+## Integrations
+
+- [Microsoft.Extensions.AI](https://github.com/gunpal5/Google_GenerativeAI/wiki/Microsoft.Extensions.AI-IChatClient-Implementation): `IChatClient`, embeddings, images
+- [Model Context Protocol](https://github.com/gunpal5/Google_GenerativeAI/wiki/MCP-(Model-Context-Protocol)-Integration): `McpTool` and transports
+- [ASP.NET Core / Web](https://github.com/gunpal5/Google_GenerativeAI/wiki/Web-Application-Integration): `AddGenerativeAI` dependency injection
+
+## Optional
+
+- [Migration Guide v4](https://github.com/gunpal5/Google_GenerativeAI/wiki/Migration-Guide-v4): breaking changes from 3.x
+- [Release Notes v4](https://github.com/gunpal5/Google_GenerativeAI/wiki/Release-Notes-v4)
+- [NativeAOT & Trimming](https://github.com/gunpal5/Google_GenerativeAI/wiki/NativeAOT-and-Trimming-Guidelines)
+- [Legacy Semantic Retrieval (AQA)](https://github.com/gunpal5/Google_GenerativeAI/wiki/Legacy-Semantic-Retrieval-(AQA))
+- [Samples](https://github.com/gunpal5/Google_GenerativeAI/tree/main/samples)

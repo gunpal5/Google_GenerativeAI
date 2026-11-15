@@ -30,7 +30,7 @@ public class VertexAI : GenAI, IGenerativeAI
     /// <param name="accessToken">The access token for authorization.</param>
     /// <param name="expressMode">Specifies whether express mode is enabled.</param>
     /// <param name="apiKey">The API key for authentication.</param>
-    /// <param name="apiVersion">The API version to use.</param>
+    /// <param name="apiVersion">The API version to use. Defaults to GOOGLE_GENAI_API_VERSION when set, otherwise v1beta1.</param>
     /// <param name="httpClient">Optional HTTP client for making requests.</param>
     /// <param name="authenticator">Optional Google authenticator for handling authentication.</param>
     /// <param name="logger">Optional logger to log messages.</param>
@@ -39,7 +39,7 @@ public class VertexAI : GenAI, IGenerativeAI
         string? accessToken = null,
         bool expressMode = false,
         string? apiKey = null,
-        string apiVersion = ApiVersions.v1Beta1,
+        string? apiVersion = null,
         HttpClient? httpClient = null,
         IGoogleAuthenticator? authenticator = null,
         ILogger? logger = null)

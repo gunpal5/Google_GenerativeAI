@@ -257,7 +257,7 @@ public class MultiModalLiveClient_Tests
         var (client, socket) = await ConnectAsync();
         using (client)
         {
-            await client.SendRealtimeInputAsync(new BidiGenerateContentRealtimeInput
+            await client.SendRealtimeInputAsync(new LiveClientRealtimeInput
             {
                 Audio = new Blob { Data = "AAAA", MimeType = "audio/pcm;rate=24000" },
                 Text = "caption"
@@ -309,7 +309,7 @@ public class MultiModalLiveClient_Tests
         var (client, socket) = await ConnectAsync();
         using (client)
         {
-            await client.SendClientContentAsync(new BidiGenerateContentClientContent
+            await client.SendClientContentAsync(new LiveClientContent
             {
                 Turns = [new Content("earlier", Roles.Model)],
                 TurnComplete = false
@@ -327,7 +327,7 @@ public class MultiModalLiveClient_Tests
         var (client, socket) = await ConnectAsync();
         using (client)
         {
-            await client.SendToolResponseAsync(new BidiGenerateContentToolResponse
+            await client.SendToolResponseAsync(new LiveClientToolResponse
             {
                 FunctionResponses = [new FunctionResponse { Id = "call-1", Name = "get_weather" }]
             }, TestContext.Current.CancellationToken);
@@ -397,7 +397,7 @@ public class MultiModalLiveClient_Tests
         var (client, socket) = await ConnectAsync();
         using (client)
         {
-            await client.SendContextUpdateAsync(new BidiGenerateContentContextUpdate
+            await client.SendContextUpdateAsync(new LiveClientContextUpdate
             {
                 Tools = new ContextUpdateTools { Tools = [new Tool { CodeExecution = new CodeExecutionTool() }] }
             }, TestContext.Current.CancellationToken);
@@ -416,7 +416,7 @@ public class MultiModalLiveClient_Tests
         using (client)
         {
             await Should.ThrowAsync<ArgumentNullException>(() =>
-                client.SendContextUpdateAsync((BidiGenerateContentContextUpdate)null!,
+                client.SendContextUpdateAsync((LiveClientContextUpdate)null!,
                     TestContext.Current.CancellationToken));
         }
     }

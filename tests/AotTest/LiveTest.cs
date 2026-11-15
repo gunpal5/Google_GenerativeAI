@@ -42,7 +42,7 @@ public class LiveTest
         multiModalLive.UseGoogleSearch = true;
         await multiModalLive.ConnectAsync(cancellationToken: CancellationToken.None);
         var content = "write a poem about stars";
-        var clientContent = new BidiGenerateContentClientContent();
+        var clientContent = new LiveClientContent();
         clientContent.Turns = new[] { new Content(content, Roles.User) };
         clientContent.TurnComplete = true;
         await multiModalLive.SendClientContentAsync(clientContent, CancellationToken.None);

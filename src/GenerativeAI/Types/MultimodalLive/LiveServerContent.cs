@@ -7,7 +7,7 @@ namespace GenerativeAI.Types;
 /// Content is generated as quickly as possible, and not in real time. Clients may choose to buffer and play it out in real time.
 /// </summary>
 /// <seealso href="https://ai.google.dev/gemini-api/docs/multimodal-live#bidigeneratecontentservercontent">See Official API Documentation</seealso>
-public class BidiGenerateContentServerContent
+public class LiveServerContent
 {
     /// <summary>
     /// Output only. If true, indicates that the model is done generating. Generation will only start in response to additional client messages. Can be set alongside <see cref="ModelTurn"/>, indicating that the <see cref="ModelTurn"/> is the last in the turn.

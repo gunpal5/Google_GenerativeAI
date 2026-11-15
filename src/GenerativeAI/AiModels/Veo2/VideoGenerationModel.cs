@@ -70,7 +70,10 @@ namespace GenerativeAI
                     new VideoInstance
                     {
                         Prompt = request.Prompt,
-                        Image = request.Image
+                        Image = request.Image,
+                        LastFrame = request.Config?.LastFrame,
+                        ReferenceImages = request.Config?.ReferenceImages,
+                        Mask = request.Config?.Mask
                     }
                 },
                 Parameters = request.Config != null
@@ -86,7 +89,9 @@ namespace GenerativeAI
                         PersonGeneration = request.Config.PersonGeneration,
                         NegativePrompt = request.Config.NegativePrompt,
                         EnhancePrompt = request.Config.EnhancePrompt,
-                        PubSubTopic = request.Config.PubsubTopic
+                        PubSubTopic = request.Config.PubsubTopic,
+                        GenerateAudio = request.Config.GenerateAudio,
+                        CompressionQuality = request.Config.CompressionQuality
                     }
                     : null
             };
@@ -144,7 +149,7 @@ namespace GenerativeAI
 
                 if(longRunningOperation?.Done == false)
                     await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
-            } while (longRunningOperation?.Done != true && sw.ElapsedMilliseconds < LongRunningOperationTimeout);
+            } while (longRunningOperation?.Done != true && sw.ElapsedMilliseconds < timeOut);
 
             if (longRunningOperation != null && longRunningOperation.Done == true && longRunningOperation.Error != null)
             {

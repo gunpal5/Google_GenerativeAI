@@ -14,7 +14,7 @@ public class LiveServerMessages_Tests
     {
         const string json = """{"goAway":{"timeLeft":"30s"}}""";
 
-        var payload = JsonSerializer.Deserialize<BidiResponsePayload>(json, DefaultSerializerOptions.Options);
+        var payload = JsonSerializer.Deserialize<LiveServerMessage>(json, DefaultSerializerOptions.Options);
 
         payload.ShouldNotBeNull();
         payload.GoAway.ShouldNotBeNull();
@@ -46,7 +46,7 @@ public class LiveServerMessages_Tests
         const string json =
             """{"sessionResumptionUpdate":{"newHandle":"handle-123","resumable":true,"lastConsumedClientMessageIndex":"42"}}""";
 
-        var payload = JsonSerializer.Deserialize<BidiResponsePayload>(json, DefaultSerializerOptions.Options);
+        var payload = JsonSerializer.Deserialize<LiveServerMessage>(json, DefaultSerializerOptions.Options);
 
         payload.ShouldNotBeNull();
         var update = payload.SessionResumptionUpdate;
@@ -61,7 +61,7 @@ public class LiveServerMessages_Tests
     {
         const string json = """{"sessionResumptionUpdate":{"resumable":false,"lastConsumedClientMessageIndex":7}}""";
 
-        var payload = JsonSerializer.Deserialize<BidiResponsePayload>(json, DefaultSerializerOptions.Options);
+        var payload = JsonSerializer.Deserialize<LiveServerMessage>(json, DefaultSerializerOptions.Options);
 
         payload!.SessionResumptionUpdate!.Resumable.ShouldBe(false);
         payload.SessionResumptionUpdate.LastConsumedClientMessageIndex.ShouldBe(7);

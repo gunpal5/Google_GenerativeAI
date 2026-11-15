@@ -86,23 +86,23 @@ public class MultiModalLiveClient : IDisposable
 #pragma warning restore CA2213
     private readonly Guid _connectionId;
     private readonly List<IDisposable> _subscriptions = new();
-    private BidiGenerateContentSetup? _lastSetup;
+    private LiveClientSetup? _lastSetup;
     private bool _textReceivedInTurn;
     private readonly ILogger? _logger;
     private readonly IPlatformAdapter _platformAdapter;
 
-    private static JsonTypeInfo<BidiResponsePayload> BidiResponsePayloadTypeInfo =>
+    private static JsonTypeInfo<LiveServerMessage> LiveServerMessageTypeInfo =>
 #if NET11_0_OR_GREATER
-        DefaultSerializerOptions.Options.GetTypeInfo<BidiResponsePayload>();
+        DefaultSerializerOptions.Options.GetTypeInfo<LiveServerMessage>();
 #else
-        (JsonTypeInfo<BidiResponsePayload>)DefaultSerializerOptions.Options.GetTypeInfo(typeof(BidiResponsePayload));
+        (JsonTypeInfo<LiveServerMessage>)DefaultSerializerOptions.Options.GetTypeInfo(typeof(LiveServerMessage));
 #endif
 
-    private static JsonTypeInfo<BidiClientPayload> BidiClientPayloadTypeInfo =>
+    private static JsonTypeInfo<LiveClientMessage> LiveClientMessageTypeInfo =>
 #if NET11_0_OR_GREATER
-        DefaultSerializerOptions.Options.GetTypeInfo<BidiClientPayload>();
+        DefaultSerializerOptions.Options.GetTypeInfo<LiveClientMessage>();
 #else
-        (JsonTypeInfo<BidiClientPayload>)DefaultSerializerOptions.Options.GetTypeInfo(typeof(BidiClientPayload));
+        (JsonTypeInfo<LiveClientMessage>)DefaultSerializerOptions.Options.GetTypeInfo(typeof(LiveClientMessage));
 #endif
 
     #endregion
@@ -365,10 +365,10 @@ public class MultiModalLiveClient : IDisposable
 
         try
         {
-            BidiResponsePayload? responsePayload = null;
+            LiveServerMessage? responsePayload = null;
             if (msg.MessageType == WebSocketMessageType.Binary)
             {
-                responsePayload = JsonSerializer.Deserialize(msg.Binary,BidiResponsePayloadTypeInfo);
+                responsePayload = JsonSerializer.Deserialize(msg.Binary,LiveServerMessageTypeInfo);
             }
             else
             {
@@ -377,7 +377,7 @@ public class MultiModalLiveClient : IDisposable
                     _logger?.LogWarning("Received null text message");
                     return;
                 }
-                responsePayload = JsonSerializer.Deserialize(msg.Text,BidiResponsePayloadTypeInfo);
+                responsePayload = JsonSerializer.Deserialize(msg.Text,LiveServerMessageTypeInfo);
             }
 
             if (responsePayload == null)
@@ -421,7 +421,7 @@ public class MultiModalLiveClient : IDisposable
 
    
 
-    private void ProcessTextChunk(BidiResponsePayload responsePayload)
+    private void ProcessTextChunk(LiveServerMessage responsePayload)
     {
 #if NET6_0_OR_GREATER
         ArgumentNullException.ThrowIfNull(responsePayload);
@@ -472,7 +472,7 @@ public class MultiModalLiveClient : IDisposable
     }
 
 
-    private void ProcessAudioChunk(BidiResponsePayload responsePayload)
+    private void ProcessAudioChunk(LiveServerMessage responsePayload)
     {
         if (responsePayload.ServerContent?.ModelTurn?.Parts != null)
         {
@@ -589,7 +589,7 @@ public class MultiModalLiveClient : IDisposable
         _audioBuffer.Clear();
     }
 
-    private void ProcessInputTranscription(BidiResponsePayload responsePayload)
+    private void ProcessInputTranscription(LiveServerMessage responsePayload)
     {
         if (responsePayload.ServerContent?.InputTranscription != null)
         {
@@ -597,7 +597,7 @@ public class MultiModalLiveClient : IDisposable
         }
     }
     
-    private void ProcessOutputTranscription(BidiResponsePayload responsePayload)
+    private void ProcessOutputTranscription(LiveServerMessage responsePayload)
     {
         if (responsePayload.ServerContent?.OutputTranscription != null)
         {
@@ -605,7 +605,7 @@ public class MultiModalLiveClient : IDisposable
         }
     }
     
-    private void ProcessSessionResumableUpdate(BidiResponsePayload responsePayload)
+    private void ProcessSessionResumableUpdate(LiveServerMessage responsePayload)
     {
         if (responsePayload.SessionResumptionUpdate != null)
         {
@@ -617,7 +617,7 @@ public class MultiModalLiveClient : IDisposable
         }
     }
     
-    private void ProcessGoAway(BidiResponsePayload responsePayload)
+    private void ProcessGoAway(LiveServerMessage responsePayload)
     {
         if (responsePayload.GoAway != null)
         {
@@ -625,7 +625,7 @@ public class MultiModalLiveClient : IDisposable
         }
     }
     
-    private async Task CallFunctions(BidiGenerateContentToolCall responsePayloadToolCall,
+    private async Task CallFunctions(LiveServerToolCall responsePayloadToolCall,
         CancellationToken cancellationToken = default)
     {
         var functionResponses = new List<FunctionResponse>();
@@ -667,7 +667,7 @@ public class MultiModalLiveClient : IDisposable
 
         if (functionResponses.Count > 0)
         {
-            var toolResponse = new BidiGenerateContentToolResponse()
+            var toolResponse = new LiveClientToolResponse()
             {
                 FunctionResponses = functionResponses.ToArray()
             };
@@ -679,7 +679,7 @@ public class MultiModalLiveClient : IDisposable
     /// Wrapper method that handles function calls with proper error handling for background execution.
     /// This prevents ObjectDisposedException and other errors from being unobserved.
     /// </summary>
-    private async Task CallFunctionsWithErrorHandlingAsync(BidiGenerateContentToolCall toolCall)
+    private async Task CallFunctionsWithErrorHandlingAsync(LiveServerToolCall toolCall)
     {
         try
         {
@@ -802,7 +802,7 @@ public class MultiModalLiveClient : IDisposable
         }
     }
 
-    private async Task ResendSetupAfterReconnectAsync(BidiGenerateContentSetup setup)
+    private async Task ResendSetupAfterReconnectAsync(LiveClientSetup setup)
     {
         if (setup.SessionResumption != null && !string.IsNullOrEmpty(LastSessionResumptionHandle))
         {
@@ -851,7 +851,7 @@ public class MultiModalLiveClient : IDisposable
         if (UseGoogleSearch)
             tools.Add(new Tool { GoogleSearch = new GoogleSearchTool() });
 
-        var setup = new BidiGenerateContentSetup()
+        var setup = new LiveClientSetup()
         {
            GenerationConfig = this.Config,
            Model = this.ModelName,
@@ -920,11 +920,11 @@ public class MultiModalLiveClient : IDisposable
     /// A task that represents the asynchronous operation.
     /// </returns>
     /// <remarks>
-    /// If <see cref="BidiGenerateContentSetup.Tools"/> is null or empty, this method will automatically
+    /// If <see cref="LiveClientSetup.Tools"/> is null or empty, this method will automatically
     /// include tools from the client's <see cref="FunctionTools"/> property, as well as code execution
     /// and Google Search tools if <see cref="UseCodeExecutor"/> or <see cref="UseGoogleSearch"/> are enabled.
     /// </remarks>
-    public async Task SendSetupAsync(BidiGenerateContentSetup setup, CancellationToken cancellationToken = default)
+    public async Task SendSetupAsync(LiveClientSetup setup, CancellationToken cancellationToken = default)
     {
 #if NET6_0_OR_GREATER
         ArgumentNullException.ThrowIfNull(setup);
@@ -957,40 +957,40 @@ public class MultiModalLiveClient : IDisposable
         }
 
         _lastSetup = setup;
-        var payload = new BidiClientPayload { Setup = setup };
+        var payload = new LiveClientMessage { Setup = setup };
         await SendAsync(payload, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
     /// Sends a client content message to the connected generative AI service.
     /// </summary>
-    /// <param name="clientContent">The content to be sent, encapsulated in a <see cref="BidiGenerateContentClientContent"/> object.</param>
+    /// <param name="clientContent">The content to be sent, encapsulated in a <see cref="LiveClientContent"/> object.</param>
     /// <param name="cancellationToken">A token to observe for cancellation of the send operation.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    public async Task SendClientContentAsync(BidiGenerateContentClientContent clientContent,
+    public async Task SendClientContentAsync(LiveClientContent clientContent,
         CancellationToken cancellationToken = default)
     {
-        var payload = new BidiClientPayload { ClientContent = clientContent };
+        var payload = new LiveClientMessage { ClientContent = clientContent };
         await SendAsync(payload, cancellationToken).ConfigureAwait(false);
         _logger?.LogClientContentSent();
     }
 
     /// <summary>
-    /// Sends a tool response message of type <see cref="BidiGenerateContentToolResponse"/> through the WebSocket connection.
+    /// Sends a tool response message of type <see cref="LiveClientToolResponse"/> through the WebSocket connection.
     /// </summary>
     /// <param name="toolResponse">The tool response to be sent.</param>
     /// <param name="cancellationToken">A cancellation token to observe while waiting for the operation to complete.</param>
     /// <returns>A task that represents the asynchronous send operation.</returns>
-    public async Task SendToolResponseAsync(BidiGenerateContentToolResponse toolResponse,
+    public async Task SendToolResponseAsync(LiveClientToolResponse toolResponse,
         CancellationToken cancellationToken = default)
     {
-        var payload = new BidiClientPayload { ToolResponse = toolResponse };
+        var payload = new LiveClientMessage { ToolResponse = toolResponse };
         await SendAsync(payload, cancellationToken).ConfigureAwait(false);
         _logger?.LogToolResponseSent();
     }
 
 
-    private async Task SendAsync(BidiClientPayload payload, CancellationToken cancellationToken = default)
+    private async Task SendAsync(LiveClientMessage payload, CancellationToken cancellationToken = default)
     {
         if (_client?.IsRunning != true)
         {
@@ -1004,7 +1004,7 @@ public class MultiModalLiveClient : IDisposable
 
         try
         {
-            var json = JsonSerializer.Serialize(payload,BidiClientPayloadTypeInfo);
+            var json = JsonSerializer.Serialize(payload,LiveClientMessageTypeInfo);
             _logger?.LogMessageSent(json);
 
             _client.Send(json);
@@ -1048,12 +1048,12 @@ public class MultiModalLiveClient : IDisposable
     public async Task SendAudioAsync(byte[] audioData, string mimeType = DefaultAudioMimeType,
         CancellationToken cancellationToken = default)
     {
-        var realtimeInput = new BidiGenerateContentRealtimeInput
+        var realtimeInput = new LiveClientRealtimeInput
         {
             Audio = new Blob { Data = Convert.ToBase64String(audioData), MimeType = mimeType }
         };
 
-        var payload = new BidiClientPayload { RealtimeInput = realtimeInput };
+        var payload = new LiveClientMessage { RealtimeInput = realtimeInput };
         await SendAsync(payload, cancellationToken).ConfigureAwait(false);
     }
 
@@ -1067,13 +1067,13 @@ public class MultiModalLiveClient : IDisposable
         CancellationToken cancellationToken = default)
     {
         var content = new Content(prompt, Roles.User);
-        var clientContent = new BidiGenerateContentClientContent()
+        var clientContent = new LiveClientContent()
         {
             Turns = [content],
             TurnComplete = true
         };
 
-        var payload = new BidiClientPayload { ClientContent = clientContent };
+        var payload = new LiveClientMessage { ClientContent = clientContent };
         await SendAsync(payload, cancellationToken).ConfigureAwait(false);
     }
 
@@ -1083,7 +1083,7 @@ public class MultiModalLiveClient : IDisposable
     /// <param name="realtimeInput">The realtime input to send.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    public async Task SendRealtimeInputAsync(BidiGenerateContentRealtimeInput realtimeInput,
+    public async Task SendRealtimeInputAsync(LiveClientRealtimeInput realtimeInput,
         CancellationToken cancellationToken = default)
     {
 #if NET6_0_OR_GREATER
@@ -1091,7 +1091,7 @@ public class MultiModalLiveClient : IDisposable
 #else
         if (realtimeInput == null) throw new ArgumentNullException(nameof(realtimeInput));
 #endif
-        var payload = new BidiClientPayload { RealtimeInput = realtimeInput };
+        var payload = new LiveClientMessage { RealtimeInput = realtimeInput };
         await SendAsync(payload, cancellationToken).ConfigureAwait(false);
     }
 
@@ -1110,7 +1110,7 @@ public class MultiModalLiveClient : IDisposable
 #else
         if (frameData == null) throw new ArgumentNullException(nameof(frameData));
 #endif
-        return SendRealtimeInputAsync(new BidiGenerateContentRealtimeInput
+        return SendRealtimeInputAsync(new LiveClientRealtimeInput
         {
             Video = new Blob { Data = Convert.ToBase64String(frameData), MimeType = mimeType }
         }, cancellationToken);
@@ -1125,7 +1125,7 @@ public class MultiModalLiveClient : IDisposable
     /// <returns>A task that represents the asynchronous operation.</returns>
     public Task SendRealtimeTextAsync(string text, CancellationToken cancellationToken = default)
     {
-        return SendRealtimeInputAsync(new BidiGenerateContentRealtimeInput { Text = text }, cancellationToken);
+        return SendRealtimeInputAsync(new LiveClientRealtimeInput { Text = text }, cancellationToken);
     }
 
     /// <summary>
@@ -1141,7 +1141,7 @@ public class MultiModalLiveClient : IDisposable
     /// <returns>A task that represents the asynchronous operation.</returns>
     public Task SendActivityStartAsync(CancellationToken cancellationToken = default)
     {
-        return SendRealtimeInputAsync(new BidiGenerateContentRealtimeInput { ActivityStart = new ActivityStart() },
+        return SendRealtimeInputAsync(new LiveClientRealtimeInput { ActivityStart = new ActivityStart() },
             cancellationToken);
     }
 
@@ -1153,7 +1153,7 @@ public class MultiModalLiveClient : IDisposable
     /// <returns>A task that represents the asynchronous operation.</returns>
     public Task SendActivityEndAsync(CancellationToken cancellationToken = default)
     {
-        return SendRealtimeInputAsync(new BidiGenerateContentRealtimeInput { ActivityEnd = new ActivityEnd() },
+        return SendRealtimeInputAsync(new LiveClientRealtimeInput { ActivityEnd = new ActivityEnd() },
             cancellationToken);
     }
 
@@ -1165,7 +1165,7 @@ public class MultiModalLiveClient : IDisposable
     /// <returns>A task that represents the asynchronous operation.</returns>
     public Task SendAudioStreamEndAsync(CancellationToken cancellationToken = default)
     {
-        return SendRealtimeInputAsync(new BidiGenerateContentRealtimeInput { AudioStreamEnd = true }, cancellationToken);
+        return SendRealtimeInputAsync(new LiveClientRealtimeInput { AudioStreamEnd = true }, cancellationToken);
     }
 
     /// <summary>
@@ -1174,7 +1174,7 @@ public class MultiModalLiveClient : IDisposable
     /// <param name="contextUpdate">The context update to send.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    public async Task SendContextUpdateAsync(BidiGenerateContentContextUpdate contextUpdate,
+    public async Task SendContextUpdateAsync(LiveClientContextUpdate contextUpdate,
         CancellationToken cancellationToken = default)
     {
 #if NET6_0_OR_GREATER
@@ -1182,7 +1182,7 @@ public class MultiModalLiveClient : IDisposable
 #else
         if (contextUpdate == null) throw new ArgumentNullException(nameof(contextUpdate));
 #endif
-        var payload = new BidiClientPayload { ContextUpdate = contextUpdate };
+        var payload = new LiveClientMessage { ContextUpdate = contextUpdate };
         await SendAsync(payload, cancellationToken).ConfigureAwait(false);
     }
 
@@ -1200,7 +1200,7 @@ public class MultiModalLiveClient : IDisposable
     public Task SendContextUpdateAsync(string? systemInstruction, IEnumerable<Tool>? tools = null,
         CancellationToken cancellationToken = default)
     {
-        return SendContextUpdateAsync(new BidiGenerateContentContextUpdate
+        return SendContextUpdateAsync(new LiveClientContextUpdate
         {
             SystemInstruction = systemInstruction is null ? null : new Content(systemInstruction, Roles.System),
             Tools = tools is null ? null : new ContextUpdateTools { Tools = tools.ToArray() }

@@ -215,6 +215,15 @@ public static class MicrosoftExtensions
                     Data = Convert.ToBase64String(image.Data.ToArray()),
                 }
             },
+            // Remote files (Files API URIs, gs:// objects, YouTube or public HTTPS URLs) are referenced, not inlined.
+            UriContent uri => new Part
+            {
+                FileData = new FileData
+                {
+                    FileUri = uri.Uri.ToString(),
+                    MimeType = uri.MediaType,
+                }
+            },
             FunctionCallContent fcc => new Part
             {
                 FunctionCall = new FunctionCall()
@@ -707,6 +716,13 @@ public static class MicrosoftExtensions
             {
                 byte[] data = Convert.FromBase64String(part.InlineData.Data!);
                 (contents ??= new()).Add(new DataContent(data, part.InlineData.MimeType ?? "application/octet-stream"));
+            }
+
+            if (part.FileData?.FileUri is { Length: > 0 } fileUri &&
+                Uri.TryCreate(fileUri, UriKind.Absolute, out var parsedUri))
+            {
+                (contents ??= new()).Add(new UriContent(parsedUri,
+                    part.FileData.MimeType ?? "application/octet-stream"));
             }
         }
 

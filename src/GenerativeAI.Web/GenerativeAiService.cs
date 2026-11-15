@@ -17,9 +17,12 @@ public interface IGenerativeAiService
     /// <summary>
     /// Creates a generative model instance.
     /// </summary>
-    /// <param name="modelName">The name of the model to create.</param>
+    /// <param name="modelName">
+    /// The name of the model to create. When omitted, <see cref="GenerativeAIOptions.Model"/> is used, falling back to
+    /// <see cref="GoogleAIModels.DefaultGeminiModel"/>.
+    /// </param>
     /// <returns>A generative model instance.</returns>
-    IGenerativeModel CreateInstance(string modelName = GoogleAIModels.DefaultGeminiModel);
+    IGenerativeModel CreateInstance(string? modelName = null);
 }
 
 /// <summary>
@@ -29,6 +32,7 @@ public class GenerativeAIService : IGenerativeAiService
 {
     private readonly IGenerativeAI _platform;
     private readonly IGoogleAuthenticator? _authenticator;
+    private readonly string? _defaultModel;
     
     /// <summary>
     /// Gets or sets the logger instance.
@@ -47,10 +51,15 @@ public class GenerativeAIService : IGenerativeAiService
         if (options == null) throw new ArgumentNullException(nameof(options));
 #endif
         this._authenticator = options.Value.Authenticator;
+        this._defaultModel = options.Value.Model;
         if (options.Value.IsVertex == true)
         {
-            var platformAdapter = new VertextPlatformAdapter(options.Value.ProjectId, options.Value.Region,
-                options.Value.ExpressMode??false, options.Value.Credentials?.ApiKey, options.Value.ApiVersion,
+            var platformAdapter = new VertextPlatformAdapter(
+                projectId: options.Value.ProjectId,
+                region: options.Value.Region,
+                expressMode: options.Value.ExpressMode ?? false,
+                apiKey: options.Value.Credentials?.ApiKey,
+                apiVersion: options.Value.ApiVersion,
                 authenticator: options.Value.Authenticator);
 
             _platform = new VertexAI(platformAdapter, logger: Logger);
@@ -59,8 +68,9 @@ public class GenerativeAIService : IGenerativeAiService
         {
             if (options.Value.Credentials?.ApiKey == null)
                 throw new InvalidOperationException("API Key is required for Google AI configuration.");
-            var platformAdapter = new GoogleAIPlatformAdapter(options.Value.Credentials.ApiKey, options.Value.ApiVersion ?? "v1beta",
-                logger: this.Logger);
+            // A null ApiVersion lets the adapter apply GOOGLE_GENAI_API_VERSION or its default.
+            var platformAdapter = new GoogleAIPlatformAdapter(options.Value.Credentials.ApiKey,
+                apiVersion: options.Value.ApiVersion, logger: this.Logger);
             _platform = new GoogleAi(platformAdapter, logger: this.Logger);
         }
     }
@@ -73,10 +83,16 @@ public class GenerativeAIService : IGenerativeAiService
     /// <summary>
     /// Creates a generative model instance.
     /// </summary>
-    /// <param name="modelName">The name of the model to create.</param>
+    /// <param name="modelName">
+    /// The name of the model to create. When omitted, <see cref="GenerativeAIOptions.Model"/> is used, falling back to
+    /// <see cref="GoogleAIModels.DefaultGeminiModel"/>.
+    /// </param>
     /// <returns>A generative model instance.</returns>
-    public IGenerativeModel CreateInstance(string modelName = GoogleAIModels.DefaultGeminiModel)
+    public IGenerativeModel CreateInstance(string? modelName = null)
     {
-        return _platform.CreateGenerativeModel(modelName);
+        var model = !string.IsNullOrWhiteSpace(modelName) ? modelName!
+            : !string.IsNullOrWhiteSpace(_defaultModel) ? _defaultModel!
+            : GoogleAIModels.DefaultGeminiModel;
+        return _platform.CreateGenerativeModel(model);
     }
 }

@@ -276,6 +276,10 @@ The **[wiki](https://github.com/gunpal5/Google_GenerativeAI/wiki)** has a page f
 examples, platform availability notes (Gemini API or Vertex AI) and troubleshooting tips. The generated
 [API reference](https://gunpal5.github.io/generative-ai/) documents every public type.
 
+**For AI coding agents:** [`llms.txt`](llms.txt) is a documentation index, [`llms-full.txt`](llms-full.txt) contains
+the whole wiki in one file, and [`skills/google-generativeai-dotnet`](skills) is an installable Claude Code skill that
+teaches agents the v4 APIs. Contributors' agents should read [`AGENTS.md`](AGENTS.md).
+
 ## Samples
 
 | Sample | Shows |
@@ -289,8 +293,9 @@ examples, platform availability notes (Gemini API or Vertex AI) and troubleshoot
 
 ## Contributing
 
-Issues and pull requests are welcome. Please open an [issue](https://github.com/gunpal5/Google_GenerativeAI/issues) to
-report a bug or discuss a feature.
+Issues and pull requests are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) for the development setup, coding
+guidelines and test conventions, or open an [issue](https://github.com/gunpal5/Google_GenerativeAI/issues) to report
+a bug or discuss a feature.
 
 ## Credits
 
