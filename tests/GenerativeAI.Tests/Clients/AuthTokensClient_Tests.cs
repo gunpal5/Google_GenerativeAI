@@ -34,7 +34,7 @@ public class AuthTokensClient_Tests
         }
     }
 
-    private static readonly BidiGenerateContentSetup Constraints = new()
+    private static readonly LiveClientSetup Constraints = new()
     {
         Model = "models/gemini-3.8-live",
         GenerationConfig = new GenerationConfig { Temperature = 0.7, ResponseModalities = new List<Modality> { Modality.AUDIO } },
@@ -65,7 +65,7 @@ public class AuthTokensClient_Tests
     {
         var request = AuthTokensClient.BuildRequest(new CreateAuthTokenConfig { LiveConnectConstraints = Constraints });
 
-        request.BidiGenerateContentSetup.ShouldBeSameAs(Constraints);
+        request.LiveClientSetup.ShouldBeSameAs(Constraints);
         request.FieldMask.ShouldBeNull();
     }
 
@@ -90,7 +90,7 @@ public class AuthTokensClient_Tests
     {
         var request = AuthTokensClient.BuildRequest(new CreateAuthTokenConfig
         {
-            LiveConnectConstraints = new BidiGenerateContentSetup { Model = "models/gemini-3.8-live" },
+            LiveConnectConstraints = new LiveClientSetup { Model = "models/gemini-3.8-live" },
             LockAdditionalFields = new List<string> { "topK", "tools" }
         });
 

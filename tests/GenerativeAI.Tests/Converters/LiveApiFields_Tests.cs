@@ -10,15 +10,15 @@ namespace GenerativeAI.Tests.Converters;
 /// </summary>
 public class LiveApiFields_Tests
 {
-    private static JsonNode SerializeToNode(BidiClientPayload payload)
+    private static JsonNode SerializeToNode(LiveClientMessage payload)
     {
         var json = JsonSerializer.Serialize(payload, DefaultSerializerOptions.Options);
         return JsonNode.Parse(json)!;
     }
 
-    private static BidiResponsePayload Deserialize(string json)
+    private static LiveServerMessage Deserialize(string json)
     {
-        var payload = JsonSerializer.Deserialize<BidiResponsePayload>(json, DefaultSerializerOptions.Options);
+        var payload = JsonSerializer.Deserialize<LiveServerMessage>(json, DefaultSerializerOptions.Options);
         payload.ShouldNotBeNull();
         return payload;
     }
@@ -26,9 +26,9 @@ public class LiveApiFields_Tests
     [Fact]
     public void Setup_SerializesRealtimeInputConfig()
     {
-        var payload = new BidiClientPayload
+        var payload = new LiveClientMessage
         {
-            Setup = new BidiGenerateContentSetup
+            Setup = new LiveClientSetup
             {
                 Model = GoogleAIModels.Gemini38Live,
                 RealtimeInputConfig = new RealtimeInputConfig
@@ -63,9 +63,9 @@ public class LiveApiFields_Tests
     [Fact]
     public void Setup_SerializesHistoryProactivityTranscriptionAndOtherFields()
     {
-        var payload = new BidiClientPayload
+        var payload = new LiveClientMessage
         {
-            Setup = new BidiGenerateContentSetup
+            Setup = new LiveClientSetup
             {
                 HistoryConfig = new HistoryConfig { InitialHistoryInClientContent = true },
                 Proactivity = new ProactivityConfig { ProactiveAudio = true, ProactiveVideo = true },
@@ -116,9 +116,9 @@ public class LiveApiFields_Tests
     [Fact]
     public void Setup_EmptyAudioTranscriptionConfig_SerializesAsEmptyObject()
     {
-        var payload = new BidiClientPayload
+        var payload = new LiveClientMessage
         {
-            Setup = new BidiGenerateContentSetup { OutputAudioTranscription = new AudioTranscriptionConfig() }
+            Setup = new LiveClientSetup { OutputAudioTranscription = new AudioTranscriptionConfig() }
         };
 
         var node = SerializeToNode(payload)["setup"]!["outputAudioTranscription"]!.AsObject();
@@ -128,9 +128,9 @@ public class LiveApiFields_Tests
     [Fact]
     public void RealtimeInput_SerializesActivitySignalsAndAudioStreamEnd()
     {
-        var payload = new BidiClientPayload
+        var payload = new LiveClientMessage
         {
-            RealtimeInput = new BidiGenerateContentRealtimeInput
+            RealtimeInput = new LiveClientRealtimeInput
             {
                 AudioStreamEnd = true,
                 ActivityStart = new ActivityStart(),
@@ -147,9 +147,9 @@ public class LiveApiFields_Tests
     [Fact]
     public void ContextUpdate_SerializesSystemInstructionAndWrappedTools()
     {
-        var payload = new BidiClientPayload
+        var payload = new LiveClientMessage
         {
-            ContextUpdate = new BidiGenerateContentContextUpdate
+            ContextUpdate = new LiveClientContextUpdate
             {
                 SystemInstruction = new Content("Be brief.", Roles.User),
                 Tools = new ContextUpdateTools { Tools = [] }

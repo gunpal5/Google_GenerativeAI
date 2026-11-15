@@ -7,7 +7,7 @@ namespace GenerativeAI.Types;
 /// A message here will interrupt any current model generation.
 /// </summary>
 /// <seealso href="https://ai.google.dev/gemini-api/docs/multimodal-live#bidigeneratecontentclientcontent">See Official API Documentation</seealso>
-public class BidiGenerateContentClientContent
+public class LiveClientContent
 {
     /// <summary>
     /// The content appended to the current conversation with the model.

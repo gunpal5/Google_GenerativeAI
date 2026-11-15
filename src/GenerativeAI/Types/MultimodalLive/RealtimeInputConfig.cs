@@ -3,14 +3,14 @@
 namespace GenerativeAI.Types;
 
 /// <summary>
-/// Configures the realtime input behavior in <see cref="BidiGenerateContentSetup.RealtimeInputConfig"/>.
+/// Configures the realtime input behavior in <see cref="LiveClientSetup.RealtimeInputConfig"/>.
 /// </summary>
 public class RealtimeInputConfig
 {
     /// <summary>
     /// If not set, automatic activity detection is enabled by default. If automatic voice detection is disabled,
-    /// the client must send activity signals (<see cref="BidiGenerateContentRealtimeInput.ActivityStart"/> and
-    /// <see cref="BidiGenerateContentRealtimeInput.ActivityEnd"/>).
+    /// the client must send activity signals (<see cref="LiveClientRealtimeInput.ActivityStart"/> and
+    /// <see cref="LiveClientRealtimeInput.ActivityEnd"/>).
     /// </summary>
     [JsonPropertyName("automaticActivityDetection")]
     public AutomaticActivityDetection? AutomaticActivityDetection { get; set; }

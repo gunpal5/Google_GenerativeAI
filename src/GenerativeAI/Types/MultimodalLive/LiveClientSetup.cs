@@ -4,10 +4,10 @@ namespace GenerativeAI.Types;
 
 /// <summary>
 /// Message to be sent in the first and only first client message. Contains configuration that will apply for the duration of the streaming session.
-/// Clients should wait for a <see cref="BidiGenerateContentSetupComplete"/> message before sending any additional messages.
+/// Clients should wait for a <see cref="LiveServerSetupComplete"/> message before sending any additional messages.
 /// </summary>
 /// <seealso href="https://ai.google.dev/gemini-api/docs/multimodal-live#bidigeneratecontentsetup">See Official API Documentation</seealso>
-public class BidiGenerateContentSetup
+public class LiveClientSetup
 {
     /// <summary>
     /// Required. The model's resource name. This serves as an ID for the Model to use.
@@ -137,7 +137,7 @@ public class ContextWindowCompressionConfig
 /// <summary>
 /// Context window will be truncated by keeping only suffix of it.
 /// Context window will always be cut at start of USER role turn. System
-/// instructions and BidiGenerateContentSetup.prefix_turns will not be
+/// instructions and LiveClientSetup.prefix_turns will not be
 /// subject to the sliding window mechanism, they will always stay at the
 /// beginning of context window.
 /// </summary>

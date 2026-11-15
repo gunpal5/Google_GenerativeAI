@@ -7,35 +7,35 @@ namespace GenerativeAI.Types;
 /// This class is used to encapsulate data such as the setup, client content, real-time input,
 /// and tool responses that are involved in bidirectional communication.
 /// </summary>
-public class BidiClientPayload
+public class LiveClientMessage
 {
     /// <summary>
     /// Gets or sets the setup message for a bidirectional content generation session.
     /// </summary>
     [JsonPropertyName("setup")]
-    public BidiGenerateContentSetup? Setup { get; set; }
+    public LiveClientSetup? Setup { get; set; }
 
     /// <summary>
     /// Gets or sets an incremental update of the current conversation delivered from the client.
     /// </summary>
     [JsonPropertyName("clientContent")]
-    public BidiGenerateContentClientContent? ClientContent { get; set; }
+    public LiveClientContent? ClientContent { get; set; }
 
     /// <summary>
     /// Gets or sets user input that is sent in real time.
     /// </summary>
     [JsonPropertyName("realtimeInput")]
-    public BidiGenerateContentRealtimeInput? RealtimeInput { get; set; }
+    public LiveClientRealtimeInput? RealtimeInput { get; set; }
 
     /// <summary>
     /// Gets or sets a client generated response to a <see cref="FunctionCall"/> received from the server.
     /// </summary>
     [JsonPropertyName("toolResponse")]
-    public BidiGenerateContentToolResponse? ToolResponse { get; set; }
+    public LiveClientToolResponse? ToolResponse { get; set; }
 
     /// <summary>
     /// Gets or sets an update to the context (system instruction and/or tools) of the current session.
     /// </summary>
     [JsonPropertyName("contextUpdate")]
-    public BidiGenerateContentContextUpdate? ContextUpdate { get; set; }
+    public LiveClientContextUpdate? ContextUpdate { get; set; }
 }

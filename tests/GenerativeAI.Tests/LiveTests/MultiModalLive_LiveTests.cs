@@ -39,7 +39,7 @@ public class MultiModalLive_LiveTests : TestBase
             Uses = 1,
             ExpireTime = DateTime.UtcNow.AddMinutes(10),
             NewSessionExpireTime = DateTime.UtcNow.AddMinutes(2),
-            LiveConnectConstraints = new BidiGenerateContentSetup
+            LiveConnectConstraints = new LiveClientSetup
             {
                 Model = LiveModel,
                 GenerationConfig = AudioConfig()

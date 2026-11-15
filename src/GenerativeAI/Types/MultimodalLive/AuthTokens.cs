@@ -61,10 +61,10 @@ public class CreateAuthTokenRequest
     /// Live session setup that sessions using this token are constrained to.
     /// </summary>
     [JsonPropertyName("bidiGenerateContentSetup")]
-    public BidiGenerateContentSetup? BidiGenerateContentSetup { get; set; }
+    public LiveClientSetup? LiveClientSetup { get; set; }
 
     /// <summary>
-    /// Comma-separated setup fields that are locked to the values in <see cref="BidiGenerateContentSetup"/>.
+    /// Comma-separated setup fields that are locked to the values in <see cref="LiveClientSetup"/>.
     /// When the setup is set and this is omitted, all setup fields are locked.
     /// </summary>
     [JsonPropertyName("fieldMask")]
@@ -94,7 +94,7 @@ public class CreateAuthTokenConfig
     /// <summary>
     /// Setup (model, generation config, system instruction, tools, ...) that sessions using the token are constrained to.
     /// </summary>
-    public BidiGenerateContentSetup? LiveConnectConstraints { get; set; }
+    public LiveClientSetup? LiveConnectConstraints { get; set; }
 
     /// <summary>
     /// Controls which setup fields are locked, following the official SDKs:

@@ -141,7 +141,7 @@ public class ApiFieldUpdates_Tests
         part.AudioTranscription!.Text.ShouldBe("hello");
         part.AudioTranscription.LanguageCode.ShouldBe("en-US");
 
-        var setupComplete = Deserialize<BidiGenerateContentSetupComplete>(
+        var setupComplete = Deserialize<LiveServerSetupComplete>(
             """{"sessionId": "s1", "voiceConsentSignature": {"signature": "sig"}}""");
         setupComplete.VoiceConsentSignature!.Signature.ShouldBe("sig");
     }
@@ -154,7 +154,7 @@ public class ApiFieldUpdates_Tests
     [InlineData(typeof(ResponseFormat))]
     [InlineData(typeof(ModelArmorConfig))]
     [InlineData(typeof(RealtimeInputConfig))]
-    [InlineData(typeof(BidiGenerateContentContextUpdate))]
+    [InlineData(typeof(LiveClientContextUpdate))]
     [InlineData(typeof(LiveServerGoAway))]
     [InlineData(typeof(LiveServerSessionResumptionUpdate))]
     [InlineData(typeof(ToolType))]

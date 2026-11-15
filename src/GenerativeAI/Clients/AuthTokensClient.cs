@@ -85,7 +85,7 @@ public class AuthTokensClient : BaseClient
             ExpireTime = config.ExpireTime,
             NewSessionExpireTime = config.NewSessionExpireTime,
             Uses = config.Uses,
-            BidiGenerateContentSetup = config.LiveConnectConstraints
+            LiveClientSetup = config.LiveConnectConstraints
         };
 
         var additional = config.LockAdditionalFields?.Select(PrefixGenerationConfigField).ToList();
@@ -108,9 +108,9 @@ public class AuthTokensClient : BaseClient
     /// <summary>
     /// Lists the fields set in the setup as field-mask paths, one level deep (for example <c>generationConfig.temperature</c>).
     /// </summary>
-    private static List<string> SetFieldsOf(BidiGenerateContentSetup setup)
+    private static List<string> SetFieldsOf(LiveClientSetup setup)
     {
-        var json = JsonSerializer.SerializeToNode(setup, TypesSerializerContext.Default.BidiGenerateContentSetup) as JsonObject;
+        var json = JsonSerializer.SerializeToNode(setup, TypesSerializerContext.Default.LiveClientSetup) as JsonObject;
         var fields = new List<string>();
         if (json == null)
             return fields;
