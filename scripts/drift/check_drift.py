@@ -323,14 +323,18 @@ def dto_gaps(version: str) -> dict:
     mapping = json.loads(DTO_MAP.read_text(encoding="utf-8")) if DTO_MAP.exists() else {}
     renames = mapping.get("classes", {})
     ignore_fields = set(mapping.get("ignoreFields", []))
+    ignore_types = set(mapping.get("ignoreTypes", []))
+    ignore_class_fields = {k: set(v) for k, v in mapping.get("ignoreClassFields", {}).items()}
 
     missing_classes, missing_fields, missing_enums, missing_values = [], {}, [], {}
     for name, fields in sorted(py_classes.items()):
+        if name in ignore_types:
+            continue
         cs_name = renames.get(name, name)
         if cs_name not in cs_classes:
             missing_classes.append(name)
             continue
-        gap = sorted(fields - cs_classes[cs_name] - ignore_fields)
+        gap = sorted(fields - cs_classes[cs_name] - ignore_fields - ignore_class_fields.get(name, set()))
         if gap:
             missing_fields[name] = gap
     for name, values in sorted(py_enums.items()):

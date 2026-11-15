@@ -1,0 +1,488 @@
+"""Updates the SDK's DTOs to match python-genai (no AI, no new features).
+
+What it changes:
+  * Adds fields that python-genai has but an existing SDK type is missing.
+  * Adds enum values that python-genai has but an existing SDK enum is missing.
+  * Marks fields [Obsolete] when python-genai removed them since the last sync.
+  * Creates a new DTO class or enum ONLY when a newly added field needs it (generated from python-genai's
+    definition, placed in src/GenerativeAI/Types/Generated/ and registered in TypesSerializerContext).
+
+It never adds client methods, never touches types that no SDK type references, and skips anything it cannot map
+confidently (for example union types); skipped items are listed in the report for a person to handle.
+
+Usage:
+  python scripts/drift/update_dtos.py [--apply] [--report report.md]
+
+Without --apply it only prints what it would change. Uses only the Python standard library.
+"""
+from __future__ import annotations
+
+import argparse
+import ast
+import json
+import re
+import sys
+import urllib.request
+import warnings
+from dataclasses import dataclass, field
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import check_drift as cd  # noqa: E402  (shared helpers: to_camel, URLs, paths)
+
+ROOT = cd.ROOT
+SRC = ROOT / "src"
+GENERATED_DIR = SRC / "GenerativeAI" / "Types" / "Generated"
+SERIALIZER_CONTEXT = SRC / "GenerativeAI" / "Types" / "TypesSerializerContext.cs"
+FIELDS_SNAPSHOT = cd.DRIFT_DIR / "python-genai-fields.json"
+
+
+# ------------------------------------------------------------------------------------------- python side
+
+@dataclass
+class PyField:
+    name: str            # camelCase JSON name
+    annotation: ast.expr
+    description: str
+
+
+@dataclass
+class PyClass:
+    name: str
+    doc: str
+    fields: dict[str, PyField]
+
+
+@dataclass
+class PyEnum:
+    name: str
+    doc: str
+    values: list[str]
+
+
+def load_python(version: str) -> tuple[dict[str, PyClass], dict[str, PyEnum]]:
+    request = urllib.request.Request(cd.PYGENAI_TYPES_URL.format(version=version),
+                                     headers={"User-Agent": "sdk-drift-check"})
+    with urllib.request.urlopen(request, timeout=60) as response:
+        source = response.read().decode("utf-8")
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", SyntaxWarning)
+        tree = ast.parse(source)
+
+    classes, enums = {}, {}
+    for node in tree.body:
+        if not isinstance(node, ast.ClassDef):
+            continue
+        bases = {b.attr if isinstance(b, ast.Attribute) else getattr(b, "id", "") for b in node.bases}
+        doc = (ast.get_docstring(node) or "").strip()
+        if "BaseModel" in bases:
+            fields = {}
+            for stmt in node.body:
+                if not (isinstance(stmt, ast.AnnAssign) and isinstance(stmt.target, ast.Name)):
+                    continue
+                py_name = stmt.target.id
+                if py_name.startswith("_") or py_name == "model_config":
+                    continue
+                description = ""
+                if isinstance(stmt.value, ast.Call):
+                    for kw in stmt.value.keywords:
+                        if kw.arg == "description" and isinstance(kw.value, ast.Constant):
+                            description = str(kw.value.value)
+                fields[cd.to_camel(py_name)] = PyField(cd.to_camel(py_name), stmt.annotation, description)
+            classes[node.name] = PyClass(node.name, doc, fields)
+        elif "CaseInSensitiveEnum" in bases or "Enum" in bases:
+            values = [stmt.value.value for stmt in node.body
+                      if isinstance(stmt, ast.Assign) and isinstance(stmt.value, ast.Constant)
+                      and isinstance(stmt.value.value, str)]
+            enums[node.name] = PyEnum(node.name, doc, values)
+    return classes, enums
+
+
+# ---------------------------------------------------------------------------------------------- C# side
+
+@dataclass
+class CsType:
+    name: str
+    kind: str                    # class | record | struct | enum
+    path: Path
+    close_line: int              # index of the line holding the type's closing brace
+    indent: str                  # member indentation
+    json_names: set[str] = field(default_factory=set)
+    members: set[str] = field(default_factory=set)        # property or enum member names
+    enum_values: set[str] = field(default_factory=set)     # JSON values of enum members
+    enum_numbers: list[int] = field(default_factory=list)
+    json_to_member: dict[str, int] = field(default_factory=dict)  # json name -> line index of the property
+
+
+def load_csharp() -> dict[str, list[CsType]]:
+    types: dict[str, list[CsType]] = {}
+    for path in SRC.rglob("*.cs"):
+        if any(part in ("bin", "obj") for part in path.parts):
+            continue
+        lines = path.read_text(encoding="utf-8-sig", errors="replace").splitlines()
+        stack: list[tuple[CsType, int]] = []
+        pending: tuple[str, str] | None = None
+        pending_json: str | None = None
+        depth = 0
+        for i, raw in enumerate(lines):
+            line = raw.strip()
+            if line.startswith("//"):
+                continue
+            decl = cd.TYPE_DECL.search(line)
+            if decl and not line.startswith("[") and decl.group(1) != "interface":
+                pending = (decl.group(1), decl.group(2))
+            if stack:
+                current = stack[-1][0]
+                if current.kind == "enum":
+                    attr = cd.ENUM_NAME.search(line)
+                    if attr:
+                        pending_json = attr.group(1)
+                    else:
+                        member = re.match(r"^([A-Za-z_]\w*)\s*(?:=\s*(-?\d+))?\s*,?\s*$", line)
+                        if member:
+                            current.members.add(member.group(1))
+                            current.enum_values.add((pending_json or member.group(1)).upper())
+                            if member.group(2):
+                                current.enum_numbers.append(int(member.group(2)))
+                            pending_json = None
+                else:
+                    attr = cd.JSON_NAME.search(line)
+                    if attr:
+                        pending_json = attr.group(1)
+                    prop = cd.PROPERTY.match(raw)
+                    if prop:
+                        name = prop.group(1)
+                        current.members.add(name)
+                        json_name = pending_json or (name[:1].lower() + name[1:])
+                        current.json_names.add(json_name)
+                        current.json_to_member[json_name] = i
+                        if not current.indent:
+                            current.indent = raw[: len(raw) - len(raw.lstrip())]
+                        pending_json = None
+            for char in line:
+                if char == "{":
+                    depth += 1
+                    if pending:
+                        t = CsType(pending[1], pending[0], path, -1, "")
+                        types.setdefault(t.name, []).append(t)
+                        stack.append((t, depth))
+                        pending = None
+                elif char == "}":
+                    if stack and stack[-1][1] == depth:
+                        stack[-1][0].close_line = i
+                        stack.pop()
+                    depth -= 1
+            if pending and line.endswith(";"):
+                pending = None
+    for group in types.values():
+        for t in group:
+            if not t.indent:
+                t.indent = "    "
+    return types
+
+
+def primary(types: dict[str, list[CsType]], name: str) -> CsType | None:
+    """The declaration to edit: the one with the most JSON properties (partial classes may span files)."""
+    group = [t for t in types.get(name, []) if t.close_line >= 0]
+    if not group:
+        return None
+    return max(group, key=lambda t: (len(t.json_names) + len(t.enum_values), -len(str(t.path))))
+
+
+# -------------------------------------------------------------------------------------------- type mapping
+
+# python-genai's int does not say whether the API field is 32- or 64-bit, and Google's JSON encodes 64-bit numbers as
+# strings ("sizeBytes": "1234"). Generated numbers are therefore long/double and accept both forms (see NUMERIC).
+PRIMITIVES = {"str": "string", "int": "long", "float": "double", "bool": "bool", "bytes": "byte[]",
+              "datetime": "DateTime", "Any": "JsonElement"}
+NUMERIC = {"long", "double"}
+
+
+class Unmappable(Exception):
+    pass
+
+
+class Plan:
+    def __init__(self, py_classes, py_enums, cs_types, renames, ignore_types=()):
+        self.py_classes, self.py_enums, self.cs_types, self.renames = py_classes, py_enums, cs_types, renames
+        self.ignore_types = set(ignore_types)
+        self.new_classes: dict[str, PyClass] = {}
+        self.new_enums: dict[str, PyEnum] = {}
+
+    def cs_name(self, py_name: str) -> str:
+        return self.renames.get(py_name, py_name)
+
+    def map_type(self, node: ast.expr) -> str:
+        """Maps a python-genai annotation to a C# type (without the trailing '?')."""
+        if isinstance(node, ast.Constant) and isinstance(node.value, str):          # forward reference
+            node = ast.parse(node.value, mode="eval").body
+        if isinstance(node, ast.Attribute):                                          # datetime.datetime
+            return self.map_name(node.attr)
+        if isinstance(node, ast.Name):
+            return self.map_name(node.id)
+        if isinstance(node, ast.Subscript):
+            outer = node.value.attr if isinstance(node.value, ast.Attribute) else getattr(node.value, "id", "")
+            args = node.slice.elts if isinstance(node.slice, ast.Tuple) else [node.slice]
+            if outer == "Optional":
+                return self.map_type(args[0])
+            if outer in ("list", "List"):
+                return f"List<{self.map_type(args[0])}>"
+            if outer in ("dict", "Dict") and len(args) == 2:
+                key = self.map_type(args[0])
+                if key != "string":
+                    raise Unmappable("dictionary with a non-string key")
+                return f"Dictionary<string, {self.map_type(args[1])}>"
+            raise Unmappable(f"{outer}[...] (for example a union)")
+        raise Unmappable(ast.unparse(node))
+
+    def map_name(self, name: str) -> str:
+        if name in PRIMITIVES:
+            return PRIMITIVES[name]
+        if name in self.ignore_types:
+            raise Unmappable(f"`{name}` is Python-only (listed in dto-map.json ignoreTypes)")
+        cs = self.cs_name(name)
+        if cs in self.cs_types:
+            return cs
+        if name in self.py_enums:
+            self.new_enums.setdefault(name, self.py_enums[name])
+            return cs
+        if name in self.py_classes:
+            if name not in self.new_classes:
+                self.new_classes[name] = self.py_classes[name]
+                for f in self.py_classes[name].fields.values():  # nested types the new class needs
+                    try:
+                        self.map_type(f.annotation)
+                    except Unmappable:
+                        pass
+            return cs
+        raise Unmappable(f"unknown type {name}")
+
+
+def pascal(camel: str) -> str:
+    return camel[:1].upper() + camel[1:]
+
+
+def xml(text: str) -> str:
+    return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+
+def doc_lines(indent: str, text: str, fallback: str) -> list[str]:
+    body = " ".join((text or fallback).split())
+    words, lines, current = body.split(" "), [], ""
+    for word in words:
+        if current and len(current) + len(word) + 1 > 110:
+            lines.append(current)
+            current = word
+        else:
+            current = f"{current} {word}".strip()
+    if current:
+        lines.append(current)
+    return [f"{indent}/// <summary>"] + [f"{indent}/// {xml(l)}" for l in lines] + [f"{indent}/// </summary>"]
+
+
+def property_lines(indent: str, json_name: str, cs_type: str, description: str) -> list[str]:
+    nullable = f"{cs_type}?"
+    attributes = [f'{indent}[JsonPropertyName("{json_name}")]']
+    if cs_type in NUMERIC:
+        attributes.append(f"{indent}[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]")
+    return (doc_lines(indent, description, f"Gets or sets the {json_name}.")
+            + attributes
+            + [f"{indent}public {nullable} {pascal(json_name)} {{ get; set; }}"])
+
+
+# ------------------------------------------------------------------------------------------------ edits
+
+class Editor:
+    """Collects line insertions per file and writes them bottom-up so indices stay valid."""
+
+    def __init__(self):
+        self.inserts: dict[Path, list[tuple[int, list[str]]]] = {}
+        self.replacements: dict[Path, dict[int, str]] = {}
+        self.new_files: dict[Path, str] = {}
+        self.needs_json_using: set[Path] = set()
+
+    def insert(self, path: Path, before_line: int, lines: list[str]):
+        self.inserts.setdefault(path, []).append((before_line, lines))
+
+    def apply(self):
+        for path in set(self.inserts) | set(self.replacements) | self.needs_json_using:
+            raw = path.read_bytes()
+            bom = raw.startswith(b"\xef\xbb\xbf")
+            text = raw.decode("utf-8-sig")
+            newline = "\r\n" if "\r\n" in text else "\n"
+            lines = text.split(newline)
+            for index, new in self.replacements.get(path, {}).items():
+                lines[index] = new
+            for before, block in sorted(self.inserts.get(path, []), key=lambda x: x[0], reverse=True):
+                lines[before:before] = block
+            if path in self.needs_json_using and not any(l.strip() == "using System.Text.Json;" for l in lines):
+                lines.insert(0, "using System.Text.Json;")
+            out = newline.join(lines)
+            path.write_bytes((b"\xef\xbb\xbf" if bom else b"") + out.encode("utf-8"))
+        for path, content in self.new_files.items():
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(content, encoding="utf-8", newline="\n")
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--apply", action="store_true", help="Write the changes (default: dry run).")
+    parser.add_argument("--report", help="Write a Markdown summary (used as the pull request body).")
+    args = parser.parse_args()
+
+    version = cd.http_json(cd.PYPI_URL)["info"]["version"]
+    py_classes, py_enums = load_python(version)
+    cs_types = load_csharp()
+    mapping = json.loads(cd.DTO_MAP.read_text(encoding="utf-8")) if cd.DTO_MAP.exists() else {}
+    renames = mapping.get("classes", {})
+    ignore_fields = set(mapping.get("ignoreFields", []))
+    ignore_class_fields = {k: set(v) for k, v in mapping.get("ignoreClassFields", {}).items()}
+    plan = Plan(py_classes, py_enums, cs_types, renames, mapping.get("ignoreTypes", []))
+    editor = Editor()
+
+    added_fields: list[str] = []
+    added_values: list[str] = []
+    obsoleted: list[str] = []
+    skipped: list[str] = []
+
+    # 1. Missing fields on existing types.
+    for py_name, py_class in sorted(py_classes.items()):
+        target = primary(cs_types, plan.cs_name(py_name))
+        if not target or target.kind == "enum":
+            continue
+        for json_name, py_field in sorted(py_class.fields.items()):
+            if (json_name in target.json_names or json_name in ignore_fields
+                    or json_name in ignore_class_fields.get(py_name, ())):
+                continue
+            if pascal(json_name) in target.members or pascal(json_name) == target.name:
+                skipped.append(f"`{target.name}.{json_name}`: a member named `{pascal(json_name)}` already exists")
+                continue
+            try:
+                cs_type = plan.map_type(py_field.annotation)
+            except Unmappable as error:
+                skipped.append(f"`{target.name}.{json_name}`: {error}")
+                continue
+            block = [""] + property_lines(target.indent, json_name, cs_type, py_field.description)
+            editor.insert(target.path, target.close_line, block)
+            if "JsonElement" in cs_type:
+                editor.needs_json_using.add(target.path)
+            added_fields.append(f"`{target.name}.{pascal(json_name)}` (`{json_name}`, `{cs_type}`)")
+
+    # 2. Missing values on existing enums.
+    for py_name, py_enum in sorted(py_enums.items()):
+        target = primary(cs_types, plan.cs_name(py_name))
+        if not target or target.kind != "enum":
+            continue
+        missing = [v for v in py_enum.values if v.upper() not in target.enum_values]
+        if not missing:
+            continue
+        lines = target.path.read_text(encoding="utf-8-sig").splitlines()
+        last = target.close_line - 1
+        while last > 0 and not lines[last].strip():
+            last -= 1
+        if not lines[last].rstrip().endswith(",") and not lines[last].strip().endswith("{"):
+            editor.replacements.setdefault(target.path, {})[last] = lines[last].rstrip() + ","
+        number = max(target.enum_numbers, default=-1) + 1 if target.enum_numbers else None
+        block = []
+        for value in missing:
+            if not re.fullmatch(r"[A-Za-z_]\w*", value):
+                skipped.append(f"`{target.name}`: value `{value}` is not a valid C# identifier")
+                continue
+            suffix = f" = {number}" if number is not None else ""
+            block += [""] + doc_lines(target.indent, "", f"{value}.") + [f"{target.indent}{value}{suffix},"]
+            if number is not None:
+                number += 1
+            added_values.append(f"`{target.name}.{value}`")
+        if block:
+            block[-1] = block[-1].rstrip(",")
+            editor.insert(target.path, target.close_line, block)
+
+    # 3. Fields python-genai removed since the last sync -> [Obsolete].
+    previous = json.loads(FIELDS_SNAPSHOT.read_text(encoding="utf-8")) if FIELDS_SNAPSHOT.exists() else {}
+    current_snapshot = {name: sorted(c.fields) for name, c in py_classes.items()}
+    for py_name, old_fields in previous.items():
+        target = primary(cs_types, plan.cs_name(py_name))
+        if not target or target.kind == "enum" or py_name not in py_classes:
+            continue
+        for json_name in sorted(set(old_fields) - set(py_classes[py_name].fields)):
+            index = target.json_to_member.get(json_name)
+            if index is None:
+                continue
+            lines = target.path.read_text(encoding="utf-8-sig").splitlines()
+            if any("[Obsolete" in lines[j] for j in range(max(0, index - 3), index)):
+                continue
+            indent = lines[index][: len(lines[index]) - len(lines[index].lstrip())]
+            editor.insert(target.path, index, [f'{indent}[Obsolete("Removed from the Gemini API (no longer in '
+                                               f'python-genai {version}).", false)]'])
+            obsoleted.append(f"`{target.name}.{pascal(json_name)}` (`{json_name}`)")
+
+    # 4. New types needed by the added fields (generated, then registered for source generation).
+    generated: list[str] = []
+    for py_name, py_class in sorted(plan.new_classes.items()):
+        name = plan.cs_name(py_name)
+        body = []
+        for json_name, py_field in sorted(py_class.fields.items()):
+            if json_name in ignore_fields:
+                continue
+            try:
+                cs_type = plan.map_type(py_field.annotation)
+            except Unmappable as error:
+                skipped.append(f"`{name}.{json_name}` (new type): {error}")
+                continue
+            body += [""] + property_lines("    ", json_name, cs_type, py_field.description)
+        content = ["using System.Text.Json;", "using System.Text.Json.Serialization;", "",
+                   "namespace GenerativeAI.Types;", ""] + doc_lines("", py_class.doc, f"{name}.") + [
+                   "/// <remarks>Generated from python-genai by scripts/drift/update_dtos.py.</remarks>",
+                   f"public class {name}", "{"] + body[1:] + ["}", ""]
+        editor.new_files[GENERATED_DIR / f"{name}.cs"] = "\n".join(content)
+        generated.append(name)
+    for py_name, py_enum in sorted(plan.new_enums.items()):
+        name = plan.cs_name(py_name)
+        members = []
+        for i, value in enumerate(v for v in py_enum.values if re.fullmatch(r"[A-Za-z_]\w*", v)):
+            members += ([""] if members else []) + doc_lines("    ", "", f"{value}.") + [f"    {value} = {i},"]
+        if members:
+            members[-1] = members[-1].rstrip(",")
+        content = ["using System.Text.Json.Serialization;", "", "namespace GenerativeAI.Types;", ""] + doc_lines(
+            "", py_enum.doc, f"{name}.") + [
+            "/// <remarks>Generated from python-genai by scripts/drift/update_dtos.py.</remarks>",
+            f"[JsonConverter(typeof(JsonStringEnumConverter<{name}>))]", f"public enum {name}", "{"] + members + ["}", ""]
+        editor.new_files[GENERATED_DIR / f"{name}.cs"] = "\n".join(content)
+        generated.append(name)
+    if generated:
+        context_lines = SERIALIZER_CONTEXT.read_text(encoding="utf-8-sig").splitlines()
+        last_attr = max(i for i, l in enumerate(context_lines) if l.startswith("[JsonSerializable("))
+        editor.insert(SERIALIZER_CONTEXT, last_attr + 1,
+                      [f"[JsonSerializable(typeof({n}))]" for n in sorted(generated)])
+
+    changed = bool(added_fields or added_values or obsoleted or generated)
+    if args.apply:
+        editor.apply()
+        FIELDS_SNAPSHOT.write_text(json.dumps(current_snapshot, indent=1, sort_keys=True) + "\n", encoding="utf-8")
+
+    report = [f"Automated DTO update from python-genai **{version}** (generated by `scripts/drift/update_dtos.py`, "
+              f"no AI). Only data types are changed; no client methods or features are added.\n"]
+    for title, items in (("Added fields", added_fields), ("Added enum values", added_values),
+                         ("New types needed by the added fields", [f"`{g}`" for g in generated]),
+                         ("Marked [Obsolete] (removed from python-genai)", obsoleted)):
+        if items:
+            report.append(f"\n### {title} ({len(items)})\n")
+            report += [f"- {item}" for item in items]
+    if skipped:
+        report.append(f"\n### Not changed: needs a person ({len(skipped)})\n")
+        report += [f"- {item}" for item in skipped]
+    if not changed and not skipped:
+        report.append("\nNothing to change.")
+    text = "\n".join(report) + "\n"
+    if args.report:
+        Path(args.report).write_text(text, encoding="utf-8")
+    print(text)
+    print(f"CHANGED={'true' if changed else 'false'}")
+    if cd.os.environ.get("GITHUB_OUTPUT"):
+        with open(cd.os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
+            out.write(f"changed={'true' if changed else 'false'}\n")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
