@@ -70,4 +70,29 @@ public enum HarmCategory
     /// <b>Gemini</b>  - Content that may be used to harm civic integrity.
     /// </summary>
     HARM_CATEGORY_CIVIC_INTEGRITY = 11,
+
+    /// <summary>
+    /// Prompts that try to bypass safety filters (jailbreaks).
+    /// </summary>
+    HARM_CATEGORY_JAILBREAK,
+
+    /// <summary>
+    /// Hateful image content.
+    /// </summary>
+    HARM_CATEGORY_IMAGE_HATE,
+
+    /// <summary>
+    /// Dangerous image content.
+    /// </summary>
+    HARM_CATEGORY_IMAGE_DANGEROUS_CONTENT,
+
+    /// <summary>
+    /// Harassing image content.
+    /// </summary>
+    HARM_CATEGORY_IMAGE_HARASSMENT,
+
+    /// <summary>
+    /// Sexually explicit image content.
+    /// </summary>
+    HARM_CATEGORY_IMAGE_SEXUALLY_EXPLICIT
 }

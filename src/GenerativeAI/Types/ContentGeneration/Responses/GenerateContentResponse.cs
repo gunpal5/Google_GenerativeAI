@@ -92,5 +92,9 @@ public class GenerateContentResponse
         return response.Text() ?? string.Empty;
     }
 
-    
+    /// <summary>
+    /// Lifecycle status of the model that served the request, including deprecation and retirement information.
+    /// </summary>
+    [JsonPropertyName("modelStatus")]
+    public ModelStatus? ModelStatus { get; set; }
 }

@@ -37,4 +37,10 @@ public class ExecutableCode
     /// Initializes a new instance of the <see cref="ExecutableCode"/> class for JSON deserialization.
     /// </summary>
     public ExecutableCode() : this("") { }
+
+    /// <summary>
+    /// Identifier that pairs this code with its CodeExecutionResult.
+    /// </summary>
+    [JsonPropertyName("id")]
+    public string? Id { get; set; }
 }

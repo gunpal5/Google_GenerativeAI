@@ -86,4 +86,10 @@ public class Candidate
     /// </summary>
     [JsonPropertyName("urlContextMetadata")]
     public UrlContextMetadata? UrlContextMetadata { get; set; }
+
+    /// <summary>
+    /// Base64-encoded token returned when FinishReason is CONTINUATION. Pass it as GenerateContentRequest.ContinuationToken to resume the response.
+    /// </summary>
+    [JsonPropertyName("continuationToken")]
+    public string? ContinuationToken { get; set; }
 }

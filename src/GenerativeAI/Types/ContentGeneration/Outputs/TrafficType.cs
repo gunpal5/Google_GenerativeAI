@@ -37,5 +37,10 @@ public enum TrafficType
     /// <summary>
     /// Type for Pay-As-You-Go flex traffic.
     /// </summary>
-    ON_DEMAND_FLEX = 4
+    ON_DEMAND_FLEX = 4,
+
+    /// <summary>
+    /// On-demand traffic billed at off-peak rates.
+    /// </summary>
+    ON_DEMAND_OFFPEAK
 }

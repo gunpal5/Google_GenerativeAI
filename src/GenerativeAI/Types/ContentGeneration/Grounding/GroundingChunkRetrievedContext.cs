@@ -36,4 +36,28 @@ public class GroundingChunkRetrievedContext
     /// </summary>
     [JsonPropertyName("uri")]
     public string? Uri { get; set; }
+
+    /// <summary>
+    /// Name of the File Search store the chunk came from.
+    /// </summary>
+    [JsonPropertyName("fileSearchStore")]
+    public string? FileSearchStore { get; set; }
+
+    /// <summary>
+    /// Custom metadata of the source document.
+    /// </summary>
+    [JsonPropertyName("customMetadata")]
+    public List<GroundingChunkCustomMetadata>? CustomMetadata { get; set; }
+
+    /// <summary>
+    /// Page number of the chunk in the source document.
+    /// </summary>
+    [JsonPropertyName("pageNumber")]
+    public int? PageNumber { get; set; }
+
+    /// <summary>
+    /// Identifier of the media the chunk came from.
+    /// </summary>
+    [JsonPropertyName("mediaId")]
+    public string? MediaId { get; set; }
 }

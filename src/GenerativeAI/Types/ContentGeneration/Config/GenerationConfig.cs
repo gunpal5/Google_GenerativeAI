@@ -263,7 +263,22 @@ public enum ThinkingLevel
     /// High thinking level - deeper reasoning with potentially slower responses.
     /// Recommended for complex tasks.
     /// </summary>
-    HIGH
+    HIGH,
+
+    /// <summary>
+    /// Minimal thinking - the fastest responses with the least reasoning.
+    /// </summary>
+    MINIMAL,
+
+    /// <summary>
+    /// Medium thinking level - balances speed and reasoning depth.
+    /// </summary>
+    MEDIUM,
+
+    /// <summary>
+    /// Extra-high thinking level - the deepest reasoning, for the hardest tasks.
+    /// </summary>
+    XHIGH
 }
 
 /// <summary>

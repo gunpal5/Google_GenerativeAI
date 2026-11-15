@@ -19,4 +19,10 @@ public class ToolConfig
     /// </summary>
     [JsonPropertyName("retrievalConfig")]
     public RetrievalConfig? RetrievalConfig { get; set; }
+
+    /// <summary>
+    /// If true, the response includes toolCall and toolResponse parts for server-side tools such as Google Search.
+    /// </summary>
+    [JsonPropertyName("includeServerSideToolInvocations")]
+    public bool? IncludeServerSideToolInvocations { get; set; }
 }

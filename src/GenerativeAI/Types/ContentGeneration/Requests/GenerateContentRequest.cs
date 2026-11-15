@@ -114,5 +114,28 @@ public class GenerateContentRequest:IContentsRequest
     {
         Contents = new List<Content>() { content };
     }
-    
+
+    /// <summary>
+    /// Processing tier for the request; see ServiceTiers for values (standard, flex, priority).
+    /// </summary>
+    [JsonPropertyName("serviceTier")]
+    public string? ServiceTier { get; set; }
+
+    /// <summary>
+    /// Whether Google may store the request and response (Gemini API only). New paid-tier projects store requests by default; set false to opt out.
+    /// </summary>
+    [JsonPropertyName("store")]
+    public bool? Store { get; set; }
+
+    /// <summary>
+    /// User-defined labels attached to the request, for example for billing breakdowns.
+    /// </summary>
+    [JsonPropertyName("labels")]
+    public Dictionary<string, string>? Labels { get; set; }
+
+    /// <summary>
+    /// Base64-encoded token from Candidate.ContinuationToken; resumes a response that ended with FinishReason CONTINUATION.
+    /// </summary>
+    [JsonPropertyName("continuationToken")]
+    public string? ContinuationToken { get; set; }
 }

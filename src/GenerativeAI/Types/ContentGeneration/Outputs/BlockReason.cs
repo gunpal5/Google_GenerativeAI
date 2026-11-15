@@ -37,5 +37,15 @@ public enum BlockReason
     /// <summary>
     /// Candidates blocked due to unsafe image generation content.
     /// </summary>
-    IMAGE_SAFETY
+    IMAGE_SAFETY,
+
+    /// <summary>
+    /// The prompt was blocked by Model Armor.
+    /// </summary>
+    MODEL_ARMOR,
+
+    /// <summary>
+    /// The prompt was blocked as a jailbreak attempt.
+    /// </summary>
+    JAILBREAK
 }

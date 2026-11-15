@@ -137,4 +137,10 @@ public class Model
     /// </summary>
     [JsonPropertyName("checkpoints")]
     public List<Checkpoint>? Checkpoints { get; set; }
+
+    /// <summary>
+    /// Whether the model supports thinking.
+    /// </summary>
+    [JsonPropertyName("thinking")]
+    public bool? Thinking { get; set; }
 }
