@@ -1,4 +1,5 @@
 using GenerativeAI.Clients;
+using GenerativeAI.Exceptions;
 using GenerativeAI.Types;
 using Shouldly;
 
@@ -135,36 +136,67 @@ namespace GenerativeAI.Tests.Clients
         public async Task ShouldGetBatchJob()
         {
             var client = CreateClient();
-            //Assert.Skip("Skip batch tests - requires an existing batch job");
-            var jobName = "batches/jpradynzw8h6eir1wnpqscbrkcv3kizusasa"; // Replace with actual job name
+            var ct = TestContext.Current.CancellationToken;
+            var created = await CreateSmallInlineBatchJobAsync(client, ct);
 
-            var batchJobResponse = await client.GetAsync(jobName, cancellationToken: TestContext.Current.CancellationToken);
-
-            var batchJob = batchJobResponse.Metadata;
-            batchJob.ShouldNotBeNull();
-            batchJob.Name.ShouldBe(jobName);
-            batchJob.State.ShouldNotBeNull();
-            Console?.WriteLine($"Job Name: {batchJob.Name}");
-            Console?.WriteLine($"State: {batchJob.State}");
-            Console?.WriteLine($"Create Time: {batchJob.CreateTime}");
-            Console?.WriteLine($"Update Time: {batchJob.UpdateTime}");
-
-            if (batchJob.StartTime != null)
-                Console?.WriteLine($"Start Time: {batchJob.StartTime}");
-
-            if (batchJob.EndTime != null)
-                Console?.WriteLine($"End Time: {batchJob.EndTime}");
-
-            if (batchJobResponse.EmbeddingOutput != null)
+            try
             {
-                
+                var batchJobResponse = await client.GetAsync(created.Name!, cancellationToken: ct);
+
+                var batchJob = batchJobResponse.Metadata;
+                batchJob.ShouldNotBeNull();
+                batchJob.Name.ShouldBe(created.Name);
+                batchJob.State.ShouldNotBeNull();
+                Console?.WriteLine($"Job Name: {batchJob.Name}");
+                Console?.WriteLine($"State: {batchJob.State}");
+                Console?.WriteLine($"Create Time: {batchJob.CreateTime}");
             }
-            else if (batchJobResponse.ContentOutput != null)
+            finally
             {
-                
+                await TryCancelAsync(client, created.Name!);
             }
-            else throw new Exception("Failed to get batch job");
         }
+
+        /// <summary>
+        /// Creates a tiny inline batch job so tests don't depend on jobs that existed in someone's account.
+        /// </summary>
+        private static async Task<BatchJob> CreateSmallInlineBatchJobAsync(BatchClient client, CancellationToken ct)
+        {
+            var source = new BatchJobSource
+            {
+                InlinedRequests = new List<InlinedRequest>
+                {
+                    new InlinedRequest
+                    {
+                        Contents = new List<Content>
+                        {
+                            new Content { Parts = new List<Part> { new Part { Text = "What is 1 + 1?" } } }
+                        }
+                    }
+                }
+            };
+
+            var job = await client.CreateAsync(GoogleAIModels.DefaultGeminiModel, source, cancellationToken: ct);
+            job.ShouldNotBeNull();
+            job.Name.ShouldNotBeNullOrEmpty();
+            return job;
+        }
+
+        private static async Task TryCancelAsync(BatchClient client, string name)
+        {
+            try
+            {
+                await client.CancelAsync(name, cancellationToken: CancellationToken.None);
+            }
+            catch (ApiException)
+            {
+                // Already finished or cancelled.
+            }
+        }
+
+        private static bool IsTerminal(JobState? state) =>
+            state is JobState.JOB_STATE_SUCCEEDED or JobState.JOB_STATE_FAILED or JobState.JOB_STATE_CANCELLED
+                or JobState.JOB_STATE_EXPIRED;
 
         [Fact]
         public async Task ShouldListBatchJobs()
@@ -286,12 +318,28 @@ namespace GenerativeAI.Tests.Clients
         public async Task ShouldDeleteBatchJob()
         {
             var client = CreateClient();
-           // Assert.Skip("Skip batch tests - requires a completed or failed batch job to delete");
-            var jobName = "batches/jpradynzw8h6eir1wnpqscbrkcv3kizusasa"; // Replace with actual job name
+            var ct = TestContext.Current.CancellationToken;
+            var created = await CreateSmallInlineBatchJobAsync(client, ct);
+            var jobName = created.Name!;
 
-            await client.DeleteBatchJobAsync(jobName, cancellationToken: TestContext.Current.CancellationToken);
+            // Only finished jobs can be deleted: cancel, then wait for a terminal state.
+            await TryCancelAsync(client, jobName);
+            var deadline = DateTime.UtcNow.AddMinutes(3);
+            while (true)
+            {
+                var state = (await client.GetAsync(jobName, cancellationToken: ct)).Metadata?.State;
+                if (IsTerminal(state))
+                    break;
+                if (DateTime.UtcNow > deadline)
+                    throw new TimeoutException($"Batch job {jobName} did not finish cancelling (state: {state}).");
+                await Task.Delay(TimeSpan.FromSeconds(5), ct);
+            }
 
+            await client.DeleteBatchJobAsync(jobName, cancellationToken: ct);
             Console?.WriteLine($"Deleted batch job: {jobName}");
+
+            var ex = await Should.ThrowAsync<ApiException>(() => client.GetAsync(jobName, cancellationToken: ct));
+            ex.ErrorCode.ShouldBe(404);
         }
 
         [Fact]
