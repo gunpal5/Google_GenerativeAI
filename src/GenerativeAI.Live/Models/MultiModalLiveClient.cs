@@ -182,6 +182,20 @@ public class MultiModalLiveClient : IDisposable
     /// </summary>
     public string? LastSessionResumptionHandle { get; private set; }
 
+    /// <summary>
+    /// Optional factory that <see cref="ConnectAsync"/> uses to create the WebSocket client instead of the default
+    /// reconnecting <see cref="WebsocketClient"/>. It receives the Live API endpoint URL from the platform adapter
+    /// (which, for the Gemini API, already contains the API key) and must return a client that has not been started;
+    /// <see cref="ConnectAsync"/> subscribes to it and then calls <see cref="IWebsocketClient.Start"/>.
+    /// When null (the default), the client is created as before.
+    /// </summary>
+    /// <remarks>
+    /// The factory is responsible for any request headers the endpoint needs. In particular, the default client adds
+    /// an <c>Authorization: Bearer</c> header from <see cref="IPlatformAdapter.GetAccessTokenAsync"/> (required by Vertex AI);
+    /// a custom factory must add it itself. This is useful for custom transports, proxies, and unit testing.
+    /// </remarks>
+    public Func<string, IWebsocketClient>? WebsocketClientFactory { get; set; }
+
     #endregion
 
     #region Constructors
@@ -378,8 +392,8 @@ public class MultiModalLiveClient : IDisposable
 
         if (responsePayload.ServerContent?.Interrupted == true)
         {
+            // HandleInterruption is called by ProcessAudioChunk; calling it here too raised GenerationInterrupted twice.
             _logger?.LogWarning("Text generation interrupted.");
-            HandleInterruption();
         }
     }
 
@@ -633,10 +647,18 @@ public class MultiModalLiveClient : IDisposable
         _logger?.LogConnectionAttempt();
 
         var url = _platformAdapter.GetMultiModalLiveUrl();
+        if (WebsocketClientFactory != null)
+        {
+            _client = WebsocketClientFactory(url)
+                ?? throw new InvalidOperationException($"{nameof(WebsocketClientFactory)} returned null.");
+        }
+        else
+        {
 #pragma warning disable CA2000 // Dispose objects before losing scope - object is disposed in Dispose method
-        var socketClient = await GetClient().ConfigureAwait(false);
-        _client = socketClient.WithReconnect(url); // Use the factory and an extension method for clarity
+            var socketClient = await GetClient().ConfigureAwait(false);
+            _client = socketClient.WithReconnect(url); // Use the factory and an extension method for clarity
 #pragma warning restore CA2000
+        }
 
         ClientCreated?.Invoke(this, new ClientCreatedEventArgs(_client));
 
