@@ -113,9 +113,6 @@ public sealed class GenerativeAIChatClient : IChatClient
                     .ConfigureAwait(false);
                 if (result != null)
                 {
-                    var content = response.Candidates?.FirstOrDefault()?.Content;
-                    if (content != null)
-                        contents.Add(content);
                     var responseObject = new JsonObject();
                     responseObject["name"] = functionCall.Name;
                     var node = result.ToJsonNodeResponse();
@@ -132,7 +129,17 @@ public sealed class GenerativeAIChatClient : IChatClient
             }
 
         }
-        var funcContent = new Content() { Role = Roles.Function };
+
+        if (functionResponses.Count == 0)
+            return chatResponse;
+
+        // Add the model's function-call turn once (previously it was added once per call, duplicating it
+        // for parallel calls), followed by all function results.
+        var modelContent = response.Candidates?.FirstOrDefault()?.Content;
+        if (modelContent != null)
+            contents.Add(modelContent);
+
+        var funcContent = new Content() { Role = Roles.User }; // newer models reject the "function" role
         funcContent.AddParts(functionResponses.Select(s => new Part()
         {
             FunctionResponse = s
@@ -168,9 +175,6 @@ public sealed class GenerativeAIChatClient : IChatClient
                     .ConfigureAwait(false);
                 if (result != null)
                 {
-                    var content = response.Candidates?.FirstOrDefault()?.Content;
-                    if (content != null)
-                        contents.Add(content);
                     var responseObject = new JsonObject();
                     responseObject["name"] = functionCall.Name;
                     var node = result.ToJsonNodeResponse();
@@ -188,8 +192,16 @@ public sealed class GenerativeAIChatClient : IChatClient
                 }
             }
         }
-        
-        var funcContent = new Content() { Role = Roles.Function };
+
+        if (functionResponses.Count == 0)
+            yield break;
+
+        // Add the model's function-call turn once, followed by all function results.
+        var modelContent = response.Candidates?.FirstOrDefault()?.Content;
+        if (modelContent != null)
+            contents.Add(modelContent);
+
+        var funcContent = new Content() { Role = Roles.User }; // newer models reject the "function" role
         funcContent.AddParts(functionResponses.Select(s => new Part()
         {
             FunctionResponse = s
@@ -270,15 +282,43 @@ public sealed class GenerativeAIChatClient : IChatClient
             }
         }
         GenerateContentResponse? lastResponse = null;
+        // Function calls can arrive in any chunk (newer models often end the stream with a chunk that only
+        // carries the finish reason), so collect the model's parts across the whole stream.
+        var streamedParts = new List<Part>();
+        string? streamedRole = null;
         await foreach (var response in model.StreamContentAsync(request, cancellationToken).ConfigureAwait(false))
         {
             lastResponse = response;
+            var chunkContent = response.Candidates?.FirstOrDefault()?.Content;
+            if (chunkContent?.Parts != null)
+            {
+                streamedParts.AddRange(chunkContent.Parts);
+                streamedRole ??= chunkContent.Role;
+            }
+
             yield return lastResponse.ToChatResponseUpdate(options);
         }
 
-        if (lastResponse != null && lastResponse.GetFunctions() != null)
+        if (lastResponse != null && streamedParts.Any(p => p.FunctionCall != null))
         {
-            await foreach (var resp in CallFunctionStreamingAsync(request, lastResponse, options, cancellationToken)
+            var lastCandidate = lastResponse.Candidates?.FirstOrDefault();
+            var aggregated = new GenerateContentResponse
+            {
+                Candidates = new[]
+                {
+                    new Candidate
+                    {
+                        Content = new Content { Role = streamedRole ?? Roles.Model, Parts = streamedParts },
+                        FinishReason = lastCandidate?.FinishReason,
+                        Index = lastCandidate?.Index
+                    }
+                },
+                UsageMetadata = lastResponse.UsageMetadata,
+                ModelVersion = lastResponse.ModelVersion,
+                ResponseId = lastResponse.ResponseId
+            };
+
+            await foreach (var resp in CallFunctionStreamingAsync(request, aggregated, options, cancellationToken)
                                .ConfigureAwait(false))
             {
                 yield return resp;

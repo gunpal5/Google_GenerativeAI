@@ -216,6 +216,17 @@ namespace GenerativeAI
 #else
             if (request == null) throw new ArgumentNullException(nameof(request));
 #endif
+            //Newer models reject the legacy "function" role for function results; send them as "user"
+            //(as the official SDKs do). This also fixes histories saved by earlier versions of this SDK.
+            if (request.Contents != null)
+            {
+                foreach (var content in request.Contents)
+                {
+                    if (string.Equals(content.Role, Roles.Function, StringComparison.Ordinal))
+                        content.Role = Roles.User;
+                }
+            }
+
             //Add Global Properties
             request.GenerationConfig ??= Config;
             request.SafetySettings ??= SafetySettings;

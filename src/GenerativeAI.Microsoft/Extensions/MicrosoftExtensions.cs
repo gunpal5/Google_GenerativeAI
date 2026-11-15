@@ -596,7 +596,11 @@ public static class MicrosoftExtensions
     {
         return (from content in contents
             let aiContents = content.Parts.ToAiContents(options)
-            select new ChatMessage(ToChatRole(content.Role), aiContents)).ToList();
+            // Function results are sent with the "user" role (newer models reject "function"); map them back to Tool.
+            let role = content.Parts.Count > 0 && content.Parts.All(p => p.FunctionResponse != null)
+                ? ChatRole.Tool
+                : ToChatRole(content.Role)
+            select new ChatMessage(role, aiContents)).ToList();
     }
 
     /// <summary>

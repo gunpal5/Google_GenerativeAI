@@ -222,7 +222,7 @@ public class Gemini3_FunctionCalling_Tests : TestBase
         // Add function response
         var functionResponseContent = new Content
         {
-            Role = Roles.Function,
+            Role = Roles.User,
             Parts = new List<Part>
             {
                 new Part { FunctionResponse = functionResponse }

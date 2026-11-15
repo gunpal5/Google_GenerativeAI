@@ -237,7 +237,7 @@ public class Gemini3_ThinkingConfig_Integration_Tests : TestBase
         request2.Contents.Add(modelContent); // Includes thought signature
         request2.Contents.Add(new Content
         {
-            Role = Roles.Function,
+            Role = Roles.User,
             Parts = new System.Collections.Generic.List<Part>
             {
                 new Part { FunctionResponse = functionResponse }

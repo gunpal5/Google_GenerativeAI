@@ -152,7 +152,7 @@ public class Microsoft_AIFunction_Tests:TestBase
         var message = new ChatMessage(ChatRole.User, "what is current date & time");
         var response = await chatClient.GetResponseAsync(message,options:chatOptions, cancellationToken: TestContext.Current.CancellationToken);
 
-        response.Text.ShouldContain("Today",Case.Insensitive);
+        response.Text.ShouldContain(DateTime.UtcNow.Year.ToString(System.Globalization.CultureInfo.InvariantCulture));
     }
     
     [Fact]
@@ -173,7 +173,7 @@ public class Microsoft_AIFunction_Tests:TestBase
         var message = new ChatMessage(ChatRole.User, "what is current date & time");
         var response = await chatClient.GetResponseAsync(message,options:chatOptions, cancellationToken: TestContext.Current.CancellationToken);
 
-        response.Text.ShouldContain("Today",Case.Insensitive);
+        response.Text.ShouldContain(DateTime.UtcNow.Year.ToString(System.Globalization.CultureInfo.InvariantCulture));
     }
     
     [Fact]
@@ -194,7 +194,7 @@ public class Microsoft_AIFunction_Tests:TestBase
         var message = new ChatMessage(ChatRole.User, "what is current date & time");
         var response = await chatClient.GetResponseAsync(message,options:chatOptions, cancellationToken: TestContext.Current.CancellationToken);
 
-        response.Text.ShouldContain("Today",Case.Insensitive);
+        response.Text.ShouldContain(DateTime.UtcNow.Year.ToString(System.Globalization.CultureInfo.InvariantCulture));
     }
     
      [Fact]
@@ -221,7 +221,7 @@ public class Microsoft_AIFunction_Tests:TestBase
         var message = new ChatMessage(ChatRole.User, "what is current date & time");
         var response = await chatClient.GetResponseAsync(message,options:chatOptions, cancellationToken: TestContext.Current.CancellationToken);
 
-        response.Text.ShouldContain("Today",Case.Insensitive);
+        response.Text.ShouldContain(DateTime.UtcNow.Year.ToString(System.Globalization.CultureInfo.InvariantCulture));
     }
     
     [Fact]
@@ -242,7 +242,7 @@ public class Microsoft_AIFunction_Tests:TestBase
         var message = new ChatMessage(ChatRole.User, "what is current date & time");
         var response = await chatClient.GetResponseAsync(message,options:chatOptions, cancellationToken: TestContext.Current.CancellationToken);
 
-        response.Text.ShouldContain("Today",Case.Insensitive);
+        response.Text.ShouldContain(DateTime.UtcNow.Year.ToString(System.Globalization.CultureInfo.InvariantCulture));
     }
     
     [Fact]
@@ -263,7 +263,7 @@ public class Microsoft_AIFunction_Tests:TestBase
         var message = new ChatMessage(ChatRole.User, "what is current date & time");
         var response = await chatClient.GetResponseAsync(message,options:chatOptions, cancellationToken: TestContext.Current.CancellationToken);
 
-        response.Text.ShouldContain("Today",Case.Insensitive);
+        response.Text.ShouldContain(DateTime.UtcNow.Year.ToString(System.Globalization.CultureInfo.InvariantCulture));
     }
 
     [Fact]

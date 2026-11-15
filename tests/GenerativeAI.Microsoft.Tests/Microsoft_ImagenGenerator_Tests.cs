@@ -23,7 +23,7 @@ namespace GenerativeAI.Tests.Microsoft;
 /// using xUnit and Shouldly for assertions.
 /// </summary>
 [TestCaseOrderer(
-    typeof(TestPriorityAttribute))]
+    typeof(PriorityOrderer))]
 public class Microsoft_ImagenGenerator_Tests : TestBase
 {
     private const string DefaultTestModelName = GoogleAIModels.Imagen.Imagen3FastGenerate001;
@@ -141,7 +141,7 @@ public class Microsoft_ImagenGenerator_Tests : TestBase
     [Fact, TestPriority(7)]
     public async Task ShouldReturnImageGenerationResponseOnValidInput()
     {
-        Assert.SkipWhen(!IsGoogleApiKeySet, GoogleTestSkipMessage);
+        Assert.Skip("Imagen models are retired on the Gemini API; use GenerativeAIImageGenerator (Nano Banana) or Imagen on Vertex AI.");
         
         // Arrange
         var genAi = new GoogleAi(EnvironmentVariables.GOOGLE_API_KEY);
@@ -171,7 +171,7 @@ public class Microsoft_ImagenGenerator_Tests : TestBase
     [Fact, TestPriority(8)]
     public async Task ShouldHandleImageGenerationWithoutOptions()
     {
-        Assert.SkipWhen(!IsGoogleApiKeySet, GoogleTestSkipMessage);
+        Assert.Skip("Imagen models are retired on the Gemini API; use GenerativeAIImageGenerator (Nano Banana) or Imagen on Vertex AI.");
         
         // Arrange
         var genAi = new GoogleAi(EnvironmentVariables.GOOGLE_API_KEY);
