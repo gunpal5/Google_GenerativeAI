@@ -105,6 +105,13 @@ public class BatchJob
     /// </summary>
     [JsonPropertyName("outputConfig")]
     public VertexOutputConfig? OutputConfig { get; set; }
+
+    /// <summary>
+    /// Statistics on completed and failed prediction instances. Only available on Gemini Enterprise Agent Platform
+    /// (Vertex AI).
+    /// </summary>
+    [JsonPropertyName("completionStats")]
+    public CompletionStats? CompletionStats { get; set; }
 }
 
 /// <summary>

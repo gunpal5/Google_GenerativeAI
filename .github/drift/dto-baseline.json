@@ -6,7 +6,6 @@
  "missing_classes": [
   "AggregationOutput",
   "AggregationResult",
-  "AutomaticFunctionCallingConfig",
   "BatchJobOutputInfo",
   "BleuMetricValue",
   "BleuSpec",
@@ -15,8 +14,6 @@
   "CancelTuningJobConfig",
   "CancelTuningJobResponse",
   "Citation",
-  "ClaudeFile",
-  "CompletionStats",
   "ComputationBasedMetricSpec",
   "ComputeTokensConfig",
   "ComputeTokensResult",
@@ -57,7 +54,6 @@
   "EditImageResponse",
   "EmbedContentBatch",
   "EmbedContentConfig",
-  "EmbedContentMetadata",
   "EmbedContentParameters",
   "EmbeddingsBatchJobSource",
   "EntityLabel",
@@ -70,7 +66,6 @@
   "File",
   "GeminiPreferenceExample",
   "GeminiPreferenceExampleCompletion",
-  "GenerateContentConfig",
   "GenerateContentResponsePromptFeedback",
   "GenerateContentResponseUsageMetadata",
   "GenerateImagesConfig",
@@ -95,9 +90,7 @@
   "GroundingChunkMapsPlaceAnswerSourcesAuthorAttribution",
   "GroundingChunkMapsPlaceAnswerSourcesReviewSnippet",
   "GroundingChunkWeb",
-  "HttpOptions",
   "HttpResponse",
-  "HttpRetryOptions",
   "Image",
   "ImageConfigImageOutputOptions",
   "ImportFileOperation",
@@ -167,7 +160,6 @@
   "UpscaleImageParameters",
   "UpscaleImageResponse",
   "ValidateRewardConfig",
-  "VertexMultimodalDatasetDestination",
   "_CancelBatchJobParameters",
   "_CancelTuningJobParameters",
   "_ComputeTokensParameters",
@@ -224,13 +216,11 @@
   "BlockedReason",
   "ComputationBasedMetricType",
   "ControlReferenceType",
-  "DocumentState",
   "DynamicRetrievalConfigMode",
   "EditMode",
   "EmbeddingApiType",
   "FileSource",
   "FunctionCallingConfigMode",
-  "HttpElementLocation",
   "ImagePromptLanguage",
   "ImageResizeMode",
   "JSONSchemaType",
@@ -247,83 +237,13 @@
   "Type"
  ],
  "missing_fields": {
-  "ApiKeyConfig": [
-   "apiKeySecret",
-   "httpElementLocation",
-   "name"
-  ],
-  "AuthConfig": [
-   "apiKey"
-  ],
-  "BatchJob": [
-   "completionStats"
-  ],
-  "BatchJobDestination": [
-   "vertexDataset"
-  ],
-  "BatchJobSource": [
-   "vertexDatasetName"
-  ],
-  "Document": [
-   "mimeType",
-   "sizeBytes",
-   "state"
-  ],
   "EmbedContentResponse": [
-   "embeddings",
-   "metadata",
-   "truncated",
-   "usageMetadata"
-  ],
-  "FileStatus": [
-   "code",
-   "details",
-   "message"
-  ],
-  "FunctionResponseBlob": [
-   "displayName"
-  ],
-  "FunctionResponseFileData": [
-   "displayName"
-  ],
-  "FunctionResponsePart": [
-   "mediaProcessing"
+   "embeddings"
   ],
   "GenerateVideosConfig": [
    "labels",
    "resizeMode",
    "webhookConfig"
-  ],
-  "GenerateVideosOperation": [
-   "response"
-  ],
-  "InlinedEmbedContentResponse": [
-   "metadata"
-  ],
-  "InlinedRequest": [
-   "config"
-  ],
-  "InlinedResponse": [
-   "metadata"
-  ],
-  "ListFilesResponse": [
-   "data",
-   "nextPage"
-  ],
-  "LogprobsResult": [
-   "logProbabilitySum"
-  ],
-  "Metric": [
-   "aggregateSummaryFn",
-   "customFunction",
-   "parseAndReduceFn"
-  ],
-  "RagChunk": [
-   "chunkId",
-   "fileId"
-  ],
-  "UsageMetadata": [
-   "serviceTier"
   ]
  },
  "python_genai": "3.3.0"

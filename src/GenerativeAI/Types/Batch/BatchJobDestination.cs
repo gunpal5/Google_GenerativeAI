@@ -50,4 +50,11 @@ public class BatchJobDestination
     /// </summary>
     [JsonPropertyName("inlinedEmbedContentResponses")]
     public List<InlinedEmbedContentResponse>? InlinedEmbedContentResponses { get; set; }
+
+    /// <summary>
+    /// The Vertex AI multimodal dataset that receives the batch output. This is experimental and may change in future
+    /// versions.
+    /// </summary>
+    [JsonPropertyName("vertexDataset")]
+    public VertexMultimodalDatasetDestination? VertexDataset { get; set; }
 }

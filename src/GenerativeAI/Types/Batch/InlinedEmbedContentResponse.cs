@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace GenerativeAI.Types;
@@ -18,4 +19,10 @@ public class InlinedEmbedContentResponse
     /// </summary>
     [JsonPropertyName("error")]
     public JobError? Error { get; set; }
+
+    /// <summary>
+    /// Output only. Metadata associated with the request.
+    /// </summary>
+    [JsonPropertyName("metadata")]
+    public Dictionary<string, JsonElement>? Metadata { get; set; }
 }

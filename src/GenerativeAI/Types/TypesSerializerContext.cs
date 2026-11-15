@@ -468,6 +468,11 @@ namespace GenerativeAI.Types;
 [JsonSerializable(typeof(ComputeTokensResponse))]
 [JsonSerializable(typeof(RegisterFilesRequest))]
 [JsonSerializable(typeof(RegisterFilesResponse))]
+[JsonSerializable(typeof(CompletionStats))]
+[JsonSerializable(typeof(DocumentState))]
+[JsonSerializable(typeof(EmbedContentMetadata))]
+[JsonSerializable(typeof(HttpElementLocation))]
+[JsonSerializable(typeof(VertexMultimodalDatasetDestination))]
 
 [JsonSourceGenerationOptions(WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull, UseStringEnumConverter = true)]
 

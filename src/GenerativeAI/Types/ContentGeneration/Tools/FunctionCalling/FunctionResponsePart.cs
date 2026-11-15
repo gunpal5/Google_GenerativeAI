@@ -22,4 +22,11 @@ public class FunctionResponsePart
     /// </summary>
     [JsonPropertyName("fileData")]
     public FunctionResponseFileData? FileData { get; set; }
+
+    /// <summary>
+    /// Optional. How the model processes the media in this part for understanding. It applies only to video parts and
+    /// other parts ignore it. This field is not supported in Vertex AI.
+    /// </summary>
+    [JsonPropertyName("mediaProcessing")]
+    public MediaProcessing? MediaProcessing { get; set; }
 }
