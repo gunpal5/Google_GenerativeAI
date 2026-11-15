@@ -49,8 +49,12 @@ public class BatchClient : BaseClient
     {
         if (string.IsNullOrWhiteSpace(model))
             throw new ArgumentException("Model name cannot be null or empty.", nameof(model));
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(source);
+#else
         if (source == null)
             throw new ArgumentNullException(nameof(source));
+#endif
 
         var modelId = model;
 
@@ -180,8 +184,12 @@ public class BatchClient : BaseClient
     {
         if (string.IsNullOrWhiteSpace(model))
             throw new ArgumentException("Model name cannot be null or empty.", nameof(model));
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(source);
+#else
         if (source == null)
             throw new ArgumentNullException(nameof(source));
+#endif
 
         // Embeddings batch is only supported in Google AI (MLDev)
         if (Platform is not GoogleAIPlatformAdapter)

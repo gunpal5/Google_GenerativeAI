@@ -140,7 +140,7 @@ public class Microsoft_EmbeddingGenerator_Tests : TestBase
         var emptyInput = new List<string>();
 
         // Act
-        var result = await generator.GenerateAsync(emptyInput);
+        var result = await generator.GenerateAsync(emptyInput, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldNotBeNull();
@@ -157,7 +157,7 @@ public class Microsoft_EmbeddingGenerator_Tests : TestBase
         var input = new[] { "Test text" };
 
         // Act
-        var result = await generator.GenerateAsync(input, null);
+        var result = await generator.GenerateAsync(input, null, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldNotBeNull();
@@ -196,7 +196,7 @@ public class Microsoft_EmbeddingGenerator_Tests : TestBase
         };
 
         // Act
-        var result = await generator.GenerateAsync(input, options);
+        var result = await generator.GenerateAsync(input, options, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldNotBeNull();
@@ -220,7 +220,7 @@ public class Microsoft_EmbeddingGenerator_Tests : TestBase
         };
 
         // Act
-        var result = await generator.GenerateAsync(input, options);
+        var result = await generator.GenerateAsync(input, options, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldNotBeNull();
@@ -238,7 +238,7 @@ public class Microsoft_EmbeddingGenerator_Tests : TestBase
         var options = new EmbeddingGenerationOptions().WithTaskType(TaskType.CODE_RETRIEVAL_QUERY);
 
         // Act
-        var result = await generator.GenerateAsync(input, options);
+        var result = await generator.GenerateAsync(input, options, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldNotBeNull();
@@ -454,7 +454,7 @@ public class Microsoft_EmbeddingGenerator_Tests : TestBase
         };
 
         // Act
-        var result = await generator.GenerateAsync(inputs);
+        var result = await generator.GenerateAsync(inputs, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         result.ShouldNotBeNull();
@@ -475,7 +475,7 @@ public class Microsoft_EmbeddingGenerator_Tests : TestBase
         var input = new[] { "Text for usage tracking" };
 
         // Act
-        var result = await generator.GenerateAsync(input);
+        var result = await generator.GenerateAsync(input, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         result.Usage.ShouldNotBeNull();

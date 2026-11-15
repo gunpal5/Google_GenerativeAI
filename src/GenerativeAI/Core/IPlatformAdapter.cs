@@ -39,12 +39,12 @@ public interface IPlatformAdapter
     /// <summary>
     /// Retrieves the base URL of the platform's API.
     /// </summary>
-    /// <param name="appendVesion">Determines whether to append the API version to the URL.</param>
+    /// <param name="appendVersion">Determines whether to append the API version to the URL.</param>
     /// <param name="appendPublisher">Determines whether to append the publisher identifier to the URL.</param>
     /// <param name="appendLocation"></param>
     /// <param name="appendProject"></param>
     /// <returns>The base URL as a string.</returns>
-    string GetBaseUrl(bool appendVesion = true, bool appendPublisher = true, bool appendLocation = true, bool appendProject = true);
+    string GetBaseUrl(bool appendVersion = true, bool appendPublisher = true, bool appendLocation = true, bool appendProject = true);
 
     /// <summary>
     /// Retrieves the base URL for file-related API operations.
@@ -105,6 +105,7 @@ public interface IPlatformAdapter
     /// Gets the formatted model name for multi-modal live sessions.
     /// </summary>
     /// <param name="modelName">The base model name to format.</param>
+    /// <param name="appendLocation">Whether to include the location segment in the qualified name.</param>
     /// <returns>The formatted model name for multi-modal live sessions, or null if not applicable.</returns>
     string? GetFullyQualifiedModelName(string modelName, bool appendLocation = true);
 }

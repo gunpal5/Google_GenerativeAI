@@ -50,10 +50,26 @@ public class MultiModalLiveClient : IDisposable
     }
     
     private List<byte> _audioBuffer;
+#pragma warning disable CA2213 // Disposed in DisconnectAsync, which Dispose(bool) calls
     private IWebsocketClient? _client;
+#pragma warning restore CA2213
     private readonly Guid _connectionId;
     private readonly ILogger? _logger;
     private readonly IPlatformAdapter _platformAdapter;
+
+    private static JsonTypeInfo<BidiResponsePayload> BidiResponsePayloadTypeInfo =>
+#if NET11_0_OR_GREATER
+        DefaultSerializerOptions.Options.GetTypeInfo<BidiResponsePayload>();
+#else
+        (JsonTypeInfo<BidiResponsePayload>)DefaultSerializerOptions.Options.GetTypeInfo(typeof(BidiResponsePayload));
+#endif
+
+    private static JsonTypeInfo<BidiClientPayload> BidiClientPayloadTypeInfo =>
+#if NET11_0_OR_GREATER
+        DefaultSerializerOptions.Options.GetTypeInfo<BidiClientPayload>();
+#else
+        (JsonTypeInfo<BidiClientPayload>)DefaultSerializerOptions.Options.GetTypeInfo(typeof(BidiClientPayload));
+#endif
 
     #endregion
 
@@ -243,7 +259,7 @@ public class MultiModalLiveClient : IDisposable
             BidiResponsePayload? responsePayload = null;
             if (msg.MessageType == WebSocketMessageType.Binary)
             {
-                responsePayload = JsonSerializer.Deserialize(msg.Binary,(JsonTypeInfo<BidiResponsePayload>) DefaultSerializerOptions.Options.GetTypeInfo(typeof(BidiResponsePayload)));
+                responsePayload = JsonSerializer.Deserialize(msg.Binary,BidiResponsePayloadTypeInfo);
             }
             else
             {
@@ -252,7 +268,7 @@ public class MultiModalLiveClient : IDisposable
                     _logger?.LogWarning("Received null text message");
                     return;
                 }
-                responsePayload = JsonSerializer.Deserialize(msg.Text,(JsonTypeInfo<BidiResponsePayload>) DefaultSerializerOptions.Options.GetTypeInfo(typeof(BidiResponsePayload)));
+                responsePayload = JsonSerializer.Deserialize(msg.Text,BidiResponsePayloadTypeInfo);
             }
 
             if (responsePayload == null)
@@ -303,7 +319,8 @@ public class MultiModalLiveClient : IDisposable
                 {
                     this.TextChunkReceived?.Invoke(this,
                         new TextChunkReceivedArgs(part.Text, responsePayload.ServerContent.TurnComplete == true));
-                    _logger?.LogInformation("Text chunk received: {Text}", part.Text);
+                    if (_logger?.IsEnabled(LogLevel.Information) == true)
+                        _logger.LogInformation("Text chunk received: {Text}", part.Text);
                 }
             }
         }
@@ -575,9 +592,8 @@ public class MultiModalLiveClient : IDisposable
 
         _client.ReconnectionHappened.Subscribe(info =>
         {
-#pragma warning disable CA2254 // Template should be a static expression
-            _logger?.LogInformation($"Reconnection happened: {info.Type}");
-#pragma warning restore CA2254
+            if (_logger?.IsEnabled(LogLevel.Information) == true)
+                _logger.LogInformation("Reconnection happened: {ReconnectionType}", info.Type);
             // Consider re-sending setup or other state restoration here
         });
 
@@ -789,7 +805,7 @@ public class MultiModalLiveClient : IDisposable
 
         try
         {
-            var json = JsonSerializer.Serialize(payload,DefaultSerializerOptions.Options.GetTypeInfo(typeof(BidiClientPayload)));
+            var json = JsonSerializer.Serialize(payload,BidiClientPayloadTypeInfo);
             _logger?.LogMessageSent(json);
 
             _client.Send(json);

@@ -40,6 +40,11 @@ public class LenientFinishReasonConverter : JsonConverter<FinishReason>
     /// </summary>
     public override void Write(Utf8JsonWriter writer, FinishReason value, JsonSerializerOptions options)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(writer);
+#else
+        if (writer == null) throw new ArgumentNullException(nameof(writer));
+#endif
         writer.WriteStringValue(value.ToString());
     }
 }

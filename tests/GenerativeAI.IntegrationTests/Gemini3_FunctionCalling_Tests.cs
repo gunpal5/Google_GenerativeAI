@@ -206,7 +206,7 @@ public class Gemini3_FunctionCalling_Tests : TestBase
         // Step 2: Execute the function and send response back
         Console.WriteLine($"\n=== Step 2: Executing function {functionCallPart.FunctionCall.Name} ===");
 
-        var functionResponse = await tool.CallAsync(functionCallPart.FunctionCall);
+        var functionResponse = await tool.CallAsync(functionCallPart.FunctionCall, cancellationToken: TestContext.Current.CancellationToken);
         Console.WriteLine($"Function result: {functionResponse?.Response?.ToJsonString()}");
 
         // Step 3: Build the next request with the model's response (including thought signature) and function result

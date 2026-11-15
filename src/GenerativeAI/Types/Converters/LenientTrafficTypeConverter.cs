@@ -40,6 +40,11 @@ public class LenientTrafficTypeConverter : JsonConverter<TrafficType>
     /// </summary>
     public override void Write(Utf8JsonWriter writer, TrafficType value, JsonSerializerOptions options)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(writer);
+#else
+        if (writer == null) throw new ArgumentNullException(nameof(writer));
+#endif
         writer.WriteStringValue(value.ToString());
     }
 }

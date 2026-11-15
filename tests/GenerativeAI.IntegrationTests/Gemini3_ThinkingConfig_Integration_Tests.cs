@@ -227,7 +227,7 @@ public class Gemini3_ThinkingConfig_Integration_Tests : TestBase
 
         // Step 2: Execute function
         Console.WriteLine("\n=== Step 2: Execute Function ===");
-        var functionResponse = await tool.CallAsync(functionCallPart.FunctionCall);
+        var functionResponse = await tool.CallAsync(functionCallPart.FunctionCall, cancellationToken: TestContext.Current.CancellationToken);
         Console.WriteLine($"Function response: {functionResponse?.Response?.ToJsonString()}");
 
         // Step 3: Send function response back (with thought signature preserved)

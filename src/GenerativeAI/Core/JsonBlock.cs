@@ -69,7 +69,11 @@ public class JsonBlock
                 NumberHandling = JsonNumberHandling.AllowReadingFromString
             };
             
+#if NET11_0_OR_GREATER
+            var typeInfo = newOptions.GetTypeInfo<T>();
+#else
             var typeInfo = newOptions.GetTypeInfo(typeof(T));
+#endif
             if (typeInfo == null)
                 throw new InvalidOperationException("Unable to get type information for type T.");
             return JsonSerializer.Deserialize(Json, typeInfo) as T;

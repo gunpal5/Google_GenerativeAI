@@ -101,7 +101,11 @@ namespace GenerativeAI.Core
                 // Deserialize and return the response
                 if (SerializerOptions == null)
                     throw new InvalidOperationException("SerializerOptions is not initialized");
+#if NET11_0_OR_GREATER
+                var typeInfo = SerializerOptions.GetTypeInfo<T>();
+#else
                 var typeInfo = SerializerOptions.GetTypeInfo(typeof(T));
+#endif
                 if (typeInfo == null)
                     throw new InvalidOperationException($"Could not get type info for {typeof(T)}");
                 return JsonSerializer.Deserialize(content, (JsonTypeInfo<T>) typeInfo) ??
@@ -146,7 +150,11 @@ namespace GenerativeAI.Core
                 // Serialize payload and create request
                 if (SerializerOptions == null)
                     throw new InvalidOperationException("SerializerOptions is not initialized");
+#if NET11_0_OR_GREATER
+                var typeInfo = SerializerOptions.GetTypeInfo<TRequest>();
+#else
                 var typeInfo = SerializerOptions.GetTypeInfo(typeof(TRequest));
+#endif
                 if (typeInfo == null)
                     throw new InvalidOperationException($"Could not get type info for {typeof(TRequest)}");
                 var jsonPayload = JsonSerializer.Serialize(payload, typeInfo);
@@ -258,7 +266,11 @@ namespace GenerativeAI.Core
         {
             if (SerializerOptions == null)
                 throw new InvalidOperationException("SerializerOptions is not initialized");
+#if NET11_0_OR_GREATER
+            var typeInfo = SerializerOptions.GetTypeInfo<T>();
+#else
             var typeInfo = SerializerOptions.GetTypeInfo(typeof(T));
+#endif
             if (typeInfo == null)
                 throw new InvalidOperationException($"Could not get type info for {typeof(T)}");
             return (T?) JsonSerializer.Deserialize(json, typeInfo);
@@ -418,7 +430,11 @@ namespace GenerativeAI.Core
             using var ms = new MemoryStream();
             if (SerializerOptions == null)
                 throw new InvalidOperationException("SerializerOptions is not initialized");
+#if NET11_0_OR_GREATER
+            var typeInfo = SerializerOptions.GetTypeInfo<TRequest>();
+#else
             var typeInfo = SerializerOptions.GetTypeInfo(typeof(TRequest));
+#endif
             if (typeInfo == null)
                 throw new InvalidOperationException($"Could not get type info for {typeof(TRequest)}");
             await JsonSerializer.SerializeAsync(ms, payload, typeInfo, cancellationToken).ConfigureAwait(false);
@@ -452,7 +468,11 @@ namespace GenerativeAI.Core
                 
                 if (SerializerOptions == null)
                     throw new InvalidOperationException("SerializerOptions is not initialized");
+#if NET11_0_OR_GREATER
+                var responseTypeInfo = SerializerOptions.GetTypeInfo<TResponse>();
+#else
                 var responseTypeInfo = SerializerOptions.GetTypeInfo(typeof(TResponse));
+#endif
                 if (responseTypeInfo == null)
                     throw new InvalidOperationException($"Could not get type info for {typeof(TResponse)}");
                 
