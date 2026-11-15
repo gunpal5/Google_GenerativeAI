@@ -33,6 +33,9 @@
     "resource": [
       { "files": [ "images/**" ] }
     ],
+    "overwrite": [
+      { "files": [ "namespaces/**.md" ] }
+    ],
     "output": "_site",
     "template": [ "default", "modern" ],
     "globalMetadata": {
