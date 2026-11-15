@@ -1,0 +1,2671 @@
+{
+ "ActivityEnd": [],
+ "ActivityStart": [],
+ "AggregationOutput": [
+  "aggregationResults",
+  "dataset"
+ ],
+ "AggregationResult": [
+  "aggregationMetric",
+  "bleuMetricValue",
+  "customCodeExecutionResult",
+  "exactMatchMetricValue",
+  "pairwiseMetricResult",
+  "pointwiseMetricResult",
+  "rougeMetricValue"
+ ],
+ "ApiAuth": [
+  "apiKeyConfig"
+ ],
+ "ApiAuthApiKeyConfig": [
+  "apiKeySecretVersion",
+  "apiKeyString"
+ ],
+ "ApiKeyConfig": [
+  "apiKeySecret",
+  "apiKeyString",
+  "httpElementLocation",
+  "name"
+ ],
+ "AudioChunk": [
+  "data",
+  "mimeType",
+  "sourceMetadata"
+ ],
+ "AudioResponseFormat": [
+  "bitRate",
+  "delivery",
+  "mimeType",
+  "sampleRate"
+ ],
+ "AudioTranscriptionConfig": [
+  "adaptationPhrases",
+  "customVocabulary",
+  "diarization",
+  "languageAuto",
+  "languageCodes",
+  "languageHints",
+  "mode",
+  "sourceText",
+  "wordTimestamp"
+ ],
+ "AuthConfig": [
+  "apiKey",
+  "apiKeyConfig",
+  "authType",
+  "googleServiceAccountConfig",
+  "httpBasicAuthConfig",
+  "oauthConfig",
+  "oidcConfig"
+ ],
+ "AuthConfigGoogleServiceAccountConfig": [
+  "serviceAccount"
+ ],
+ "AuthConfigHttpBasicAuthConfig": [
+  "credentialSecret"
+ ],
+ "AuthConfigOauthConfig": [
+  "accessToken",
+  "serviceAccount"
+ ],
+ "AuthConfigOidcConfig": [
+  "idToken",
+  "serviceAccount"
+ ],
+ "AuthToken": [
+  "expireTime",
+  "name",
+  "newSessionExpireTime",
+  "uses"
+ ],
+ "AutomaticActivityDetection": [
+  "disabled",
+  "endOfSpeechSensitivity",
+  "prefixPaddingMs",
+  "silenceDurationMs",
+  "startOfSpeechSensitivity"
+ ],
+ "AutomaticFunctionCallingConfig": [
+  "disable",
+  "ignoreCallHistory",
+  "maximumRemoteCalls"
+ ],
+ "AutoraterConfig": [
+  "autoraterModel",
+  "flipEnabled",
+  "generationConfig",
+  "samplingCount"
+ ],
+ "AvatarConfig": [
+  "audioBitrateBps",
+  "avatarName",
+  "customizedAvatar",
+  "videoBitrateBps"
+ ],
+ "BatchJob": [
+  "completionStats",
+  "createTime",
+  "dest",
+  "displayName",
+  "endTime",
+  "error",
+  "model",
+  "name",
+  "outputInfo",
+  "src",
+  "startTime",
+  "state",
+  "updateTime"
+ ],
+ "BatchJobDestination": [
+  "bigqueryUri",
+  "fileName",
+  "format",
+  "gcsUri",
+  "inlinedEmbedContentResponses",
+  "inlinedResponses",
+  "vertexDataset"
+ ],
+ "BatchJobOutputInfo": [
+  "bigqueryOutputTable",
+  "gcsOutputDirectory",
+  "vertexMultimodalDatasetName"
+ ],
+ "BatchJobSource": [
+  "bigqueryUri",
+  "fileName",
+  "format",
+  "gcsUri",
+  "inlinedRequests",
+  "vertexDatasetName"
+ ],
+ "BigQuerySource": [
+  "inputUri"
+ ],
+ "BleuMetricValue": [
+  "score"
+ ],
+ "BleuSpec": [
+  "useEffectiveOrder"
+ ],
+ "Blob": [
+  "data",
+  "displayName",
+  "mimeType"
+ ],
+ "CachedContent": [
+  "createTime",
+  "displayName",
+  "expireTime",
+  "model",
+  "name",
+  "updateTime",
+  "usageMetadata"
+ ],
+ "CachedContentUsageMetadata": [
+  "audioDurationSeconds",
+  "imageCount",
+  "textCount",
+  "totalTokenCount",
+  "videoDurationSeconds"
+ ],
+ "CancelBatchJobConfig": [
+  "httpOptions"
+ ],
+ "CancelTuningJobConfig": [
+  "httpOptions"
+ ],
+ "CancelTuningJobResponse": [
+  "sdkHttpResponse"
+ ],
+ "Candidate": [
+  "avgLogprobs",
+  "citationMetadata",
+  "content",
+  "continuationToken",
+  "finishMessage",
+  "finishReason",
+  "groundingMetadata",
+  "index",
+  "logprobsResult",
+  "safetyRatings",
+  "tokenCount",
+  "urlContextMetadata"
+ ],
+ "Checkpoint": [
+  "checkpointId",
+  "epoch",
+  "step"
+ ],
+ "ChunkingConfig": [
+  "whiteSpaceConfig"
+ ],
+ "Citation": [
+  "endIndex",
+  "license",
+  "publicationDate",
+  "startIndex",
+  "title",
+  "uri"
+ ],
+ "CitationMetadata": [
+  "citations"
+ ],
+ "ClaudeFile": [
+  "createdAt",
+  "downloadable",
+  "expiresAt",
+  "filename",
+  "id",
+  "mimeType",
+  "sizeBytes",
+  "type"
+ ],
+ "CodeExecutionResult": [
+  "id",
+  "outcome",
+  "output"
+ ],
+ "CompletionStats": [
+  "failedCount",
+  "incompleteCount",
+  "successfulCount",
+  "successfulForecastPointCount"
+ ],
+ "CompositeReinforcementTuningRewardConfig": [
+  "weightedRewardConfigs"
+ ],
+ "CompositeReinforcementTuningRewardConfigWeightedRewardConfig": [
+  "rewardConfig",
+  "weight"
+ ],
+ "ComputationBasedMetricSpec": [
+  "parameters",
+  "type"
+ ],
+ "ComputeTokensConfig": [
+  "httpOptions"
+ ],
+ "ComputeTokensResponse": [
+  "sdkHttpResponse",
+  "tokensInfo"
+ ],
+ "ComputeTokensResult": [
+  "tokensInfo"
+ ],
+ "ComputerUse": [
+  "disabledSafetyPolicies",
+  "enablePromptInjectionDetection",
+  "environment",
+  "excludedPredefinedFunctions"
+ ],
+ "Content": [
+  "parts",
+  "role"
+ ],
+ "ContentEmbedding": [
+  "statistics",
+  "values"
+ ],
+ "ContentEmbeddingStatistics": [
+  "tokenCount",
+  "tokensDetails",
+  "truncated"
+ ],
+ "ContentReferenceImage": [
+  "referenceId",
+  "referenceImage",
+  "referenceType"
+ ],
+ "ContextWindowCompressionConfig": [
+  "slidingWindow",
+  "triggerTokens"
+ ],
+ "ControlReferenceConfig": [
+  "controlType",
+  "enableControlImageComputation"
+ ],
+ "ControlReferenceImage": [
+  "config",
+  "controlImageConfig",
+  "referenceId",
+  "referenceImage",
+  "referenceType"
+ ],
+ "CountTokensConfig": [
+  "generationConfig",
+  "httpOptions",
+  "systemInstruction",
+  "tools"
+ ],
+ "CountTokensResponse": [
+  "cachedContentTokenCount",
+  "sdkHttpResponse",
+  "totalTokens"
+ ],
+ "CountTokensResult": [
+  "totalTokens"
+ ],
+ "CreateAuthTokenConfig": [
+  "expireTime",
+  "httpOptions",
+  "liveConnectConstraints",
+  "lockAdditionalFields",
+  "newSessionExpireTime",
+  "uses"
+ ],
+ "CreateAuthTokenParameters": [
+  "config"
+ ],
+ "CreateBatchJobConfig": [
+  "dest",
+  "displayName",
+  "httpOptions",
+  "webhookConfig"
+ ],
+ "CreateCachedContentConfig": [
+  "contents",
+  "displayName",
+  "expireTime",
+  "httpOptions",
+  "kmsKeyName",
+  "systemInstruction",
+  "toolConfig",
+  "tools",
+  "ttl"
+ ],
+ "CreateEmbeddingsBatchJobConfig": [
+  "displayName",
+  "httpOptions"
+ ],
+ "CreateFileConfig": [
+  "httpOptions",
+  "shouldReturnHttpResponse"
+ ],
+ "CreateFileResponse": [
+  "sdkHttpResponse"
+ ],
+ "CreateFileSearchStoreConfig": [
+  "displayName",
+  "embeddingModel",
+  "httpOptions"
+ ],
+ "CreateTuningJobConfig": [
+  "adapterSize",
+  "baseTeacherModel",
+  "batchSize",
+  "beta",
+  "checkpointInterval",
+  "compositeRewardConfig",
+  "customBaseModel",
+  "description",
+  "encryptionSpec",
+  "epochCount",
+  "evaluateInterval",
+  "evaluationConfig",
+  "exportLastCheckpointOnly",
+  "httpOptions",
+  "labels",
+  "learningRate",
+  "learningRateMultiplier",
+  "maxOutputTokens",
+  "method",
+  "outputUri",
+  "preTunedModelCheckpointId",
+  "rewardConfig",
+  "samplesPerPrompt",
+  "sftLossWeightMultiplier",
+  "thinkingLevel",
+  "tunedModelDisplayName",
+  "tunedTeacherModelSource",
+  "tuningMode",
+  "validationDataset",
+  "validationDatasetUri"
+ ],
+ "CreateTuningJobParameters": [
+  "baseModel",
+  "config",
+  "trainingDataset"
+ ],
+ "CustomCodeExecutionResult": [
+  "score"
+ ],
+ "CustomCodeExecutionSpec": [
+  "codeExecutionRegion",
+  "evaluationFunction"
+ ],
+ "CustomMetadata": [
+  "key",
+  "numericValue",
+  "stringListValue",
+  "stringValue"
+ ],
+ "CustomOutput": [
+  "rawOutputs"
+ ],
+ "CustomOutputFormatConfig": [
+  "returnRawOutput"
+ ],
+ "CustomizedAvatar": [
+  "imageData",
+  "imageMimeType"
+ ],
+ "DatasetDistribution": [
+  "buckets",
+  "max",
+  "mean",
+  "median",
+  "min",
+  "p5",
+  "p95",
+  "sum"
+ ],
+ "DatasetDistributionDistributionBucket": [
+  "count",
+  "left",
+  "right"
+ ],
+ "DatasetStats": [
+  "contentsPerExampleDistribution",
+  "droppedExampleIndices",
+  "droppedExampleReasons",
+  "reinforcementTuningUserDatasetExamples",
+  "totalBillableCharacterCount",
+  "totalBillableTokenCount",
+  "totalTuningCharacterCount",
+  "tuningDatasetExampleCount",
+  "tuningStepCount",
+  "userDatasetExamples",
+  "userInputTokenDistribution",
+  "userMessagePerExampleDistribution",
+  "userOutputTokenDistribution"
+ ],
+ "DeleteBatchJobConfig": [
+  "httpOptions"
+ ],
+ "DeleteCachedContentConfig": [
+  "httpOptions"
+ ],
+ "DeleteCachedContentResponse": [
+  "sdkHttpResponse"
+ ],
+ "DeleteDocumentConfig": [
+  "force",
+  "httpOptions"
+ ],
+ "DeleteFileConfig": [
+  "httpOptions"
+ ],
+ "DeleteFileResponse": [
+  "id",
+  "sdkHttpResponse",
+  "type"
+ ],
+ "DeleteFileSearchStoreConfig": [
+  "force",
+  "httpOptions"
+ ],
+ "DeleteModelConfig": [
+  "httpOptions"
+ ],
+ "DeleteModelResponse": [
+  "sdkHttpResponse"
+ ],
+ "DeleteResourceJob": [
+  "done",
+  "error",
+  "name",
+  "sdkHttpResponse"
+ ],
+ "DistillationDataStats": [
+  "trainingDatasetStats"
+ ],
+ "DistillationHyperParameters": [
+  "adapterSize",
+  "batchSize",
+  "epochCount",
+  "generationConfig",
+  "learningRate",
+  "learningRateMultiplier"
+ ],
+ "DistillationSamplingSpec": [
+  "baseTeacherModel",
+  "hyperparameters",
+  "promptDatasetUri",
+  "tunedTeacherModelSource",
+  "validationDatasetUri"
+ ],
+ "DistillationSpec": [
+  "baseTeacherModel",
+  "hyperParameters",
+  "pipelineRootDirectory",
+  "promptDatasetUri",
+  "studentModel",
+  "trainingDatasetUri",
+  "tunedTeacherModelSource",
+  "tuningMode",
+  "validationDatasetUri"
+ ],
+ "Document": [
+  "createTime",
+  "customMetadata",
+  "displayName",
+  "mimeType",
+  "name",
+  "sizeBytes",
+  "state",
+  "updateTime"
+ ],
+ "DownloadFileConfig": [
+  "httpOptions"
+ ],
+ "DownloadMediaConfig": [
+  "httpOptions"
+ ],
+ "DynamicRetrievalConfig": [
+  "dynamicThreshold",
+  "mode"
+ ],
+ "EditImageConfig": [
+  "addWatermark",
+  "aspectRatio",
+  "baseSteps",
+  "editMode",
+  "guidanceScale",
+  "httpOptions",
+  "includeRaiReason",
+  "includeSafetyAttributes",
+  "labels",
+  "language",
+  "negativePrompt",
+  "numberOfImages",
+  "outputCompressionQuality",
+  "outputGcsUri",
+  "outputMimeType",
+  "personGeneration",
+  "safetyFilterLevel",
+  "seed"
+ ],
+ "EditImageResponse": [
+  "generatedImages",
+  "sdkHttpResponse"
+ ],
+ "EmbedContentBatch": [
+  "config",
+  "contents"
+ ],
+ "EmbedContentConfig": [
+  "audioTrackExtraction",
+  "autoTruncate",
+  "documentOcr",
+  "httpOptions",
+  "mimeType",
+  "outputDimensionality",
+  "taskType",
+  "title"
+ ],
+ "EmbedContentMetadata": [
+  "billableCharacterCount"
+ ],
+ "EmbedContentParameters": [
+  "config",
+  "contents",
+  "model"
+ ],
+ "EmbedContentResponse": [
+  "embeddings",
+  "metadata",
+  "sdkHttpResponse",
+  "truncated",
+  "usageMetadata"
+ ],
+ "EmbeddingsBatchJobSource": [
+  "fileName",
+  "inlinedRequests"
+ ],
+ "EncryptionSpec": [
+  "kmsKeyName"
+ ],
+ "Endpoint": [
+  "deployedModelId",
+  "name"
+ ],
+ "EnterpriseWebSearch": [
+  "blockingConfidence",
+  "excludeDomains"
+ ],
+ "EntityLabel": [
+  "label",
+  "score"
+ ],
+ "EvaluateDatasetResponse": [
+  "aggregationOutput",
+  "outputInfo"
+ ],
+ "EvaluateDatasetRun": [
+  "checkpointId",
+  "error",
+  "evaluateDatasetResponse",
+  "evaluationRun",
+  "operationName"
+ ],
+ "EvaluationConfig": [
+  "autoraterConfig",
+  "inferenceGenerationConfig",
+  "metrics",
+  "outputConfig"
+ ],
+ "EvaluationDataset": [
+  "bigquerySource",
+  "gcsSource"
+ ],
+ "EvaluationParserConfig": [
+  "customCodeParserConfig"
+ ],
+ "EvaluationParserConfigCustomCodeParserConfig": [
+  "codeExecutionRegion",
+  "parsingFunction"
+ ],
+ "ExactMatchMetricValue": [
+  "score"
+ ],
+ "ExecutableCode": [
+  "code",
+  "id",
+  "language"
+ ],
+ "ExternalApi": [
+  "apiAuth",
+  "apiSpec",
+  "authConfig",
+  "elasticSearchParams",
+  "endpoint",
+  "simpleSearchParams"
+ ],
+ "ExternalApiElasticSearchParams": [
+  "index",
+  "numHits",
+  "searchTemplate"
+ ],
+ "ExternalApiSimpleSearchParams": [],
+ "FetchPredictOperationConfig": [
+  "httpOptions"
+ ],
+ "File": [
+  "createTime",
+  "displayName",
+  "downloadUri",
+  "error",
+  "expirationTime",
+  "mimeType",
+  "name",
+  "sha256Hash",
+  "sizeBytes",
+  "source",
+  "state",
+  "updateTime",
+  "uri",
+  "videoMetadata"
+ ],
+ "FileData": [
+  "displayName",
+  "fileUri",
+  "mimeType"
+ ],
+ "FileSearch": [
+  "fileSearchStoreNames",
+  "metadataFilter",
+  "topK"
+ ],
+ "FileSearchStore": [
+  "activeDocumentsCount",
+  "createTime",
+  "displayName",
+  "embeddingModel",
+  "failedDocumentsCount",
+  "name",
+  "pendingDocumentsCount",
+  "sizeBytes",
+  "updateTime"
+ ],
+ "FileStatus": [
+  "code",
+  "details",
+  "message"
+ ],
+ "FullFineTuningSpec": [
+  "hyperParameters",
+  "trainingDatasetUri",
+  "validationDatasetUri"
+ ],
+ "FunctionCall": [
+  "args",
+  "id",
+  "name",
+  "partialArgs",
+  "willContinue"
+ ],
+ "FunctionCallingConfig": [
+  "allowedFunctionNames",
+  "mode",
+  "streamFunctionCallArguments"
+ ],
+ "FunctionDeclaration": [
+  "behavior",
+  "description",
+  "name",
+  "parameters",
+  "parametersJsonSchema",
+  "response",
+  "responseJsonSchema"
+ ],
+ "FunctionResponse": [
+  "id",
+  "name",
+  "parts",
+  "response",
+  "scheduling",
+  "willContinue"
+ ],
+ "FunctionResponseBlob": [
+  "data",
+  "displayName",
+  "mimeType"
+ ],
+ "FunctionResponseFileData": [
+  "displayName",
+  "fileUri",
+  "mimeType"
+ ],
+ "FunctionResponsePart": [
+  "fileData",
+  "inlineData",
+  "mediaProcessing"
+ ],
+ "GcsDestination": [
+  "outputUriPrefix"
+ ],
+ "GcsSource": [
+  "uris"
+ ],
+ "GeminiPreferenceExample": [
+  "completions",
+  "contents"
+ ],
+ "GeminiPreferenceExampleCompletion": [
+  "completion",
+  "score"
+ ],
+ "GenerateContentConfig": [
+  "audioTimestamp",
+  "audioTranscriptionConfig",
+  "automaticContinuation",
+  "automaticFunctionCalling",
+  "cachedContent",
+  "candidateCount",
+  "continuationToken",
+  "enableEnhancedCivicAnswers",
+  "frequencyPenalty",
+  "generationOutputConfig",
+  "httpOptions",
+  "imageConfig",
+  "labels",
+  "logprobs",
+  "maxOutputTokens",
+  "mediaResolution",
+  "modelArmorConfig",
+  "modelSelectionConfig",
+  "presencePenalty",
+  "responseJsonSchema",
+  "responseLogprobs",
+  "responseMimeType",
+  "responseModalities",
+  "responseSchema",
+  "routingConfig",
+  "safetySettings",
+  "seed",
+  "serviceTier",
+  "shouldReturnHttpResponse",
+  "speechConfig",
+  "stopSequences",
+  "store",
+  "systemInstruction",
+  "temperature",
+  "thinkingConfig",
+  "toolConfig",
+  "tools",
+  "topK",
+  "topP"
+ ],
+ "GenerateContentResponse": [
+  "automaticFunctionCallingHistory",
+  "candidates",
+  "createTime",
+  "modelStatus",
+  "modelVersion",
+  "parsed",
+  "promptFeedback",
+  "responseId",
+  "sdkHttpResponse",
+  "usageMetadata"
+ ],
+ "GenerateContentResponsePromptFeedback": [
+  "blockReason",
+  "blockReasonMessage",
+  "safetyRatings"
+ ],
+ "GenerateContentResponseUsageMetadata": [
+  "cacheTokensDetails",
+  "cachedContentTokenCount",
+  "candidatesTokenCount",
+  "candidatesTokensDetails",
+  "promptTokenCount",
+  "promptTokensDetails",
+  "thoughtsTokenCount",
+  "toolUsePromptTokenCount",
+  "toolUsePromptTokensDetails",
+  "totalTokenCount",
+  "trafficType"
+ ],
+ "GenerateImagesConfig": [
+  "addWatermark",
+  "aspectRatio",
+  "enhancePrompt",
+  "guidanceScale",
+  "httpOptions",
+  "imageSize",
+  "includeRaiReason",
+  "includeSafetyAttributes",
+  "labels",
+  "language",
+  "negativePrompt",
+  "numberOfImages",
+  "outputCompressionQuality",
+  "outputGcsUri",
+  "outputMimeType",
+  "personGeneration",
+  "safetyFilterLevel",
+  "seed"
+ ],
+ "GenerateImagesResponse": [
+  "generatedImages",
+  "positivePromptSafetyAttributes",
+  "sdkHttpResponse"
+ ],
+ "GenerateVideosConfig": [
+  "aspectRatio",
+  "compressionQuality",
+  "durationSeconds",
+  "enhancePrompt",
+  "fps",
+  "generateAudio",
+  "httpOptions",
+  "labels",
+  "lastFrame",
+  "mask",
+  "negativePrompt",
+  "numberOfVideos",
+  "outputGcsUri",
+  "personGeneration",
+  "pubsubTopic",
+  "referenceImages",
+  "resizeMode",
+  "resolution",
+  "seed",
+  "webhookConfig"
+ ],
+ "GenerateVideosOperation": [
+  "response",
+  "result"
+ ],
+ "GenerateVideosResponse": [
+  "generatedVideos",
+  "raiMediaFilteredCount",
+  "raiMediaFilteredReasons"
+ ],
+ "GenerateVideosSource": [
+  "image",
+  "prompt",
+  "video"
+ ],
+ "GeneratedImage": [
+  "enhancedPrompt",
+  "image",
+  "raiFilteredReason",
+  "safetyAttributes"
+ ],
+ "GeneratedImageMask": [
+  "labels",
+  "mask"
+ ],
+ "GeneratedVideo": [
+  "video"
+ ],
+ "GenerationConfig": [
+  "audioTimestamp",
+  "audioTranscriptionConfig",
+  "candidateCount",
+  "enableAffectiveDialog",
+  "enableEnhancedCivicAnswers",
+  "frequencyPenalty",
+  "logprobs",
+  "maxOutputTokens",
+  "mediaResolution",
+  "modelSelectionConfig",
+  "presencePenalty",
+  "responseFormat",
+  "responseJsonSchema",
+  "responseLogprobs",
+  "responseMimeType",
+  "responseModalities",
+  "responseSchema",
+  "routingConfig",
+  "seed",
+  "speechConfig",
+  "stopSequences",
+  "temperature",
+  "thinkingConfig",
+  "topK",
+  "topP",
+  "translationConfig"
+ ],
+ "GenerationConfigRoutingConfig": [
+  "autoMode",
+  "manualMode"
+ ],
+ "GenerationConfigRoutingConfigAutoRoutingMode": [
+  "modelRoutingPreference"
+ ],
+ "GenerationConfigRoutingConfigManualRoutingMode": [
+  "modelName"
+ ],
+ "GenerationOutputConfig": [
+  "outputUriPrefix"
+ ],
+ "GetBatchJobConfig": [
+  "httpOptions"
+ ],
+ "GetCachedContentConfig": [
+  "httpOptions"
+ ],
+ "GetDocumentConfig": [
+  "httpOptions"
+ ],
+ "GetFileConfig": [
+  "httpOptions"
+ ],
+ "GetFileSearchStoreConfig": [
+  "httpOptions"
+ ],
+ "GetModelConfig": [
+  "httpOptions"
+ ],
+ "GetOperationConfig": [
+  "httpOptions"
+ ],
+ "GetTuningJobConfig": [
+  "httpOptions"
+ ],
+ "GoogleMaps": [
+  "authConfig",
+  "enableWidget",
+  "groundingTypes"
+ ],
+ "GoogleMapsGroundingTypes": [
+  "places",
+  "routing"
+ ],
+ "GoogleMapsPlaces": [],
+ "GoogleMapsRouting": [],
+ "GoogleRpcStatus": [
+  "code",
+  "details",
+  "message"
+ ],
+ "GoogleSearch": [
+  "blockingConfidence",
+  "excludeDomains",
+  "searchTypes",
+  "timeRangeFilter"
+ ],
+ "GoogleSearchRetrieval": [
+  "dynamicRetrievalConfig"
+ ],
+ "GoogleTypeDate": [
+  "day",
+  "month",
+  "year"
+ ],
+ "GroundingChunk": [
+  "image",
+  "maps",
+  "retrievedContext",
+  "web"
+ ],
+ "GroundingChunkCustomMetadata": [
+  "key",
+  "numericValue",
+  "stringListValue",
+  "stringValue"
+ ],
+ "GroundingChunkImage": [
+  "domain",
+  "imageUri",
+  "sourceUri",
+  "title"
+ ],
+ "GroundingChunkMaps": [
+  "placeAnswerSources",
+  "placeId",
+  "route",
+  "text",
+  "title",
+  "uri"
+ ],
+ "GroundingChunkMapsPlaceAnswerSources": [
+  "flagContentUri",
+  "reviewSnippet",
+  "reviewSnippets"
+ ],
+ "GroundingChunkMapsPlaceAnswerSourcesAuthorAttribution": [
+  "displayName",
+  "photoUri",
+  "uri"
+ ],
+ "GroundingChunkMapsPlaceAnswerSourcesReviewSnippet": [
+  "authorAttribution",
+  "flagContentUri",
+  "googleMapsUri",
+  "relativePublishTimeDescription",
+  "review",
+  "reviewId",
+  "title"
+ ],
+ "GroundingChunkMapsRoute": [
+  "distanceMeters",
+  "duration",
+  "encodedPolyline"
+ ],
+ "GroundingChunkRetrievedContext": [
+  "customMetadata",
+  "documentName",
+  "fileSearchStore",
+  "mediaId",
+  "pageNumber",
+  "ragChunk",
+  "text",
+  "title",
+  "uri"
+ ],
+ "GroundingChunkStringList": [
+  "values"
+ ],
+ "GroundingChunkWeb": [
+  "domain",
+  "title",
+  "uri"
+ ],
+ "GroundingMetadata": [
+  "googleMapsWidgetContextToken",
+  "groundingChunks",
+  "groundingSupports",
+  "imageSearchQueries",
+  "retrievalMetadata",
+  "retrievalQueries",
+  "searchEntryPoint",
+  "sourceFlaggingUris",
+  "webSearchQueries"
+ ],
+ "GroundingMetadataSourceFlaggingUri": [
+  "flagContentUri",
+  "sourceId"
+ ],
+ "GroundingSupport": [
+  "confidenceScores",
+  "groundingChunkIndices",
+  "renderedParts",
+  "segment"
+ ],
+ "HistoryConfig": [
+  "initialHistoryInClientContent"
+ ],
+ "HttpOptions": [
+  "aiohttpClient",
+  "apiVersion",
+  "asyncClientArgs",
+  "baseUrl",
+  "baseUrlResourceScope",
+  "clientArgs",
+  "extraBody",
+  "headers",
+  "httpxAsyncClient",
+  "httpxClient",
+  "retryOptions",
+  "timeout"
+ ],
+ "HttpResponse": [
+  "body",
+  "headers"
+ ],
+ "HttpRetryOptions": [
+  "attempts",
+  "expBase",
+  "httpStatusCodes",
+  "initialDelay",
+  "jitter",
+  "maxDelay"
+ ],
+ "Image": [
+  "gcsUri",
+  "imageBytes",
+  "mimeType"
+ ],
+ "ImageConfig": [
+  "aspectRatio",
+  "imageOutputOptions",
+  "imageSize",
+  "outputCompressionQuality",
+  "outputMimeType",
+  "personGeneration",
+  "prominentPeople"
+ ],
+ "ImageConfigImageOutputOptions": [
+  "compressionQuality",
+  "mimeType"
+ ],
+ "ImageResponseFormat": [
+  "aspectRatio",
+  "delivery",
+  "imageSize",
+  "mimeType"
+ ],
+ "ImageSearch": [],
+ "ImportFileConfig": [
+  "chunkingConfig",
+  "customMetadata",
+  "httpOptions"
+ ],
+ "ImportFileOperation": [
+  "response"
+ ],
+ "ImportFileResponse": [
+  "documentName",
+  "parent",
+  "sdkHttpResponse"
+ ],
+ "InlinedEmbedContentResponse": [
+  "error",
+  "metadata",
+  "response"
+ ],
+ "InlinedRequest": [
+  "config",
+  "contents",
+  "metadata",
+  "model"
+ ],
+ "InlinedResponse": [
+  "error",
+  "metadata",
+  "response"
+ ],
+ "Interval": [
+  "endTime",
+  "startTime"
+ ],
+ "JSONSchema": [
+  "additionalProperties",
+  "anyOf",
+  "default",
+  "defs",
+  "description",
+  "enum",
+  "format",
+  "items",
+  "maxItems",
+  "maxLength",
+  "maxProperties",
+  "maximum",
+  "minItems",
+  "minLength",
+  "minProperties",
+  "minimum",
+  "oneOf",
+  "pattern",
+  "properties",
+  "ref",
+  "required",
+  "title",
+  "type",
+  "uniqueItems"
+ ],
+ "JobError": [
+  "code",
+  "details",
+  "message"
+ ],
+ "LLMBasedMetricSpec": [
+  "additionalConfig",
+  "judgeAutoraterConfig",
+  "metricPromptTemplate",
+  "predefinedRubricGenerationSpec",
+  "resultParserConfig",
+  "rubricGenerationSpec",
+  "rubricGroupKey",
+  "systemInstruction"
+ ],
+ "LanguageAuto": [],
+ "LanguageHints": [
+  "languageCodes"
+ ],
+ "LatLng": [
+  "latitude",
+  "longitude"
+ ],
+ "ListBatchJobsConfig": [
+  "filter",
+  "httpOptions",
+  "pageSize",
+  "pageToken"
+ ],
+ "ListBatchJobsResponse": [
+  "batchJobs",
+  "nextPageToken",
+  "sdkHttpResponse"
+ ],
+ "ListCachedContentsConfig": [
+  "httpOptions",
+  "pageSize",
+  "pageToken"
+ ],
+ "ListCachedContentsResponse": [
+  "cachedContents",
+  "nextPageToken",
+  "sdkHttpResponse"
+ ],
+ "ListDocumentsConfig": [
+  "httpOptions",
+  "pageSize",
+  "pageToken"
+ ],
+ "ListDocumentsResponse": [
+  "documents",
+  "nextPageToken",
+  "sdkHttpResponse"
+ ],
+ "ListFileSearchStoresConfig": [
+  "httpOptions",
+  "pageSize",
+  "pageToken"
+ ],
+ "ListFileSearchStoresResponse": [
+  "fileSearchStores",
+  "nextPageToken",
+  "sdkHttpResponse"
+ ],
+ "ListFilesConfig": [
+  "httpOptions",
+  "pageSize",
+  "pageToken"
+ ],
+ "ListFilesResponse": [
+  "data",
+  "files",
+  "nextPage",
+  "nextPageToken",
+  "sdkHttpResponse"
+ ],
+ "ListModelsConfig": [
+  "filter",
+  "httpOptions",
+  "pageSize",
+  "pageToken",
+  "queryBase"
+ ],
+ "ListModelsResponse": [
+  "models",
+  "nextPageToken",
+  "sdkHttpResponse"
+ ],
+ "ListTuningJobsConfig": [
+  "filter",
+  "httpOptions",
+  "pageSize",
+  "pageToken"
+ ],
+ "ListTuningJobsResponse": [
+  "nextPageToken",
+  "sdkHttpResponse",
+  "tuningJobs"
+ ],
+ "LiveClientContent": [
+  "turnComplete",
+  "turns"
+ ],
+ "LiveClientContextUpdate": [
+  "systemInstruction",
+  "tools"
+ ],
+ "LiveClientContextUpdateTools": [
+  "tools"
+ ],
+ "LiveClientMessage": [
+  "clientContent",
+  "contextUpdate",
+  "realtimeInput",
+  "setup",
+  "toolResponse"
+ ],
+ "LiveClientRealtimeInput": [
+  "activityEnd",
+  "activityStart",
+  "audio",
+  "audioStreamEnd",
+  "mediaChunks",
+  "text",
+  "video"
+ ],
+ "LiveClientSetup": [
+  "avatarConfig",
+  "contextWindowCompression",
+  "explicitVadSignal",
+  "generationConfig",
+  "historyConfig",
+  "inputAudioTranscription",
+  "labels",
+  "model",
+  "outputAudioTranscription",
+  "proactivity",
+  "safetySettings",
+  "sessionResumption",
+  "systemInstruction",
+  "tools"
+ ],
+ "LiveClientToolResponse": [
+  "functionResponses"
+ ],
+ "LiveConnectConfig": [
+  "avatarConfig",
+  "contextWindowCompression",
+  "enableAffectiveDialog",
+  "explicitVadSignal",
+  "generationConfig",
+  "historyConfig",
+  "httpOptions",
+  "inputAudioTranscription",
+  "labels",
+  "maxOutputTokens",
+  "mediaResolution",
+  "outputAudioTranscription",
+  "proactivity",
+  "realtimeInputConfig",
+  "responseModalities",
+  "safetySettings",
+  "seed",
+  "sessionResumption",
+  "speechConfig",
+  "systemInstruction",
+  "temperature",
+  "thinkingConfig",
+  "tools",
+  "topK",
+  "topP",
+  "translationConfig"
+ ],
+ "LiveConnectConstraints": [
+  "config",
+  "model"
+ ],
+ "LiveConnectParameters": [
+  "config",
+  "model"
+ ],
+ "LiveMusicClientContent": [
+  "weightedPrompts"
+ ],
+ "LiveMusicClientMessage": [
+  "clientContent",
+  "musicGenerationConfig",
+  "playbackControl",
+  "setup"
+ ],
+ "LiveMusicClientSetup": [
+  "model"
+ ],
+ "LiveMusicConnectParameters": [
+  "model"
+ ],
+ "LiveMusicFilteredPrompt": [
+  "filteredReason",
+  "text"
+ ],
+ "LiveMusicGenerationConfig": [
+  "bpm",
+  "brightness",
+  "density",
+  "guidance",
+  "musicGenerationMode",
+  "muteBass",
+  "muteDrums",
+  "onlyBassAndDrums",
+  "scale",
+  "seed",
+  "temperature",
+  "topK"
+ ],
+ "LiveMusicServerContent": [
+  "audioChunks"
+ ],
+ "LiveMusicServerMessage": [
+  "filteredPrompt",
+  "serverContent",
+  "setupComplete"
+ ],
+ "LiveMusicServerSetupComplete": [],
+ "LiveMusicSetConfigParameters": [
+  "musicGenerationConfig"
+ ],
+ "LiveMusicSetWeightedPromptsParameters": [
+  "weightedPrompts"
+ ],
+ "LiveMusicSourceMetadata": [
+  "clientContent",
+  "musicGenerationConfig"
+ ],
+ "LiveSendRealtimeInputParameters": [
+  "activityEnd",
+  "activityStart",
+  "audio",
+  "audioStreamEnd",
+  "media",
+  "text",
+  "video"
+ ],
+ "LiveServerContent": [
+  "generationComplete",
+  "groundingMetadata",
+  "inputTranscription",
+  "interactionStatus",
+  "interimInputTranscription",
+  "interrupted",
+  "modelTurn",
+  "outputTranscription",
+  "turnComplete",
+  "turnCompleteReason",
+  "urlContextMetadata",
+  "waitingForInput"
+ ],
+ "LiveServerGoAway": [
+  "timeLeft"
+ ],
+ "LiveServerMessage": [
+  "goAway",
+  "serverContent",
+  "sessionResumptionUpdate",
+  "setupComplete",
+  "toolCall",
+  "toolCallCancellation",
+  "usageMetadata",
+  "voiceActivity",
+  "voiceActivityDetectionSignal"
+ ],
+ "LiveServerSessionResumptionUpdate": [
+  "lastConsumedClientMessageIndex",
+  "newHandle",
+  "resumable"
+ ],
+ "LiveServerSetupComplete": [
+  "sessionId",
+  "voiceConsentSignature"
+ ],
+ "LiveServerToolCall": [
+  "functionCalls"
+ ],
+ "LiveServerToolCallCancellation": [
+  "ids"
+ ],
+ "LogprobsResult": [
+  "chosenCandidates",
+  "logProbabilitySum",
+  "topCandidates"
+ ],
+ "LogprobsResultCandidate": [
+  "logProbability",
+  "token",
+  "tokenId"
+ ],
+ "LogprobsResultTopCandidates": [
+  "candidates"
+ ],
+ "MaskReferenceConfig": [
+  "maskDilation",
+  "maskMode",
+  "segmentationClasses"
+ ],
+ "MaskReferenceImage": [
+  "config",
+  "maskImageConfig",
+  "referenceId",
+  "referenceImage",
+  "referenceType"
+ ],
+ "McpServer": [
+  "name",
+  "streamableHttpTransport"
+ ],
+ "Metric": [
+  "aggregateSummaryFn",
+  "customFunction",
+  "judgeModelSystemInstruction",
+  "name",
+  "parseAndReduceFn",
+  "promptTemplate",
+  "returnRawOutput"
+ ],
+ "ModalityTokenCount": [
+  "modality",
+  "tokenCount"
+ ],
+ "Model": [
+  "checkpoints",
+  "defaultCheckpointId",
+  "description",
+  "displayName",
+  "endpoints",
+  "inputTokenLimit",
+  "labels",
+  "maxTemperature",
+  "name",
+  "outputTokenLimit",
+  "supportedActions",
+  "temperature",
+  "thinking",
+  "topK",
+  "topP",
+  "tunedModelInfo",
+  "version"
+ ],
+ "ModelArmorConfig": [
+  "promptTemplateName",
+  "responseTemplateName"
+ ],
+ "ModelSelectionConfig": [
+  "featureSelectionPreference"
+ ],
+ "ModelStatus": [
+  "message",
+  "modelStage",
+  "retirementTime"
+ ],
+ "MultiSpeakerVoiceConfig": [
+  "speakerVoiceConfigs"
+ ],
+ "OutputConfig": [
+  "gcsDestination"
+ ],
+ "OutputInfo": [
+  "gcsOutputDirectory"
+ ],
+ "PairwiseMetricResult": [
+  "customOutput",
+  "explanation",
+  "pairwiseChoice"
+ ],
+ "PairwiseMetricSpec": [
+  "baselineResponseFieldName",
+  "candidateResponseFieldName",
+  "customOutputFormatConfig",
+  "metricPromptTemplate",
+  "systemInstruction"
+ ],
+ "Part": [
+  "audioTranscription",
+  "codeExecutionResult",
+  "executableCode",
+  "fileData",
+  "functionCall",
+  "functionResponse",
+  "inlineData",
+  "mediaProcessing",
+  "mediaResolution",
+  "partMetadata",
+  "speechMetadata",
+  "text",
+  "thought",
+  "thoughtSignature",
+  "toolCall",
+  "toolResponse",
+  "videoMetadata"
+ ],
+ "PartMediaResolution": [
+  "level",
+  "numTokens"
+ ],
+ "PartialArg": [
+  "boolValue",
+  "jsonPath",
+  "nullValue",
+  "numberValue",
+  "stringValue",
+  "willContinue"
+ ],
+ "PartnerModelTuningSpec": [
+  "hyperParameters",
+  "trainingDatasetUri",
+  "validationDatasetUri"
+ ],
+ "PointwiseMetricResult": [
+  "customOutput",
+  "explanation",
+  "score"
+ ],
+ "PointwiseMetricSpec": [
+  "customOutputFormatConfig",
+  "metricPromptTemplate",
+  "systemInstruction"
+ ],
+ "PreTunedModel": [
+  "baseModel",
+  "checkpointId",
+  "tunedModelName"
+ ],
+ "PrebuiltVoiceConfig": [
+  "voiceName"
+ ],
+ "PredefinedMetricSpec": [
+  "metricSpecName",
+  "metricSpecParameters",
+  "stepAutoraterConfigs"
+ ],
+ "PreferenceOptimizationDataStats": [
+  "droppedExampleIndices",
+  "droppedExampleReasons",
+  "scoreVariancePerExampleDistribution",
+  "scoresDistribution",
+  "totalBillableTokenCount",
+  "tuningDatasetExampleCount",
+  "tuningStepCount",
+  "userDatasetExamples",
+  "userInputTokenDistribution",
+  "userOutputTokenDistribution"
+ ],
+ "PreferenceOptimizationHyperParameters": [
+  "adapterSize",
+  "beta",
+  "epochCount",
+  "learningRateMultiplier"
+ ],
+ "PreferenceOptimizationSpec": [
+  "exportLastCheckpointOnly",
+  "hyperParameters",
+  "trainingDatasetUri",
+  "validationDatasetUri"
+ ],
+ "ProactivityConfig": [
+  "proactiveAudio",
+  "proactiveVideo"
+ ],
+ "ProductImage": [
+  "productImage"
+ ],
+ "ProjectOperation": [
+  "done",
+  "error",
+  "metadata",
+  "name"
+ ],
+ "RagChunk": [
+  "chunkId",
+  "fileId",
+  "pageSpan",
+  "text"
+ ],
+ "RagChunkPageSpan": [
+  "firstPage",
+  "lastPage"
+ ],
+ "RagRetrievalConfig": [
+  "filter",
+  "hybridSearch",
+  "ranking",
+  "topK"
+ ],
+ "RagRetrievalConfigFilter": [
+  "metadataFilter",
+  "vectorDistanceThreshold",
+  "vectorSimilarityThreshold"
+ ],
+ "RagRetrievalConfigHybridSearch": [
+  "alpha"
+ ],
+ "RagRetrievalConfigRanking": [
+  "llmRanker",
+  "rankService"
+ ],
+ "RagRetrievalConfigRankingLlmRanker": [
+  "modelName"
+ ],
+ "RagRetrievalConfigRankingRankService": [
+  "modelName"
+ ],
+ "RawOutput": [
+  "rawOutput"
+ ],
+ "RawReferenceImage": [
+  "referenceId",
+  "referenceImage",
+  "referenceType"
+ ],
+ "RealtimeInputConfig": [
+  "activityHandling",
+  "automaticActivityDetection",
+  "interimTranscriptTimestampEnabled",
+  "turnCoverage"
+ ],
+ "RecontextImageConfig": [
+  "addWatermark",
+  "baseSteps",
+  "enhancePrompt",
+  "httpOptions",
+  "labels",
+  "numberOfImages",
+  "outputCompressionQuality",
+  "outputGcsUri",
+  "outputMimeType",
+  "personGeneration",
+  "safetyFilterLevel",
+  "seed"
+ ],
+ "RecontextImageResponse": [
+  "generatedImages"
+ ],
+ "RecontextImageSource": [
+  "personImage",
+  "productImages",
+  "prompt"
+ ],
+ "RegisterFilesConfig": [
+  "httpOptions",
+  "shouldReturnHttpResponse"
+ ],
+ "RegisterFilesResponse": [
+  "files",
+  "sdkHttpResponse"
+ ],
+ "ReinforcementTuningAutoraterScorer": [
+  "autoraterConfig",
+  "autoraterPrompt",
+  "autoraterResponseParseConfig",
+  "exactMatchScorer",
+  "parsedResponseConversionScorer"
+ ],
+ "ReinforcementTuningAutoraterScorerExactMatchScorer": [
+  "correctAnswerReward",
+  "expression",
+  "wrongAnswerReward"
+ ],
+ "ReinforcementTuningAutoraterScorerParsedResponseConversionScorer": [],
+ "ReinforcementTuningCloudRunRewardScorer": [
+  "cloudRunUri"
+ ],
+ "ReinforcementTuningCodeExecutionRewardScorer": [
+  "pythonCodeSnippet"
+ ],
+ "ReinforcementTuningExample": [
+  "contents",
+  "references",
+  "systemInstruction",
+  "tools"
+ ],
+ "ReinforcementTuningHyperParameters": [
+  "adapterSize",
+  "batchSize",
+  "checkpointInterval",
+  "epochCount",
+  "evaluateInterval",
+  "learningRateMultiplier",
+  "maxOutputTokens",
+  "samplesPerPrompt",
+  "stepCount",
+  "thinkingBudget",
+  "thinkingLevel"
+ ],
+ "ReinforcementTuningParseResponseConfig": [
+  "parseType",
+  "regexExtractExpression"
+ ],
+ "ReinforcementTuningRewardInfo": [
+  "errorStatus",
+  "reward",
+  "userRequestedAuxInfo"
+ ],
+ "ReinforcementTuningSpec": [
+  "compositeRewardConfig",
+  "hyperParameters",
+  "singleRewardConfig",
+  "trainingDatasetUri",
+  "validationDatasetUri"
+ ],
+ "ReinforcementTuningStringMatchRewardScorer": [
+  "correctAnswerReward",
+  "jsonMatchExpression",
+  "stringMatchExpression",
+  "wrongAnswerReward"
+ ],
+ "ReinforcementTuningStringMatchRewardScorerJsonMatchExpression": [
+  "keyName",
+  "valueStringMatchExpression"
+ ],
+ "ReinforcementTuningStringMatchRewardScorerStringMatchExpression": [
+  "expression",
+  "matchOperation"
+ ],
+ "ReinforcementTuningUserDatasetExamples": [
+  "userDatasetExamples"
+ ],
+ "ReplayFile": [
+  "interactions",
+  "replayId"
+ ],
+ "ReplayInteraction": [
+  "request",
+  "response"
+ ],
+ "ReplayRequest": [
+  "bodySegments",
+  "headers",
+  "method",
+  "url"
+ ],
+ "ReplayResponse": [
+  "bodySegments",
+  "headers",
+  "sdkResponseSegments",
+  "statusCode"
+ ],
+ "ReplicatedVoiceConfig": [
+  "consentAudio",
+  "mimeType",
+  "voiceConsentSignature",
+  "voiceSampleAudio"
+ ],
+ "ResponseFormat": [
+  "audio",
+  "image",
+  "text",
+  "video"
+ ],
+ "Retrieval": [
+  "disableAttribution",
+  "externalApi",
+  "vertexAiSearch",
+  "vertexRagStore"
+ ],
+ "RetrievalConfig": [
+  "languageCode",
+  "latLng"
+ ],
+ "RetrievalMetadata": [
+  "googleSearchDynamicRetrievalScore"
+ ],
+ "RougeMetricValue": [
+  "score"
+ ],
+ "RougeSpec": [
+  "rougeType",
+  "splitSummaries",
+  "useStemmer"
+ ],
+ "RubricGenerationSpec": [
+  "promptTemplate",
+  "rubricContentType",
+  "rubricTypeOntology"
+ ],
+ "SafetyAttributes": [
+  "categories",
+  "contentType",
+  "scores"
+ ],
+ "SafetyRating": [
+  "blocked",
+  "category",
+  "overwrittenThreshold",
+  "probability",
+  "probabilityScore",
+  "severity",
+  "severityScore"
+ ],
+ "SafetySetting": [
+  "category",
+  "method",
+  "threshold"
+ ],
+ "Schema": [
+  "additionalProperties",
+  "anyOf",
+  "default",
+  "defs",
+  "description",
+  "enum",
+  "example",
+  "format",
+  "items",
+  "maxItems",
+  "maxLength",
+  "maxProperties",
+  "maximum",
+  "minItems",
+  "minLength",
+  "minProperties",
+  "minimum",
+  "nullable",
+  "pattern",
+  "properties",
+  "propertyOrdering",
+  "ref",
+  "required",
+  "title",
+  "type"
+ ],
+ "ScribbleImage": [
+  "image"
+ ],
+ "SearchEntryPoint": [
+  "renderedContent",
+  "sdkBlob"
+ ],
+ "SearchTypes": [
+  "imageSearch",
+  "webSearch"
+ ],
+ "Segment": [
+  "endIndex",
+  "partIndex",
+  "startIndex",
+  "text"
+ ],
+ "SegmentImageConfig": [
+  "binaryColorThreshold",
+  "confidenceThreshold",
+  "httpOptions",
+  "labels",
+  "maskDilation",
+  "maxPredictions",
+  "mode"
+ ],
+ "SegmentImageResponse": [
+  "generatedMasks"
+ ],
+ "SegmentImageSource": [
+  "image",
+  "prompt",
+  "scribbleImage"
+ ],
+ "SessionResumptionConfig": [
+  "handle",
+  "transparent"
+ ],
+ "SingleEmbedContentResponse": [
+  "embedding",
+  "tokenCount"
+ ],
+ "SingleReinforcementTuningRewardConfig": [
+  "autoraterScorer",
+  "cloudRunRewardScorer",
+  "codeExecutionRewardScorer",
+  "parseResponseConfig",
+  "rewardName",
+  "stringMatchRewardScorer"
+ ],
+ "SlidingWindow": [
+  "targetTokens"
+ ],
+ "SpeakerVoiceConfig": [
+  "speaker",
+  "voiceConfig"
+ ],
+ "SpeechConfig": [
+  "languageCode",
+  "multiSpeakerVoiceConfig",
+  "voiceConfig"
+ ],
+ "SpeechMetadata": [
+  "speaker",
+  "style"
+ ],
+ "StreamableHttpTransport": [
+  "headers",
+  "sseReadTimeout",
+  "terminateOnClose",
+  "timeout",
+  "url"
+ ],
+ "StringList": [
+  "values"
+ ],
+ "StyleReferenceConfig": [
+  "styleDescription"
+ ],
+ "StyleReferenceImage": [
+  "config",
+  "referenceId",
+  "referenceImage",
+  "referenceType",
+  "styleImageConfig"
+ ],
+ "SubjectReferenceConfig": [
+  "subjectDescription",
+  "subjectType"
+ ],
+ "SubjectReferenceImage": [
+  "config",
+  "referenceId",
+  "referenceImage",
+  "referenceType",
+  "subjectImageConfig"
+ ],
+ "SupervisedHyperParameters": [
+  "adapterSize",
+  "batchSize",
+  "epochCount",
+  "learningRate",
+  "learningRateMultiplier"
+ ],
+ "SupervisedTuningDataStats": [
+  "droppedExampleReasons",
+  "totalBillableCharacterCount",
+  "totalBillableTokenCount",
+  "totalTruncatedExampleCount",
+  "totalTuningCharacterCount",
+  "truncatedExampleIndices",
+  "tuningDatasetExampleCount",
+  "tuningStepCount",
+  "userDatasetExamples",
+  "userInputTokenDistribution",
+  "userMessagePerExampleDistribution",
+  "userOutputTokenDistribution"
+ ],
+ "SupervisedTuningDatasetDistribution": [
+  "billableSum",
+  "buckets",
+  "max",
+  "mean",
+  "median",
+  "min",
+  "p5",
+  "p95",
+  "sum"
+ ],
+ "SupervisedTuningDatasetDistributionDatasetBucket": [
+  "count",
+  "left",
+  "right"
+ ],
+ "SupervisedTuningSpec": [
+  "exportLastCheckpointOnly",
+  "hyperParameters",
+  "trainingDatasetUri",
+  "tuningMode",
+  "validationDatasetUri"
+ ],
+ "TestTableFile": [
+  "comment",
+  "parameterNames",
+  "testMethod",
+  "testTable"
+ ],
+ "TestTableItem": [
+  "exceptionIfMldev",
+  "exceptionIfVertex",
+  "hasUnion",
+  "ignoreKeys",
+  "name",
+  "overrideReplayId",
+  "parameters",
+  "skipInApiMode"
+ ],
+ "TextResponseFormat": [
+  "jsonSchema",
+  "mimeType"
+ ],
+ "ThinkingConfig": [
+  "includeThoughts",
+  "thinkingBudget",
+  "thinkingLevel"
+ ],
+ "TokensInfo": [
+  "role",
+  "tokenIds",
+  "tokens"
+ ],
+ "Tool": [
+  "codeExecution",
+  "computerUse",
+  "enterpriseWebSearch",
+  "exaAiSearch",
+  "fileSearch",
+  "functionDeclarations",
+  "googleMaps",
+  "googleSearch",
+  "googleSearchRetrieval",
+  "mcpServers",
+  "parallelAiSearch",
+  "retrieval",
+  "urlContext"
+ ],
+ "ToolCall": [
+  "args",
+  "id",
+  "toolType"
+ ],
+ "ToolCodeExecution": [],
+ "ToolConfig": [
+  "functionCallingConfig",
+  "includeServerSideToolInvocations",
+  "retrievalConfig"
+ ],
+ "ToolExaAiSearch": [
+  "apiKey",
+  "customConfigs"
+ ],
+ "ToolParallelAiSearch": [
+  "apiKey",
+  "customConfigs",
+  "enableDataRetention",
+  "enableZeroDataRetention"
+ ],
+ "ToolResponse": [
+  "id",
+  "response",
+  "toolType"
+ ],
+ "Transcription": [
+  "endOffset",
+  "finished",
+  "languageCode",
+  "speakerLabel",
+  "startOffset",
+  "text",
+  "words"
+ ],
+ "TranslationConfig": [
+  "echoTargetLanguage",
+  "targetLanguageCode"
+ ],
+ "TunedModel": [
+  "checkpoints",
+  "endpoint",
+  "model"
+ ],
+ "TunedModelCheckpoint": [
+  "checkpointId",
+  "endpoint",
+  "epoch",
+  "step"
+ ],
+ "TunedModelInfo": [
+  "baseModel",
+  "createTime",
+  "updateTime"
+ ],
+ "TuningDataStats": [
+  "distillationDataStats",
+  "preferenceOptimizationDataStats",
+  "reinforcementTuningDataStats",
+  "supervisedTuningDataStats"
+ ],
+ "TuningDataset": [
+  "examples",
+  "gcsUri",
+  "vertexDatasetResource"
+ ],
+ "TuningExample": [
+  "output",
+  "textInput"
+ ],
+ "TuningJob": [
+  "baseModel",
+  "createTime",
+  "customBaseModel",
+  "description",
+  "distillationSamplingSpec",
+  "distillationSpec",
+  "encryptionSpec",
+  "endTime",
+  "error",
+  "evaluateDatasetRuns",
+  "evaluationConfig",
+  "experiment",
+  "fullFineTuningSpec",
+  "gcsMetricsUri",
+  "labels",
+  "name",
+  "outputUri",
+  "partnerModelTuningSpec",
+  "pipelineJob",
+  "preTunedModel",
+  "preferenceOptimizationSpec",
+  "reinforcementTuningSpec",
+  "sdkHttpResponse",
+  "serviceAccount",
+  "startTime",
+  "state",
+  "supervisedTuningSpec",
+  "tunedModel",
+  "tunedModelDisplayName",
+  "tuningDataStats",
+  "tuningJobMetadata",
+  "tuningJobState",
+  "updateTime",
+  "veoLoraTuningSpec",
+  "veoTuningSpec"
+ ],
+ "TuningJobMetadata": [
+  "completedEpochCount",
+  "completedStepCount"
+ ],
+ "TuningOperation": [
+  "done",
+  "error",
+  "metadata",
+  "name",
+  "sdkHttpResponse"
+ ],
+ "TuningValidationDataset": [
+  "gcsUri",
+  "vertexDatasetResource"
+ ],
+ "UnifiedMetric": [
+  "bleuSpec",
+  "computationBasedMetricSpec",
+  "customCodeExecutionSpec",
+  "llmBasedMetricSpec",
+  "pointwiseMetricSpec",
+  "predefinedMetricSpec",
+  "rougeSpec"
+ ],
+ "UpdateCachedContentConfig": [
+  "expireTime",
+  "httpOptions",
+  "ttl"
+ ],
+ "UpdateModelConfig": [
+  "defaultCheckpointId",
+  "description",
+  "displayName",
+  "httpOptions"
+ ],
+ "UploadFileConfig": [
+  "displayName",
+  "httpOptions",
+  "mimeType",
+  "name"
+ ],
+ "UploadToFileSearchStoreConfig": [
+  "chunkingConfig",
+  "customMetadata",
+  "displayName",
+  "httpOptions",
+  "mimeType",
+  "shouldReturnHttpResponse"
+ ],
+ "UploadToFileSearchStoreOperation": [
+  "response"
+ ],
+ "UploadToFileSearchStoreResponse": [
+  "documentName",
+  "parent",
+  "sdkHttpResponse"
+ ],
+ "UploadToFileSearchStoreResumableResponse": [
+  "sdkHttpResponse"
+ ],
+ "UpscaleImageConfig": [
+  "enhanceInputImage",
+  "httpOptions",
+  "imagePreservationFactor",
+  "includeRaiReason",
+  "labels",
+  "outputCompressionQuality",
+  "outputGcsUri",
+  "outputMimeType",
+  "personGeneration",
+  "safetyFilterLevel"
+ ],
+ "UpscaleImageParameters": [
+  "config",
+  "image",
+  "model",
+  "upscaleFactor"
+ ],
+ "UpscaleImageResponse": [
+  "generatedImages",
+  "sdkHttpResponse"
+ ],
+ "UrlContext": [],
+ "UrlContextMetadata": [
+  "urlMetadata"
+ ],
+ "UrlMetadata": [
+  "retrievedUrl",
+  "urlRetrievalStatus"
+ ],
+ "UsageMetadata": [
+  "cacheTokensDetails",
+  "cachedContentTokenCount",
+  "promptTokenCount",
+  "promptTokensDetails",
+  "responseTokenCount",
+  "responseTokensDetails",
+  "serviceTier",
+  "thoughtsTokenCount",
+  "toolUsePromptTokenCount",
+  "toolUsePromptTokensDetails",
+  "totalTokenCount",
+  "trafficType"
+ ],
+ "ValidateRewardConfig": [
+  "httpOptions"
+ ],
+ "ValidateRewardResponse": [
+  "error",
+  "overallReward",
+  "rewardInfoDetails",
+  "sdkHttpResponse"
+ ],
+ "VeoHyperParameters": [
+  "adapterSize",
+  "epochCount",
+  "learningRateMultiplier",
+  "tuningSpeed",
+  "tuningTask",
+  "veoDataMixtureRatio"
+ ],
+ "VeoLoraTuningSpec": [
+  "hyperParameters",
+  "trainingDatasetUri",
+  "validationDatasetUri",
+  "videoOrientation"
+ ],
+ "VeoTuningSpec": [
+  "hyperParameters",
+  "trainingDatasetUri",
+  "validationDatasetUri"
+ ],
+ "VertexAISearch": [
+  "dataStoreSpecs",
+  "datastore",
+  "engine",
+  "filter",
+  "maxResults"
+ ],
+ "VertexAISearchDataStoreSpec": [
+  "dataStore",
+  "filter"
+ ],
+ "VertexMultimodalDatasetDestination": [
+  "bigqueryDestination",
+  "displayName"
+ ],
+ "VertexRagStore": [
+  "ragCorpora",
+  "ragResources",
+  "ragRetrievalConfig",
+  "similarityTopK",
+  "storeContext",
+  "vectorDistanceThreshold"
+ ],
+ "VertexRagStoreRagResource": [
+  "ragCorpus",
+  "ragFileIds"
+ ],
+ "Video": [
+  "mimeType",
+  "uri",
+  "videoBytes"
+ ],
+ "VideoGenerationMask": [
+  "image",
+  "maskMode"
+ ],
+ "VideoGenerationReferenceImage": [
+  "image",
+  "referenceType"
+ ],
+ "VideoMetadata": [
+  "endOffset",
+  "fps",
+  "startOffset"
+ ],
+ "VideoResponseFormat": [
+  "aspectRatio",
+  "delivery",
+  "duration",
+  "gcsUri",
+  "resolution"
+ ],
+ "VoiceActivity": [
+  "audioOffset",
+  "voiceActivityType"
+ ],
+ "VoiceActivityDetectionSignal": [
+  "vadSignalType"
+ ],
+ "VoiceConfig": [
+  "prebuiltVoiceConfig",
+  "replicatedVoiceConfig",
+  "voice"
+ ],
+ "VoiceConsentSignature": [
+  "signature"
+ ],
+ "WebSearch": [],
+ "WebhookConfig": [
+  "uris",
+  "userMetadata"
+ ],
+ "WeightedPrompt": [
+  "text",
+  "weight"
+ ],
+ "WhiteSpaceConfig": [
+  "maxOverlapTokens",
+  "maxTokensPerChunk"
+ ],
+ "WordInfo": [
+  "endOffset",
+  "startOffset",
+  "word"
+ ],
+ "_CancelBatchJobParameters": [
+  "config",
+  "name"
+ ],
+ "_CancelTuningJobParameters": [
+  "config",
+  "name"
+ ],
+ "_ComputeTokensParameters": [
+  "config",
+  "contents",
+  "model"
+ ],
+ "_CountTokensParameters": [
+  "config",
+  "contents",
+  "model"
+ ],
+ "_CreateBatchJobParameters": [
+  "config",
+  "model",
+  "src"
+ ],
+ "_CreateCachedContentParameters": [
+  "config",
+  "model"
+ ],
+ "_CreateEmbeddingsBatchJobParameters": [
+  "config",
+  "model",
+  "src"
+ ],
+ "_CreateFileParameters": [
+  "config",
+  "file"
+ ],
+ "_CreateFileSearchStoreParameters": [
+  "config"
+ ],
+ "_CreateTuningJobParametersPrivate": [
+  "baseModel",
+  "config",
+  "preTunedModel",
+  "trainingDataset"
+ ],
+ "_DeleteBatchJobParameters": [
+  "config",
+  "name"
+ ],
+ "_DeleteCachedContentParameters": [
+  "config",
+  "name"
+ ],
+ "_DeleteDocumentParameters": [
+  "config",
+  "name"
+ ],
+ "_DeleteFileParameters": [
+  "config",
+  "name"
+ ],
+ "_DeleteFileSearchStoreParameters": [
+  "config",
+  "name"
+ ],
+ "_DeleteModelParameters": [
+  "config",
+  "model"
+ ],
+ "_EditImageParameters": [
+  "config",
+  "model",
+  "prompt",
+  "referenceImages"
+ ],
+ "_EmbedContentParametersPrivate": [
+  "config",
+  "content",
+  "contents",
+  "embeddingApiType",
+  "model"
+ ],
+ "_FetchPredictOperationParameters": [
+  "config",
+  "operationName",
+  "resourceName"
+ ],
+ "_GenerateContentParameters": [
+  "config",
+  "contents",
+  "model"
+ ],
+ "_GenerateImagesParameters": [
+  "config",
+  "model",
+  "prompt"
+ ],
+ "_GenerateVideosParameters": [
+  "config",
+  "image",
+  "model",
+  "prompt",
+  "source",
+  "video"
+ ],
+ "_GetBatchJobParameters": [
+  "config",
+  "name"
+ ],
+ "_GetCachedContentParameters": [
+  "config",
+  "name"
+ ],
+ "_GetDocumentParameters": [
+  "config",
+  "name"
+ ],
+ "_GetFileParameters": [
+  "config",
+  "name"
+ ],
+ "_GetFileSearchStoreParameters": [
+  "config",
+  "name"
+ ],
+ "_GetModelParameters": [
+  "config",
+  "model"
+ ],
+ "_GetOperationParameters": [
+  "config",
+  "operationName"
+ ],
+ "_GetProjectOperationParameters": [
+  "config",
+  "operationId"
+ ],
+ "_GetTuningJobParameters": [
+  "config",
+  "name"
+ ],
+ "_ImportFileParameters": [
+  "config",
+  "fileName",
+  "fileSearchStoreName"
+ ],
+ "_InternalRegisterFilesParameters": [
+  "config",
+  "uris"
+ ],
+ "_ListBatchJobsParameters": [
+  "config"
+ ],
+ "_ListCachedContentsParameters": [
+  "config"
+ ],
+ "_ListDocumentsParameters": [
+  "config",
+  "parent"
+ ],
+ "_ListFileSearchStoresParameters": [
+  "config"
+ ],
+ "_ListFilesParameters": [
+  "config"
+ ],
+ "_ListModelsParameters": [
+  "config"
+ ],
+ "_ListTuningJobsParameters": [
+  "config"
+ ],
+ "_RecontextImageParameters": [
+  "config",
+  "model",
+  "source"
+ ],
+ "_ReferenceImageAPI": [
+  "controlImageConfig",
+  "maskImageConfig",
+  "referenceId",
+  "referenceImage",
+  "referenceType",
+  "styleImageConfig",
+  "subjectImageConfig"
+ ],
+ "_SegmentImageParameters": [
+  "config",
+  "model",
+  "source"
+ ],
+ "_UpdateCachedContentParameters": [
+  "config",
+  "name"
+ ],
+ "_UpdateModelParameters": [
+  "config",
+  "model"
+ ],
+ "_UploadToFileSearchStoreParameters": [
+  "config",
+  "fileSearchStoreName"
+ ],
+ "_UpscaleImageAPIConfig": [
+  "enhanceInputImage",
+  "httpOptions",
+  "imagePreservationFactor",
+  "includeRaiReason",
+  "labels",
+  "mode",
+  "numberOfImages",
+  "outputCompressionQuality",
+  "outputGcsUri",
+  "outputMimeType",
+  "personGeneration",
+  "safetyFilterLevel"
+ ],
+ "_UpscaleImageAPIParameters": [
+  "config",
+  "image",
+  "model",
+  "upscaleFactor"
+ ],
+ "_ValidateRewardParameters": [
+  "compositeRewardConfig",
+  "config",
+  "example",
+  "parent",
+  "sampleResponse",
+  "singleRewardConfig"
+ ]
+}

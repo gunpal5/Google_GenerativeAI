@@ -88,4 +88,10 @@ public class UsageMetadata
     /// </summary>
     [JsonPropertyName("trafficType")]
     public TrafficType? TrafficType { get; set; }
+
+    /// <summary>
+    /// Output only. The service tier used for the request. This field is not supported in Vertex AI.
+    /// </summary>
+    [JsonPropertyName("serviceTier")]
+    public string? ServiceTier { get; set; }
 }

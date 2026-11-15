@@ -39,4 +39,23 @@ public class Document
     /// </summary>
     [JsonPropertyName("createTime")]
     public Timestamp? CreateTime { get; set; }
+
+    /// <summary>
+    /// Output only. The MIME type of the document.
+    /// </summary>
+    [JsonPropertyName("mimeType")]
+    public string? MimeType { get; set; }
+
+    /// <summary>
+    /// Output only. The total size in bytes of the raw data ingested into the document.
+    /// </summary>
+    [JsonPropertyName("sizeBytes")]
+    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
+    public long? SizeBytes { get; set; }
+
+    /// <summary>
+    /// Output only. The current processing state of the document.
+    /// </summary>
+    [JsonPropertyName("state")]
+    public DocumentState? State { get; set; }
 }

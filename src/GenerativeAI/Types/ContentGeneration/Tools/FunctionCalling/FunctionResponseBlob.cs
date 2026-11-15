@@ -20,4 +20,11 @@ public class FunctionResponseBlob
     /// </summary>
     [JsonPropertyName("data")]
     public string? Data { get; set; }
+
+    /// <summary>
+    /// Optional. A display name for the blob, used as a label or filename. It is returned for prompt management and
+    /// in some server-side tool calls.
+    /// </summary>
+    [JsonPropertyName("displayName")]
+    public string? DisplayName { get; set; }
 }

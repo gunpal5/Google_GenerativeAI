@@ -19,4 +19,11 @@ public class LogprobsResult
     /// </summary>
     [JsonPropertyName("chosenCandidates")]
     public List<LogprobsCandidate>? ChosenCandidates { get; set; }
+
+    /// <summary>
+    /// The sum of log probabilities for all tokens. This field is not supported in Vertex AI.
+    /// </summary>
+    [JsonPropertyName("logProbabilitySum")]
+    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
+    public double? LogProbabilitySum { get; set; }
 }

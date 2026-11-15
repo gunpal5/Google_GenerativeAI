@@ -18,4 +18,10 @@ public class InlinedResponse
     /// </summary>
     [JsonPropertyName("error")]
     public JobError? Error { get; set; }
+
+    /// <summary>
+    /// Metadata to associate with the request.
+    /// </summary>
+    [JsonPropertyName("metadata")]
+    public Dictionary<string, string>? Metadata { get; set; }
 }

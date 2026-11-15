@@ -40,4 +40,11 @@ public class BatchJobSource
     /// </summary>
     [JsonPropertyName("inlinedRequests")]
     public List<InlinedRequest>? InlinedRequests { get; set; }
+
+    /// <summary>
+    /// The resource name of a Vertex AI multimodal dataset to use as batch input. The dataset must be of the
+    /// multimodal type. This is experimental and may change in future versions.
+    /// </summary>
+    [JsonPropertyName("vertexDatasetName")]
+    public string? VertexDatasetName { get; set; }
 }

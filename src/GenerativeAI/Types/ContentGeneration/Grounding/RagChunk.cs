@@ -18,4 +18,16 @@ public class RagChunk
     /// </summary>
     [JsonPropertyName("text")]
     public string? Text { get; set; }
+
+    /// <summary>
+    /// The identifier of the chunk.
+    /// </summary>
+    [JsonPropertyName("chunkId")]
+    public string? ChunkId { get; set; }
+
+    /// <summary>
+    /// The identifier of the file that the chunk belongs to.
+    /// </summary>
+    [JsonPropertyName("fileId")]
+    public string? FileId { get; set; }
 }

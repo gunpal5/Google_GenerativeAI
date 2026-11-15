@@ -42,4 +42,11 @@ public class AuthConfig
     /// </summary>
     [JsonPropertyName("oidcConfig")]
     public AuthConfigOidcConfig? OidcConfig { get; set; }
+
+    /// <summary>
+    /// The API key used to authenticate requests. Only API key authentication is supported. This field is not
+    /// supported in the Gemini API.
+    /// </summary>
+    [JsonPropertyName("apiKey")]
+    public string? ApiKey { get; set; }
 }
