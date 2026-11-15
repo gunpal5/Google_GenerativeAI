@@ -455,6 +455,7 @@ namespace GenerativeAI.Types;
 [JsonSerializable(typeof(VertexPredictEmbeddingStatistics))]
 [JsonSerializable(typeof(AuthToken))]
 [JsonSerializable(typeof(CreateAuthTokenRequest))]
+[JsonSerializable(typeof(WebhookConfig))]
 
 [JsonSourceGenerationOptions(WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull, UseStringEnumConverter = true)]
 
