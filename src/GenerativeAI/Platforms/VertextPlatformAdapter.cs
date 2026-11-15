@@ -71,17 +71,17 @@ public class VertextPlatformAdapter : IPlatformAdapter
     /// <param name="projectId">The Google Cloud Project ID.</param>
     /// <param name="region">The region for Vertex AI.</param>
     /// <param name="authenticator">The authenticator to be used for authentication.</param>
-    /// <param name="apiVersion">The API version to use. Defaults to v1Beta1.</param>
+    /// <param name="apiVersion">The API version to use. Defaults to GOOGLE_GENAI_API_VERSION if set, otherwise v1beta1.</param>
     /// <param name="validateAccessToken">Boolean flag for validating the access token.</param>
     /// <param name="logger">Optional logger instance for diagnostics.</param>
     public VertextPlatformAdapter(string projectId, string region, IGoogleAuthenticator authenticator,
-        string apiVersion = ApiVersions.v1Beta1,
+        string? apiVersion = null,
         bool validateAccessToken = true,
         ILogger? logger = null)
     {
         this.ProjectId = projectId;
         this.Region = region;
-        this.DefaultApiVersion = apiVersion;
+        this.DefaultApiVersion = EnvironmentVariables.ResolveApiVersion(apiVersion, ApiVersions.v1Beta1, ApiVersions.v1Beta1);
         this.ValidateAccessToken = validateAccessToken;
         if (authenticator == null)
             throw new ArgumentNullException(nameof(authenticator), "Authenticator is required for Vertex AI.");
@@ -96,7 +96,7 @@ public class VertextPlatformAdapter : IPlatformAdapter
     /// <param name="expressMode">Flag to denote if Express Mode should be used.</param>
     /// <param name="apiKey">Optional API key for authentication.</param>
     /// <param name="accessToken">Optional access token for authentication.</param>
-    /// <param name="apiVersion">The API version to use. Defaults to v1Beta1.</param>
+    /// <param name="apiVersion">The API version to use. Defaults to GOOGLE_GENAI_API_VERSION if set, otherwise v1beta1.</param>
     /// <param name="authenticator">Optional authenticator instance for custom token management.</param>
     /// <param name="credentialsFile">Path to the credentials file.</param>
     /// <param name="validateAccessToken">Whether access tokens should be validated before use.</param>
@@ -104,7 +104,7 @@ public class VertextPlatformAdapter : IPlatformAdapter
     public VertextPlatformAdapter(string? projectId = null, string? region = null, bool expressMode = false,
         string? apiKey = null,
         string? accessToken = null,
-        string apiVersion = ApiVersions.v1Beta1,
+        string? apiVersion = null,
         IGoogleAuthenticator? authenticator = null,
         string? credentialsFile = null,
         bool validateAccessToken = true,
@@ -113,7 +113,7 @@ public class VertextPlatformAdapter : IPlatformAdapter
         this.ProjectId = projectId ?? EnvironmentVariables.GOOGLE_PROJECT_ID;
         this.Region = region ?? EnvironmentVariables.GOOGLE_REGION;
         this.ExpressMode = expressMode;
-        this.DefaultApiVersion = apiVersion;
+        this.DefaultApiVersion = EnvironmentVariables.ResolveApiVersion(apiVersion, ApiVersions.v1Beta1, ApiVersions.v1Beta1);
         this.ValidateAccessToken = validateAccessToken;
         this.Authenticator = authenticator;
         accessToken = accessToken ?? EnvironmentVariables.GOOGLE_ACCESS_TOKEN;

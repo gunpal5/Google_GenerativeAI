@@ -52,7 +52,7 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
     /// Represents an adapter to interact with the Google GenAI Platform.
     /// This class is responsible for managing API calls, constructing URLs,
     /// adding authorization headers, and handling versioning for the Google GenAI API.
-    public GoogleAIPlatformAdapter(string? googleApiKey, string apiVersion = ApiVersions.v1Beta,
+    public GoogleAIPlatformAdapter(string? googleApiKey, string? apiVersion = null,
         string? accessToken = null, IGoogleAuthenticator? authenticator = null, bool validateAccessToken = true,
         ILogger? logger = null)
     {
@@ -60,7 +60,7 @@ public class GoogleAIPlatformAdapter : IPlatformAdapter
         if(string.IsNullOrEmpty(googleApiKey))
             throw new ArgumentException("API Key is required for Google Gemini AI.", nameof(googleApiKey));
         Credentials = new GoogleAICredentials(googleApiKey!);
-        this.DefaultApiVersion = apiVersion;
+        this.DefaultApiVersion = EnvironmentVariables.ResolveApiVersion(apiVersion, ApiVersions.v1Beta, ApiVersions.v1Beta);
         this.Authenticator = authenticator;
         if (!string.IsNullOrEmpty(accessToken))
             Credentials.AuthToken = new AuthTokens(accessToken!);
