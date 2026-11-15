@@ -32,13 +32,12 @@ public class InteractionsClient_IntegrationTests : TestBase
         Interaction interaction;
         try
         {
-            interaction = await client.CreateAsync(InteractionModels.Gemini3FlashPreview,
+            interaction = await client.CreateAsync(InteractionModels.Gemini38Flash,
                 "Reply with the single word: pong", ct);
         }
-        catch (HttpRequestException ex) when (ex.Message.Contains("PaymentRequired", StringComparison.Ordinal) ||
-                                              ex.Message.Contains("TooManyRequests", StringComparison.Ordinal))
+        catch (GenerativeAI.Exceptions.ApiException ex) when (ex.ErrorCode is 402 or 429)
         {
-            Assert.Skip($"The API key's project cannot run interactions right now: {ex.Message}");
+            Assert.Skip($"The API key's project cannot run interactions right now: {ex.ErrorMessage}");
             return;
         }
         interaction.Id.ShouldNotBeNullOrEmpty();

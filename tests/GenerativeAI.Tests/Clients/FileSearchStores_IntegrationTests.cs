@@ -21,7 +21,17 @@ public class FileSearchStores_IntegrationTests
         var googleAi = new GoogleAi(ApiKey);
         var client = googleAi.CreateFileSearchStoresClient();
 
-        var store = await client.CreateFileSearchStoreAsync("sdk-integration-test", cancellationToken: ct);
+        FileSearchStore store;
+        try
+        {
+            store = await client.CreateFileSearchStoreAsync("sdk-integration-test", cancellationToken: ct);
+        }
+        catch (GenerativeAI.Exceptions.ApiException ex) when (ex.ErrorCode is 402 or 429)
+        {
+            Assert.Skip($"The API key's project cannot use File Search right now: {ex.ErrorMessage}");
+            return;
+        }
+
         store.Name.ShouldNotBeNullOrEmpty();
         try
         {
