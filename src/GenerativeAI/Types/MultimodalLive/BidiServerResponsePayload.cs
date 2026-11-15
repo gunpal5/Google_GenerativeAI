@@ -48,4 +48,16 @@ public class BidiResponsePayload
     /// </summary>
     [JsonPropertyName("usageMetadata")]
     public UsageMetadata? UsageMetadata { get; set; }
+
+    /// <summary>
+    /// Gets or sets a voice activity detection signal. Allowlisted only.
+    /// </summary>
+    [JsonPropertyName("voiceActivityDetectionSignal")]
+    public VoiceActivityDetectionSignal? VoiceActivityDetectionSignal { get; set; }
+
+    /// <summary>
+    /// Gets or sets a voice activity signal.
+    /// </summary>
+    [JsonPropertyName("voiceActivity")]
+    public VoiceActivity? VoiceActivity { get; set; }
 }

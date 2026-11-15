@@ -73,6 +73,47 @@ public class BidiGenerateContentSetup
     [JsonPropertyName("sessionResumption")]
     public SessionResumptionConfig? SessionResumption { get; set; }
 
+    /// <summary>
+    /// Configures the realtime input behavior, such as automatic activity (voice) detection,
+    /// what effect user activity has and which input is included in the user's turn.
+    /// </summary>
+    [JsonPropertyName("realtimeInputConfig")]
+    public RealtimeInputConfig? RealtimeInputConfig { get; set; }
+
+    /// <summary>
+    /// Configures the exchange of history between the client and the server.
+    /// </summary>
+    [JsonPropertyName("historyConfig")]
+    public HistoryConfig? HistoryConfig { get; set; }
+
+    /// <summary>
+    /// Configures the explicit VAD signal. If enabled, the client will send VAD signals to indicate
+    /// the start and end of speech. This allows the server to process the audio more efficiently.
+    /// Vertex AI only; not supported by the Gemini Developer API.
+    /// </summary>
+    [JsonPropertyName("explicitVadSignal")]
+    public bool? ExplicitVadSignal { get; set; }
+
+    /// <summary>
+    /// Configures the avatar model behavior.
+    /// </summary>
+    [JsonPropertyName("avatarConfig")]
+    public AvatarConfig? AvatarConfig { get; set; }
+
+    /// <summary>
+    /// Safety settings in the request to block unsafe content in the response.
+    /// </summary>
+    [JsonPropertyName("safetySettings")]
+    public List<SafetySetting>? SafetySettings { get; set; }
+
+    /// <summary>
+    /// Optional. Labels with user-defined metadata for the request. Label keys must start with a letter;
+    /// keys and values can be no longer than 63 characters and can only contain lowercase letters, numeric
+    /// characters, underscores, and dashes. Use the key <c>safety_identifier</c> for safety identifiers from aggregators.
+    /// Gemini Developer API only; not supported by Vertex AI.
+    /// </summary>
+    [JsonPropertyName("labels")]
+    public Dictionary<string, string>? Labels { get; set; }
 }
 
 /// <summary>
@@ -127,6 +168,7 @@ public class SessionResumptionConfig
     /// <summary>
     /// If set the server will send last_consumed_client_message_index in the session_resumption_update messages
     /// to allow for transparent reconnections.
+    /// Vertex AI only; not supported by the Gemini Developer API.
     /// </summary>
     [JsonPropertyName("transparent")]
     public bool? Transparent { get; set; }
@@ -140,12 +182,20 @@ public class SessionResumptionConfig
 /// </summary>
 public class ProactivityConfig
 {
-    // Add properties for ProactivityConfig if available
     /// <summary>
-    /// Gets or sets whether proactive audio generation is enabled.
+    /// If enabled, the model can reject responding to the last prompt. For example, this allows the model
+    /// to ignore out of context speech or to stay silent if the user did not make a request, yet.
     /// </summary>
     [JsonPropertyName("proactiveAudio")]
     public bool? ProactiveAudio { get; set; }
+
+    /// <summary>
+    /// If enabled, the system might trigger a generation on each received image. This requires that
+    /// <see cref="ProactiveAudio"/> is enabled. The rate of generation depends on the rate of incoming
+    /// images and can cause a significant increase in cost.
+    /// </summary>
+    [JsonPropertyName("proactiveVideo")]
+    public bool? ProactiveVideo { get; set; }
 }
 
 
@@ -154,5 +204,66 @@ public class ProactivityConfig
 /// </summary>
 public class AudioTranscriptionConfig
 {
+    /// <summary>
+    /// Optional. BCP-47 language codes providing hints about the languages present in the audio.
+    /// If omitted or empty, defaults to automatic language detection.
+    /// </summary>
+    [JsonPropertyName("languageCodes")]
+    public List<string>? LanguageCodes { get; set; }
 
+    /// <summary>
+    /// Deprecated: Auto-detection is now the default when <see cref="LanguageCodes"/> is omitted.
+    /// </summary>
+    [Obsolete("Auto-detection is now the default when LanguageCodes is omitted.")]
+    [JsonPropertyName("languageAuto")]
+    public LanguageAuto? LanguageAuto { get; set; }
+
+    /// <summary>
+    /// Deprecated: Use <see cref="LanguageCodes"/> instead.
+    /// </summary>
+    [Obsolete("Use LanguageCodes instead.")]
+    [JsonPropertyName("languageHints")]
+    public LanguageHints? LanguageHints { get; set; }
+
+    /// <summary>
+    /// A list of custom vocabulary phrases, which biases the ASR model to improve recognition of these specific terms.
+    /// </summary>
+    [JsonPropertyName("customVocabulary")]
+    public List<string>? CustomVocabulary { get; set; }
+
+    /// <summary>
+    /// Deprecated. A list of phrases used for speech adaptation, which biases the ASR model to improve
+    /// recognition of these specific terms. Use <see cref="CustomVocabulary"/> instead.
+    /// </summary>
+    [Obsolete("Use CustomVocabulary instead.")]
+    [JsonPropertyName("adaptationPhrases")]
+    public List<string>? AdaptationPhrases { get; set; }
+
+    /// <summary>
+    /// Configures word-level timestamp generation.
+    /// </summary>
+    [JsonPropertyName("wordTimestamp")]
+    public bool? WordTimestamp { get; set; }
+
+    /// <summary>
+    /// Configures speaker diarization.
+    /// </summary>
+    [JsonPropertyName("diarization")]
+    public bool? Diarization { get; set; }
+
+    /// <summary>
+    /// Optional. Configures transcription mode. If unspecified, defaults to <see cref="AudioTranscriptionConfigMode.VERBATIM"/>.
+    /// In <see cref="AudioTranscriptionConfigMode.SMART"/> mode, the model performs disfluency removal, light grammatical
+    /// cleanup, automatic formatting and minor user edits. Timestamps and diarization are incompatible with SMART mode.
+    /// </summary>
+    [JsonPropertyName("mode")]
+    public AudioTranscriptionConfigMode? Mode { get; set; }
+
+    /// <summary>
+    /// Optional. The source text to be edited or rewritten via voice instructions. When provided in
+    /// <see cref="AudioTranscriptionConfigMode.SMART"/> mode, the model evaluates the audio input against this text
+    /// and emits the complete replacement text rather than appending to it.
+    /// </summary>
+    [JsonPropertyName("sourceText")]
+    public string? SourceText { get; set; }
 }

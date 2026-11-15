@@ -32,4 +32,10 @@ public class BidiClientPayload
     /// </summary>
     [JsonPropertyName("toolResponse")]
     public BidiGenerateContentToolResponse? ToolResponse { get; set; }
+
+    /// <summary>
+    /// Gets or sets an update to the context (system instruction and/or tools) of the current session.
+    /// </summary>
+    [JsonPropertyName("contextUpdate")]
+    public BidiGenerateContentContextUpdate? ContextUpdate { get; set; }
 }
