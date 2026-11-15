@@ -13,7 +13,9 @@ namespace GenerativeAI.Clients;
 /// This class integrates with the AI platform defined by <see cref="IPlatformAdapter"/> and
 /// provides access to the platform's image text processing capabilities.
 /// Inherited from <see cref="BaseClient"/>, it uses HTTP communication and logging mechanisms defined at a higher level.
+/// The underlying <c>imagetext</c> model was retired on Vertex AI on September 24, 2025.
 /// </remarks>
+[Obsolete("The imagetext model was retired on Vertex AI on September 24, 2025. Send the image to a Gemini model (GenerateContentAsync with an image part) for captions and visual question answering.", false)]
 public class ImageTextModel: BaseClient
 {
     /// <summary>

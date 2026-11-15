@@ -50,6 +50,15 @@ public class MultiModalLiveClient_Tests
     #region Connection
 
     [Fact]
+    public void Constructor_WithoutConfig_RequestsAudioResponses()
+    {
+        using var client = new MultiModalLiveClient(new GoogleAIPlatformAdapter("test-key"), ModelName);
+
+        client.Config.ShouldNotBeNull();
+        client.Config.ResponseModalities.ShouldBe(new List<Modality> { Modality.AUDIO });
+    }
+
+    [Fact]
     public async Task ConnectAsync_UsesFactoryWithPlatformUrl_AndStartsClient()
     {
         string? receivedUrl = null;
@@ -454,7 +463,7 @@ public class MultiModalLiveClient_Tests
 
             var setup = LastSent(socket).GetProperty("setup");
             setup.GetProperty("model").GetString().ShouldBe(ModelName);
-            setup.GetProperty("generationConfig").GetProperty("responseModalities")[0].GetString().ShouldBe("TEXT");
+            setup.GetProperty("generationConfig").GetProperty("responseModalities")[0].GetString().ShouldBe("AUDIO");
             setup.GetProperty("systemInstruction").GetProperty("parts")[0].GetProperty("text").GetString()
                 .ShouldBe("You are helpful.");
             setup.GetProperty("tools")[0].TryGetProperty("googleSearch", out _).ShouldBeTrue();

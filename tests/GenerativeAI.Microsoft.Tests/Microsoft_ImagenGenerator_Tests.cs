@@ -27,7 +27,7 @@ namespace GenerativeAI.Tests.Microsoft;
     typeof(PriorityOrderer))]
 public class Microsoft_ImagenGenerator_Tests : TestBase
 {
-    private const string DefaultTestModelName = GoogleAIModels.Imagen.Imagen3FastGenerate001;
+    private const string DefaultTestModelName = "imagen-3.0-fast-generate-001"; // Imagen is retired; these tests are skipped.
 
     public Microsoft_ImagenGenerator_Tests(ITestOutputHelper helper) : base(helper)
     {

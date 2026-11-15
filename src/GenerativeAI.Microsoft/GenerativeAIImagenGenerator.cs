@@ -37,7 +37,7 @@ public sealed class GenerativeAIImagenGenerator : IImageGenerator
     /// <summary>
     /// Creates a new instance using an API key and optional model name.
     /// </summary>
-    public GenerativeAIImagenGenerator(string apiKey, string modelName = GoogleAIModels.Imagen.Imagen3Generate002):
+    public GenerativeAIImagenGenerator(string apiKey, string modelName = "imagen-3.0-generate-002"):
         this(new GoogleAi(apiKey), modelName)
     { }
     
@@ -45,7 +45,7 @@ public sealed class GenerativeAIImagenGenerator : IImageGenerator
     /// <summary>
     /// Creates a new instance using an existing <see cref="GenAI"/> factory and optional model name.
     /// </summary>
-    public GenerativeAIImagenGenerator(GenAI genai, string modelName = GoogleAIModels.Imagen.Imagen3Generate002)
+    public GenerativeAIImagenGenerator(GenAI genai, string modelName = "imagen-3.0-generate-002")
 #pragma warning restore CS0618
     {
 #if NET6_0_OR_GREATER
