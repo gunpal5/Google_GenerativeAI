@@ -5,6 +5,7 @@ namespace GenerativeAI.Types;
 /// <summary>
 /// Represents the status of a session resumption attempt.
 /// </summary>
+[Obsolete("Not part of the Live API. Use LiveServerSessionResumptionUpdate.Resumable.", false)]
 [JsonConverter(typeof(JsonStringEnumConverter<SessionResumptionStatus>))]
 public enum SessionResumptionStatus
 {
