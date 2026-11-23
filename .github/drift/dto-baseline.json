@@ -1,7 +1,7 @@
 {
  "counts": {
-  "python_classes": 465,
-  "python_enums": 81
+  "python_classes": 468,
+  "python_enums": 84
  },
  "missing_classes": [
   "AggregationOutput",
@@ -237,14 +237,11 @@
   "Type"
  ],
  "missing_fields": {
-  "EmbedContentResponse": [
-   "embeddings"
-  ],
   "GenerateVideosConfig": [
    "labels",
    "resizeMode",
    "webhookConfig"
   ]
  },
- "python_genai": "3.3.0"
+ "python_genai": "3.6.1"
 }

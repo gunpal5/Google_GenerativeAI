@@ -29,4 +29,38 @@ public class FunctionResponsePart
     /// </summary>
     [JsonPropertyName("mediaProcessing")]
     public MediaProcessing? MediaProcessing { get; set; }
+
+    /// <summary>
+    /// Metadata describing the audio content supplied in inline data or file data, used to configure audio
+    /// preprocessing.
+    /// </summary>
+    [JsonPropertyName("audioMetadata")]
+    public AudioMetadata? AudioMetadata { get; set; }
+
+    /// <summary>
+    /// Metadata describing the document content supplied in inline data or file data, used to configure document
+    /// preprocessing.
+    /// </summary>
+    [JsonPropertyName("documentMetadata")]
+    public DocumentMetadata? DocumentMetadata { get; set; }
+
+    /// <summary>
+    /// Media resolution to use for the input media in this part.
+    /// </summary>
+    [JsonPropertyName("mediaResolution")]
+    public PartMediaResolution? MediaResolution { get; set; }
+
+    /// <summary>
+    /// Metadata describing the spreadsheet content supplied in inline data or file data, used to configure
+    /// spreadsheet preprocessing.
+    /// </summary>
+    [JsonPropertyName("spreadsheetMetadata")]
+    public SpreadsheetMetadata? SpreadsheetMetadata { get; set; }
+
+    /// <summary>
+    /// Metadata describing the video content supplied in inline data or file data, such as the start and end offsets
+    /// and the frame rate.
+    /// </summary>
+    [JsonPropertyName("videoMetadata")]
+    public VideoMetadataResult? VideoMetadata { get; set; }
 }
