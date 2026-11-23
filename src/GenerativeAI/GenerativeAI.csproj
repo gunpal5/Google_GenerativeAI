@@ -42,12 +42,12 @@
         <PackageReference Include="System.Text.Json" Version="10.0.15"/>
     </ItemGroup>
     <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0'">
-        <PackageReference Include="JsonSchema.Net.Generation" Version="3.5.1"/>
+        <PackageReference Include="JsonSchema.Net.Generation" Version="7.5.0"/>
         <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.1"/>
         <PackageReference Include="System.Text.Json" Version="8.0.5"/>
     </ItemGroup>
     <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0'">
-         <PackageReference Include="JsonSchema.Net.Generation" Version="3.5.1"/>
+         <PackageReference Include="JsonSchema.Net.Generation" Version="7.5.0"/>
         <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.1"/>
         <PackageReference Include="System.Text.Json" Version="8.0.5"/>
     </ItemGroup>
