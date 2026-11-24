@@ -102,10 +102,14 @@ public sealed class GenerativeAIEmbeddingGenerator : IEmbeddingGenerator<string,
             UsageDetails? usage = null;
             if (response != null)
             {
+                // Prefer the token count the service reports; fall back to an estimate.
+                var inputTokens = response.UsageMetadata is { PromptTokenCount: > 0 } usageMetadata
+                    ? usageMetadata.PromptTokenCount
+                    : valuesList.Sum(v => EstimateTokenCount(v));
                 usage = new UsageDetails
                 {
-                    InputTokenCount = valuesList.Sum(v => EstimateTokenCount(v)),
-                    TotalTokenCount = valuesList.Sum(v => EstimateTokenCount(v))
+                    InputTokenCount = inputTokens,
+                    TotalTokenCount = inputTokens
                 };
             }
 

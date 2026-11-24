@@ -97,6 +97,52 @@ public class VertexEmbedding_Tests
     }
 
     [Fact]
+    public async Task GeminiModel_BatchEmbed_SendsAllConfigFieldsAndParsesUsageMetadata()
+    {
+        var (model, handler) = CreateVertex("gemini-embedding-2",
+            """
+            {"embeddings": [{"values": [0.1, 0.2], "statistics": {"tokenCount": 3, "truncated": false}}, {"values": [0.3]}],
+             "usageMetadata": {"promptTokenCount": 9, "promptTokensDetails": [{"modality": "TEXT", "tokenCount": 9}]}}
+            """);
+
+        var response = await model.BatchEmbedContentAsync(new[]
+        {
+            new EmbedContentRequest
+            {
+                Content = new Content("first", Roles.User),
+                TaskType = TaskType.RETRIEVAL_DOCUMENT,
+                Title = "Doc",
+                OutputDimensionality = 64,
+                AutoTruncate = true,
+                DocumentOcr = true,
+                AudioTrackExtraction = false
+            },
+            new EmbedContentRequest { Content = new Content("second", Roles.User) }
+        }, TestContext.Current.CancellationToken);
+
+        var (url, body) = handler.Requests.ShouldHaveSingleItem();
+        url.AbsoluteUri.ShouldEndWith("/gemini-embedding-2:batchEmbedContents");
+        var requests = body["requests"]!.AsArray();
+        requests.Count.ShouldBe(2);
+        requests[0]!["content"]!["parts"]![0]!["text"]!.GetValue<string>().ShouldBe("first");
+        requests[1]!["content"]!["parts"]![0]!["text"]!.GetValue<string>().ShouldBe("second");
+        var config = requests[0]!["embedContentConfig"]!;
+        config["taskType"]!.GetValue<string>().ShouldBe("RETRIEVAL_DOCUMENT");
+        config["title"]!.GetValue<string>().ShouldBe("Doc");
+        config["outputDimensionality"]!.GetValue<int>().ShouldBe(64);
+        config["autoTruncate"]!.GetValue<bool>().ShouldBeTrue();
+        config["documentOcr"]!.GetValue<bool>().ShouldBeTrue();
+        config["audioTrackExtraction"]!.GetValue<bool>().ShouldBeFalse();
+        requests[0]!["taskType"].ShouldBeNull();
+
+        response.Embeddings!.Count.ShouldBe(2);
+        response.Embeddings[0].Values.ShouldBe(new[] { 0.1f, 0.2f });
+        response.Embeddings[0].Statistics!.TokenCount.ShouldBe(3);
+        response.UsageMetadata!.PromptTokenCount.ShouldBe(9);
+        response.UsageMetadata.PromptTokensDetails!.ShouldHaveSingleItem().TokenCount.ShouldBe(9);
+    }
+
+    [Fact]
     public async Task TextEmbeddingModel_UsesPredictWithInstancesAndParameters()
     {
         var (model, handler) = CreateVertex(VertexAIModels.Embeddings.TextMultilingualEmbedding002,

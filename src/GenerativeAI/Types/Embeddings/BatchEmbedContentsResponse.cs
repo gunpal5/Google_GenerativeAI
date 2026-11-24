@@ -13,4 +13,11 @@ public class BatchEmbedContentsResponse
     /// </summary>
     [JsonPropertyName("embeddings")]
     public List<ContentEmbedding>? Embeddings { get; set; }
+
+    /// <summary>
+    /// Token usage information for the whole batch, such as the number of prompt tokens embedded.
+    /// Returned by Gemini embedding models on Gemini Enterprise Agent Platform (Vertex AI).
+    /// </summary>
+    [JsonPropertyName("usageMetadata")]
+    public UsageMetadata? UsageMetadata { get; set; }
 }
