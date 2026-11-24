@@ -49,6 +49,20 @@ public sealed class InteractionFunctionTool : InteractionTool
     /// <summary>The JSON Schema of the function's parameters.</summary>
     [JsonPropertyName("parameters")]
     public JsonNode? Parameters { get; set; }
+
+    /// <summary>
+    /// If true, loading of the function is deferred: the model only sees <see cref="ShortDescription"/> and loads
+    /// the full declaration on demand with the <see cref="InteractionToolSearchTool"/>.
+    /// </summary>
+    [JsonPropertyName("defer_loading")]
+    public bool? DeferLoading { get; set; }
+
+    /// <summary>
+    /// A brief description of the function, shown to the model as a short summary of functions with
+    /// <see cref="DeferLoading"/> set to true.
+    /// </summary>
+    [JsonPropertyName("short_description")]
+    public string? ShortDescription { get; set; }
 }
 
 /// <summary>The code execution tool (<c>code_execution</c>).</summary>
@@ -184,6 +198,38 @@ public sealed class InteractionMcpServerTool : InteractionTool
     /// <summary>The allowed tools.</summary>
     [JsonPropertyName("allowed_tools")]
     public List<InteractionAllowedTools>? AllowedTools { get; set; }
+
+    /// <summary>If true, loading of the tools of this MCP server is deferred (see <see cref="InteractionToolSearchTool"/>).</summary>
+    [JsonPropertyName("defer_loading")]
+    public bool? DeferLoading { get; set; }
+}
+
+/// <summary>
+/// A tool that lets the model search for and load tools into its context on demand (<c>tool_search</c>), so clients
+/// don't have to load every tool definition up front (see <see cref="InteractionFunctionTool.DeferLoading"/>).
+/// </summary>
+public sealed class InteractionToolSearchTool : InteractionTool
+{
+    /// <summary>Initializes a new instance of the <see cref="InteractionToolSearchTool"/> class.</summary>
+    public InteractionToolSearchTool() : base(InteractionToolTypes.ToolSearch)
+    {
+    }
+
+    /// <summary>The execution mode of the tool search (see <see cref="InteractionToolSearchExecutions"/>).</summary>
+    [JsonPropertyName("execution")]
+    public string? Execution { get; set; }
+
+    /// <summary>The name of the function. Set only for client-side execution.</summary>
+    [JsonPropertyName("name")]
+    public string? Name { get; set; }
+
+    /// <summary>A description of the function. Set only for client-side execution.</summary>
+    [JsonPropertyName("description")]
+    public string? Description { get; set; }
+
+    /// <summary>The JSON Schema of the function's parameters. Set only for client-side execution.</summary>
+    [JsonPropertyName("parameters")]
+    public JsonNode? Parameters { get; set; }
 }
 
 /// <summary>Vertex AI Search configuration for the retrieval tool.</summary>

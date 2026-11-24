@@ -56,6 +56,12 @@ internal abstract class InteractionUnionConverter<TBase> : JsonConverter<TBase> 
     protected abstract Type? ResolveType(string discriminator);
 
     /// <summary>
+    /// Maps a discriminator value and the payload to its concrete type, for unions where one discriminator value has
+    /// several shapes. Defaults to <see cref="ResolveType(string)"/>.
+    /// </summary>
+    protected virtual Type? ResolveType(string discriminator, JsonNode node) => ResolveType(discriminator);
+
+    /// <summary>
     /// Creates the value used for unknown variants.
     /// </summary>
     protected abstract TBase CreateUnknown(string? discriminator, JsonNode raw);
@@ -76,7 +82,7 @@ internal abstract class InteractionUnionConverter<TBase> : JsonConverter<TBase> 
             return null;
 
         var discriminator = InteractionJson.GetString(node, DiscriminatorName);
-        var type = discriminator == null ? null : ResolveType(discriminator);
+        var type = discriminator == null ? null : ResolveType(discriminator, node);
         if (type != null)
         {
             try
@@ -192,6 +198,8 @@ internal sealed class InteractionStepConverter : InteractionUnionConverter<Inter
         InteractionStepTypes.RetrievalResult => typeof(InteractionRetrievalResultStep),
         InteractionStepTypes.ProcessingCall => typeof(InteractionProcessingCallStep),
         InteractionStepTypes.ProcessingResult => typeof(InteractionProcessingResultStep),
+        InteractionStepTypes.ToolSearchCall => typeof(InteractionToolSearchCallStep),
+        InteractionStepTypes.ToolSearchResult => typeof(InteractionToolSearchResultStep),
         _ => null
     };
 
@@ -218,6 +226,7 @@ internal sealed class InteractionToolConverter : InteractionUnionConverter<Inter
         InteractionToolTypes.ComputerUse => typeof(InteractionComputerUseTool),
         InteractionToolTypes.McpServer => typeof(InteractionMcpServerTool),
         InteractionToolTypes.Retrieval => typeof(InteractionRetrievalTool),
+        InteractionToolTypes.ToolSearch => typeof(InteractionToolSearchTool),
         _ => null
     };
 
@@ -289,8 +298,26 @@ internal sealed class InteractionSseEventConverter : InteractionUnionConverter<I
         InteractionEventTypes.StepDelta => typeof(InteractionStepDeltaEvent),
         InteractionEventTypes.StepStop => typeof(InteractionStepStopEvent),
         InteractionEventTypes.Error => typeof(InteractionErrorEvent),
+        InteractionEventTypes.InteractionConnected => typeof(InteractionConnectedEvent),
+        InteractionEventTypes.InteractionCancelled => typeof(InteractionCancelledEvent),
         _ => null
     };
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// <c>interaction.created</c> and <c>interaction.completed</c> are shared by the streaming (SSE) events, which
+    /// embed an <c>interaction</c> object, and the live interaction events, which don't.
+    /// </remarks>
+    protected override Type? ResolveType(string discriminator, JsonNode node)
+    {
+        var isLive = node is JsonObject obj && !obj.ContainsKey("interaction");
+        return discriminator switch
+        {
+            InteractionEventTypes.InteractionCreated when isLive => typeof(LiveInteractionCreatedEvent),
+            InteractionEventTypes.InteractionCompleted when isLive => typeof(LiveInteractionCompletedEvent),
+            _ => ResolveType(discriminator)
+        };
+    }
 
     /// <inheritdoc />
     protected override InteractionSseEvent CreateUnknown(string? discriminator, JsonNode raw) =>
@@ -333,6 +360,8 @@ internal sealed class InteractionStepDeltaDataConverter : InteractionUnionConver
         InteractionDeltaTypes.RetrievalResult => typeof(InteractionRetrievalResultDelta),
         InteractionDeltaTypes.ProcessingCall => typeof(InteractionProcessingCallDelta),
         InteractionDeltaTypes.ProcessingResult => typeof(InteractionProcessingResultDelta),
+        InteractionDeltaTypes.ToolSearchCall => typeof(InteractionToolSearchCallDelta),
+        InteractionDeltaTypes.ToolSearchResult => typeof(InteractionToolSearchResultDelta),
         _ => null
     };
 
@@ -539,5 +568,183 @@ internal sealed class InteractionResponseFormatListConverter : JsonConverter<Lis
         foreach (var item in value)
             JsonSerializer.Serialize(writer, item, itemInfo);
         writer.WriteEndArray();
+    }
+}
+
+/// <summary>Converter for <see cref="InteractionClientEvent"/> (discriminated by <c>event_type</c>).</summary>
+internal sealed class InteractionClientEventConverter : InteractionUnionConverter<InteractionClientEvent>
+{
+    /// <inheritdoc />
+    protected override string DiscriminatorName => "event_type";
+
+    /// <inheritdoc />
+    protected override Type? ResolveType(string discriminator) => discriminator switch
+    {
+        InteractionClientEventTypes.InteractionCreate => typeof(CreateInteractionEvent),
+        InteractionClientEventTypes.InteractionConnect => typeof(ConnectInteractionEvent),
+        InteractionClientEventTypes.InteractionCancel => typeof(CancelInteractionEvent),
+        InteractionClientEventTypes.InteractionComplete => typeof(CompleteInteractionEvent),
+        InteractionClientEventTypes.InteractionDisconnect => typeof(InteractionDisconnectEvent),
+        InteractionClientEventTypes.Input => typeof(InteractionInputEvent),
+        InteractionClientEventTypes.UserAction => typeof(InteractionUserActionInput),
+        InteractionClientEventTypes.WorldSetup => typeof(InteractionWorldSetupEvent),
+        _ => null
+    };
+
+    /// <inheritdoc />
+    protected override InteractionClientEvent CreateUnknown(string? discriminator, JsonNode raw) =>
+        new UnknownInteractionClientEvent(discriminator, raw);
+
+    /// <inheritdoc />
+    protected override JsonNode? GetUnknownRaw(InteractionClientEvent value) =>
+        (value as UnknownInteractionClientEvent)?.Raw;
+}
+
+/// <summary>
+/// Base converter for values that are either a string or an object of type <typeparamref name="TObject"/>.
+/// </summary>
+/// <typeparam name="TUnion">The union wrapper type.</typeparam>
+/// <typeparam name="TObject">The object variant.</typeparam>
+internal abstract class InteractionStringOrObjectConverter<TUnion, TObject> : JsonConverter<TUnion>
+    where TUnion : class
+    where TObject : class
+{
+    /// <summary>Creates the union from its string variant.</summary>
+    protected abstract TUnion FromString(string value);
+
+    /// <summary>Creates the union from its object variant.</summary>
+    protected abstract TUnion FromObject(TObject value);
+
+    /// <summary>Gets the string variant, or <c>null</c>.</summary>
+    protected abstract string? GetString(TUnion value);
+
+    /// <summary>Gets the object variant, or <c>null</c>.</summary>
+    protected abstract TObject? GetObject(TUnion value);
+
+    /// <inheritdoc />
+    public override TUnion? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        if (reader.TokenType == JsonTokenType.Null)
+            return null;
+        if (reader.TokenType == JsonTokenType.String)
+            return FromString(reader.GetString()!);
+        var obj = JsonSerializer.Deserialize(ref reader, InteractionJson.GetTypeInfo<TObject>(options));
+        return obj == null ? null : FromObject(obj);
+    }
+
+    /// <inheritdoc />
+    public override void Write(Utf8JsonWriter writer, TUnion value, JsonSerializerOptions options)
+    {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(writer);
+        ArgumentNullException.ThrowIfNull(value);
+#else
+        if (writer == null) throw new ArgumentNullException(nameof(writer));
+        if (value == null) throw new ArgumentNullException(nameof(value));
+#endif
+        var text = GetString(value);
+        var obj = GetObject(value);
+        if (text != null)
+            writer.WriteStringValue(text);
+        else if (obj != null)
+            JsonSerializer.Serialize(writer, obj, InteractionJson.GetTypeInfo<TObject>(options));
+        else
+            writer.WriteNullValue();
+    }
+}
+
+/// <summary>Converter for <see cref="InteractionAudioProcessing"/>.</summary>
+internal sealed class InteractionAudioProcessingConverter
+    : InteractionStringOrObjectConverter<InteractionAudioProcessing, InteractionAudioStaticMediaProcessing>
+{
+    /// <inheritdoc />
+    protected override InteractionAudioProcessing FromString(string value) => new(value);
+
+    /// <inheritdoc />
+    protected override InteractionAudioProcessing FromObject(InteractionAudioStaticMediaProcessing value) => new(value);
+
+    /// <inheritdoc />
+    protected override string? GetString(InteractionAudioProcessing value) => value.Mode;
+
+    /// <inheritdoc />
+    protected override InteractionAudioStaticMediaProcessing? GetObject(InteractionAudioProcessing value) => value.Options;
+}
+
+/// <summary>Converter for <see cref="InteractionDocumentProcessing"/>.</summary>
+internal sealed class InteractionDocumentProcessingConverter
+    : InteractionStringOrObjectConverter<InteractionDocumentProcessing, InteractionDocumentStaticMediaProcessing>
+{
+    /// <inheritdoc />
+    protected override InteractionDocumentProcessing FromString(string value) => new(value);
+
+    /// <inheritdoc />
+    protected override InteractionDocumentProcessing FromObject(InteractionDocumentStaticMediaProcessing value) => new(value);
+
+    /// <inheritdoc />
+    protected override string? GetString(InteractionDocumentProcessing value) => value.Mode;
+
+    /// <inheritdoc />
+    protected override InteractionDocumentStaticMediaProcessing? GetObject(InteractionDocumentProcessing value) =>
+        value.Options;
+}
+
+/// <summary>Converter for <see cref="InteractionWorldPrompt"/>.</summary>
+internal sealed class InteractionWorldPromptConverter
+    : InteractionStringOrObjectConverter<InteractionWorldPrompt, InteractionWorldPromptContent>
+{
+    /// <inheritdoc />
+    protected override InteractionWorldPrompt FromString(string value) => new(value);
+
+    /// <inheritdoc />
+    protected override InteractionWorldPrompt FromObject(InteractionWorldPromptContent value) => new(value);
+
+    /// <inheritdoc />
+    protected override string? GetString(InteractionWorldPrompt value) => value.Text;
+
+    /// <inheritdoc />
+    protected override InteractionWorldPromptContent? GetObject(InteractionWorldPrompt value) => value.Content;
+}
+
+/// <summary>
+/// Converter for <see cref="InteractionClientEventBatch"/>: an object with an <c>events</c> array (and no
+/// <c>event_type</c>) is an <see cref="InteractionClientEventList"/>, anything else a single client event.
+/// </summary>
+internal sealed class InteractionClientEventBatchConverter : JsonConverter<InteractionClientEventBatch>
+{
+    /// <inheritdoc />
+    public override InteractionClientEventBatch? Read(ref Utf8JsonReader reader, Type typeToConvert,
+        JsonSerializerOptions options)
+    {
+        if (reader.TokenType == JsonTokenType.Null)
+            return null;
+
+        var node = JsonNode.Parse(ref reader);
+        if (node is JsonObject obj && !obj.ContainsKey("event_type") &&
+            obj.TryGetPropertyValue("events", out var events) && events is JsonArray)
+        {
+            var list = node.Deserialize(InteractionJson.GetTypeInfo<InteractionClientEventList>(options));
+            return list == null ? null : new InteractionClientEventBatch(list);
+        }
+
+        var single = node?.Deserialize(InteractionJson.GetTypeInfo<InteractionClientEvent>(options));
+        return single == null ? null : new InteractionClientEventBatch(single);
+    }
+
+    /// <inheritdoc />
+    public override void Write(Utf8JsonWriter writer, InteractionClientEventBatch value, JsonSerializerOptions options)
+    {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(writer);
+        ArgumentNullException.ThrowIfNull(value);
+#else
+        if (writer == null) throw new ArgumentNullException(nameof(writer));
+        if (value == null) throw new ArgumentNullException(nameof(value));
+#endif
+        if (value.Event != null)
+            JsonSerializer.Serialize(writer, value.Event, InteractionJson.GetTypeInfo<InteractionClientEvent>(options));
+        else if (value.EventList != null)
+            JsonSerializer.Serialize(writer, value.EventList, InteractionJson.GetTypeInfo<InteractionClientEventList>(options));
+        else
+            writer.WriteNullValue();
     }
 }

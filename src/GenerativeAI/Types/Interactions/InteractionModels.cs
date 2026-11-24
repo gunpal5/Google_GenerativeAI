@@ -86,6 +86,9 @@ public static class InteractionModels
     /// <summary>Gemini 4 Hydrogen - A model with frontier-level intelligence, built for fast, dependable execution across coding, agentic workflows, and multimodal knowledge work. (<c>gemini-4-hydrogen</c>).</summary>
     public const string Gemini4Hydrogen = "gemini-4-hydrogen";
 
+    /// <summary>Gemini 4 Neon - Frontier-level intelligence with fast end-to-end task completion across complex software engineering, analytical, and science workflows. (<c>gemini-4-neon</c>).</summary>
+    public const string Gemini4Neon = "gemini-4-neon";
+
     /// <summary>Gemini 3.8 Flash TTS - Flagship TTS model for Voice Design and dual-speaker screenplay control. Prompt custom vocal personas, direct line-by-line delivery, and add vocal bursts. (<c>gemini-3.8-flash-tts</c>).</summary>
     public const string Gemini38FlashTts = "gemini-3.8-flash-tts";
 

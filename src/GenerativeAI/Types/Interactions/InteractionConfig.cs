@@ -508,6 +508,17 @@ public sealed class InteractionEnvironment
     /// <summary>Sources to mount into the environment.</summary>
     [JsonPropertyName("sources")]
     public List<InteractionEnvironmentSource>? Sources { get; set; }
+
+    /// <summary>The compute lifecycle mode of the environment (see <see cref="EnvironmentModes"/>).</summary>
+    [JsonPropertyName("mode")]
+    public string? Mode { get; set; }
+
+    /// <summary>
+    /// Arbitrary customer-defined JSON configuration passed through to the self-hosted environment poller. Only
+    /// supported when <see cref="Mode"/> is <see cref="EnvironmentModes.SelfHosted"/>.
+    /// </summary>
+    [JsonPropertyName("custom_config")]
+    public JsonObject? CustomConfig { get; set; }
 }
 
 /// <summary>

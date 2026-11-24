@@ -125,6 +125,13 @@ public sealed class InteractionAudioContent : InteractionMediaContent
     /// <summary>The sample rate of the audio.</summary>
     [JsonPropertyName("sample_rate")]
     public int? SampleRate { get; set; }
+
+    /// <summary>
+    /// How the model processes this audio for understanding: the mode <c>"static"</c> or an
+    /// <see cref="InteractionAudioStaticMediaProcessing"/> object (for example to select a segment).
+    /// </summary>
+    [JsonPropertyName("processing")]
+    public InteractionAudioProcessing? Processing { get; set; }
 }
 
 /// <summary>
@@ -142,8 +149,10 @@ public sealed class InteractionVideoContent : InteractionMediaContent
     public string? Name { get; set; }
 
     /// <summary>
-    /// How the model processes this video: either the string <c>"static"</c> / <c>"agentic"</c> or an object
-    /// such as <c>{"type":"static","fps":1,"start_offset":"0s","end_offset":"10s"}</c>.
+    /// How the model processes this video: either the string <c>"static"</c> / <c>"agentic"</c> (see
+    /// <see cref="InteractionMediaProcessingModes"/>) or an object such as
+    /// <c>{"type":"static","fps":1,"start_offset":"0s","end_offset":"10s","content_layers":["frames"]}</c>; build the
+    /// object with <see cref="InteractionStaticMediaProcessing.ToJsonNode"/>.
     /// </summary>
     [JsonPropertyName("processing")]
     public JsonNode? Processing { get; set; }
@@ -162,6 +171,17 @@ public sealed class InteractionDocumentContent : InteractionMediaContent
     public InteractionDocumentContent() : base(InteractionContentTypes.Document)
     {
     }
+
+    /// <summary>
+    /// How the model processes this document for understanding: the mode <c>"static"</c> or an
+    /// <see cref="InteractionDocumentStaticMediaProcessing"/> object (page or spreadsheet options).
+    /// </summary>
+    [JsonPropertyName("processing")]
+    public InteractionDocumentProcessing? Processing { get; set; }
+
+    /// <summary>The media resolution (<c>low</c>, <c>medium</c>, <c>high</c>, <c>ultra_high</c>).</summary>
+    [JsonPropertyName("resolution")]
+    public string? Resolution { get; set; }
 }
 
 /// <summary>

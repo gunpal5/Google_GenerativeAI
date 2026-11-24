@@ -7,7 +7,10 @@ namespace GenerativeAI.Types;
 
 /// <summary>
 /// A Server-Sent Event of a streamed interaction, discriminated by <c>event_type</c>. Unknown event types are
-/// read as <see cref="UnknownInteractionSseEvent"/>.
+/// read as <see cref="UnknownInteractionSseEvent"/>. It is also the base of the server events of live interactions
+/// (python-genai <c>ServerEvent</c>): <see cref="InteractionConnectedEvent"/>, <see cref="InteractionCancelledEvent"/>,
+/// <see cref="LiveInteractionCreatedEvent"/>, <see cref="LiveInteractionCompletedEvent"/> and the shared step and error
+/// events.
 /// </summary>
 [JsonConverter(typeof(InteractionSseEventConverter))]
 public abstract class InteractionSseEvent
@@ -598,6 +601,32 @@ public sealed class InteractionProcessingResultDelta : InteractionStepDeltaData
     public InteractionProcessingResultDelta() : base(InteractionDeltaTypes.ProcessingResult)
     {
     }
+}
+
+/// <summary>A tool search call delta (<c>tool_search_call</c>).</summary>
+public sealed class InteractionToolSearchCallDelta : InteractionStepDeltaData
+{
+    /// <summary>Initializes a new instance of the <see cref="InteractionToolSearchCallDelta"/> class.</summary>
+    public InteractionToolSearchCallDelta() : base(InteractionDeltaTypes.ToolSearchCall)
+    {
+    }
+
+    /// <summary>The tool search arguments.</summary>
+    [JsonPropertyName("arguments")]
+    public InteractionToolSearchCallArguments? Arguments { get; set; }
+}
+
+/// <summary>A tool search result delta (<c>tool_search_result</c>).</summary>
+public sealed class InteractionToolSearchResultDelta : InteractionStepDeltaData
+{
+    /// <summary>Initializes a new instance of the <see cref="InteractionToolSearchResultDelta"/> class.</summary>
+    public InteractionToolSearchResultDelta() : base(InteractionDeltaTypes.ToolSearchResult)
+    {
+    }
+
+    /// <summary>The retrieved function declarations.</summary>
+    [JsonPropertyName("result")]
+    public List<InteractionFunctionTool>? Result { get; set; }
 }
 
 /// <summary>A delta whose <c>type</c> this SDK does not know.</summary>

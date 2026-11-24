@@ -139,7 +139,8 @@ public sealed class InteractionFunctionResultStep : InteractionResultStep
     public string? Name { get; set; }
 
     /// <summary>
-    /// Required. The result of the tool call: a JSON object, a string, or an array of content blocks.
+    /// Required. The result of the tool call: a JSON object, a string, or an array of content blocks (text, image,
+    /// audio, video, document, or <c>function</c> declarations, e.g. from a client-side tool search).
     /// </summary>
     [JsonPropertyName("result")]
     public JsonNode? Result { get; set; }
@@ -507,6 +508,48 @@ public sealed class InteractionProcessingResultStep : InteractionResultStep
     public InteractionProcessingResultStep() : base(InteractionStepTypes.ProcessingResult)
     {
     }
+
+    /// <summary>A signature hash for backend validation (base64).</summary>
+    [JsonPropertyName("signature")]
+    public string? Signature { get; set; }
+}
+
+/// <summary>Arguments of a tool search call.</summary>
+public sealed class InteractionToolSearchCallArguments
+{
+    /// <summary>The names of the functions to load explicitly.</summary>
+    [JsonPropertyName("function_names")]
+    public List<string>? FunctionNames { get; set; }
+}
+
+/// <summary>A tool search call (<c>tool_search_call</c>).</summary>
+public sealed class InteractionToolSearchCallStep : InteractionCallStep
+{
+    /// <summary>Initializes a new instance of the <see cref="InteractionToolSearchCallStep"/> class.</summary>
+    public InteractionToolSearchCallStep() : base(InteractionStepTypes.ToolSearchCall)
+    {
+    }
+
+    /// <summary>Required. The arguments of the tool search.</summary>
+    [JsonPropertyName("arguments")]
+    public InteractionToolSearchCallArguments? Arguments { get; set; }
+
+    /// <summary>A signature hash for backend validation (base64).</summary>
+    [JsonPropertyName("signature")]
+    public string? Signature { get; set; }
+}
+
+/// <summary>The result of a tool search call (<c>tool_search_result</c>).</summary>
+public sealed class InteractionToolSearchResultStep : InteractionResultStep
+{
+    /// <summary>Initializes a new instance of the <see cref="InteractionToolSearchResultStep"/> class.</summary>
+    public InteractionToolSearchResultStep() : base(InteractionStepTypes.ToolSearchResult)
+    {
+    }
+
+    /// <summary>The retrieved function declarations.</summary>
+    [JsonPropertyName("result")]
+    public List<InteractionFunctionTool>? Result { get; set; }
 
     /// <summary>A signature hash for backend validation (base64).</summary>
     [JsonPropertyName("signature")]

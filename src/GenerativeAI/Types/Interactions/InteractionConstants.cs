@@ -36,6 +36,9 @@ public static class InteractionStatuses
     /// </summary>
     public const string RequiresContinuation = "requires_continuation";
 
+    /// <summary>A live interaction is idle, waiting for client input.</summary>
+    public const string Idle = "idle";
+
     /// <summary>
     /// Returns <c>true</c> when the status means the server is still working on the interaction
     /// (<see cref="InProgress"/>, <see cref="Queued"/>, or no status).
@@ -115,6 +118,12 @@ public static class InteractionStepTypes
 
     /// <summary>Processing result step.</summary>
     public const string ProcessingResult = "processing_result";
+
+    /// <summary>Tool search call step.</summary>
+    public const string ToolSearchCall = "tool_search_call";
+
+    /// <summary>Tool search result step.</summary>
+    public const string ToolSearchResult = "tool_search_result";
 }
 
 /// <summary>
@@ -173,6 +182,43 @@ public static class InteractionEventTypes
 
     /// <summary>An error occurred.</summary>
     public const string Error = "error";
+
+    /// <summary>Live interactions: the client (re)connected to a live interaction.</summary>
+    public const string InteractionConnected = "interaction.connected";
+
+    /// <summary>Live interactions: the interaction was cancelled.</summary>
+    public const string InteractionCancelled = "interaction.cancelled";
+}
+
+/// <summary>
+/// Known values of the <c>event_type</c> discriminator of <see cref="InteractionClientEvent"/> (client events of
+/// live interactions).
+/// </summary>
+public static class InteractionClientEventTypes
+{
+    /// <summary>Starts a new interaction (<see cref="CreateInteractionEvent"/>).</summary>
+    public const string InteractionCreate = "interaction.create";
+
+    /// <summary>Reconnects to an existing live interaction (<see cref="ConnectInteractionEvent"/>).</summary>
+    public const string InteractionConnect = "interaction.connect";
+
+    /// <summary>Permanently ends the interaction (<see cref="CancelInteractionEvent"/>).</summary>
+    public const string InteractionCancel = "interaction.cancel";
+
+    /// <summary>Half-closes the interaction: no new input (<see cref="CompleteInteractionEvent"/>).</summary>
+    public const string InteractionComplete = "interaction.complete";
+
+    /// <summary>Gracefully disconnects without ending the interaction (<see cref="InteractionDisconnectEvent"/>).</summary>
+    public const string InteractionDisconnect = "interaction.disconnect";
+
+    /// <summary>An atomic input payload (<see cref="InteractionInputEvent"/>).</summary>
+    public const string Input = "input";
+
+    /// <summary>An interactive user action (<see cref="InteractionUserActionInput"/>).</summary>
+    public const string UserAction = "user_action";
+
+    /// <summary>World setup for world-simulation models (<see cref="InteractionWorldSetupEvent"/>).</summary>
+    public const string WorldSetup = "world_setup";
 }
 
 /// <summary>
@@ -206,6 +252,9 @@ public static class InteractionToolTypes
 
     /// <summary>Retrieval tool.</summary>
     public const string Retrieval = "retrieval";
+
+    /// <summary>Tool search tool, which loads deferred tools on demand.</summary>
+    public const string ToolSearch = "tool_search";
 }
 
 /// <summary>
@@ -290,6 +339,12 @@ public static class InteractionDeltaTypes
 
     /// <summary>Processing result delta.</summary>
     public const string ProcessingResult = "processing_result";
+
+    /// <summary>Tool search call delta.</summary>
+    public const string ToolSearchCall = "tool_search_call";
+
+    /// <summary>Tool search result delta.</summary>
+    public const string ToolSearchResult = "tool_search_result";
 }
 
 /// <summary>
@@ -392,4 +447,121 @@ public static class InteractionThinkingSummaries
 
     /// <summary>No thinking summaries.</summary>
     public const string None = "none";
+}
+
+/// <summary>
+/// Known values for the <c>execution</c> mode of <see cref="InteractionToolSearchTool"/>.
+/// </summary>
+public static class InteractionToolSearchExecutions
+{
+    /// <summary>The tool search runs on the server.</summary>
+    public const string Server = "server";
+
+    /// <summary>The tool search is executed by the client.</summary>
+    public const string Client = "client";
+}
+
+/// <summary>
+/// Known string values for the <c>processing</c> field of media content (video, audio, document).
+/// </summary>
+public static class InteractionMediaProcessingModes
+{
+    /// <summary>Static processing of the media.</summary>
+    public const string Static = "static";
+
+    /// <summary>Agentic processing of the media (video only).</summary>
+    public const string Agentic = "agentic";
+}
+
+/// <summary>
+/// Known values of <see cref="InteractionStaticMediaProcessing.ContentLayers"/> (video content layers).
+/// </summary>
+public static class InteractionVideoContentLayers
+{
+    /// <summary>Video frames.</summary>
+    public const string Frames = "frames";
+
+    /// <summary>The audio track.</summary>
+    public const string Audio = "audio";
+
+    /// <summary>The transcript of the audio track.</summary>
+    public const string Transcript = "transcript";
+}
+
+/// <summary>
+/// Known values of <see cref="InteractionPageProcessingOptions.ContentLayers"/>.
+/// </summary>
+public static class InteractionPageContentLayers
+{
+    /// <summary>Rendered page images.</summary>
+    public const string PageImage = "page_image";
+
+    /// <summary>Extracted page text.</summary>
+    public const string PageText = "page_text";
+}
+
+/// <summary>
+/// Known values of <see cref="InteractionSpreadsheetProcessingOptions.ContentLayers"/>.
+/// </summary>
+public static class InteractionSpreadsheetContentLayers
+{
+    /// <summary>The visual rendering of the sheet.</summary>
+    public const string Visual = "visual";
+
+    /// <summary>The cell values.</summary>
+    public const string Data = "data";
+
+    /// <summary>The cell formulas.</summary>
+    public const string Formulas = "formulas";
+}
+
+/// <summary>
+/// Known values of <see cref="InteractionUserActionInput.Action"/>.
+/// </summary>
+public static class InteractionUserActionTypes
+{
+    /// <summary>A key was pressed.</summary>
+    public const string KeyDown = "key_down";
+
+    /// <summary>A key was released.</summary>
+    public const string KeyUp = "key_up";
+
+    /// <summary>A key was clicked (pressed and released).</summary>
+    public const string KeyClick = "key_click";
+}
+
+/// <summary>
+/// Known values of <see cref="InteractionUserActionInput.Input"/> (the key an action targets).
+/// </summary>
+public static class InteractionUserActionKeys
+{
+    /// <summary>Arrow down.</summary>
+    public const string ArrowDown = "arrow_down";
+
+    /// <summary>Arrow left.</summary>
+    public const string ArrowLeft = "arrow_left";
+
+    /// <summary>Arrow right.</summary>
+    public const string ArrowRight = "arrow_right";
+
+    /// <summary>Arrow up.</summary>
+    public const string ArrowUp = "arrow_up";
+
+    /// <summary>The A key.</summary>
+    public const string KeyA = "key_a";
+
+    /// <summary>The D key.</summary>
+    public const string KeyD = "key_d";
+
+    /// <summary>The E key.</summary>
+    public const string KeyE = "key_e";
+
+    /// <summary>The S key.</summary>
+    public const string KeyS = "key_s";
+
+    /// <summary>The W key.</summary>
+    public const string KeyW = "key_w";
+
+    /// <summary>The space bar.</summary>
+    public const string Space = "space";
 }
