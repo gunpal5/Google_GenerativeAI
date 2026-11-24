@@ -10,8 +10,8 @@
     <ItemGroup>
       <PackageReference Include="Bogus" Version="35.6.5" />
       <PackageReference Include="DocumentChunker" Version="1.0.0" />
-      <PackageReference Include="Google_GenerativeAI" Version="3.6.8" />
-      <PackageReference Include="Google_GenerativeAI.Auth" Version="3.6.8" />
+      <PackageReference Include="Google_GenerativeAI" Version="4.0.1" />
+      <PackageReference Include="Google_GenerativeAI.Auth" Version="4.0.1" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.15" />
       <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.15" />
     </ItemGroup>

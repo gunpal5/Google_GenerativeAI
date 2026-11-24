@@ -49,8 +49,11 @@ if (string.IsNullOrEmpty(apiKey))
     Console.WriteLine("Please set the GOOGLE_API_KEY environment variable.");
     return;
 }
+// The corpora-based Semantic Retrieval API answers with the AQA model, which is no longer listed in the model docs.
+#pragma warning disable CS0618
 var retrieverModel = new SemanticRetrieverModel(GoogleAIModels.Aqa, apiKey,
     authenticator: authenticator);
+#pragma warning restore CS0618
 
 
 //Create Corpus if doesn't exist

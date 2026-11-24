@@ -15,3 +15,6 @@ updates:
           - "*"
     ignore:
       - dependency-name: Microsoft.CodeAnalysis.CSharp
+      # Pinned for the net6.0/net7.0 targets: 4.x and later need System.Text.Json 11, but those targets stay on
+      # System.Text.Json 8.0.5 (NU1605 downgrade error otherwise).
+      - dependency-name: JsonSchema.Net.Generation

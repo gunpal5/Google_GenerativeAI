@@ -7,7 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Google_GenerativeAI.Web" Version="3.6.8" />
+    <PackageReference Include="Google_GenerativeAI" Version="4.0.1" />
+    <PackageReference Include="Google_GenerativeAI.Auth" Version="4.0.1" />
+    <PackageReference Include="Google_GenerativeAI.Web" Version="4.0.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="11.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="11.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="11.0.1" />
