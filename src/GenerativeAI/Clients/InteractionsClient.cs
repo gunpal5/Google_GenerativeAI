@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using GenerativeAI.Core;
+using GenerativeAI.Exceptions;
 using GenerativeAI.Logging;
 using GenerativeAI.Types;
 using GenerativeAI.Types.Converters;
@@ -348,6 +349,172 @@ public class InteractionsClient : BaseClient
         CancellationToken cancellationToken = default)
     {
         return CreateAsync(CreateContinuationRequest(interaction, originalRequest), cancellationToken);
+    }
+
+    private InteractionAuthTokensClient? _authTokens;
+
+    /// <summary>
+    /// [Experimental] Ephemeral auth tokens for live interactions (python-genai
+    /// <c>client.interactions.auth_tokens</c>); uses this client's platform, HTTP client and logger. Gemini API only.
+    /// </summary>
+    public InteractionAuthTokensClient AuthTokens =>
+        _authTokens ??= new InteractionAuthTokensClient(Platform, HttpClient, Logger);
+
+    /// <summary>
+    /// [Experimental] Connects to an existing live interaction over WebSocket (<c>{version}/interactions/live</c>,
+    /// sending <c>interaction.connect</c>), like python-genai's <c>client.aio.interactions.connect(id)</c>. Returns
+    /// as soon as the initial event is sent; the server's <c>interaction.connected</c> arrives through
+    /// <see cref="InteractionWebSocketConnection.ReceiveAsync"/>. Live Interactions support is experimental and may
+    /// change in future versions.
+    /// </summary>
+    /// <remarks>
+    /// The platform's credentials are sent as handshake headers (<c>x-goog-api-key</c>, <c>Authorization</c>). With an
+    /// ephemeral token from <see cref="AuthTokens"/> as the API key (<c>auth_tokens/...</c>), the token is sent as
+    /// <c>x-goog-api-key</c> and no <c>Authorization</c> header is sent. Disposing the connection detaches without
+    /// ending the interaction; see <see cref="InteractionWebSocketConnection"/>.
+    /// </remarks>
+    /// <param name="id">The interaction ID.</param>
+    /// <param name="options">Connection options (API version, extra headers, timeout).</param>
+    /// <param name="cancellationToken">A cancellation token for the setup.</param>
+    /// <returns>The open connection.</returns>
+    /// <exception cref="NotSupportedException">The platform is Vertex AI.</exception>
+    /// <exception cref="InteractionWebSocketException">The handshake failed, timed out or the connection closed during setup.</exception>
+    public Task<InteractionWebSocketConnection> ConnectAsync(string id, InteractionConnectOptions? options = null,
+        CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(id))
+            throw new ArgumentException("A non-empty interaction ID is required to connect.", nameof(id));
+        return ConnectAsync(new ConnectInteractionEvent { Id = id }, options, cancellationToken);
+    }
+
+    /// <summary>
+    /// [Experimental] Connects to an existing live interaction with a custom <c>interaction.connect</c> event (for
+    /// example with <see cref="ConnectInteractionEvent.Background"/>). See
+    /// <see cref="ConnectAsync(string, InteractionConnectOptions?, CancellationToken)"/>.
+    /// </summary>
+    /// <param name="connectEvent">The connect event; its <see cref="ConnectInteractionEvent.Id"/> is required.</param>
+    /// <param name="options">Connection options.</param>
+    /// <param name="cancellationToken">A cancellation token for the setup.</param>
+    /// <returns>The open connection.</returns>
+    public Task<InteractionWebSocketConnection> ConnectAsync(ConnectInteractionEvent connectEvent,
+        InteractionConnectOptions? options = null, CancellationToken cancellationToken = default)
+    {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(connectEvent);
+#else
+        if (connectEvent == null) throw new ArgumentNullException(nameof(connectEvent));
+#endif
+        if (string.IsNullOrWhiteSpace(connectEvent.Id))
+            throw new ArgumentException("A non-empty interaction ID is required to connect.", nameof(connectEvent));
+        return OpenLiveAsync(connectEvent, connectEvent.Id, options, cancellationToken);
+    }
+
+    /// <summary>
+    /// [Experimental] Starts a new live interaction over WebSocket by sending <c>interaction.create</c> as the initial
+    /// event. <see cref="InteractionWebSocketConnection.Id"/> is set when the server's <c>interaction.created</c> event
+    /// is received. python-genai only exposes connecting to existing interactions; this overload uses the same
+    /// transport with the <c>interaction.create</c> client event of the API.
+    /// </summary>
+    /// <param name="createEvent">The create event (model, tools, system instruction, ...).</param>
+    /// <param name="options">Connection options.</param>
+    /// <param name="cancellationToken">A cancellation token for the setup.</param>
+    /// <returns>The open connection.</returns>
+    public Task<InteractionWebSocketConnection> ConnectAsync(CreateInteractionEvent createEvent,
+        InteractionConnectOptions? options = null, CancellationToken cancellationToken = default)
+    {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(createEvent);
+#else
+        if (createEvent == null) throw new ArgumentNullException(nameof(createEvent));
+#endif
+        return OpenLiveAsync(createEvent, null, options, cancellationToken);
+    }
+
+    private async Task<InteractionWebSocketConnection> OpenLiveAsync(InteractionClientEvent initialEvent,
+        string? interactionId, InteractionConnectOptions? options, CancellationToken cancellationToken)
+    {
+        LiveInteractionsExperimental.Warn(Logger);
+        if (Platform is VertextPlatformAdapter)
+            throw new NotSupportedException("Live Interactions is currently Gemini API only.");
+        options ??= new InteractionConnectOptions();
+        if (options.Timeout <= TimeSpan.Zero || options.Timeout == Timeout.InfiniteTimeSpan)
+            throw new ArgumentOutOfRangeException(nameof(options), "The timeout must be positive and finite.");
+
+        var url = InteractionWebSocketProtocol.BuildWebSocketUrl(Platform.GetBaseUrl(appendVersion: false),
+            string.IsNullOrEmpty(options.ApiVersion) ? Platform.GetApiVersion() : options.ApiVersion);
+
+        List<KeyValuePair<string, string>> authHeaders;
+        using (var authRequest = new HttpRequestMessage(HttpMethod.Get, url))
+        {
+            await AddAuthorizationHeader(authRequest, false, cancellationToken).ConfigureAwait(false);
+            authHeaders = authRequest.Headers
+                .Select(h => new KeyValuePair<string, string>(h.Key, string.Join(",", h.Value)))
+                .ToList();
+        }
+
+        var headers = InteractionWebSocketProtocol.BuildHandshakeHeaders(authHeaders, options.Headers,
+            options.ApiRevision);
+
+        using var timeout = new CancellationTokenSource(options.Timeout);
+        using var linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeout.Token);
+#pragma warning disable CA2000 // Disposed in the finally block unless ownership passes to the returned connection
+        var socket = new System.Net.WebSockets.ClientWebSocket();
+#pragma warning restore CA2000
+        InteractionWebSocketConnection? connection = null;
+        var opened = false;
+        try
+        {
+            options.ConfigureWebSocket?.Invoke(socket.Options);
+#if NET7_0_OR_GREATER
+            socket.Options.CollectHttpResponseDetails = true;
+#endif
+            foreach (var header in headers)
+                socket.Options.SetRequestHeader(header.Key, header.Value);
+
+            await socket.ConnectAsync(url, linked.Token).ConfigureAwait(false);
+#pragma warning disable CA2000 // Returned to the caller, or disposed in the finally block
+            connection = new InteractionWebSocketConnection(socket, interactionId, Options, Logger);
+#pragma warning restore CA2000
+            await connection.SendInitialEventAsync(initialEvent, linked.Token).ConfigureAwait(false);
+            opened = true;
+            return connection;
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
+        catch (OperationCanceledException) when (timeout.IsCancellationRequested)
+        {
+            throw new InteractionWebSocketException("Timed out establishing live interaction connection.");
+        }
+        catch (InteractionWebSocketException ex) when (ex.CloseCode != null)
+        {
+            throw new InteractionWebSocketException("The connection closed during live setup.", ex.CloseCode);
+        }
+        catch (Exception ex) when (ex is System.Net.WebSockets.WebSocketException or HttpRequestException
+                                       or IOException)
+        {
+            // Like python-genai, the transport error is not attached: its message may echo request headers.
+            Logger?.LogDebug(ex, "Live interaction setup failed");
+            int? status = null;
+#if NET7_0_OR_GREATER
+            if (socket.HttpStatusCode != 0)
+                status = (int)socket.HttpStatusCode;
+#endif
+            throw new InteractionWebSocketException("The live interaction setup failed.", null, status);
+        }
+        finally
+        {
+            if (!opened)
+            {
+#pragma warning disable CA1849 // Setup failed: abort the socket without sending interaction.disconnect
+                if (connection != null)
+                    connection.Dispose();
+#pragma warning restore CA1849
+                else
+                    socket.Dispose();
+            }
+        }
     }
 
     private static void Validate(CreateInteractionRequest request)
