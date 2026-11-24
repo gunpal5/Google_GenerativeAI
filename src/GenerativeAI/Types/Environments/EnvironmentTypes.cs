@@ -51,6 +51,25 @@ public sealed class AgentEnvironment
     [JsonPropertyName("last_accessed")]
     public string? LastAccessed { get; set; }
 
+    /// <summary>The compute lifecycle mode of the environment (see <see cref="EnvironmentModes"/>).</summary>
+    [JsonPropertyName("mode")]
+    public string? Mode { get; set; }
+
+    /// <summary>
+    /// Customer-defined JSON configuration passed through to the self-hosted environment poller. Only populated
+    /// for <see cref="EnvironmentModes.SelfHosted"/> environments when configured.
+    /// </summary>
+    [JsonPropertyName("custom_config")]
+    public JsonObject? CustomConfig { get; set; }
+
+    /// <summary>
+    /// Secret token generated when a <see cref="EnvironmentModes.SelfHosted"/> environment is created. The
+    /// self-hosted sandbox daemon uses it to authenticate polling and streaming requests. Only returned in the
+    /// create response.
+    /// </summary>
+    [JsonPropertyName("environment_key")]
+    public string? EnvironmentKey { get; set; }
+
     /// <summary>Fields this SDK does not model yet.</summary>
     [JsonExtensionData]
     public Dictionary<string, JsonElement>? ExtensionData { get; set; }
@@ -76,6 +95,31 @@ public sealed class CreateEnvironmentRequest
     /// <summary>Sources to mount (GCS buckets, inline files, repositories, skill registries).</summary>
     [JsonPropertyName("sources")]
     public List<InteractionEnvironmentSource>? Sources { get; set; }
+
+    /// <summary>
+    /// Environment variables to set in the sandbox environment, keyed by variable name. When
+    /// <see cref="FromEnvironment"/> is set, this must be empty.
+    /// </summary>
+    [JsonPropertyName("env")]
+    public Dictionary<string, EnvVar>? Env { get; set; }
+
+    /// <summary>The compute lifecycle mode of the environment (see <see cref="EnvironmentModes"/>).</summary>
+    [JsonPropertyName("mode")]
+    public string? Mode { get; set; }
+
+    /// <summary>
+    /// Optional. System instruction applied to interactions running in this environment. Only supported for
+    /// <see cref="EnvironmentModes.SelfHosted"/> environments, where it is recommended.
+    /// </summary>
+    [JsonPropertyName("system_instruction")]
+    public string? SystemInstruction { get; set; }
+
+    /// <summary>
+    /// Optional. Arbitrary customer-defined JSON configuration passed through to the self-hosted environment
+    /// poller. Only supported when <see cref="Mode"/> is <see cref="EnvironmentModes.SelfHosted"/>.
+    /// </summary>
+    [JsonPropertyName("custom_config")]
+    public JsonObject? CustomConfig { get; set; }
 
     /// <summary>Additional body fields to send (for API features this SDK does not model yet).</summary>
     [JsonExtensionData]
@@ -151,6 +195,28 @@ public static class EnvironmentStatuses
 
     /// <summary>The environment has expired.</summary>
     public const string Expired = "expired";
+}
+
+/// <summary>An environment variable to set in a sandbox environment (<see cref="CreateEnvironmentRequest.Env"/>).</summary>
+public sealed class EnvVar
+{
+    /// <summary>A plain string value for the variable.</summary>
+    [JsonPropertyName("value")]
+    public string? Value { get; set; }
+
+    /// <summary>A reference to a server-managed credential resource by ID, used instead of <see cref="Value"/>.</summary>
+    [JsonPropertyName("credential")]
+    public string? Credential { get; set; }
+}
+
+/// <summary>Known environment compute lifecycle modes (<see cref="CreateEnvironmentRequest.Mode"/>).</summary>
+public static class EnvironmentModes
+{
+    /// <summary>The service runs the environment on demand.</summary>
+    public const string OnDemand = "on_demand";
+
+    /// <summary>The environment runs on your own infrastructure (bring your own sandbox).</summary>
+    public const string SelfHosted = "self_hosted";
 }
 
 /// <summary>Known environment network modes.</summary>

@@ -1,5 +1,5 @@
 {
- "revision": "20261113",
+ "revision": "20261123",
  "schemas": {
   "AsyncBatchEmbedContentRequest": [
    "batch"
@@ -7,6 +7,10 @@
   "AttributionSourceId": [
    "groundingPassage",
    "semanticRetrieverChunk"
+  ],
+  "AudioMetadata": [
+   "endOffset",
+   "startOffset"
   ],
   "AudioResponseFormat": [
    "bitRate",
@@ -225,6 +229,7 @@
   ],
   "CreateEnvironmentRequest": [
    "customConfig",
+   "env",
    "fromEnvironment",
    "mode",
    "networkAllowlist",
@@ -286,6 +291,11 @@
    "sizeBytes",
    "state",
    "updateTime"
+  ],
+  "DocumentMetadata": [
+   "contentLayers",
+   "endPage",
+   "startPage"
   ],
   "DownloadFileResponse": [],
   "DownloadMediaResponse": [
@@ -363,6 +373,10 @@
    "promptTokenDetails"
   ],
   "Empty": [],
+  "EnvVar": [
+   "credential",
+   "value"
+  ],
   "Environment": [
    "created",
    "customConfig",
@@ -473,9 +487,14 @@
    "mimeType"
   ],
   "FunctionResponsePart": [
+   "audioMetadata",
+   "documentMetadata",
    "fileData",
    "inlineData",
-   "mediaProcessing"
+   "mediaProcessing",
+   "mediaResolution",
+   "spreadsheetMetadata",
+   "videoMetadata"
   ],
   "GdataMedia": [
    "algorithm",
@@ -897,8 +916,10 @@
    "response"
   ],
   "Part": [
+   "audioMetadata",
    "audioTranscription",
    "codeExecutionResult",
+   "documentMetadata",
    "executableCode",
    "fileData",
    "functionCall",
@@ -908,6 +929,7 @@
    "mediaResolution",
    "partMetadata",
    "speechMetadata",
+   "spreadsheetMetadata",
    "text",
    "thought",
    "thoughtSignature",
@@ -1062,11 +1084,17 @@
   "SpeechConfig": [
    "languageCode",
    "multiSpeakerVoiceConfig",
+   "textNormalization",
    "voiceConfig"
   ],
   "SpeechMetadata": [
    "speaker",
    "style"
+  ],
+  "SpreadsheetMetadata": [
+   "contentLayers",
+   "sheetIndex",
+   "visibleCells"
   ],
   "Status": [
    "code",
@@ -1231,6 +1259,7 @@
    "videoDuration"
   ],
   "VideoMetadata": [
+   "contentLayers",
    "endOffset",
    "fps",
    "startOffset"

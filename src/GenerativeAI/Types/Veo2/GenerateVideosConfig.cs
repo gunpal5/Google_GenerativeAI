@@ -111,4 +111,40 @@ public class GenerateVideosConfig
     /// </summary>
     [JsonPropertyName("compressionQuality")]
     public VideoCompressionQuality? CompressionQuality { get; set; }
+
+    /// <summary>
+    /// Optional. User-specified labels to track billing usage.
+    /// </summary>
+    [JsonPropertyName("labels")]
+    public Dictionary<string, string>? Labels { get; set; }
+
+    /// <summary>
+    /// Optional. Webhook configuration for receiving notifications when the video generation operation completes.
+    /// Only supported by the Gemini Developer API; Veo video generation runs on Vertex AI, which rejects it.
+    /// </summary>
+    [JsonPropertyName("webhookConfig")]
+    public WebhookConfig? WebhookConfig { get; set; }
+
+    /// <summary>
+    /// Optional. Resize mode of the image input for video generation.
+    /// </summary>
+    [JsonPropertyName("resizeMode")]
+    public ImageResizeMode? ResizeMode { get; set; }
+}
+
+/// <summary>
+/// Resize mode for the image input for video generation.
+/// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter<ImageResizeMode>))]
+public enum ImageResizeMode
+{
+    /// <summary>
+    /// Crop the image to fit the correct aspect ratio (parts of the image are lost).
+    /// </summary>
+    CROP = 0,
+
+    /// <summary>
+    /// Pad the image to fit the correct aspect ratio (no part of the image is lost).
+    /// </summary>
+    PAD = 1
 }

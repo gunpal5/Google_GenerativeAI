@@ -289,6 +289,8 @@ namespace GenerativeAI.Types;
 [JsonSerializable(typeof(VideoResolution))]
 [JsonSerializable(typeof(VideoParameters))]
 [JsonSerializable(typeof(VertexGenerateVideosPayload))]
+[JsonSerializable(typeof(ImageResizeMode))]
+[JsonSerializable(typeof(SpeechConfigTextNormalization))]
 [JsonSerializable(typeof(VideoInstance))]
 [JsonSerializable(typeof(ChatSessionBackUpData))]
 [JsonSerializable(typeof(ThinkingConfig))]

@@ -25,6 +25,7 @@ namespace GenerativeAI.Types;
 // Environments
 [JsonSerializable(typeof(AgentEnvironment))]
 [JsonSerializable(typeof(CreateEnvironmentRequest))]
+[JsonSerializable(typeof(EnvVar))]
 [JsonSerializable(typeof(ListEnvironmentsResponse))]
 [JsonSerializable(typeof(EnvironmentFile))]
 [JsonSerializable(typeof(ListEnvironmentFilesResponse))]

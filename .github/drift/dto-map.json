@@ -41,6 +41,9 @@
     ],
     "EmbedContentResponse": [
       "embeddings"
+    ],
+    "VoiceActivity": [
+      "voiceActivityType"
     ]
   }
 }

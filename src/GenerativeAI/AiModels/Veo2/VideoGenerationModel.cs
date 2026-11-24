@@ -60,6 +60,11 @@ namespace GenerativeAI
                     "Use Vertex AI, or generate video on the Gemini API with a Gemini Omni model " +
                     "(GoogleAIModels.Video.GeminiOmni12Flash) through the Interactions API.");
 
+            if (request.Config?.WebhookConfig != null)
+                throw new NotSupportedException(
+                    "GenerateVideosConfig.WebhookConfig is only supported by the Gemini Developer API, " +
+                    "not by Vertex AI (Gemini Enterprise Agent Platform).");
+
             var modelId = this.ModelName.ToModelId();
             var url = $"{Platform.GetBaseUrl()}/{modelId}:predictLongRunning";
 
@@ -91,9 +96,11 @@ namespace GenerativeAI
                         EnhancePrompt = request.Config.EnhancePrompt,
                         PubSubTopic = request.Config.PubsubTopic,
                         GenerateAudio = request.Config.GenerateAudio,
-                        CompressionQuality = request.Config.CompressionQuality
+                        CompressionQuality = request.Config.CompressionQuality,
+                        ResizeMode = request.Config.ResizeMode
                     }
-                    : null
+                    : null,
+                Labels = request.Config?.Labels
             };
 
             return await SendAsync<VertexGenerateVideosPayload, GenerateVideosOperation>(url, payload, HttpMethod.Post,

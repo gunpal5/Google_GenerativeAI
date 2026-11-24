@@ -21,6 +21,11 @@ public static class GoogleAIModels
     #region Gemini 4
 
     /// <summary>
+    /// Gemini 4 Neon model name.
+    /// </summary>
+    public const string Gemini4Neon = "models/gemini-4-neon";
+
+    /// <summary>
     /// Gemini 4 Hydrogen model name (GA, released November 12, 2026).
     /// </summary>
     public const string Gemini4Hydrogen = "models/gemini-4-hydrogen";
@@ -99,6 +104,12 @@ public static class GoogleAIModels
     /// Gemini 3.8 Live model with extended thinking for the Live API (GA).
     /// </summary>
     public const string Gemini38LiveExtendedThinking = "models/gemini-3.8-live-extended-thinking";
+
+    /// <summary>
+    /// Genie 4 model name, a real-time audio and video generation model used through the Live API
+    /// (<c>bidiGenerateContent</c> only).
+    /// </summary>
+    public const string Genie4 = "models/genie-4";
 
     /// <summary>
     /// Gemini 3.5 Live Translate Preview model name for real-time speech translation.

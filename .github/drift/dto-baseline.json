@@ -222,7 +222,6 @@
   "FileSource",
   "FunctionCallingConfigMode",
   "ImagePromptLanguage",
-  "ImageResizeMode",
   "JSONSchemaType",
   "MaskReferenceMode",
   "MediaModality",
@@ -236,12 +235,6 @@
   "TuningTask",
   "Type"
  ],
- "missing_fields": {
-  "GenerateVideosConfig": [
-   "labels",
-   "resizeMode",
-   "webhookConfig"
-  ]
- },
+ "missing_fields": {},
  "python_genai": "3.6.1"
 }

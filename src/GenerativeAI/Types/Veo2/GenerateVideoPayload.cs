@@ -17,6 +17,11 @@ public class VertexGenerateVideosPayload
     /// Gets or sets the parameters for video generation.
     /// </summary>
     [JsonPropertyName("parameters")] public VideoParameters? Parameters { get; set; }
+
+    /// <summary>
+    /// Gets or sets user-specified labels to track billing usage.
+    /// </summary>
+    [JsonPropertyName("labels")] public Dictionary<string, string>? Labels { get; set; }
 }
 
 /// <summary>
@@ -129,4 +134,9 @@ public class VideoParameters
     /// Gets or sets the compression quality of the generated video.
     /// </summary>
     [JsonPropertyName("compressionQuality")] public VideoCompressionQuality? CompressionQuality { get; set; }
+
+    /// <summary>
+    /// Gets or sets the resize mode of the image input for video generation.
+    /// </summary>
+    [JsonPropertyName("resizeMode")] public ImageResizeMode? ResizeMode { get; set; }
 }

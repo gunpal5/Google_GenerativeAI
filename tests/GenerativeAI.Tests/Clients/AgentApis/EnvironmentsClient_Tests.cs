@@ -63,6 +63,38 @@ public class EnvironmentsClient_Tests
     }
 
     [Fact]
+    public async Task CreateAsync_SelfHostedWithEnvVars()
+    {
+        var (client, handler) = Create("""
+            {"id": "env-2", "mode": "self_hosted", "environment_key": "k-123", "custom_config": {"pool": "a"}}
+            """);
+
+        var environment = await client.CreateAsync(new CreateEnvironmentRequest
+        {
+            Mode = EnvironmentModes.SelfHosted,
+            SystemInstruction = "Be brief.",
+            CustomConfig = new JsonObject { ["pool"] = "a" },
+            Env = new Dictionary<string, EnvVar>
+            {
+                ["LOG_LEVEL"] = new() { Value = "debug" },
+                ["API_KEY"] = new() { Credential = "cred-1" }
+            }
+        }, TestContext.Current.CancellationToken);
+
+        var body = JsonNode.Parse(handler.Requests.Single().Body!)!;
+        body["mode"]!.GetValue<string>().ShouldBe("self_hosted");
+        body["system_instruction"]!.GetValue<string>().ShouldBe("Be brief.");
+        body["custom_config"]!["pool"]!.GetValue<string>().ShouldBe("a");
+        body["env"]!["LOG_LEVEL"]!["value"]!.GetValue<string>().ShouldBe("debug");
+        body["env"]!["API_KEY"]!["credential"]!.GetValue<string>().ShouldBe("cred-1");
+        body["env"]!["API_KEY"]!.AsObject().ContainsKey("value").ShouldBeFalse();
+
+        environment.Mode.ShouldBe(EnvironmentModes.SelfHosted);
+        environment.EnvironmentKey.ShouldBe("k-123");
+        environment.CustomConfig!["pool"]!.GetValue<string>().ShouldBe("a");
+    }
+
+    [Fact]
     public async Task CreateAsync_FromEnvironmentClone()
     {
         var (client, handler) = Create(EnvironmentJson);
