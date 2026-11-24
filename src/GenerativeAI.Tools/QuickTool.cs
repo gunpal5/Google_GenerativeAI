@@ -202,13 +202,133 @@ public class QuickTool : GoogleFunctionTool
             else
             {
                 // Deserialize the JSON value into the expected parameter type
-                var typeInfo = _options.GetTypeInfo(param.ParameterType);
-                var obj = val.Deserialize(typeInfo);
-                objects.Add(obj);
+                objects.Add(DeserializeArgument(val, param.ParameterType));
             }
         }
 
         return objects.ToArray();
+    }
+
+    /// <summary>
+    /// Deserializes one function call argument. Date, time, duration and UUID parameters are declared as strings, and
+    /// models do not always use the exact ISO 8601 form System.Text.Json expects (for example
+    /// <c>2024-05-01 10:30:00</c>, <c>PT1H30M</c> or a UUID without hyphens), so such strings are parsed leniently
+    /// when strict deserialization fails.
+    /// </summary>
+    private object? DeserializeArgument(JsonNode value, Type parameterType)
+    {
+        var typeInfo = _options.GetTypeInfo(parameterType);
+        try
+        {
+            return value.Deserialize(typeInfo);
+        }
+        catch (JsonException) when (TryParseStringEncodedValue(value, parameterType, out var parsed))
+        {
+            return parsed;
+        }
+    }
+
+    /// <summary>
+    /// Parses a string argument into a <see cref="DateTime"/>, <see cref="DateTimeOffset"/>, <see cref="TimeSpan"/>,
+    /// <see cref="Guid"/>, <c>DateOnly</c> or <c>TimeOnly</c> (or their nullable forms) using invariant culture.
+    /// </summary>
+    private static bool TryParseStringEncodedValue(JsonNode value, Type parameterType, out object? parsed)
+    {
+        parsed = null;
+        if (value is not JsonValue jsonValue || !jsonValue.TryGetValue<string>(out var text))
+            return false;
+
+        text = text.Trim();
+        var type = Nullable.GetUnderlyingType(parameterType) ?? parameterType;
+        var culture = System.Globalization.CultureInfo.InvariantCulture;
+
+        if (type == typeof(DateTime))
+        {
+            if (!DateTime.TryParse(text, culture, System.Globalization.DateTimeStyles.RoundtripKind, out var dateTime))
+                return false;
+            parsed = dateTime;
+            return true;
+        }
+
+        if (type == typeof(DateTimeOffset))
+        {
+            if (!DateTimeOffset.TryParse(text, culture, System.Globalization.DateTimeStyles.AssumeUniversal,
+                    out var dateTimeOffset))
+                return false;
+            parsed = dateTimeOffset;
+            return true;
+        }
+
+        if (type == typeof(TimeSpan))
+        {
+            if (!TryParseTimeSpan(text, out var timeSpan))
+                return false;
+            parsed = timeSpan;
+            return true;
+        }
+
+        if (type == typeof(Guid))
+        {
+            if (!Guid.TryParse(text, out var guid))
+                return false;
+            parsed = guid;
+            return true;
+        }
+
+#if NET6_0_OR_GREATER
+        if (type == typeof(DateOnly))
+        {
+            if (DateOnly.TryParse(text, culture, System.Globalization.DateTimeStyles.None, out var date))
+            {
+                parsed = date;
+                return true;
+            }
+
+            // Accept a date-time at midnight, as the model may send one for a date.
+            if (DateTime.TryParse(text, culture, System.Globalization.DateTimeStyles.RoundtripKind, out var midnight) &&
+                midnight.TimeOfDay == TimeSpan.Zero)
+            {
+                parsed = DateOnly.FromDateTime(midnight);
+                return true;
+            }
+
+            return false;
+        }
+
+        if (type == typeof(TimeOnly))
+        {
+            if (!TimeOnly.TryParse(text, culture, System.Globalization.DateTimeStyles.None, out var time))
+                return false;
+            parsed = time;
+            return true;
+        }
+#endif
+
+        return false;
+    }
+
+    /// <summary>
+    /// Parses a duration given either as an ISO 8601 duration (<c>PT1H30M</c>) or in .NET's constant format
+    /// (<c>[-][d.]hh:mm:ss[.fffffff]</c>).
+    /// </summary>
+    private static bool TryParseTimeSpan(string text, out TimeSpan timeSpan)
+    {
+        var designatorIndex = text.Length > 0 && text[0] == '-' ? 1 : 0;
+        if (text.Length > designatorIndex && char.ToUpperInvariant(text[designatorIndex]) == 'P')
+        {
+            try
+            {
+                timeSpan = System.Xml.XmlConvert.ToTimeSpan(text.ToUpperInvariant());
+                return true;
+            }
+            catch (Exception ex) when (ex is FormatException or OverflowException)
+            {
+                timeSpan = default;
+                return false;
+            }
+        }
+
+        return TimeSpan.TryParse(text, System.Globalization.CultureInfo.InvariantCulture, out timeSpan);
     }
 
     /// <summary>
