@@ -32,6 +32,10 @@
   "mimeType",
   "sourceMetadata"
  ],
+ "AudioMetadata": [
+  "endOffset",
+  "startOffset"
+ ],
  "AudioResponseFormat": [
   "bitRate",
   "delivery",
@@ -516,6 +520,11 @@
   "state",
   "updateTime"
  ],
+ "DocumentMetadata": [
+  "contentLayers",
+  "endPage",
+  "startPage"
+ ],
  "DownloadFileConfig": [
   "httpOptions"
  ],
@@ -738,9 +747,14 @@
   "mimeType"
  ],
  "FunctionResponsePart": [
+  "audioMetadata",
+  "documentMetadata",
   "fileData",
   "inlineData",
-  "mediaProcessing"
+  "mediaProcessing",
+  "mediaResolution",
+  "spreadsheetMetadata",
+  "videoMetadata"
  ],
  "GcsDestination": [
   "outputUriPrefix"
@@ -1579,8 +1593,10 @@
   "systemInstruction"
  ],
  "Part": [
+  "audioMetadata",
   "audioTranscription",
   "codeExecutionResult",
+  "documentMetadata",
   "executableCode",
   "fileData",
   "functionCall",
@@ -1590,6 +1606,7 @@
   "mediaResolution",
   "partMetadata",
   "speechMetadata",
+  "spreadsheetMetadata",
   "text",
   "thought",
   "thoughtSignature",
@@ -1993,6 +2010,11 @@
   "speaker",
   "style"
  ],
+ "SpreadsheetMetadata": [
+  "contentLayers",
+  "sheetIndex",
+  "visibleCells"
+ ],
  "StreamableHttpTransport": [
   "headers",
   "sseReadTimeout",
@@ -2393,6 +2415,7 @@
   "referenceType"
  ],
  "VideoMetadata": [
+  "contentLayers",
   "endOffset",
   "fps",
   "startOffset"
@@ -2513,6 +2536,7 @@
   "referenceImages"
  ],
  "_EmbedContentParametersPrivate": [
+  "batchContents",
   "config",
   "content",
   "contents",

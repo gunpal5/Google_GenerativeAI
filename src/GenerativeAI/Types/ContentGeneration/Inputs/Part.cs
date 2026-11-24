@@ -135,6 +135,27 @@ public class Part
     /// </summary>
     [JsonPropertyName("audioTranscription")]
     public Transcription? AudioTranscription { get; set; }
+
+    /// <summary>
+    /// Metadata describing the audio content supplied in inline data or file data, used to configure audio
+    /// preprocessing.
+    /// </summary>
+    [JsonPropertyName("audioMetadata")]
+    public AudioMetadata? AudioMetadata { get; set; }
+
+    /// <summary>
+    /// Metadata describing the document content supplied in inline data or file data, used to configure document
+    /// preprocessing.
+    /// </summary>
+    [JsonPropertyName("documentMetadata")]
+    public DocumentMetadata? DocumentMetadata { get; set; }
+
+    /// <summary>
+    /// Metadata describing the spreadsheet content supplied in inline data or file data, used to configure
+    /// spreadsheet preprocessing.
+    /// </summary>
+    [JsonPropertyName("spreadsheetMetadata")]
+    public SpreadsheetMetadata? SpreadsheetMetadata { get; set; }
 }
 
 /// <summary>
@@ -161,6 +182,12 @@ public class VideoMetadataResult
     /// </summary>
     [JsonPropertyName("endOffset")]
     public string? EndOffset { get; set; }
+
+    /// <summary>
+    /// Content layers to return for the video. If none are given, the service returns frames and audio.
+    /// </summary>
+    [JsonPropertyName("contentLayers")]
+    public List<VideoMetadataContentLayer>? ContentLayers { get; set; }
 }
     
    

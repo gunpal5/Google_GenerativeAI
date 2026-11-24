@@ -473,6 +473,12 @@ namespace GenerativeAI.Types;
 [JsonSerializable(typeof(EmbedContentMetadata))]
 [JsonSerializable(typeof(HttpElementLocation))]
 [JsonSerializable(typeof(VertexMultimodalDatasetDestination))]
+[JsonSerializable(typeof(AudioMetadata))]
+[JsonSerializable(typeof(DocumentMetadata))]
+[JsonSerializable(typeof(DocumentMetadataContentLayer))]
+[JsonSerializable(typeof(SpreadsheetMetadata))]
+[JsonSerializable(typeof(SpreadsheetMetadataContentLayer))]
+[JsonSerializable(typeof(VideoMetadataContentLayer))]
 
 [JsonSourceGenerationOptions(WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull, UseStringEnumConverter = true)]
 
